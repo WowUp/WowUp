@@ -263,12 +263,12 @@
       "POSITIVE_BUTTON": "Sí"
     },
     "CURSE_MIGRATION": {
-      "MESSAGE": "The CurseForge API has been shutdown so WowUp can no longer fetch addon information from it.<br/>Unfortunately, this means that the CurseForge provider has been removed and your addons from CurseForge will no longer be updated.<br/>It is recommended that you perform a re-scan in order to see what addons can be found on other providers.<br/>The Re-Scan process make take a while.<br/><a appExternalLink href=\"https://wowup.io/guide/wowup/curseforge-migration\">Read more here.</a>",
-      "NEGATIVE_BUTTON": "Manually Re-Scan",
-      "POSITIVE_BUTTON": "Automatically Re-Scan",
-      "RE_SCAN_ERROR": "The automatic Re-Scan failed, please try again manually.",
-      "RE_SCAN_SUCCESS": "The automatic Re-Scan has finished you're ready to go.",
-      "TITLE": "CurseForge Migration"
+      "MESSAGE": "La API de CurseForge ha sido desactivada, por lo que WowUp no puede obtener información de ella.<br/>Desafortunadamente, esto significa que todos aquellos addons cuyo proveedor es CurseForge no podrán seguir actualizándose.<br/>Es recomendable que realice un reescaneo de addons para descubrir cuáles se encuentran disponibles en otros proveedores.<br/>El proceso de reescaneo puede tardar un rato.<br/><a appExternalLink href=\"https://wowup.io/guide/wowup/curseforge-migration\">Leer más aquí (texto en inglés).</a>",
+      "NEGATIVE_BUTTON": "Reescanear manualmente",
+      "POSITIVE_BUTTON": "Reescanear automáticamente",
+      "RE_SCAN_ERROR": "El reescaneo automático ha fallado, por favor inténtelo de nuevo manualmente.",
+      "RE_SCAN_SUCCESS": "El reescaneo automático ha finalizado, puede continuar.",
+      "TITLE": "Migración de CurseForge"
     },
     "INSTALL_FROM_PROTOCOL": {
       "ADDON_INSTALLED": "¡Addon instalado!",
