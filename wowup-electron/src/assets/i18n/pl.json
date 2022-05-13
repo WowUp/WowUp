@@ -494,7 +494,7 @@
           "INPUT_LABEL": "Dostawcy"
         },
         "GITHUB_PERSONAL_ACCESS_TOKEN": {
-          "MESSAGE": "Osobisty token dostępu zwiększy liczbę wywołań API GitHuba, które możesz wykonać, jest ona dostępna za darmo. <a href=\"https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/creating-a-personal-access-token\">Dowiedz się więcej</a>",
+          "MESSAGE": "Osobisty token dostępu zwiększy liczbę wywołań API GitHuba, które możesz swobodnie wykonywać.<a href=\"https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/creating-a-personal-access-token\">Dowiedz się więcej</a>",
           "PLACEHOLDER": "Osobisty token dostępu",
           "TITLE": "Osobisty token dostępu do GitHuba"
         },
