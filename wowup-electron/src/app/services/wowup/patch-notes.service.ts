@@ -29,6 +29,8 @@ const CHANGELOGS: ChangeLog[] = [
     <li>GitHub should now respect release channels better</li>
     <li>Spanish locale updates (SkollVargr)</li>
     <li>Polish locale updates (nydas3k)</li>
+    <li>Chinese locale updates (CyanoHao)</li>
+    <li>German locale updates (Glow)</li>
     </ul>
     <h4 style="margin-top: 1em;">Fixes</h4>
     <ul>
