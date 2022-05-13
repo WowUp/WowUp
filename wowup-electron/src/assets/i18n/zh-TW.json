@@ -263,12 +263,12 @@
       "POSITIVE_BUTTON": "是"
     },
     "CURSE_MIGRATION": {
-      "MESSAGE": "The CurseForge API has been shutdown so WowUp can no longer fetch addon information from it.<br/>Unfortunately, this means that the CurseForge provider has been removed and your addons from CurseForge will no longer be updated.<br/>It is recommended that you perform a re-scan in order to see what addons can be found on other providers.<br/>The Re-Scan process make take a while.<br/><a appExternalLink href=\"https://wowup.io/guide/wowup/curseforge-migration\">Read more here.</a>",
-      "NEGATIVE_BUTTON": "Manually Re-Scan",
-      "POSITIVE_BUTTON": "Automatically Re-Scan",
-      "RE_SCAN_ERROR": "The automatic Re-Scan failed, please try again manually.",
-      "RE_SCAN_SUCCESS": "The automatic Re-Scan has finished you're ready to go.",
-      "TITLE": "CurseForge Migration"
+      "MESSAGE": "CurseForge API (V1) 已經關閉，因此 WowUp 不能再從此處獲取插件。<br/>不幸的是，這意味著 CurseForge (V1) 提供方已經被移除，且從此處安裝的插件再也不會更新了。<br/>推薦進行重新掃描以檢查插件是否能從其他提供方獲取。<br/>重新掃描將會消耗一些時間。<br/><a appExternalLink href=\"https://wowup.io/guide/wowup/curseforge-migration\">閱讀詳細資訊（英語）。</a>",
+      "NEGATIVE_BUTTON": "稍後手動重新掃描",
+      "POSITIVE_BUTTON": "自動重新掃描",
+      "RE_SCAN_ERROR": "自動重新掃描失敗，請嘗試手動掃描。",
+      "RE_SCAN_SUCCESS": "自動重新掃描完成，可以開始使用了。",
+      "TITLE": "CurseForge 遷移"
     },
     "INSTALL_FROM_PROTOCOL": {
       "ADDON_INSTALLED": "插件已安裝！",
@@ -494,9 +494,9 @@
           "INPUT_LABEL": "提供方"
         },
         "GITHUB_PERSONAL_ACCESS_TOKEN": {
-          "MESSAGE": "A personal access token will increase the amount of GitHub API calls you can make, it is freely available. <a href=\"https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/creating-a-personal-access-token\">Learn More</a>",
-          "PLACEHOLDER": "Personal Access Token",
-          "TITLE": "GitHub Personal Access Token"
+          "MESSAGE": "免費的個人訪問令牌（PAT）可以提高 GitHub API 呼叫次數的限制。<a href=\"https://docs.github.com/cn/authentication/keeping-your-account-and-data-secure/creating-a-personal-access-token\">檢視簡體中文文件（部分翻譯）</a>或<a href=\"https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/creating-a-personal-access-token\">英文文件</a>。",
+          "PLACEHOLDER": "個人訪問令牌（PAT）",
+          "TITLE": "GitHub 個人訪問令牌（PAT）"
         },
         "TITLE": "插件"
       },

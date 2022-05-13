@@ -263,12 +263,12 @@
       "POSITIVE_BUTTON": "Ja"
     },
     "CURSE_MIGRATION": {
-      "MESSAGE": "The CurseForge API has been shutdown so WowUp can no longer fetch addon information from it.<br/>Unfortunately, this means that the CurseForge provider has been removed and your addons from CurseForge will no longer be updated.<br/>It is recommended that you perform a re-scan in order to see what addons can be found on other providers.<br/>The Re-Scan process make take a while.<br/><a appExternalLink href=\"https://wowup.io/guide/wowup/curseforge-migration\">Read more here.</a>",
-      "NEGATIVE_BUTTON": "Manually Re-Scan",
-      "POSITIVE_BUTTON": "Automatically Re-Scan",
-      "RE_SCAN_ERROR": "The automatic Re-Scan failed, please try again manually.",
-      "RE_SCAN_SUCCESS": "The automatic Re-Scan has finished you're ready to go.",
-      "TITLE": "CurseForge Migration"
+      "MESSAGE": "Die CurseForge-API wurde heruntergefahren, sodass WowUp keine Addon-Informationen mehr von dieser abrufen kann.<br/>Leider bedeutet dies, dass der CurseForge-Anbieter entfernt wurde und deine Addons von CurseForge nicht mehr aktualisiert werden.<br/>Es wird empfohlen, einen erneuten Scan durchzuführen, um zu sehen, welche Addons bei anderen Anbietern zu finden sind.<br/>Der Re-Scan-Vorgang kann eine Weile dauern.<br/><a appExternalLink href=\"https://wowup.io/guide/wowup/curseforge-migration\">Lese hier mehr.</a>",
+      "NEGATIVE_BUTTON": "Manueller Re-Scan",
+      "POSITIVE_BUTTON": "Automatischer Re-Scan",
+      "RE_SCAN_ERROR": "Der automatische Re-Scan ist fehlgeschlagen, bitte versuche es erneut manuell.",
+      "RE_SCAN_SUCCESS": "Der automatische Re-Scan ist beendet, du kannst loslegen.",
+      "TITLE": "CurseForge-Migration"
     },
     "INSTALL_FROM_PROTOCOL": {
       "ADDON_INSTALLED": "Addon installiert!",
@@ -482,11 +482,11 @@
     },
     "OPTIONS": {
       "ADDON": {
-        "AD_REQUIRED_HINT": "Ad required",
+        "AD_REQUIRED_HINT": "Werbung erforderlich",
         "CURSE_FORGE_V2": {
-          "API_KEY_DESCRIPTION": "If you have requested a CurseForge API key you can input it here to connect to their API.",
-          "API_KEY_TITLE": "CurseForge API Key",
-          "PROVIDER_NOTE": "API Key Required"
+          "API_KEY_DESCRIPTION": "Wenn du einen CurseForge-API-Schlüssel angefordert hast, kannst du ihn hier eingeben, um dich mit deren API zu verbinden.",
+          "API_KEY_TITLE": "CurseForge API-Schlüssel",
+          "PROVIDER_NOTE": "API-Schlüssel erforderlich"
         },
         "ENABLED_PROVIDERS": {
           "DESCRIPTION": "Wähle aus, welche Addon-Anbieter zur Suche und Installation neuer Addons genutzt werden können",
@@ -494,9 +494,9 @@
           "INPUT_LABEL": "Anbieter"
         },
         "GITHUB_PERSONAL_ACCESS_TOKEN": {
-          "MESSAGE": "A personal access token will increase the amount of GitHub API calls you can make, it is freely available. <a href=\"https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/creating-a-personal-access-token\">Learn More</a>",
-          "PLACEHOLDER": "Personal Access Token",
-          "TITLE": "GitHub Personal Access Token"
+          "MESSAGE": "Ein persönliches Zugriffstoken erhöht die Anzahl der GitHub-API-Aufrufe, die durchgeführt werden können, dieser ist frei verfügbar. <a href=\"https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/creating-a-personal-access-token\">Mehr erfahren</a>",
+          "PLACEHOLDER": "Persönliches Zugriffstoken",
+          "TITLE": "Persönliches GitHub-Zugriffstoken"
         },
         "TITLE": "Addons"
       },
