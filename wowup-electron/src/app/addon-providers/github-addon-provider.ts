@@ -214,7 +214,7 @@ export class GitHubAddonProvider extends AddonProvider {
       checkRes = releases;
     }
 
-    const assetResult = await this.getLatestValidAsset(releases, installation.clientType);
+    const assetResult = await this.getLatestValidAsset(checkRes, installation.clientType);
     if (!assetResult.matchedAsset && !assetResult.latestAsset) {
       return undefined;
     }
