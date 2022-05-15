@@ -137,6 +137,7 @@ export class AddonProviderFactory {
       this._warcraftService,
       this._tocService,
       this._sensitiveStorageService,
+      this._preferenceStorageService,
       this._networkService
     );
   }

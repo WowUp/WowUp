@@ -24,6 +24,7 @@ import {
   NO_LATEST_SEARCH_RESULT_FILES_ERROR,
   NO_SEARCH_RESULTS_ERROR,
   PREF_CF2_API_KEY,
+  PREF_CF2_BYPASS_UNAVAILABLE,
 } from "../../common/constants";
 import { CurseAddonCategory, CurseGameVersionFlavor } from "../../common/curse/curse-models";
 import { Addon } from "../../common/entities/addon";
@@ -49,6 +50,7 @@ import { strictFilter } from "../utils/array.utils";
 import { TocService } from "../services/toc/toc.service";
 import { WarcraftService } from "../services/warcraft/warcraft.service";
 import { SensitiveStorageService } from "../services/storage/sensitive-storage.service";
+import { PreferenceStorageService } from "../services/storage/preference-storage.service";
 import { getWowClientGroup } from "../../common/warcraft";
 
 interface ProtocolData {
@@ -100,6 +102,7 @@ export class CurseAddonV2Provider extends AddonProvider {
     private _warcraftService: WarcraftService,
     private _tocService: TocService,
     private _sensitiveStorageService: SensitiveStorageService,
+    private _preferenceStorageService: PreferenceStorageService,
     _networkService: NetworkService
   ) {
     super();
@@ -660,7 +663,10 @@ export class CurseAddonV2Provider extends AddonProvider {
         downloadCount: result.downloadCount,
         summary: result.summary,
         screenshotUrls: this.getScreenshotUrls(result),
-        externallyBlocked: result.allowModDistribution === false,
+        externallyBlocked: (
+          this._preferenceStorageService.getSync(PREF_CF2_BYPASS_UNAVAILABLE) !== "true"
+          && result.allowModDistribution === false
+        ),
       };
 
       return searchResult;

@@ -486,6 +486,8 @@
         "CURSE_FORGE_V2": {
           "API_KEY_DESCRIPTION": "If you have requested a CurseForge API key you can input it here to connect to their API.",
           "API_KEY_TITLE": "CurseForge API Key",
+          "BYPASS_UNAVAILABLE_DESCRIPTION": "Ignore restrictions to distribute some addons from CurseForge.",
+          "BYPASS_UNAVAILABLE_TITLE": "Bypass 3rd party restriction for CurseForge",
           "PROVIDER_NOTE": "API Key Required"
         },
         "ENABLED_PROVIDERS": {

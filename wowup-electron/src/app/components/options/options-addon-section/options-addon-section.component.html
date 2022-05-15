@@ -41,6 +41,22 @@
         <input matInput formControlName="cfV2ApiKey" type="password" />
       </mat-form-field>
     </div>
+
+    <div class="divider"></div>
+    <div class="setting row align-items-center">
+      <div class="flex-grow-1">
+        <div>
+          {{ "PAGES.OPTIONS.ADDON.CURSE_FORGE_V2.BYPASS_UNAVAILABLE_TITLE" | translate }}
+        </div>
+        <small class="text-2">
+          {{ "PAGES.OPTIONS.ADDON.CURSE_FORGE_V2.BYPASS_UNAVAILABLE_DESCRIPTION" | translate }}
+        </small>
+      </div>
+      <mat-slide-toggle
+        [checked]="cfV2BypassUnavailable$ | async" (change)="onBypassUnavailableChange($event)"
+      ></mat-slide-toggle>
+    </div>
+
     <div class="divider"></div>
     <div class="setting row align-items-center">
       <div class="flex-grow-1">

@@ -1,6 +1,7 @@
 import { Component, ElementRef, OnDestroy, OnInit, ViewChild } from "@angular/core";
 import { AddonProviderState } from "../../../models/wowup/addon-provider-state";
 import { MatSelectionListChange } from "@angular/material/list";
+import { MatSlideToggleChange } from "@angular/material/slide-toggle";
 import { AddonProviderFactory } from "../../../services/addons/addon.provider.factory";
 import { AddonProviderType } from "../../../addon-providers/addon-provider";
 import {
@@ -16,7 +17,13 @@ import {
   takeUntil,
 } from "rxjs";
 import { SensitiveStorageService } from "../../../services/storage/sensitive-storage.service";
-import { PREF_CF2_API_KEY, PREF_GITHUB_PERSONAL_ACCESS_TOKEN } from "../../../../common/constants";
+import { PreferenceStorageService } from "../../../services/storage/preference-storage.service";
+import {
+  ADDON_PROVIDER_CURSEFORGEV2,
+  PREF_CF2_API_KEY,
+  PREF_CF2_BYPASS_UNAVAILABLE,
+  PREF_GITHUB_PERSONAL_ACCESS_TOKEN,
+} from "../../../../common/constants";
 import { FormControl, FormGroup } from "@angular/forms";
 import { LinkService } from "../../../services/links/link.service";
 import { formatDynamicLinks } from "../../../utils/dom.utils";
@@ -37,6 +44,7 @@ export class OptionsAddonSectionComponent implements OnInit, OnDestroy {
   private destroy$: Subject<boolean> = new Subject<boolean>();
 
   public addonProviderStates$ = new BehaviorSubject<AddonProviderStateModel[]>([]);
+  public cfV2BypassUnavailable$ = new BehaviorSubject(false);
 
   public preferenceForm = new FormGroup({
     cfV2ApiKey: new FormControl(""),
@@ -46,6 +54,7 @@ export class OptionsAddonSectionComponent implements OnInit, OnDestroy {
   public constructor(
     private _addonProviderService: AddonProviderFactory,
     private _sensitiveStorageService: SensitiveStorageService,
+    private _preferenceStorageService: PreferenceStorageService,
     private _linkService: LinkService
   ) {
     this._addonProviderService.addonProviderChange$.subscribe(() => {
@@ -79,6 +88,9 @@ export class OptionsAddonSectionComponent implements OnInit, OnDestroy {
   public ngOnInit(): void {
     this.loadProviderStates();
     this.loadSensitiveData().catch(console.error);
+    this._preferenceStorageService.getBool(PREF_CF2_BYPASS_UNAVAILABLE)
+      .then((enabled) => {this.cfV2BypassUnavailable$.next(enabled);})
+      .catch(console.error);
   }
 
   public ngAfterViewChecked(): void {
@@ -125,4 +137,8 @@ export class OptionsAddonSectionComponent implements OnInit, OnDestroy {
 
     this.addonProviderStates$.next(providerStateModels);
   }
+
+  public onBypassUnavailableChange = async (evt: MatSlideToggleChange): Promise<void> => {
+    await this._preferenceStorageService.setAsync(PREF_CF2_BYPASS_UNAVAILABLE, evt.checked);
+  };
 }
