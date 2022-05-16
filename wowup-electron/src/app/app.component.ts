@@ -263,14 +263,15 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
 
       this.showPreLoad$.next(false);
 
-      // If the user has any addons from old Curse that are not ignored prompt them to rescan
-      const cf2Addons = await this._addonService.getProviderAddons(ADDON_PROVIDER_CURSEFORGEV2);
-      let cfAddons = await this._addonService.getProviderAddons(ADDON_PROVIDER_CURSEFORGE);
-      cfAddons.push(...cf2Addons);
-      cfAddons = cfAddons.filter((addon) => addon.isIgnored === false);
-      if (!this.sessionService.didPromptCfMigration && cfAddons.length > 0) {
-        this.openCurseMigrationDialog();
-        return;
+      if (!this.sessionService.didPromptCfMigration) {
+        // If the user has any addons from old Curse that are not ignored prompt them to rescan
+        const cf2Addons = await this._addonService.getProviderAddons(ADDON_PROVIDER_CURSEFORGEV2);
+        let cfAddons = await this._addonService.getProviderAddons(ADDON_PROVIDER_CURSEFORGE);
+        cfAddons.push(...cf2Addons);
+        cfAddons = cfAddons.filter((addon) => addon.isIgnored === false);
+        if (cfAddons.length > 0) {
+          this.openCurseMigrationDialog();
+        }
       }
     } catch (e) {
       console.error(e);
