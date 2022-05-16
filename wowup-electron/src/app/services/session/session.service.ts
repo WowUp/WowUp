@@ -31,6 +31,7 @@ export class SessionService {
   private readonly _enableControlsSrc = new BehaviorSubject<boolean>(false);
   private readonly _getAddonsColumnsSrc = new Subject<ColumnState>();
   private readonly _currentThemeSrc = new BehaviorSubject<string>("default-theme");
+  private readonly _rescanCompleteSrc = new Subject<boolean>();
 
   private _selectedDetailTabType: DetailsTabType;
 
@@ -54,6 +55,7 @@ export class SessionService {
   );
   public readonly debugAdFrame$ = new Subject<boolean>();
   public readonly currentTheme$ = this._currentThemeSrc.asObservable();
+  public readonly rescanComplete$ = this._rescanCompleteSrc.asObservable();
 
   public readonly wowUpAuthenticated$ = this.wowUpAccount$.pipe(map((account) => account !== undefined));
 
@@ -212,5 +214,9 @@ export class SessionService {
 
   public getSelectedWowInstallation(): WowInstallation | undefined {
     return this._selectedWowInstallationSrc.value;
+  }
+
+  public rescanCompleted() {
+    this._rescanCompleteSrc.next(true);
   }
 }

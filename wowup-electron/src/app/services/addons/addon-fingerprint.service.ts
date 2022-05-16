@@ -21,16 +21,16 @@ export class AddonFingerprintService {
     );
     console.timeEnd("WowUpScan");
 
-    console.time("CFScan");
-    const cfScanResults: CurseFolderScanResult[] = await this._electronService.invoke(
-      IPC_CURSE_GET_SCAN_RESULTS,
-      filePaths
-    );
-    console.timeEnd("CFScan");
+    // console.time("CFScan");
+    // const cfScanResults: CurseFolderScanResult[] = await this._electronService.invoke(
+    //   IPC_CURSE_GET_SCAN_RESULTS,
+    //   filePaths
+    // );
+    // console.timeEnd("CFScan");
 
     addonFolders.forEach((af) => {
       af.wowUpScanResults = wowUpScanResults.find((wur) => wur.path === af.path);
-      af.cfScanResults = cfScanResults.find((cfr) => cfr.directory === af.path);
+      // af.cfScanResults = cfScanResults.find((cfr) => cfr.directory === af.path);
     });
   }
 }

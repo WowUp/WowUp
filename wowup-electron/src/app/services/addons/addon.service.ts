@@ -1774,7 +1774,7 @@ export class AddonService {
         id: addonId,
         providerName: providerName,
       });
-    } else {
+    } else { 
       console.warn(`Invalid provider id ${providerName}|${addonId}`);
       console.warn(externalIds);
     }
