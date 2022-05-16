@@ -59,12 +59,14 @@ export class CurseMigrationDialogComponent implements AfterViewChecked {
             (addon.providerName === ADDON_PROVIDER_CURSEFORGE || addon.providerName === ADDON_PROVIDER_CURSEFORGEV2)
         );
         if (addons.length > 0) {
-          await this._addonService.rescanInstallation(wowInstall); 
+          await this._addonService.rescanInstallation(wowInstall);
           scanCompleted = true;
         }
       }
 
-      this._sessionService.rescanCompleted();
+      if (scanCompleted) {
+        this._sessionService.rescanCompleted();
+      }
     } catch (e) {
       console.error(e);
       this.autoError$.next(e as Error);
