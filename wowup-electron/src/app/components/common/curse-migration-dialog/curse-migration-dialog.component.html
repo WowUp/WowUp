@@ -15,9 +15,6 @@
 <div *ngIf="autoError$ | async" class="text-center">
   <h3 class="text-warning">{{ "DIALOGS.CURSE_MIGRATION.RE_SCAN_ERROR" | translate }}</h3>
 </div>
-<div>
-  <h3>*Addons not actually re-scanned in this build</h3>
-</div>
 <div mat-dialog-actions align="end">
   <button
     *ngIf="autoComplete$ | async"
