@@ -1,7 +1,7 @@
 import { AfterViewChecked, Component, ElementRef, ViewChild } from "@angular/core";
 import { MatDialogRef } from "@angular/material/dialog";
 import { BehaviorSubject, map } from "rxjs";
-import { ADDON_PROVIDER_CURSEFORGE } from "../../../../common/constants";
+import { ADDON_PROVIDER_CURSEFORGE, ADDON_PROVIDER_CURSEFORGEV2 } from "../../../../common/constants";
 import { AddonService } from "../../../services/addons/addon.service";
 import { LinkService } from "../../../services/links/link.service";
 import { WarcraftInstallationService } from "../../../services/warcraft/warcraft-installation.service";
@@ -51,7 +51,9 @@ export class CurseMigrationDialogComponent implements AfterViewChecked {
         // If there are any old Curse addons, re-scan that installation
         let addons = await this._addonService.getAddons(wowInstall);
         addons = addons.filter(
-          (addon) => addon.isIgnored === false && addon.providerName === ADDON_PROVIDER_CURSEFORGE
+          (addon) =>
+            addon.isIgnored === false &&
+            (addon.providerName === ADDON_PROVIDER_CURSEFORGE || addon.providerName === ADDON_PROVIDER_CURSEFORGEV2)
         );
         if (addons.length > 0) {
           await this._addonService.rescanInstallation(wowInstall);

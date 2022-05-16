@@ -17,6 +17,7 @@ import { TranslateService } from "@ngx-translate/core";
 
 import {
   ADDON_PROVIDER_CURSEFORGE,
+  ADDON_PROVIDER_CURSEFORGEV2,
   ALLIANCE_LIGHT_THEME,
   ALLIANCE_THEME,
   CURRENT_THEME_KEY,
@@ -262,6 +263,8 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
 
       // If the user has any addons from old Curse that are not ignored prompt them to rescan
       let cfAddons = await this._addonService.getProviderAddons(ADDON_PROVIDER_CURSEFORGE);
+      let cf2Addons = await this._addonService.getProviderAddons(ADDON_PROVIDER_CURSEFORGEV2);
+      cfAddons.push(...cf2Addons);
       cfAddons = cfAddons.filter((addon) => addon.isIgnored === false);
       if (!this.sessionService.didPromptCfMigration && cfAddons.length > 0) {
         this.openCurseMigrationDialog();

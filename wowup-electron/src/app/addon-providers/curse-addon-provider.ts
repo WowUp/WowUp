@@ -87,7 +87,7 @@ export class CurseAddonProvider extends AddonProvider {
   public readonly allowChannelChange = true;
   public readonly allowEdit = true;
   public readonly canBatchFetch = true;
-  public enabled = true;
+  public enabled = false;
 
   public constructor(
     private _cachingService: CachingService,
