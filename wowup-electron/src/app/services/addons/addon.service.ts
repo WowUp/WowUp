@@ -1083,6 +1083,14 @@ export class AddonService {
     return addons;
   }
 
+  public async getProviderAddons(providerName: string): Promise<Addon[]> {
+    if (!providerName) {
+      return [];
+    }
+
+    return await this._addonStorage.getAllForProviderAsync(providerName);
+  }
+
   public async getAddons(installation: WowInstallation, rescan = false): Promise<Addon[]> {
     if (!installation) {
       return [];
@@ -1312,6 +1320,10 @@ export class AddonService {
         // Check for a new download URL
         if (latestFile?.downloadUrl && latestFile.downloadUrl !== addon.downloadUrl) {
           addon.downloadUrl = latestFile.downloadUrl || addon.downloadUrl;
+        }
+
+        if (Array.isArray(result.fundingLinks)) {
+          addon.fundingLinks = result.fundingLinks;
         }
 
         // If the release ID hasn't changed we don't really need to update the whole record

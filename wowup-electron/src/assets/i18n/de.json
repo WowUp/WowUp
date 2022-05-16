@@ -262,6 +262,14 @@
       "NEGATIVE_BUTTON": "Nein",
       "POSITIVE_BUTTON": "Ja"
     },
+    "CURSE_MIGRATION": {
+      "MESSAGE": "Die CurseForge-API wurde heruntergefahren, sodass WowUp keine Addon-Informationen mehr von dieser abrufen kann.<br/>Leider bedeutet dies, dass der CurseForge-Anbieter entfernt wurde und deine Addons von CurseForge nicht mehr aktualisiert werden.<br/>Es wird empfohlen, einen erneuten Scan durchzuführen, um zu sehen, welche Addons bei anderen Anbietern zu finden sind.<br/>Der Re-Scan-Vorgang kann eine Weile dauern.<br/><a appExternalLink href=\"https://wowup.io/guide/wowup/curseforge-migration\">Lese hier mehr.</a>",
+      "NEGATIVE_BUTTON": "Manueller Re-Scan",
+      "POSITIVE_BUTTON": "Automatischer Re-Scan",
+      "RE_SCAN_ERROR": "Der automatische Re-Scan ist fehlgeschlagen, bitte versuche es erneut manuell.",
+      "RE_SCAN_SUCCESS": "Der automatische Re-Scan ist beendet, du kannst loslegen.",
+      "TITLE": "CurseForge-Migration"
+    },
     "INSTALL_FROM_PROTOCOL": {
       "ADDON_INSTALLED": "Addon installiert!",
       "ADDON_INSTALLING": "Addon wird installiert",
@@ -474,16 +482,21 @@
     },
     "OPTIONS": {
       "ADDON": {
-        "AD_REQUIRED_HINT": "Ad required",
+        "AD_REQUIRED_HINT": "Werbung erforderlich",
         "CURSE_FORGE_V2": {
-          "API_KEY_DESCRIPTION": "If you have requested a CurseForge API key you can input it here to connect to their API.",
-          "API_KEY_TITLE": "CurseForge API Key",
-          "PROVIDER_NOTE": "API Key Required"
+          "API_KEY_DESCRIPTION": "Wenn du einen CurseForge-API-Schlüssel angefordert hast, kannst du ihn hier eingeben, um dich mit deren API zu verbinden.",
+          "API_KEY_TITLE": "CurseForge API-Schlüssel",
+          "PROVIDER_NOTE": "API-Schlüssel erforderlich"
         },
         "ENABLED_PROVIDERS": {
           "DESCRIPTION": "Wähle aus, welche Addon-Anbieter zur Suche und Installation neuer Addons genutzt werden können",
           "FIELD_LABEL": "Aktivierte Addon-Anbieter",
           "INPUT_LABEL": "Anbieter"
+        },
+        "GITHUB_PERSONAL_ACCESS_TOKEN": {
+          "MESSAGE": "Ein persönliches Zugriffstoken erhöht die Anzahl der GitHub-API-Aufrufe, die durchgeführt werden können, dieser ist frei verfügbar. <a href=\"https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/creating-a-personal-access-token\">Mehr erfahren</a>",
+          "PLACEHOLDER": "Persönliches Zugriffstoken",
+          "TITLE": "Persönliches GitHub-Zugriffstoken"
         },
         "TITLE": "Addons"
       },
@@ -502,6 +515,8 @@
         "ENABLE_APP_BADGE_LABEL": "App-Badge-Benachrichtigung aktivieren",
         "ENABLE_SYSTEM_NOTIFICATIONS_DESCRIPTION": "Aktivieren/Deaktivieren verschiedener Systembenachrichtigungen",
         "ENABLE_SYSTEM_NOTIFICATIONS_LABEL": "Systembenachrichtigungen aktivieren",
+        "KEEP_LAST_OPENED_TAB_DESCRIPTION": "Beim Öffnen einer AddOn-Detailansicht wird automatisch der zuletzt geöffnete Tab ausgewählt",
+        "KEEP_LAST_OPENED_TAB_LABEL": "Zuletzt geöffneten Tab beibehalten",
         "MINIMIZE_ON_CLOSE_DESCRIPTION_MAC": "Beim Schließen WowUp in die Menüleiste minimieren",
         "MINIMIZE_ON_CLOSE_DESCRIPTION_WINDOWS": "Beim Schließen des WowUp-Fensters in den Benachrichtigungsbereich der Taskleiste minimieren.",
         "MINIMIZE_ON_CLOSE_LABEL": "Minimieren beim Schließen",
@@ -532,9 +547,7 @@
         "USE_SYMLINK_SUPPORT": "Symlink-Unterstützung aktivieren",
         "USE_SYMLINK_SUPPORT_CONFIRMATION_DESCRIPTION": "Durch das Aktivieren der Symlink-Unterstützung kann WowUp Symlinks erkennen, wenn ein erneuter Scan durchgeführt wird. Warnung: Wenn Du nicht weißt, was ein Symlink ist, brauchst Du dies nicht. Beim Aktualisieren werden Symlinks derzeit durch einen tatsächlichen Ordner ersetzt und der Link geht verloren.",
         "USE_SYMLINK_SUPPORT_CONFIRMATION_LABEL": "Symlink-Unterstützung aktivieren?",
-        "USE_SYMLINK_SUPPORT_DESCRIPTION": "Erlaubt WowUp Symlink-Ordner in deinem Addon-Ordner zu scannen. Warnung: Diese werden beim Aktualisieren/Installieren ersetzt.",
-        "KEEP_LAST_OPENED_TAB_LABEL": "Zuletzt geöffneten Tab beibehalten",
-        "KEEP_LAST_OPENED_TAB_DESCRIPTION": "Beim Öffnen einer AddOn-Detailansicht wird automatisch der zuletzt geöffnete Tab ausgewählt"
+        "USE_SYMLINK_SUPPORT_DESCRIPTION": "Erlaubt WowUp Symlink-Ordner in deinem Addon-Ordner zu scannen. Warnung: Diese werden beim Aktualisieren/Installieren ersetzt."
       },
       "DEBUG": {
         "CONFIG_FILES_BUTTON": "Konfigurationsdateien anzeigen",

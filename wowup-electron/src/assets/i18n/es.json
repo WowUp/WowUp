@@ -262,6 +262,14 @@
       "NEGATIVE_BUTTON": "No",
       "POSITIVE_BUTTON": "Sí"
     },
+    "CURSE_MIGRATION": {
+      "MESSAGE": "La API de CurseForge ha sido desactivada, por lo que WowUp no puede obtener información de ella.<br/>Desafortunadamente, esto significa que todos aquellos addons cuyo proveedor es CurseForge no podrán seguir actualizándose.<br/>Es recomendable que realice un reescaneo de addons para descubrir cuáles se encuentran disponibles en otros proveedores.<br/>El proceso de reescaneo puede tardar un rato.<br/><a appExternalLink href=\"https://wowup.io/guide/wowup/curseforge-migration\">Leer más aquí (texto en inglés).</a>",
+      "NEGATIVE_BUTTON": "Reescanear manualmente",
+      "POSITIVE_BUTTON": "Reescanear automáticamente",
+      "RE_SCAN_ERROR": "El reescaneo automático ha fallado, por favor inténtelo de nuevo manualmente.",
+      "RE_SCAN_SUCCESS": "El reescaneo automático ha finalizado, puede continuar.",
+      "TITLE": "Migración de CurseForge"
+    },
     "INSTALL_FROM_PROTOCOL": {
       "ADDON_INSTALLED": "¡Addon instalado!",
       "ADDON_INSTALLING": "Instalando addon",
@@ -485,6 +493,11 @@
           "FIELD_LABEL": "Selección de proveedores de addons",
           "INPUT_LABEL": "Proveedores"
         },
+        "GITHUB_PERSONAL_ACCESS_TOKEN": {
+          "MESSAGE": "Un token de acceso personal incrementa la cantidad de llamadas a la API de GitHub que puede realizarse, está disponible de manera libre. <a href=\"https://docs.github.com/es/authentication/keeping-your-account-and-data-secure/creating-a-personal-access-token\">Saber más</a>",
+          "PLACEHOLDER": "Token de acceso personal",
+          "TITLE": "Token de acceso personal de GitHub"
+        },
         "TITLE": "Addons"
       },
       "APPLICATION": {
@@ -502,6 +515,8 @@
         "ENABLE_APP_BADGE_LABEL": "Activar contador en el icono",
         "ENABLE_SYSTEM_NOTIFICATIONS_DESCRIPTION": "Activa varios mensajes de notificación del sistema, tales como cuando los addons son actualizados automáticamente.",
         "ENABLE_SYSTEM_NOTIFICATIONS_LABEL": "Activar notificaciones del sistema",
+        "KEEP_LAST_OPENED_TAB_DESCRIPTION": "Al abrir los detalles de un addon, selecciona automáticamente la última pestaña abierta.",
+        "KEEP_LAST_OPENED_TAB_LABEL": "Recordar la última pestaña abierta",
         "MINIMIZE_ON_CLOSE_DESCRIPTION_MAC": "Al cerrar la ventana de WowUp, minimizarla a la barra de menú",
         "MINIMIZE_ON_CLOSE_DESCRIPTION_WINDOWS": "Al cerrar la ventana de WowUp, minimizarla a la bandeja del sistema.",
         "MINIMIZE_ON_CLOSE_LABEL": "Minimizar al cerrar",
@@ -532,9 +547,7 @@
         "USE_SYMLINK_SUPPORT": "Activar soporte de enlaces simbólicos (symlink)",
         "USE_SYMLINK_SUPPORT_CONFIRMATION_DESCRIPTION": "Activar el soporte de enlaces simbólicos permite a WowUp reconocerlos durante el reescaneo.\n\nAdvertencia: Si no sabe lo que es un enlace simbólico, no necesita activar esto. Al actualizar addons, los enlaces simbólicos serán reemplazados por copias de las carpetas y el enlace se perderá.",
         "USE_SYMLINK_SUPPORT_CONFIRMATION_LABEL": "¿Activar soporte de enlaces simbólicos?",
-        "USE_SYMLINK_SUPPORT_DESCRIPTION": "Permite a WowUp escanear enlaces simbólicos en la carpeta de addons.\nAdvertecia: Los enlaces serán reemplazados al actualizar/instalar los addons.",
-        "KEEP_LAST_OPENED_TAB_LABEL": "Recordar la última pestaña abierta",
-        "KEEP_LAST_OPENED_TAB_DESCRIPTION": "Al abrir los detalles de un addon, selecciona automáticamente la última pestaña abierta."
+        "USE_SYMLINK_SUPPORT_DESCRIPTION": "Permite a WowUp escanear enlaces simbólicos en la carpeta de addons.\nAdvertecia: Los enlaces serán reemplazados al actualizar/instalar los addons."
       },
       "DEBUG": {
         "CONFIG_FILES_BUTTON": "Mostrar archivos de configuración",

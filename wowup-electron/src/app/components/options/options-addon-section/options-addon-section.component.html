@@ -27,9 +27,9 @@
     </div>
   </div>
 
-  <form [formGroup]="preferenceForm">
+  <form #prefForm [formGroup]="preferenceForm">
     <div class="divider"></div>
-    <div class="setting row align-items-center">
+    <!-- <div class="setting row align-items-center">
       <div class="flex-grow-1">
         <div>
           {{ "PAGES.OPTIONS.ADDON.CURSE_FORGE_V2.API_KEY_TITLE" | translate }}
@@ -39,6 +39,22 @@
       <mat-form-field class="example-full-width" appearance="fill">
         <mat-label>{{ "PAGES.OPTIONS.ADDON.CURSE_FORGE_V2.API_KEY_TITLE" | translate }}</mat-label>
         <input matInput formControlName="cfV2ApiKey" type="password" />
+      </mat-form-field>
+    </div>
+    <div class="divider"></div> -->
+    <div class="setting row align-items-center">
+      <div class="flex-grow-1">
+        <div>
+          {{ "PAGES.OPTIONS.ADDON.GITHUB_PERSONAL_ACCESS_TOKEN.TITLE" | translate }}
+        </div>
+        <small
+          class="text-2 changelog"
+          [innerHtml]="'PAGES.OPTIONS.ADDON.GITHUB_PERSONAL_ACCESS_TOKEN.MESSAGE' | translate"
+        ></small>
+      </div>
+      <mat-form-field class="example-full-width" appearance="fill">
+        <mat-label>{{ "PAGES.OPTIONS.ADDON.GITHUB_PERSONAL_ACCESS_TOKEN.PLACEHOLDER" | translate }}</mat-label>
+        <input matInput formControlName="ghPersonalAccessToken" type="password" />
       </mat-form-field>
     </div>
   </form>

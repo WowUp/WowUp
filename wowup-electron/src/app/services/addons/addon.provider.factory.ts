@@ -60,8 +60,8 @@ export class AddonProviderFactory {
       this.createWowUpCompanionAddonProvider(),
       this.createWowUpAddonProvider(),
       this.createWagoAddonProvider(),
-      this.createCurseAddonProvider(),
-      this.createCurseV2AddonProvider(),
+      // this.createCurseAddonProvider(),
+      // this.createCurseV2AddonProvider(),
       this.createTukUiAddonProvider(),
       this.createWowInterfaceAddonProvider(),
       this.createGitHubAddonProvider(),
@@ -150,7 +150,7 @@ export class AddonProviderFactory {
   }
 
   public createGitHubAddonProvider(): GitHubAddonProvider {
-    return new GitHubAddonProvider(this._httpClient, this._warcraftService);
+    return new GitHubAddonProvider(this._httpClient, this._sensitiveStorageService);
   }
 
   public createWowUpAddonProvider(): WowUpAddonProvider {

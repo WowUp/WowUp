@@ -1,0 +1,47 @@
+<h1 mat-dialog-title class="icon-header">
+  <mat-icon class="mr-2 text-warning" svgIcon="fas:triangle-exclamation"></mat-icon
+  >{{ "DIALOGS.CURSE_MIGRATION.TITLE" | translate }}
+</h1>
+<div mat-dialog-content #dialogContent>
+  <p class="changelog" [innerHtml]="'DIALOGS.CURSE_MIGRATION.MESSAGE' | translate"></p>
+  <div *ngIf="isBusy$ | async" class="col justify-content-center align-items-center">
+    <mat-spinner diameter="50"></mat-spinner>
+    <p>{{ "APP.STATUS_TEXT.ADDON_SCAN_STARTED" | translate }}</p>
+  </div>
+</div>
+<div *ngIf="autoComplete$ | async" class="text-center">
+  <h3>{{ "DIALOGS.CURSE_MIGRATION.RE_SCAN_SUCCESS" | translate }}</h3>
+</div>
+<div *ngIf="autoError$ | async" class="text-center">
+  <h3 class="text-warning">{{ "DIALOGS.CURSE_MIGRATION.RE_SCAN_ERROR" | translate }}</h3>
+</div>
+<div mat-dialog-actions align="end">
+  <button
+    *ngIf="autoComplete$ | async"
+    mat-raised-button
+    color="primary"
+    [disabled]="isBusy$ | async"
+    (click)="onNoClick()"
+  >
+    {{ "DIALOGS.ALERT.POSITIVE_BUTTON" | translate }}
+  </button>
+  <button
+    *ngIf="autoIncomplete$ | async"
+    mat-raised-button
+    color="secondary"
+    [disabled]="isBusy$ | async"
+    (click)="onNoClick()"
+  >
+    {{ "DIALOGS.CURSE_MIGRATION.NEGATIVE_BUTTON" | translate }}
+  </button>
+  <button
+    *ngIf="autoIncomplete$ | async"
+    mat-raised-button
+    color="primary"
+    cdkFocusInitial
+    [disabled]="isBusy$ | async"
+    (click)="onAutomaticClick()"
+  >
+    {{ "DIALOGS.CURSE_MIGRATION.POSITIVE_BUTTON" | translate }}
+  </button>
+</div>

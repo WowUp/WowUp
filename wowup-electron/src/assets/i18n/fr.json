@@ -262,6 +262,14 @@
       "NEGATIVE_BUTTON": "Non",
       "POSITIVE_BUTTON": "Oui"
     },
+    "CURSE_MIGRATION": {
+      "MESSAGE": "The CurseForge API has been shutdown so WowUp can no longer fetch addon information from it.<br/>Unfortunately, this means that the CurseForge provider has been removed and your addons from CurseForge will no longer be updated.<br/>It is recommended that you perform a re-scan in order to see what addons can be found on other providers.<br/>The Re-Scan process make take a while.<br/><a appExternalLink href=\"https://wowup.io/guide/wowup/curseforge-migration\">Read more here.</a>",
+      "NEGATIVE_BUTTON": "Manually Re-Scan",
+      "POSITIVE_BUTTON": "Automatically Re-Scan",
+      "RE_SCAN_ERROR": "The automatic Re-Scan failed, please try again manually.",
+      "RE_SCAN_SUCCESS": "The automatic Re-Scan has finished you're ready to go.",
+      "TITLE": "CurseForge Migration"
+    },
     "INSTALL_FROM_PROTOCOL": {
       "ADDON_INSTALLED": "Addon is installed!",
       "ADDON_INSTALLING": "Installing addon",
@@ -485,6 +493,11 @@
           "FIELD_LABEL": "Activer les fournisseurs d'addons",
           "INPUT_LABEL": "Fournisseurs"
         },
+        "GITHUB_PERSONAL_ACCESS_TOKEN": {
+          "MESSAGE": "A personal access token will increase the amount of GitHub API calls you can make, it is freely available. <a href=\"https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/creating-a-personal-access-token\">Learn More</a>",
+          "PLACEHOLDER": "Personal Access Token",
+          "TITLE": "GitHub Personal Access Token"
+        },
         "TITLE": "Addons"
       },
       "APPLICATION": {
@@ -502,6 +515,8 @@
         "ENABLE_APP_BADGE_LABEL": "Enable app badge notification",
         "ENABLE_SYSTEM_NOTIFICATIONS_DESCRIPTION": "Activer les fenêtres contextuelles système comme la mise à jour auto des addons.",
         "ENABLE_SYSTEM_NOTIFICATIONS_LABEL": "Activer le système de notification",
+        "KEEP_LAST_OPENED_TAB_DESCRIPTION": "A l'ouverture de la fenêtre de détails d'un addon, selectionne automatiquement le dernier onglet utilisé",
+        "KEEP_LAST_OPENED_TAB_LABEL": "Garder le dernier onglet de détail ouvert",
         "MINIMIZE_ON_CLOSE_DESCRIPTION_MAC": "Lorsque vous fermez la fenêtre WowUp, minimise dans la barre des menus",
         "MINIMIZE_ON_CLOSE_DESCRIPTION_WINDOWS": "Lorsque vous fermez la fenêtre WowUp, minimise dans la barre d'état système.",
         "MINIMIZE_ON_CLOSE_LABEL": "Minimiser à la fermeture",
@@ -532,9 +547,7 @@
         "USE_SYMLINK_SUPPORT": "Enable Symlink Support",
         "USE_SYMLINK_SUPPORT_CONFIRMATION_DESCRIPTION": "Enabling symlink support will allow WowUp to recognize symlinks when performing a re-scan. Warning: If you do not know what a symlink is, you do not need this. When updating symlinks will currently be replaced with an actual folder and the link lost.",
         "USE_SYMLINK_SUPPORT_CONFIRMATION_LABEL": "Enable symlink support?",
-        "USE_SYMLINK_SUPPORT_DESCRIPTION": "Allow WowUp to scan symlink folders in your addon folder. Warning: they will be replaced when updating/installing.",
-        "KEEP_LAST_OPENED_TAB_LABEL": "Garder le dernier onglet de détail ouvert",
-        "KEEP_LAST_OPENED_TAB_DESCRIPTION": "A l'ouverture de la fenêtre de détails d'un addon, selectionne automatiquement le dernier onglet utilisé"
+        "USE_SYMLINK_SUPPORT_DESCRIPTION": "Allow WowUp to scan symlink folders in your addon folder. Warning: they will be replaced when updating/installing."
       },
       "DEBUG": {
         "CONFIG_FILES_BUTTON": "Show Config Files",

@@ -262,6 +262,14 @@
       "NEGATIVE_BUTTON": "Нет",
       "POSITIVE_BUTTON": "Да"
     },
+    "CURSE_MIGRATION": {
+      "MESSAGE": "The CurseForge API has been shutdown so WowUp can no longer fetch addon information from it.<br/>Unfortunately, this means that the CurseForge provider has been removed and your addons from CurseForge will no longer be updated.<br/>It is recommended that you perform a re-scan in order to see what addons can be found on other providers.<br/>The Re-Scan process make take a while.<br/><a appExternalLink href=\"https://wowup.io/guide/wowup/curseforge-migration\">Read more here.</a>",
+      "NEGATIVE_BUTTON": "Manually Re-Scan",
+      "POSITIVE_BUTTON": "Automatically Re-Scan",
+      "RE_SCAN_ERROR": "The automatic Re-Scan failed, please try again manually.",
+      "RE_SCAN_SUCCESS": "The automatic Re-Scan has finished you're ready to go.",
+      "TITLE": "CurseForge Migration"
+    },
     "INSTALL_FROM_PROTOCOL": {
       "ADDON_INSTALLED": "Модификация установлена!",
       "ADDON_INSTALLING": "Установка модификации",
@@ -485,6 +493,11 @@
           "FIELD_LABEL": "Включённые источники модификаций",
           "INPUT_LABEL": "Источники"
         },
+        "GITHUB_PERSONAL_ACCESS_TOKEN": {
+          "MESSAGE": "A personal access token will increase the amount of GitHub API calls you can make, it is freely available. <a href=\"https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/creating-a-personal-access-token\">Learn More</a>",
+          "PLACEHOLDER": "Personal Access Token",
+          "TITLE": "GitHub Personal Access Token"
+        },
         "TITLE": "Модификации"
       },
       "APPLICATION": {
@@ -502,6 +515,8 @@
         "ENABLE_APP_BADGE_LABEL": "Включить уведомления на значке приложения",
         "ENABLE_SYSTEM_NOTIFICATIONS_DESCRIPTION": "Включить различные окна системных уведомлений, такие как автоматически обновлённые модификации.",
         "ENABLE_SYSTEM_NOTIFICATIONS_LABEL": "Включить системные уведомления",
+        "KEEP_LAST_OPENED_TAB_DESCRIPTION": "При открытии страницы сведений о модификации автоматически выбирает последнюю открытую вкладку.",
+        "KEEP_LAST_OPENED_TAB_LABEL": "Сохранять последнюю открытую вкладку",
         "MINIMIZE_ON_CLOSE_DESCRIPTION_MAC": "При закрытии окна WowUp сворачивается в меню статуса.",
         "MINIMIZE_ON_CLOSE_DESCRIPTION_WINDOWS": "При закрытии окна WowUp сворачивается в область уведомлений панели задач.",
         "MINIMIZE_ON_CLOSE_LABEL": "Свернуть в трей при закрытии",
@@ -532,9 +547,7 @@
         "USE_SYMLINK_SUPPORT": "Включить поддержку символических ссылок",
         "USE_SYMLINK_SUPPORT_CONFIRMATION_DESCRIPTION": "Включение поддержки символических ссылок позволит WowUp распознавать их при повторном сканировании. Предупреждение: Если Вы не знаете, что такое символическая ссылка, то, скорее всего, Вам это не нужно. При обновлении символические ссылки в настоящее время будут заменены фактической папкой, и ссылка будет потеряна.",
         "USE_SYMLINK_SUPPORT_CONFIRMATION_LABEL": "Включить поддержку символических ссылок?",
-        "USE_SYMLINK_SUPPORT_DESCRIPTION": "Разрешает WowUp сканировать папки символических ссылок в папке Вашей модификации. Предупреждение: они будут заменены при обновлении/установке.",
-        "KEEP_LAST_OPENED_TAB_LABEL": "Сохранять последнюю открытую вкладку",
-        "KEEP_LAST_OPENED_TAB_DESCRIPTION": "При открытии страницы сведений о модификации автоматически выбирает последнюю открытую вкладку."
+        "USE_SYMLINK_SUPPORT_DESCRIPTION": "Разрешает WowUp сканировать папки символических ссылок в папке Вашей модификации. Предупреждение: они будут заменены при обновлении/установке."
       },
       "DEBUG": {
         "CONFIG_FILES_BUTTON": "Показать файлы настроек",

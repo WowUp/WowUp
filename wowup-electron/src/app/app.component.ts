@@ -16,6 +16,8 @@ import { MatDialog } from "@angular/material/dialog";
 import { TranslateService } from "@ngx-translate/core";
 
 import {
+  ADDON_PROVIDER_CURSEFORGE,
+  ADDON_PROVIDER_CURSEFORGEV2,
   ALLIANCE_LIGHT_THEME,
   ALLIANCE_THEME,
   CURRENT_THEME_KEY,
@@ -59,6 +61,7 @@ import {
   ConsentDialogResult,
 } from "./components/common/consent-dialog/consent-dialog.component";
 import { WowUpProtocolService } from "./services/wowup/wowup-protocol.service";
+import { CurseMigrationDialogComponent } from "./components/common/curse-migration-dialog/curse-migration-dialog.component";
 
 @Component({
   selector: "app-root",
@@ -208,11 +211,7 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
     from(this.electronService.getAppOptions())
       .pipe(
         first(),
-        switchMap((appOptions) => {
-          return from(this.shouldShowConsentDialog()).pipe(map((showConsent) => ({ appOptions, showConsent })));
-        }),
-        map(({ appOptions, showConsent }) => {
-          this.showPreLoad$.next(showConsent);
+        map((appOptions) => {
           this.quitEnabled = appOptions.quit;
           this._cdRef.detectChanges();
         }),
@@ -244,24 +243,38 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   public ngAfterViewInit(): void {
-    from(this.createAppMenu())
-      .pipe(
-        first(),
-        switchMap(() => from(this.createSystemTray())),
-        switchMap(() => from(this.shouldShowConsentDialog())),
-        switchMap((shouldPrompt) => {
-          if (shouldPrompt) {
-            return of(this.openConsentDialog());
-          } else {
-            return from(this._analyticsService.trackStartup());
-          }
-        }),
-        catchError((e) => {
-          console.error(e);
-          return of(undefined);
-        })
-      )
-      .subscribe();
+    this.onNgAfterViewInit().catch((e) => console.error(e));
+  }
+
+  private async onNgAfterViewInit(): Promise<void> {
+    await this.createAppMenu();
+    await this.createSystemTray();
+    await this._analyticsService.trackStartup();
+    await this.showRequiredDialogs();
+  }
+
+  private async showRequiredDialogs(): Promise<void> {
+    try {
+      const shouldShowConsent = await this.shouldShowConsentDialog();
+      if (shouldShowConsent) {
+        this.openConsentDialog();
+        return;
+      }
+
+      // If the user has any addons from old Curse that are not ignored prompt them to rescan
+      const cf2Addons = await this._addonService.getProviderAddons(ADDON_PROVIDER_CURSEFORGEV2);
+      let cfAddons = await this._addonService.getProviderAddons(ADDON_PROVIDER_CURSEFORGE);
+      cfAddons.push(...cf2Addons);
+      cfAddons = cfAddons.filter((addon) => addon.isIgnored === false);
+      if (!this.sessionService.didPromptCfMigration && cfAddons.length > 0) {
+        this.openCurseMigrationDialog();
+        return;
+      }
+
+      this.showPreLoad$.next(false);
+    } catch (e) {
+      console.error(e);
+    }
   }
 
   private async shouldShowConsentDialog(): Promise<boolean> {
@@ -292,6 +305,17 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
     this.openInstallFromUrlDialog(path);
   };
 
+  public openCurseMigrationDialog(): void {
+    const dialogRef = this._dialog.open(CurseMigrationDialogComponent, {
+      disableClose: true,
+    });
+
+    dialogRef.afterClosed().subscribe(() => {
+      this.sessionService.didPromptCfMigration = true;
+      this.showRequiredDialogs().catch((e) => console.error(e));
+    });
+  }
+
   public openConsentDialog(): void {
     const dialogRef = this._dialog.open(ConsentDialogComponent, {
       disableClose: true,
@@ -314,7 +338,7 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
         })
       )
       .subscribe(() => {
-        this.showPreLoad$.next(false);
+        this.showRequiredDialogs().catch((e) => console.error(e));
       });
   }
 

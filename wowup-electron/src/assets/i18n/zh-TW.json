@@ -262,6 +262,14 @@
       "NEGATIVE_BUTTON": "否",
       "POSITIVE_BUTTON": "是"
     },
+    "CURSE_MIGRATION": {
+      "MESSAGE": "CurseForge API (V1) 已經關閉，因此 WowUp 不能再從此處獲取插件。<br/>不幸的是，這意味著 CurseForge (V1) 提供方已經被移除，且從此處安裝的插件再也不會更新了。<br/>推薦進行重新掃描以檢查插件是否能從其他提供方獲取。<br/>重新掃描將會消耗一些時間。<br/><a appExternalLink href=\"https://wowup.io/guide/wowup/curseforge-migration\">閱讀詳細資訊（英語）。</a>",
+      "NEGATIVE_BUTTON": "稍後手動重新掃描",
+      "POSITIVE_BUTTON": "自動重新掃描",
+      "RE_SCAN_ERROR": "自動重新掃描失敗，請嘗試手動掃描。",
+      "RE_SCAN_SUCCESS": "自動重新掃描完成，可以開始使用了。",
+      "TITLE": "CurseForge 遷移"
+    },
     "INSTALL_FROM_PROTOCOL": {
       "ADDON_INSTALLED": "插件已安裝！",
       "ADDON_INSTALLING": "正在安裝插件",
@@ -485,6 +493,11 @@
           "FIELD_LABEL": "啟用插件提供方",
           "INPUT_LABEL": "提供方"
         },
+        "GITHUB_PERSONAL_ACCESS_TOKEN": {
+          "MESSAGE": "免費的個人訪問令牌（PAT）可以提高 GitHub API 呼叫次數的限制。<a href=\"https://docs.github.com/cn/authentication/keeping-your-account-and-data-secure/creating-a-personal-access-token\">檢視簡體中文文件（部分翻譯）</a>或<a href=\"https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/creating-a-personal-access-token\">英文文件</a>。",
+          "PLACEHOLDER": "個人訪問令牌（PAT）",
+          "TITLE": "GitHub 個人訪問令牌（PAT）"
+        },
         "TITLE": "插件"
       },
       "APPLICATION": {
@@ -502,6 +515,8 @@
         "ENABLE_APP_BADGE_LABEL": "啟用數字角標通知",
         "ENABLE_SYSTEM_NOTIFICATIONS_DESCRIPTION": "啟用各種系統通知彈窗，如自動更新插件通知。",
         "ENABLE_SYSTEM_NOTIFICATIONS_LABEL": "啟用系統通知",
+        "KEEP_LAST_OPENED_TAB_DESCRIPTION": "開啟插件詳情頁時，自動切換到上一次開啟的選項卡",
+        "KEEP_LAST_OPENED_TAB_LABEL": "記住上一次開啟的選項卡",
         "MINIMIZE_ON_CLOSE_DESCRIPTION_MAC": "關閉 WowUp 視窗時，最小化到選單欄。",
         "MINIMIZE_ON_CLOSE_DESCRIPTION_WINDOWS": "關閉 WowUp 視窗時，最小化到系統托盤。",
         "MINIMIZE_ON_CLOSE_LABEL": "關閉時最小化",
@@ -532,9 +547,7 @@
         "USE_SYMLINK_SUPPORT": "啟用符號連結",
         "USE_SYMLINK_SUPPORT_CONFIRMATION_DESCRIPTION": "啟用符號連結使得 WowUp 在重新掃描時識別符號連結。警告：如果您不知道什麼是符號連結，請禁用此項。在當前版本中，符號連結將會在更新插件時被刪除，並被替換為真正的資料夾。",
         "USE_SYMLINK_SUPPORT_CONFIRMATION_LABEL": "啟用符號連結？",
-        "USE_SYMLINK_SUPPORT_DESCRIPTION": "允許 WowUp 掃描插件所在路徑下的符號連結。警告：符號連結在安裝或更新插件時會被替換。",
-        "KEEP_LAST_OPENED_TAB_LABEL": "記住上一次開啟的選項卡",
-        "KEEP_LAST_OPENED_TAB_DESCRIPTION": "開啟插件詳情頁時，自動切換到上一次開啟的選項卡"
+        "USE_SYMLINK_SUPPORT_DESCRIPTION": "允許 WowUp 掃描插件所在路徑下的符號連結。警告：符號連結在安裝或更新插件時會被替換。"
       },
       "DEBUG": {
         "CONFIG_FILES_BUTTON": "顯示配置檔案",

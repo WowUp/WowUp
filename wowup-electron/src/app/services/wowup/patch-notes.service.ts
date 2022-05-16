@@ -16,6 +16,30 @@ export class PatchNotesService {
 
 const CHANGELOGS: ChangeLog[] = [
   {
+    Version: "2.8.0",
+    html: `
+    <h4 style="margin-top: 1em;">New Features</h4>
+    <ul>
+    <li>GitHub personal access tokens now supported</li>
+    </ul>
+    <h4 style="margin-top: 1em;">Changes</h4>
+    <ul>
+    <li>Curse addon provider removed</li>
+    <li>CurseV2 addon provider removed</li>
+    <li>GitHub update check should now attempt to use release.json</li>
+    <li>GitHub should now respect release channels better</li>
+    <li>Spanish locale updates (SkollVargr)</li>
+    <li>Polish locale updates (nydas3k)</li>
+    <li>Chinese locale updates (CyanoHao)</li>
+    <li>German locale updates (Glow)</li>
+    </ul>
+    <h4 style="margin-top: 1em;">Fixes</h4>
+    <ul>
+    <li>Fix some text wrapping issues on the addon context menu</li>
+    </ul>
+    `,
+  },
+  {
     Version: "2.7.1",
     html: `
     <h2 class="text-warning">Important CurseForge Changes</h2>
