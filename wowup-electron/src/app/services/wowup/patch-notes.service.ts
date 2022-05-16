@@ -16,7 +16,7 @@ export class PatchNotesService {
 
 const CHANGELOGS: ChangeLog[] = [
   {
-    Version: "2.8.0",
+    Version: "2.8.1",
     html: `
     <h4 style="margin-top: 1em;">New Features</h4>
     <ul>

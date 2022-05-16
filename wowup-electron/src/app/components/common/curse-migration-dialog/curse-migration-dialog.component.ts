@@ -4,6 +4,7 @@ import { BehaviorSubject, map } from "rxjs";
 import { ADDON_PROVIDER_CURSEFORGE, ADDON_PROVIDER_CURSEFORGEV2 } from "../../../../common/constants";
 import { AddonService } from "../../../services/addons/addon.service";
 import { LinkService } from "../../../services/links/link.service";
+import { SessionService } from "../../../services/session/session.service";
 import { WarcraftInstallationService } from "../../../services/warcraft/warcraft-installation.service";
 import { formatDynamicLinks } from "../../../utils/dom.utils";
 
@@ -29,6 +30,7 @@ export class CurseMigrationDialogComponent implements AfterViewChecked {
     public dialogRef: MatDialogRef<CurseMigrationDialogComponent>,
     private _addonService: AddonService,
     private _linkService: LinkService,
+    private _sessionService: SessionService,
     private _warcraftInstallationService: WarcraftInstallationService
   ) {}
 
@@ -46,6 +48,7 @@ export class CurseMigrationDialogComponent implements AfterViewChecked {
 
     try {
       // Fetch all installations
+      let scanCompleted = false;
       const wowInstallations = await this._warcraftInstallationService.getWowInstallationsAsync();
       for (const wowInstall of wowInstallations) {
         // If there are any old Curse addons, re-scan that installation
@@ -57,7 +60,12 @@ export class CurseMigrationDialogComponent implements AfterViewChecked {
         );
         if (addons.length > 0) {
           await this._addonService.rescanInstallation(wowInstall);
+          scanCompleted = true;
         }
+      }
+
+      if (scanCompleted) {
+        this._sessionService.rescanCompleted();
       }
     } catch (e) {
       console.error(e);
