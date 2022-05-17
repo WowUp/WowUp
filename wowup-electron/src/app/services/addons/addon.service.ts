@@ -788,7 +788,6 @@ export class AddonService {
   };
 
   public async logDebugData(): Promise<void> {
-    const curseProvider = this._addonProviderService.getProvider<CurseAddonV2Provider>(ADDON_PROVIDER_CURSEFORGE);
     const hubProvider = this._addonProviderService.getProvider<WowUpAddonProvider>(ADDON_PROVIDER_HUB);
 
     const clientMap = {};
@@ -799,16 +798,11 @@ export class AddonService {
       const useSymlinkMode = await this._wowUpService.getUseSymlinkMode();
       const addonFolders = await this._warcraftService.listAddons(installation, useSymlinkMode);
 
-      const curseMap = {};
-      const curseScanResults = curseProvider.getScanResults(addonFolders);
-      curseScanResults.forEach((sr) => (curseMap[sr.folderName] = sr.fingerprint));
-
       const hubMap = {};
       const hubScanResults = await hubProvider.getScanResults(addonFolders);
       hubScanResults.forEach((sr) => (hubMap[sr.folderName] = sr.fingerprint));
 
       clientMap[clientTypeName] = {
-        curse: curseMap,
         hub: hubMap,
       };
 
@@ -1774,7 +1768,7 @@ export class AddonService {
         id: addonId,
         providerName: providerName,
       });
-    } else { 
+    } else {
       console.warn(`Invalid provider id ${providerName}|${addonId}`);
       console.warn(externalIds);
     }
