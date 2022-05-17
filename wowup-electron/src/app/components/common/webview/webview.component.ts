@@ -1,11 +1,12 @@
 import { AfterViewInit, Component, ElementRef, Input, NgZone, OnDestroy, ViewChild } from "@angular/core";
 import { nanoid } from "nanoid";
-import { Subject, takeUntil } from "rxjs";
+import { filter, Subject, takeUntil } from "rxjs";
 import { AdPageOptions } from "../../../../common/wowup/models";
 import { ElectronService } from "../../../services/electron/electron.service";
 import { FileService } from "../../../services/files/file.service";
 import { LinkService } from "../../../services/links/link.service";
 import { SessionService } from "../../../services/session/session.service";
+import { UiMessageService } from "../../../services/ui-message/ui-message.service";
 
 @Component({
   selector: "app-webview",
@@ -27,17 +28,28 @@ export class WebViewComponent implements OnDestroy, AfterViewInit {
     private _fileService: FileService,
     private _linkService: LinkService,
     private _sessionService: SessionService,
+    private _uiMessageService: UiMessageService,
     private _ngZone: NgZone
   ) {}
 
   public ngAfterViewInit(): void {
     this.initWebview(this.webviewContainer).catch((e) => console.error(e));
     this._electronService.on("webview-new-window", this.onWebviewNewWindow);
+    this._uiMessageService.message$
+      .pipe(
+        takeUntil(this.destroy$),
+        filter((msg) => msg.action === "ad-frame-reload")
+      )
+      .subscribe(() => {
+        const webview: any = document.getElementById(this._id);
+        console.log("WEBVIEW", webview);
+        webview.reloadIgnoringCache();
+      });
   }
 
   public ngOnDestroy(): void {
     this.destroy$.next(true);
-    this.destroy$.unsubscribe();
+    this.destroy$.complete();
 
     this._electronService.off("webview-new-window", this.onWebviewNewWindow);
 
