@@ -141,7 +141,7 @@ export class GitHubAddonProvider extends AddonProvider {
       }
 
       const result = await this.getLatestValidAsset(checkRes, installation.clientType);
-      console.log("result", result);
+      console.log("searchByUrl result", result);
       if (!result.matchedAsset && !result.latestAsset) {
         if (WowClientGroup.Classic === clientGroup) {
           throw new ClassicAssetMissingError(addonUri.toString());
@@ -268,7 +268,8 @@ export class GitHubAddonProvider extends AddonProvider {
 
     let validAsset: GitHubAsset | undefined = undefined;
     let sortedAssets: GitHubAsset[] = [];
-    let latestRelease: GitHubRelease = undefined;
+    let latestRelease: GitHubRelease = _.first(sortedReleases);
+    let latestAsset = this.getValidAssetForAny(latestRelease);
 
     for (const release of sortedReleases) {
       sortedAssets = this.getSortedAssets(release);
@@ -287,6 +288,7 @@ export class GitHubAddonProvider extends AddonProvider {
       if (iAsset) {
         validAsset = iAsset;
         latestRelease = release;
+        latestAsset = this.getValidAssetForAny(latestRelease);
         break;
       }
     }
@@ -294,7 +296,7 @@ export class GitHubAddonProvider extends AddonProvider {
     return {
       matchedAsset: validAsset,
       release: latestRelease,
-      latestAsset: sortedAssets[0],
+      latestAsset: latestAsset,
     };
   }
 
@@ -374,7 +376,12 @@ export class GitHubAddonProvider extends AddonProvider {
       (asset) => this.isNotNoLib(asset) && this.isValidContentType(asset) && this.isValidClientType(clientType, asset)
     );
 
-    return sortedAssets[0];
+    return _.first(sortedAssets);
+  }
+
+  private getValidAssetForAny(release: GitHubRelease): GitHubAsset | undefined {
+    const sortedAssets = _.filter(release.assets, (asset) => this.isNotNoLib(asset) && this.isValidContentType(asset));
+    return _.first(sortedAssets);
   }
 
   private getSortedAssets(release: GitHubRelease): GitHubAsset[] {
