@@ -24,7 +24,6 @@ import { PreferenceStorageService } from "../storage/preference-storage.service"
 import { CurseAddonV2Provider } from "../../addon-providers/curse-addon-v2-provider";
 import { CurseAddonProvider } from "../../addon-providers/curse-addon-provider";
 import { SensitiveStorageService } from "../storage/sensitive-storage.service";
-import { SessionService } from "../session/session.service";
 import { UiMessageService } from "../ui-message/ui-message.service";
 
 @Injectable({

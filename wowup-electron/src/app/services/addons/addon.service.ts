@@ -61,7 +61,6 @@ import { WarcraftInstallationService } from "../warcraft/warcraft-installation.s
 import { WarcraftService } from "../warcraft/warcraft.service";
 import { WowUpService } from "../wowup/wowup.service";
 import { AddonProviderFactory } from "./addon.provider.factory";
-import { CurseAddonV2Provider } from "../../addon-providers/curse-addon-v2-provider";
 import { AddonFingerprintService } from "./addon-fingerprint.service";
 
 export enum ScanUpdateType {

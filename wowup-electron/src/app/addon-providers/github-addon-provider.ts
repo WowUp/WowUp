@@ -267,12 +267,10 @@ export class GitHubAddonProvider extends AddonProvider {
     sortedReleases = _.take(sortedReleases, 5);
 
     let validAsset: GitHubAsset | undefined = undefined;
-    let sortedAssets: GitHubAsset[] = [];
     let latestRelease: GitHubRelease = _.first(sortedReleases);
     let latestAsset = this.getValidAssetForAny(latestRelease);
 
     for (const release of sortedReleases) {
-      sortedAssets = this.getSortedAssets(release);
       let iAsset: GitHubAsset | undefined = undefined;
       if (this.hasReleaseMetadata(release)) {
         console.log(`Checking release metadata: ${release.name}`);

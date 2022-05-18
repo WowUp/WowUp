@@ -395,8 +395,7 @@ export class WagoAddonProvider extends AddonProvider {
       return await action.call(this, null);
     } catch (err) {
       if (err instanceof HttpErrorResponse) {
-        const httpErr = err as HttpErrorResponse;
-        console.error("HttpErr", httpErr);
+        console.error("HttpErr", err);
         this._uiMessageService.sendMessage("ad-frame-reload");
       }
       throw err;
