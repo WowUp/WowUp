@@ -316,6 +316,14 @@ function createWindow(): BrowserWindow {
   win.webContents.on("did-attach-webview", (evt, webContents) => {
     webContents.session.setUserAgent(webContents.userAgent);
 
+    webContents.on("preload-error", (evt) => {
+      log.error("[webview] preload-error", evt);
+    });
+
+    webContents.on("did-fail-provisional-load", (evt) => {
+      log.error("[webview] did-fail-provisional-load", evt);
+    });
+
     webContents.session.setPermissionRequestHandler((contents, permission, callback) => {
       log.warn("setPermissionRequestHandler", permission);
       return callback(false);

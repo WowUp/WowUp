@@ -26,7 +26,6 @@ import { AddonProvider, GetAllResult } from "./addon-provider";
 import { SourceRemovedAddonError } from "../errors";
 import { getWowClientGroup } from "../../common/warcraft";
 import { HttpErrorResponse } from "@angular/common/http";
-import { SessionService } from "../services/session/session.service";
 import { UiMessageService } from "../services/ui-message/ui-message.service";
 
 declare type WagoGameVersion = "retail" | "classic" | "bc";
