@@ -1,5 +1,5 @@
-import { from, of, Subscription } from "rxjs";
-import { catchError, filter, first, map, switchMap, tap } from "rxjs/operators";
+import { from, Subscription } from "rxjs";
+import { filter, first, map, switchMap } from "rxjs/operators";
 
 import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy } from "@angular/core";
 import { MatSnackBar } from "@angular/material/snack-bar";
@@ -27,7 +27,6 @@ import { SessionService } from "../../services/session/session.service";
 import { SnackbarService } from "../../services/snackbar/snackbar.service";
 import { WarcraftInstallationService } from "../../services/warcraft/warcraft-installation.service";
 import { WowUpService } from "../../services/wowup/wowup.service";
-import { getProtocol } from "../../utils/string.utils";
 import { WowInstallation } from "../../../common/warcraft/wow-installation";
 import { WowUpProtocolService } from "../../services/wowup/wowup-protocol.service";
 

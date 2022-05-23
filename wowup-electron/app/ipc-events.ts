@@ -76,7 +76,6 @@ import {
   IPC_PUSH_UNREGISTER,
   IPC_PUSH_SUBSCRIBE,
 } from "../src/common/constants";
-import { CurseFolderScanResult } from "../src/common/curse/curse-folder-scan-result";
 import { Addon } from "../src/common/entities/addon";
 import { CopyFileRequest } from "../src/common/models/copy-file-request";
 import { DownloadRequest } from "../src/common/models/download-request";
