@@ -174,8 +174,8 @@
       "MISSING_ON_PROVIDER_TOOLTIP": "Эта модификация, вероятно, была удалена источником",
       "NO_PROVIDER_FILES_DESCRIPTION": "{providerName} верно определил модификацию, однако он не имеет каких-либо файлов соответствующих этой версии игры.<br>Это предупреждение исчезнет, как только будет доступно обновление для данной версии игры.",
       "NO_PROVIDER_FILES_TOOLTIP": "{providerName} не имеет файлов, соответствующих версии игры",
-      "TOC_NAME_MISMATCH_DESCRIPTION": "Имя папки этого аддона не совпадает с ожидаемым toc-файлом, у Вас могут возникнуть проблемы с этим аддоном в игре.",
-      "TOC_NAME_MISMATCH_TOOLTIP": "Папка этого аддона не соответствует названию"
+      "TOC_NAME_MISMATCH_DESCRIPTION": "Название папки этой модификации не совпадает с ожидаемым toc-файлом, у Вас могут возникнуть проблемы с этой модификацией в игре.",
+      "TOC_NAME_MISMATCH_TOOLTIP": "Папка этой модификации не соответствует названию"
     },
     "CLIENT_TYPES": {
       "BETA": "Бета",
@@ -263,12 +263,12 @@
       "POSITIVE_BUTTON": "Да"
     },
     "CURSE_MIGRATION": {
-      "MESSAGE": "The CurseForge API has been shutdown so WowUp can no longer fetch addon information from it.<br/>Unfortunately, this means that the CurseForge provider has been removed and your addons from CurseForge will no longer be updated.<br/>It is recommended that you perform a re-scan in order to see what addons can be found on other providers.<br/>The Re-Scan process make take a while.<br/><a appExternalLink href=\"https://wowup.io/guide/wowup/curseforge-migration\">Read more here.</a>",
-      "NEGATIVE_BUTTON": "Manually Re-Scan",
-      "POSITIVE_BUTTON": "Automatically Re-Scan",
-      "RE_SCAN_ERROR": "The automatic Re-Scan failed, please try again manually.",
-      "RE_SCAN_SUCCESS": "The automatic Re-Scan has finished you're ready to go.",
-      "TITLE": "CurseForge Migration"
+      "MESSAGE": "CurseForge API был отключён, так что WowUp больше не может получать с него информацию о модификации.<br/>К сожалению, это значит, что источник CurseForge был убран и ваши модификации с CurseForge не будут обновляться.<br/>Рекомендуется выполнить сканирование папок, чтобы увидеть какие модификации можно найти у других источников.<br/>Процесс сканирования папок может занять некоторое время.<br/><a appExternalLink href=\"https://wowup.io/guide/wowup/curseforge-migration\">Подробнее здесь.</a>",
+      "NEGATIVE_BUTTON": "Сканировать папки вручную",
+      "POSITIVE_BUTTON": "Сканировать папки автоматически",
+      "RE_SCAN_ERROR": "Автоматическое сканирование не удалось, попробуйте вручную.",
+      "RE_SCAN_SUCCESS": "Автоматическое сканирование завершено, всё готово.",
+      "TITLE": "Миграция с CurseForge"
     },
     "INSTALL_FROM_PROTOCOL": {
       "ADDON_INSTALLED": "Модификация установлена!",
@@ -494,9 +494,9 @@
           "INPUT_LABEL": "Источники"
         },
         "GITHUB_PERSONAL_ACCESS_TOKEN": {
-          "MESSAGE": "A personal access token will increase the amount of GitHub API calls you can make, it is freely available. <a href=\"https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/creating-a-personal-access-token\">Learn More</a>",
-          "PLACEHOLDER": "Personal Access Token",
-          "TITLE": "GitHub Personal Access Token"
+          "MESSAGE": "Наличие токена личного доступа увеличит возможное количество запросов к GitHub API, он доступен бесплатно. <a href=\"https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/creating-a-personal-access-token\">Узнать больше</a>",
+          "PLACEHOLDER": "Токен личного доступа",
+          "TITLE": "Токен личного доступа к GitHub"
         },
         "TITLE": "Модификации"
       },
