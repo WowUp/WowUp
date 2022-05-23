@@ -20,6 +20,7 @@ const CHANGELOGS: ChangeLog[] = [
     html: `
     <h4 style="margin-top: 1em;">New Features</h4>
     <ul>
+    <li>App bundle now much smaller (CyanoHao)</li>
     <li>GitHub personal access tokens now supported</li>
     </ul>
     <h4 style="margin-top: 1em;">Changes</h4>
@@ -36,6 +37,7 @@ const CHANGELOGS: ChangeLog[] = [
     <h4 style="margin-top: 1em;">Fixes</h4>
     <ul>
     <li>Fix some text wrapping issues on the addon context menu</li>
+    <li>Add a confirmation prompt every time Wago is enabled</li>
     </ul>
     `,
   },
