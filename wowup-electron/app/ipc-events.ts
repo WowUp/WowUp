@@ -29,7 +29,6 @@ import {
   IPC_CREATE_APP_MENU_CHANNEL,
   IPC_CREATE_DIRECTORY_CHANNEL,
   IPC_CREATE_TRAY_MENU_CHANNEL,
-  IPC_CURSE_GET_SCAN_RESULTS,
   IPC_DELETE_DIRECTORY_CHANNEL,
   IPC_DOWNLOAD_FILE_CHANNEL,
   IPC_FOCUS_WINDOW,
@@ -88,7 +87,6 @@ import { UnzipRequest } from "../src/common/models/unzip-request";
 import { RendererChannels } from "../src/common/wowup";
 import { MenuConfig, SystemTrayConfig, WowUpScanResult } from "../src/common/wowup/models";
 import { createAppMenu } from "./app-menu";
-import { CurseFolderScanner } from "./curse-folder-scanner";
 import * as fsp from "fs/promises";
 
 import {
@@ -349,23 +347,6 @@ export function initializeIpcHandlers(window: BrowserWindow): void {
     }
 
     return true;
-  });
-
-  handle(IPC_CURSE_GET_SCAN_RESULTS, async (evt, filePaths: string[]): Promise<CurseFolderScanResult[]> => {
-    // Scan addon folders in parallel for speed!?
-    try {
-      const taskResults = await firstValueFrom(
-        from(filePaths).pipe(
-          mergeMap((folder) => from(new CurseFolderScanner().scanFolder(folder)), 2),
-          toArray()
-        )
-      );
-
-      return taskResults;
-    } catch (e) {
-      log.error("Failed during curse scan", e);
-      throw e;
-    }
   });
 
   handle(IPC_WOWUP_GET_SCAN_RESULTS, async (evt, filePaths: string[]): Promise<WowUpScanResult[]> => {
