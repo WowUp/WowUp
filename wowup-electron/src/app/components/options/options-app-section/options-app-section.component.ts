@@ -45,7 +45,6 @@ interface ReleaseChannelViewModel {
   styleUrls: ["./options-app-section.component.scss"],
 })
 export class OptionsAppSectionComponent implements OnInit {
-  public readonly curseProtocolName = CURSE_PROTOCOL_NAME;
   public readonly wowupProtocolName = APP_PROTOCOL_NAME;
 
   public minimizeOnCloseDescription = "";

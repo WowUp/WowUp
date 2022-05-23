@@ -17,7 +17,6 @@ export const ADDON_PROVIDER_WOWUP_COMPANION = "WowUpCompanion";
 export const ADDON_PROVIDER_ZIP = "Zip";
 
 export const APP_PROTOCOL_NAME = "wowup";
-export const CURSE_PROTOCOL_NAME = "curseforge";
 
 // WOWUP ADDON
 export const WOWUP_ADDON_FOLDER_NAME = "WowUp";

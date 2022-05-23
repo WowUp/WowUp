@@ -6,7 +6,6 @@ import { MatSnackBar } from "@angular/material/snack-bar";
 import { TranslateService } from "@ngx-translate/core";
 
 import {
-  CURSE_PROTOCOL_NAME,
   IPC_POWER_MONITOR_RESUME,
   IPC_POWER_MONITOR_UNLOCK,
   TAB_INDEX_ABOUT,
@@ -69,17 +68,6 @@ export class HomeComponent implements AfterViewInit, OnDestroy {
       this.hasWowClient = installations.length > 0;
     });
 
-    const customProtocolSub = this.electronService.customProtocol$
-      .pipe(
-        filter((protocol) => getProtocol(protocol) === CURSE_PROTOCOL_NAME),
-        tap((protocol) => this.handleAddonInstallProtocol(protocol)),
-        catchError((e) => {
-          console.error(e);
-          return of(undefined);
-        })
-      )
-      .subscribe();
-
     const scanErrorSub = this._addonService.scanError$.subscribe(this.onAddonScanError);
     const addonInstallErrorSub = this._addonService.addonInstalled$.subscribe(this.onAddonInstalledEvent);
 
@@ -87,10 +75,10 @@ export class HomeComponent implements AfterViewInit, OnDestroy {
       .pipe(filter((update) => update.type !== ScanUpdateType.Unknown))
       .subscribe(this.onScanUpdate);
 
-    this._subscriptions.push(customProtocolSub, wowInstalledSub, scanErrorSub, scanUpdateSub, addonInstallErrorSub);
+    this._subscriptions.push(wowInstalledSub, scanErrorSub, scanUpdateSub, addonInstallErrorSub);
   }
 
-  private  handleAddonInstallProtocol(protocol: string) {
+  private handleAddonInstallProtocol(protocol: string) {
     const dialog = this._dialogFactory.getDialog(InstallFromProtocolDialogComponent, {
       disableClose: true,
       data: {
