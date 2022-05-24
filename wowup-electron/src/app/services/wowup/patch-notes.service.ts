@@ -37,6 +37,7 @@ const CHANGELOGS: ChangeLog[] = [
     <h4 style="margin-top: 1em;">Fixes</h4>
     <ul>
     <li>Fix some text wrapping issues on the addon context menu</li>
+    <li>Fix an issue with some GitHub repos</li>
     <li>Add a confirmation prompt every time Wago is enabled</li>
     </ul>
     `,
