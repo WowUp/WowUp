@@ -17,7 +17,6 @@ export const ADDON_PROVIDER_WOWUP_COMPANION = "WowUpCompanion";
 export const ADDON_PROVIDER_ZIP = "Zip";
 
 export const APP_PROTOCOL_NAME = "wowup";
-export const CURSE_PROTOCOL_NAME = "curseforge";
 
 // WOWUP ADDON
 export const WOWUP_ADDON_FOLDER_NAME = "WowUp";
@@ -39,9 +38,7 @@ export const IPC_READ_FILE_BUFFER_CHANNEL = "read-file-buffer";
 export const IPC_WRITE_FILE_CHANNEL = "write-file";
 export const IPC_UNZIP_FILE_CHANNEL = "unzip-file";
 export const IPC_COPY_FILE_CHANNEL = "copy-file";
-export const IPC_CURSE_HASH_FILE_CHANNEL = "curse-hash-file";
 export const IPC_SHOW_DIRECTORY = "show-directory";
-export const IPC_CURSE_GET_SCAN_RESULTS = "curse-get-scan-results";
 export const IPC_WOWUP_GET_SCAN_RESULTS = "wowup-get-scan-results";
 export const IPC_GET_HOME_DIR = "get-home-dir";
 export const IPC_GET_ASSET_FILE_PATH = "get-asset-file-path";

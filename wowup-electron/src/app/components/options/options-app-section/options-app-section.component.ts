@@ -11,7 +11,6 @@ import {
   ALLIANCE_LIGHT_THEME,
   ALLIANCE_THEME,
   APP_PROTOCOL_NAME,
-  CURSE_PROTOCOL_NAME,
   DEFAULT_LIGHT_THEME,
   DEFAULT_THEME,
   HORDE_LIGHT_THEME,
@@ -45,7 +44,6 @@ interface ReleaseChannelViewModel {
   styleUrls: ["./options-app-section.component.scss"],
 })
 export class OptionsAppSectionComponent implements OnInit {
-  public readonly curseProtocolName = CURSE_PROTOCOL_NAME;
   public readonly wowupProtocolName = APP_PROTOCOL_NAME;
 
   public minimizeOnCloseDescription = "";
@@ -92,7 +90,6 @@ export class OptionsAppSectionComponent implements OnInit {
     { value: WowUpReleaseChannelType.Beta, labelKey: "COMMON.ENUM.ADDON_CHANNEL_TYPE.BETA" },
   ];
 
-  public curseforgeProtocolHandled$ = from(this.electronService.isDefaultProtocolClient(CURSE_PROTOCOL_NAME));
   public wowupProtocolHandled$ = from(this.electronService.isDefaultProtocolClient(APP_PROTOCOL_NAME));
 
   private _currentTheme: string;

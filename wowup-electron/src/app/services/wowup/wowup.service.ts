@@ -46,6 +46,7 @@ import { ElectronService } from "../electron/electron.service";
 import { FileService } from "../files/file.service";
 import { PreferenceStorageService } from "../storage/preference-storage.service";
 import { WowUpReleaseChannelType } from "../../../common/wowup/wowup-release-channel-type";
+import { AddonProviderType } from "../../addon-providers/addon-provider";
 
 @Injectable({
   providedIn: "root",
@@ -238,7 +239,7 @@ export class WowUpService {
   public async setAddonProviderState(state: AddonProviderState): Promise<void> {
     const key = ADDON_PROVIDERS_KEY;
     const stateCpy = { ...state };
-    stateCpy.providerName = stateCpy.providerName.toLowerCase();
+    stateCpy.providerName = stateCpy.providerName.toLowerCase() as AddonProviderType;
 
     const preference = await this.getAddonProviderStates();
     const stateIndex = _.findIndex(preference, (pref) => pref.providerName === stateCpy.providerName);

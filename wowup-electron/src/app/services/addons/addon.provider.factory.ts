@@ -24,6 +24,7 @@ import { PreferenceStorageService } from "../storage/preference-storage.service"
 import { CurseAddonV2Provider } from "../../addon-providers/curse-addon-v2-provider";
 import { CurseAddonProvider } from "../../addon-providers/curse-addon-provider";
 import { SensitiveStorageService } from "../storage/sensitive-storage.service";
+import { UiMessageService } from "../ui-message/ui-message.service";
 
 @Injectable({
   providedIn: "root",
@@ -46,7 +47,8 @@ export class AddonProviderFactory {
     private _warcraftService: WarcraftService,
     private _wowupApiService: WowUpApiService,
     private _preferenceStorageService: PreferenceStorageService,
-    private _sensitiveStorageService: SensitiveStorageService
+    private _sensitiveStorageService: SensitiveStorageService,
+    private _uiMessageService: UiMessageService
   ) {}
 
   /** This is part of the APP_INITIALIZER and called before the app is bootstrapped */
@@ -107,6 +109,7 @@ export class AddonProviderFactory {
       this._cachingService,
       this._warcraftService,
       this._tocService,
+      this._uiMessageService,
       this._networkService
     );
   }
