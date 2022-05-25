@@ -42,7 +42,7 @@ import * as platform from "./platform";
 import { initializeDefaultPreferences } from "./preferences";
 import { PUSH_NOTIFICATION_EVENT, pushEvents } from "./push";
 import { initializeStoreIpcHandlers, preferenceStore } from "./stores";
-import { restoreWindow, windowStateManager } from "./window-state";
+import * as windowState from "./window-state";
 
 // LOGGING SETUP
 // Override the default log path so they aren't a pain to find on Mac
@@ -122,7 +122,7 @@ if (!singleInstanceLock) {
       return;
     }
 
-    restoreWindow(win);
+    windowState.restoreWindow(win);
 
     win.focus();
 
@@ -163,6 +163,7 @@ if (app.isReady()) {
 }
 
 app.on("before-quit", () => {
+  windowState.saveWindowConfig(win);
   win = null;
   appIsQuitting = true;
   appUpdater?.dispose();
@@ -232,19 +233,12 @@ function createWindow(): BrowserWindow {
 
   // Main object for managing window state
   // Initialize with a window name and default size
-  const mainWindowManager = windowStateManager("main", {
-    width: WINDOW_DEFAULT_WIDTH,
-    height: WINDOW_DEFAULT_HEIGHT,
-  });
 
   const windowOptions: BrowserWindowConstructorOptions = {
-    width: mainWindowManager.width,
-    height: mainWindowManager.height,
-    x: mainWindowManager.x,
-    y: mainWindowManager.y,
+    width: WINDOW_DEFAULT_WIDTH,
+    height: WINDOW_DEFAULT_HEIGHT,
     minWidth: WINDOW_MIN_WIDTH,
     minHeight: WINDOW_MIN_HEIGHT,
-    center: mainWindowManager.centered === true,
     transparent: false,
     resizable: true,
     backgroundColor: getBackgroundColor(),
@@ -275,8 +269,16 @@ function createWindow(): BrowserWindow {
     windowOptions.icon = join(__dirname, "assets", WOWUP_LOGO_FILENAME);
   }
 
+  windowState.applyWindowBoundsToConfig(windowOptions);
+
   // Create the browser window.
   win = new BrowserWindow(windowOptions);
+
+  windowState.restoreMainWindowBounds(win);
+
+  if (windowState.wasMaximized()) {
+    win.maximize();
+  }
 
   appUpdater.init(win);
 
@@ -286,9 +288,6 @@ function createWindow(): BrowserWindow {
   pushEvents.on(PUSH_NOTIFICATION_EVENT, (data) => {
     win.webContents.send(IPC_PUSH_NOTIFICATION, data);
   });
-
-  // Keep track of window state
-  mainWindowManager.monitorState(win);
 
   win.on("blur", () => {
     win.webContents.send("blur");
@@ -420,10 +419,8 @@ function createWindow(): BrowserWindow {
   win.once("show", () => {
     // win.webContents.openDevTools();
 
-    if (mainWindowManager.isFullScreen) {
+    if (windowState.wasFullScreen()) {
       win.setFullScreen(true);
-    } else if (mainWindowManager.isMaximized) {
-      win.maximize();
     }
 
     appUpdater.checkForUpdates().catch((e) => console.error(e));
@@ -432,6 +429,16 @@ function createWindow(): BrowserWindow {
       win?.webContents?.send(IPC_WINDOW_RESUME);
     });
   });
+
+  if (platform.isLinux || platform.isWin) {
+    win.on("close", () => {
+      if (win === null) {
+        return;
+      }
+
+      windowState.saveWindowConfig(win);
+    });
+  }
 
   win.on("close", (e) => {
     if (appIsQuitting || preferenceStore.get(COLLAPSE_TO_TRAY_PREFERENCE_KEY) !== "true") {
@@ -453,6 +460,7 @@ function createWindow(): BrowserWindow {
   });
 
   win.on("maximize", () => {
+    windowState.saveWindowConfig
     win?.webContents?.send(IPC_WINDOW_MAXIMIZED);
   });
 

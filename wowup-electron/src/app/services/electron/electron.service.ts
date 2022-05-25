@@ -44,7 +44,7 @@ import { IpcRequest } from "../../../common/models/ipc-request";
 import { IpcResponse } from "../../../common/models/ipc-response";
 import { ValueRequest } from "../../../common/models/value-request";
 import { ValueResponse } from "../../../common/models/value-response";
-import { MainChannels, RendererChannels } from "../../../common/wowup";
+import { MainChannels } from "../../../common/wowup";
 import { AppOptions, AppUpdateEvent } from "../../../common/wowup/models";
 import { isProtocol } from "../../utils/string.utils";
 
@@ -325,7 +325,7 @@ export class ElectronService {
     });
   }
 
-  public async invoke<T = any>(channel: RendererChannels, ...args: any[]): Promise<T> {
+  public async invoke<T = any>(channel: string, ...args: any[]): Promise<T> {
     try {
       /* eslint-disable @typescript-eslint/no-unsafe-argument */
       return await window.wowup.rendererInvoke(channel, ...args);

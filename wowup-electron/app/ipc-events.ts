@@ -75,6 +75,8 @@ import {
   IPC_PUSH_REGISTER,
   IPC_PUSH_UNREGISTER,
   IPC_PUSH_SUBSCRIBE,
+  IPC_WINDOW_IS_FULLSCREEN,
+  IPC_WINDOW_IS_MAXIMIZED,
 } from "../src/common/constants";
 import { Addon } from "../src/common/entities/addon";
 import { CopyFileRequest } from "../src/common/models/copy-file-request";
@@ -482,6 +484,10 @@ export function initializeIpcHandlers(window: BrowserWindow): void {
     }
   });
 
+  ipcMain.handle(IPC_WINDOW_IS_MAXIMIZED, () => {
+    return window?.isMaximized() ?? false;
+  });
+
   handle(IPC_CLOSE_WINDOW, () => {
     window?.close();
   });
@@ -515,6 +521,10 @@ export function initializeIpcHandlers(window: BrowserWindow): void {
 
   handle(IPC_WINDOW_LEAVE_FULLSCREEN, () => {
     window?.setFullScreen(false);
+  });
+
+  ipcMain.handle(IPC_WINDOW_IS_FULLSCREEN, () => {
+    return window?.isFullScreen() ?? false;
   });
 
   handle(IPC_SHOW_OPEN_DIALOG, async (evt, options: OpenDialogOptions) => {
