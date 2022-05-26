@@ -53,11 +53,6 @@ export class DialogFactory {
   }
 
   public getAddonDetailsDialog(listItem: AddonViewModel): MatDialogRef<AddonDetailComponent, any> | undefined {
-    // If this addon is in warning state, we wont be able to get details
-    if (listItem.addon?.warningType !== undefined) {
-      return;
-    }
-
     const data: AddonDetailModel = {
       listItem: listItem.clone(),
     };
