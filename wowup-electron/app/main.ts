@@ -460,7 +460,7 @@ function createWindow(): BrowserWindow {
   });
 
   win.on("maximize", () => {
-    windowState.saveWindowConfig;
+    windowState.saveWindowConfig(win);
     win?.webContents?.send(IPC_WINDOW_MAXIMIZED);
   });
 
