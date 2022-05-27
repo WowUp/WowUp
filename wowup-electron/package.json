@@ -147,7 +147,7 @@
     "string-similarity": "4.0.4",
     "ts-custom-error": "3.2.0",
     "ts-node": "10.7.0",
-    "typescript": "4.5.5",
+    "typescript": "4.6.4",
     "uuid": "8.3.2",
     "wait-on": "6.0.1",
     "webdriver-manager": "12.1.8",
