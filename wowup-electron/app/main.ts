@@ -290,11 +290,11 @@ function createWindow(): BrowserWindow {
   });
 
   win.on("blur", () => {
-    // win.webContents.send("blur");
+    win.webContents.send("blur");
   });
 
   win.on("focus", () => {
-    // win.webContents.send("focus");
+    win.webContents.send("focus");
   });
 
   win.webContents.userAgent = USER_AGENT;
