@@ -24,7 +24,7 @@ describe("TitlebarComponent", () => {
       "ElectronService",
       {
         on: undefined,
-        invoke: new Promise((res, rej) => {}),
+        invoke: new Promise(() => {}),
       },
       {
         windowMaximized$: new BehaviorSubject(false).asObservable(),
