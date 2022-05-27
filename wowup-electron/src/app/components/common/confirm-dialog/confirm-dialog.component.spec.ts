@@ -9,9 +9,14 @@ import { TranslateCompiler, TranslateLoader, TranslateModule } from "@ngx-transl
 import { httpLoaderFactory } from "../../../app.module";
 import { MatModule } from "../../../modules/mat-module";
 import { ConfirmDialogComponent } from "./confirm-dialog.component";
+import { LinkService } from "../../../services/links/link.service";
 
 describe("ConfirmDialogComponent", () => {
+  let linkService;
+
   beforeEach(async () => {
+    linkService = jasmine.createSpyObj("LinkService", [""], {});
+
     await TestBed.configureTestingModule({
       declarations: [ConfirmDialogComponent],
       imports: [
@@ -33,6 +38,7 @@ describe("ConfirmDialogComponent", () => {
       providers: [
         { provide: MAT_DIALOG_DATA, useValue: {} },
         { provide: MatDialogRef, useValue: {} },
+        { provide: LinkService, useValue: linkService },
       ],
     }).compileComponents();
   });
