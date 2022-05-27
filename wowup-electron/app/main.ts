@@ -290,11 +290,11 @@ function createWindow(): BrowserWindow {
   });
 
   win.on("blur", () => {
-    win.webContents.send("blur");
+    // win.webContents.send("blur");
   });
 
   win.on("focus", () => {
-    win.webContents.send("focus");
+    // win.webContents.send("focus");
   });
 
   win.webContents.userAgent = USER_AGENT;
@@ -359,8 +359,8 @@ function createWindow(): BrowserWindow {
     });
   });
 
-  win.webContents.on("zoom-changed", (evt, zoomDirection) => {
-    sendEventToContents(win, "zoom-changed", zoomDirection);
+  win.webContents.on("zoom-changed", (zoomDirection) => {
+    win?.webContents?.send("zoom-changed", zoomDirection);
   });
 
   // See https://www.electronjs.org/docs/api/web-contents#event-render-process-gone
@@ -426,7 +426,7 @@ function createWindow(): BrowserWindow {
     appUpdater.checkForUpdates().catch((e) => console.error(e));
 
     win.on("show", () => {
-      win?.webContents?.send(IPC_WINDOW_RESUME);
+      // win?.webContents?.send(IPC_WINDOW_RESUME);
     });
   });
 
@@ -460,7 +460,7 @@ function createWindow(): BrowserWindow {
   });
 
   win.on("maximize", () => {
-    windowState.saveWindowConfig
+    windowState.saveWindowConfig;
     win?.webContents?.send(IPC_WINDOW_MAXIMIZED);
   });
 
@@ -520,10 +520,6 @@ async function onActivate() {
   if (win === null) {
     createWindow();
   }
-}
-
-function sendEventToContents(window: BrowserWindow, event: MainChannels, ...args: any[]) {
-  window?.webContents?.send(event, args);
 }
 
 function getBackgroundColor() {
