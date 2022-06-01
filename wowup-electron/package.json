@@ -111,7 +111,7 @@
     "curseforge-v2": "1.1.2",
     "del": "6.0.0",
     "dotenv": "16.0.0",
-    "electron": "18.2.0",
+    "electron": "18.3.1",
     "electron-builder": "23.0.3",
     "electron-notarize": "1.2.1",
     "electron-reload": "2.0.0-alpha.1",
