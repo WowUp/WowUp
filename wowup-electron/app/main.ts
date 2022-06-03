@@ -106,7 +106,7 @@ if (preferenceStore.get(USE_HARDWARE_ACCELERATION_PREFERENCE_KEY) === "false") {
 }
 
 // Some servers don't supply good CORS headers for us, so we ignore them.
-app.commandLine.appendSwitch("disable-features", "OutOfBlinkCors");
+app.commandLine.appendSwitch("disable-features", "HardwareMediaKeyHandling,OutOfBlinkCors");
 
 // Only allow one instance of the app to run at a time, focus running window if user opens a 2nd time
 // Adapted from https://github.com/electron/electron/blob/master/docs/api/app.md#apprequestsingleinstancelock
