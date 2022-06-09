@@ -980,8 +980,8 @@ export class AddonService {
 
     console.log(`[RemoveAddon] ${addon.providerName ?? ""} ${addon.externalId ?? "NO_EXT_ID"} ${addon.name}`);
 
-    if (removeDirectories) {
-      const installedDirectories = addon.installedFolderList ?? [];
+    const installedDirectories = addon.installedFolderList ?? [];
+    if (removeDirectories && installedDirectories.length > 0) {
       const installation = this._warcraftInstallationService.getWowInstallation(addon.installationId);
       if (!installation) {
         console.warn("No installation found for remove", addon.installationId);
