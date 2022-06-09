@@ -1,5 +1,5 @@
 <h1 mat-dialog-title>{{ data.title }}</h1>
-<div mat-dialog-content>
+<div mat-dialog-content #dialogContent>
   <pre class="message changelog" [innerHtml]="data.message"></pre>
 </div>
 <div mat-dialog-actions class="dialog-buttons">

@@ -1,22 +1,80 @@
-import { app, BrowserWindow, Rectangle, screen } from "electron";
+import { app, BrowserWindow, BrowserWindowConstructorOptions, Display, Rectangle, screen } from "electron";
 import * as log from "electron-log";
 
-import { IPC_WINDOW_RESUME, MIN_VISIBLE_ON_SCREEN } from "../src/common/constants";
+import { IPC_WINDOW_RESUME, MIN_VISIBLE_ON_SCREEN, WINDOW_MIN_HEIGHT, WINDOW_MIN_WIDTH } from "../src/common/constants";
 import * as platform from "./platform";
 import { preferenceStore } from "./stores";
 
-export interface WindowState extends Rectangle {
-  x: number;
-  y: number;
-  width: number;
-  height: number;
-  isMaximized: boolean;
-  isFullScreen: boolean;
-  centered?: boolean;
+export function wasMaximized() {
+  return preferenceStore.get(`main-window-is-maximized`) as boolean;
 }
 
-interface WuWindowState extends WindowState {
-  monitorState: (win: BrowserWindow) => void;
+export function wasFullScreen() {
+  return preferenceStore.get(`main-window-is-fullscreen`) as boolean;
+}
+
+export function saveWindowConfig(window: BrowserWindow): void {
+  try {
+    if (!window) {
+      return;
+    }
+
+    preferenceStore.set(`main-window-is-maximized`, window.isMaximized());
+    preferenceStore.set(`main-window-is-minimized`, window.isMinimized());
+    preferenceStore.set(`main-window-is-fullscreen`, window.isFullScreen());
+
+    if (!window.isMinimized() && !window.isMaximized()) {
+      preferenceStore.set(`main-window-state`, window.getBounds());
+    } else if (window.isMaximized()) {
+      // Attempt to reduce the placement so its remember but in bounds
+      const bounds = window.getBounds();
+      bounds.x += 50;
+      bounds.y += 50;
+      bounds.width -= 100;
+      bounds.height -= 100;
+      preferenceStore.set(`main-window-state`, bounds);
+    }
+
+    log.info("window config saved");
+  } catch (e) {
+    log.error(e);
+  }
+}
+
+export function applyWindowBoundsToConfig(config: BrowserWindowConstructorOptions) {
+  const state = getWindowConfig();
+
+  if (state == null) {
+    config.center = true;
+    return;
+  }
+
+  config.width = state.width;
+  config.height = state.height;
+  config.x = state.x;
+  config.y = state.y;
+}
+
+export function restoreMainWindowBounds(mainWindow: BrowserWindow) {
+  const savedWindowBounds = getWindowConfig();
+  const currentBounds = mainWindow.getBounds();
+
+  if (
+    savedWindowBounds != null &&
+    (currentBounds.height !== savedWindowBounds.height || currentBounds.width !== savedWindowBounds.width)
+  ) {
+    mainWindow.setBounds(savedWindowBounds);
+  }
+}
+
+export function getWindowConfig() {
+  const state: Rectangle = preferenceStore.get(`main-window-state`) as Rectangle;
+  state.width = Math.max(WINDOW_MIN_WIDTH, state.width);
+  state.height = Math.max(WINDOW_MIN_HEIGHT, state.height);
+
+  const displays = screen.getAllDisplays();
+  const display = getDisplayForBounds(displays, state);
+  return display != null ? state : null;
 }
 
 export function restoreWindow(window: BrowserWindow): void {
@@ -30,58 +88,15 @@ export function restoreWindow(window: BrowserWindow): void {
   window?.webContents?.send(IPC_WINDOW_RESUME);
 }
 
-export function windowStateManager(
-  windowName: string,
-  { width, height }: { width: number; height: number }
-): WuWindowState {
-  let window: BrowserWindow;
-  let windowState: WindowState;
-  // const saveState$ = new Subject<void>();
-
-  function setState() {
-    let setDefaults = false;
-    windowState = preferenceStore.get(`${windowName}-window-state`) as WindowState;
-
-    if (!windowState) {
-      setDefaults = true;
-    } else {
-      log.info("found window state:", windowState);
-
-      if (!isVisibleOnScreen(windowState)) {
-        log.info("reset window state, bounds are outside displays");
-        setDefaults = true;
-      }
-    }
-
-    if (setDefaults) {
-      log.info("setting window defaults");
-      windowState = <WindowState>{ width, height, centered: true };
-    }
-
-    windowState.centered = false;
-  }
-
-  function saveState() {
-    const bounds = window.getBounds();
-
-    windowState = { ...windowState, ...bounds };
-    windowState.isMaximized = window.isMaximized();
-    windowState.isFullScreen = window.isFullScreen();
-    preferenceStore.set(`${windowName}-window-state`, windowState);
-  }
-
-  function monitorState(win: BrowserWindow) {
-    window = win;
-
-    win.on("close", saveState);
-  }
-
-  setState();
-
-  return {
-    ...windowState,
-    monitorState,
-  };
+function getDisplayForBounds(displays: Display[], bounds: Rectangle) {
+  return displays.find((display) => {
+    const displayBound = display.workArea;
+    displayBound.x += MIN_VISIBLE_ON_SCREEN;
+    displayBound.y += MIN_VISIBLE_ON_SCREEN;
+    displayBound.width -= 2 * MIN_VISIBLE_ON_SCREEN;
+    displayBound.height -= 2 * MIN_VISIBLE_ON_SCREEN;
+    return doRectanglesOverlap(bounds, displayBound);
+  });
 }
 
 function doRectanglesOverlap(a: Rectangle, b: Rectangle) {
@@ -103,28 +118,4 @@ function doRectanglesOverlap(a: Rectangle, b: Rectangle) {
   }
 
   return false;
-}
-
-// Lifted from Discord to check where to display the window
-function isVisibleOnScreen(windowState: WindowState) {
-  let isVisibleOnAnyScreen = false;
-
-  log.info(windowState);
-
-  const displays = screen.getAllDisplays();
-  for (const display of displays) {
-    const displayBound = display.workArea;
-    displayBound.x += MIN_VISIBLE_ON_SCREEN;
-    displayBound.y += MIN_VISIBLE_ON_SCREEN;
-    displayBound.width -= 2 * MIN_VISIBLE_ON_SCREEN;
-    displayBound.height -= 2 * MIN_VISIBLE_ON_SCREEN;
-    isVisibleOnAnyScreen = doRectanglesOverlap(windowState, displayBound);
-
-    log.info("isVisibleOnAnyScreen", displayBound, isVisibleOnAnyScreen);
-    if (isVisibleOnAnyScreen) {
-      break;
-    }
-  }
-
-  return isVisibleOnAnyScreen;
 }

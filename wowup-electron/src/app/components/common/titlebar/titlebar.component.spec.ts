@@ -20,9 +20,16 @@ describe("TitlebarComponent", () => {
   let wowUpServiceSpy: any;
 
   beforeEach(async () => {
-    electronServiceSpy = jasmine.createSpyObj("ElectronService", ["on"], {
-      windowMaximized$: new BehaviorSubject(false).asObservable(),
-    });
+    electronServiceSpy = jasmine.createSpyObj(
+      "ElectronService",
+      {
+        on: undefined,
+        invoke: new Promise(() => {}),
+      },
+      {
+        windowMaximized$: new BehaviorSubject(false).asObservable(),
+      }
+    );
     wowUpServiceSpy = jasmine.createSpyObj("WowUpService", [""], {
       currentTheme: "horde ofc",
     });

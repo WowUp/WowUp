@@ -1,13 +1,15 @@
-import { Subscription } from "rxjs";
+import { first, from, Subscription } from "rxjs";
 
 import { Component, NgZone, OnDestroy } from "@angular/core";
 import { MatSnackBar, MatSnackBarRef } from "@angular/material/snack-bar";
 import { TranslateService } from "@ngx-translate/core";
 
 import {
+  IPC_WINDOW_IS_MAXIMIZED,
   IPC_MAXIMIZE_WINDOW,
   IPC_MINIMIZE_WINDOW,
   IPC_WINDOW_ENTER_FULLSCREEN,
+  IPC_WINDOW_IS_FULLSCREEN,
   IPC_WINDOW_LEAVE_FULLSCREEN,
 } from "../../../../common/constants";
 import { AppConfig } from "../../../../environments/environment";
@@ -21,12 +23,11 @@ import { CenteredSnackbarComponent } from "../../common/centered-snackbar/center
   styleUrls: ["./titlebar.component.scss"],
 })
 export class TitlebarComponent implements OnDestroy {
-  public isProd = AppConfig.production;
-  public isMaximized = false;
-
   private _subscriptions: Subscription[] = [];
   private _snackBarRef: MatSnackBarRef<CenteredSnackbarComponent> | undefined;
 
+  public isProd = AppConfig.production;
+  public isMaximized = false;
   public isFullscreen = false;
 
   public constructor(
@@ -41,6 +42,18 @@ export class TitlebarComponent implements OnDestroy {
     });
 
     this._subscriptions = [windowMaximizedSubscription];
+
+    from(this.electronService.invoke<boolean>(IPC_WINDOW_IS_FULLSCREEN))
+      .pipe(first())
+      .subscribe((isFullscreen) => {
+        this.isFullscreen = isFullscreen;
+      });
+
+    from(this.electronService.invoke<boolean>(IPC_WINDOW_IS_MAXIMIZED))
+      .pipe(first())
+      .subscribe((isMaximized) => {
+        this.isMaximized = isMaximized;
+      });
 
     this.electronService.on(IPC_WINDOW_ENTER_FULLSCREEN, () => {
       this.isFullscreen = true;
