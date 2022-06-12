@@ -572,6 +572,8 @@
         "ADD_CLIENT_BUTTON": "Добавить новый",
         "AUTO_UPDATE_DESCRIPTION": "Новые установленные модификации будут автоматически обновляться по умолчанию",
         "AUTO_UPDATE_LABEL": "Автообновление",
+        "IS_HIDDEN_LABEL": "Hide client",
+        "IS_HIDDEN_DESCRIPTION": "Hide this client in the pages My Addons and Get Addons",
         "CANCEL_WOW_DIRECTORY_SELECT_BUTTON": "Отмена",
         "CLEAR_INSTALL_LOCATION_DIALOG": {
           "MESSAGE": "Вы точно хотите очистить путь установки для {clientName}? Это удалит всю хранимую информацию модификации для этого клиента.\n\nПапки Ваших модификаций не будут удалены.",

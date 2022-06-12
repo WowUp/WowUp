@@ -149,6 +149,14 @@ export class WowClientOptionsComponent implements OnInit, OnDestroy {
     this.installationModel.defaultAutoUpdate = evt.checked;
   }
 
+  public onIsHiddenChange(evt: MatSlideToggleChange): void {
+    if (!this.installationModel) {
+      return;
+    }
+
+    this.installationModel.isHidden = evt.checked;
+  }
+
   public async onClickOpenFolder(): Promise<void> {
     try {
       await this._electronService.showItemInFolder(dirname(this.installation.location));

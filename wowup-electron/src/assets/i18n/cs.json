@@ -572,6 +572,8 @@
         "ADD_CLIENT_BUTTON": "Add New",
         "AUTO_UPDATE_DESCRIPTION": "Nově instalované addony budou automaticky označeny k automatické aktualizaci pomocí WowUp.",
         "AUTO_UPDATE_LABEL": "Automatické aktualizace",
+        "IS_HIDDEN_LABEL": "Hide WoW client",
+        "IS_HIDDEN_DESCRIPTION": "Hide this client in the pages My Addons and Get Addons",
         "CANCEL_WOW_DIRECTORY_SELECT_BUTTON": "Cancel",
         "CLEAR_INSTALL_LOCATION_DIALOG": {
           "MESSAGE": "Opravdu chcete vyčistit složku pro instalaci addonů v klientu {clientName}? Toto vymaže pouze informace o addonech, které má uložené WowUp.\n\nAddony nebudou vymazány.",

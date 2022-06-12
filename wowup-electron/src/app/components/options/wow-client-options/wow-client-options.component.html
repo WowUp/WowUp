@@ -56,6 +56,20 @@
       >
       </mat-slide-toggle>
     </div>
+
+    <div class="row">
+      <div class="grow">
+        <p>{{ "PAGES.OPTIONS.WOW.IS_HIDDEN_LABEL" | translate }}</p>
+        <small class="text-2">{{ "PAGES.OPTIONS.WOW.IS_HIDDEN_DESCRIPTION" | translate }}</small>
+      </div>
+      <mat-slide-toggle
+        [(checked)]="installationModel.isHidden"
+        [disabled]="(editMode$ | async) !== true"
+        (change)="onIsHiddenChange($event)"
+      >
+      </mat-slide-toggle>
+    </div>
+
   </mat-card-content>
   <mat-card-actions class="row">
     <button

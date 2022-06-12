@@ -46,13 +46,16 @@ export class ClientSelectorComponent implements OnInit {
 
   private async mapInstallations(installations: WowInstallation[]): Promise<WowInstallation[]> {
     let total = 0;
-    for (const inst of installations) {
+
+    const displayedInstallations: WowInstallation[] = installations.filter((i) => !i.isHidden);
+
+    for (const inst of displayedInstallations) {
       const addons = await this._addonService.getAllAddonsAvailableForUpdate(inst);
       inst.availableUpdateCount = addons.length;
       total += inst.availableUpdateCount;
     }
 
     this.totalAvailableUpdateCt$.next(total);
-    return installations;
+    return displayedInstallations;
   }
 }
