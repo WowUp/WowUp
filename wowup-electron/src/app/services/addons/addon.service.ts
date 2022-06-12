@@ -997,7 +997,7 @@ export class AddonService {
           `[RemoveAddonDirectory] ${addon.providerName ?? ""} ${addon.externalId ?? "NO_EXT_ID"} ${addonDirectory}`
         );
         try {
-          await this._fileService.remove(addonDirectory);
+          await this._fileService.deleteIfExists(addonDirectory);
         } catch (e) {
           console.error(e);
           failureCt += 1;
