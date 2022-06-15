@@ -40,7 +40,7 @@ jobs:
 
       - name: Setup Flatpak
         if: matrix.os == 'ubuntu-latest'
-        run: apt install flatpak
+        run: sudo apt install flatpak
 
       - name: Install Angular CLI
         run: npm install -g @angular/cli
