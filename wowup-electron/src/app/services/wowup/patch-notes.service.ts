@@ -21,7 +21,7 @@ const CHANGELOGS: ChangeLog[] = [
     <h4 style="margin-top: 1em;">New Features</h4>
     <ul>
     <li>App bundle now much smaller (CyanoHao)</li>
-    <li>FlatPack support (Daegalus)</li>
+    <li>FlatPak support (Daegalus)</li>
     <li>GitHub personal access tokens now supported</li>
     </ul>
     <h4 style="margin-top: 1em;">Changes</h4>
