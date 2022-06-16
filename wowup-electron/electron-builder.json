@@ -41,10 +41,15 @@
   },
   "linux": {
     "icon": "electron-build/flatpak/",
-    "target": ["AppImage", "flatpak"],
+    "target": ["AppImage"],
     "asarUnpack": "**/*.node"
   },
   "flatpak": {
+    "base": "org.electronjs.Electron2.BaseApp",
+    "runtime": "org.freedesktop.Platform",
+    "runtimeVersion": "21.08",
+    "sdk": "org.freedesktop.Sdk",
+    "baseVersion": "21.08",
     "finishArgs": [
       "--socket=wayland",
       "--socket=x11",
