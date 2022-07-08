@@ -16,7 +16,7 @@ export class PatchNotesService {
 
 const CHANGELOGS: ChangeLog[] = [
   {
-    Version: "2.8.2",
+    Version: "2.8.3",
     html: `
     <h4 style="margin-top: 1em;">New Features</h4>
     <ul>
@@ -33,9 +33,11 @@ const CHANGELOGS: ChangeLog[] = [
     <li>Polish locale updates (nydas3k)</li>
     <li>Chinese locale updates (CyanoHao)</li>
     <li>German locale updates (Glow)</li>
+    <li>Hardware media keys no longer captured from media ads</li>
     </ul>
     <h4 style="margin-top: 1em;">Fixes</h4>
     <ul>
+    <li>Allow removing of addons with no directories (Linaori)</li>
     <li>Fix some text wrapping issues on the addon context menu</li>
     <li>Fix an issue with some GitHub repos</li>
     <li>Add a confirmation prompt every time Wago is enabled</li>
