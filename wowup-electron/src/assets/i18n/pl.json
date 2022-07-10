@@ -298,7 +298,8 @@
         "NO_ADDON_FOUND": "Nie znaleziono addonu, upewnij się że twój adres URL wskazuje na właściwą stronę.\n\nKiedy instalujesz z githuba, upewnij się że repozytorium ma znacznik wydania z archiwum zip zawierające addon.",
         "NO_RELEASE_FOUND": "Nie znaleziono żadnych wydań dla {message}.\n\nPoprawnie wydanie z plikiem zasobów zip są potrzebne aby pobrać je dla WoWUP.",
         "NO_SEARCH_RESULTS": "Nie znaleziono żadnych wyników wyszukiwania.",
-        "TITLE": "Instalacja addonu nie powiodła się"
+        "TITLE": "Instalacja addonu nie powiodła się",
+        "WRATH_ASSET_NOT_FOUND": "No asset was found to download from {message}.\n\nA valid zip file ending with '-wrath' is required in order for WowUp to download it."
       },
       "IMPORT_ASSET_WARNING": "Nie mogliśmy zwerifikować czy najnowsza wersja tego addonu jest kompatybilna z twoim zaznaczonym klientem.\n\nAle znaleźliśmy plik zip \"{zipName}\".\n\nInstalacja na własną odpowiedzialność.",
       "IMPORT_BUTTON": "Importuj",

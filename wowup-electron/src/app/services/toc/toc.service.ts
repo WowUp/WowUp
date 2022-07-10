@@ -115,20 +115,24 @@ export class TocService {
         matchedToc = tocFileNames.find((tfn) => /.*[-|_](classic|vanilla)\.toc$/gi.test(tfn)) || "";
         break;
       case WowClientType.Classic:
-      case WowClientType.ClassicBeta:
       case WowClientType.ClassicPtr:
         matchedToc = tocFileNames.find((tfn) => /.*[-|_](bcc|tbc)\.toc$/gi.test(tfn)) || "";
+        break;
+      case WowClientType.ClassicBeta:
+        matchedToc = tocFileNames.find((tfn) => /.*[-|_](wrath)\.toc$/gi.test(tfn)) || "";
         break;
       default:
         break;
     }
 
     return (
-      matchedToc || tocFileNames.find((tfn) => /.*(?<![-|_](classic|vanilla|bcc|tbc|mainline))\.toc$/gi.test(tfn)) || ""
+      matchedToc ||
+      tocFileNames.find((tfn) => /.*(?<![-|_](classic|vanilla|bcc|tbc|mainline|wrath))\.toc$/gi.test(tfn)) ||
+      ""
     );
   }
 
-  public getTocForGameType2(addonFolder: AddonFolder, clientType: WowClientType): tocModels.Toc {
+  public getTocForGameType2(addonFolder: AddonFolder, clientType: WowClientType): tocModels.Toc | undefined {
     let matchedToc = "";
 
     const tocs = addonFolder.tocs;
