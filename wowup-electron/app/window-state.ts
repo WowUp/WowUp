@@ -68,7 +68,16 @@ export function restoreMainWindowBounds(mainWindow: BrowserWindow) {
 }
 
 export function getWindowConfig() {
-  const state: Rectangle = preferenceStore.get(`main-window-state`) as Rectangle;
+  let state: Rectangle = preferenceStore.get(`main-window-state`) as Rectangle;
+  if (!state) {
+    state = {
+      height: 0,
+      width: 0,
+      x: 0,
+      y: 0,
+    };
+  }
+
   state.width = Math.max(WINDOW_MIN_WIDTH, state.width);
   state.height = Math.max(WINDOW_MIN_HEIGHT, state.height);
 
