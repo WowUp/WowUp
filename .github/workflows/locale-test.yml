@@ -32,7 +32,7 @@ jobs:
     - name: Install Deps
       run: |
         cd ./wowup-electron
-        npm i
+        npm i --force
 
     - name: Lint
       run: |
