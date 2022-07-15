@@ -21,8 +21,6 @@ import { AddonProviderState } from "../../models/wowup/addon-provider-state";
 import { ADDON_PROVIDER_UNKNOWN, WAGO_PROMPT_KEY } from "../../../common/constants";
 import { Subject } from "rxjs";
 import { PreferenceStorageService } from "../storage/preference-storage.service";
-import { CurseAddonV2Provider } from "../../addon-providers/curse-addon-v2-provider";
-import { CurseAddonProvider } from "../../addon-providers/curse-addon-provider";
 import { SensitiveStorageService } from "../storage/sensitive-storage.service";
 import { UiMessageService } from "../ui-message/ui-message.service";
 
@@ -120,28 +118,6 @@ export class AddonProviderFactory {
 
   public createRaiderIoAddonProvider(): RaiderIoAddonProvider {
     return new RaiderIoAddonProvider(this._tocService);
-  }
-
-  public createCurseAddonProvider(): CurseAddonProvider {
-    return new CurseAddonProvider(
-      this._cachingService,
-      this._electronService,
-      this._wowupApiService,
-      this._tocService,
-      this._networkService
-    );
-  }
-
-  public createCurseV2AddonProvider(): CurseAddonV2Provider {
-    return new CurseAddonV2Provider(
-      this._cachingService,
-      this._electronService,
-      this._wowupApiService,
-      this._warcraftService,
-      this._tocService,
-      this._sensitiveStorageService,
-      this._networkService
-    );
   }
 
   public createTukUiAddonProvider(): TukUiAddonProvider {
