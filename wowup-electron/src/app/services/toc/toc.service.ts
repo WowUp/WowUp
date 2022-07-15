@@ -119,7 +119,7 @@ export class TocService {
         matchedToc = tocFileNames.find((tfn) => /.*[-_](bcc|tbc)\.toc$/gi.test(tfn)) || "";
         break;
       case WowClientType.ClassicBeta:
-        matchedToc = tocFileNames.find((tfn) => /.*[-_](wotlkc)\.toc$/gi.test(tfn)) || "";
+        matchedToc = tocFileNames.find((tfn) => /.*[-_](wrath|wotlkc)\.toc$/gi.test(tfn)) || "";
         break;
       default:
         break;
@@ -127,7 +127,7 @@ export class TocService {
 
     return (
       matchedToc ||
-      tocFileNames.find((tfn) => /.*(?<![-_](classic|vanilla|bcc|tbc|mainline|wotlkc))\.toc$/gi.test(tfn)) ||
+      tocFileNames.find((tfn) => /.*(?<![-_](classic|vanilla|bcc|tbc|mainline|wrath|wotlkc))\.toc$/gi.test(tfn)) ||
       ""
     );
   }
