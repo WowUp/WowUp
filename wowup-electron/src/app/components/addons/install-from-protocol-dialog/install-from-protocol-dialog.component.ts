@@ -3,7 +3,7 @@ import { from, of } from "rxjs";
 import { catchError, delay, first, switchMap } from "rxjs/operators";
 
 import { AfterViewInit, Component, Inject, OnInit } from "@angular/core";
-import { FormControl } from "@angular/forms";
+import { UntypedFormControl } from "@angular/forms";
 import { MAT_DIALOG_DATA, MatDialogRef } from "@angular/material/dialog";
 
 import { ProtocolSearchResult } from "../../../models/wowup/protocol-search-result";
@@ -33,7 +33,7 @@ export class InstallFromProtocolDialogComponent implements OnInit, AfterViewInit
   public error = "";
   public ready = false;
   public addon!: ProtocolSearchResult;
-  public installations = new FormControl();
+  public installations = new UntypedFormControl();
   public validWowInstallations: WowInstallationWrapper[] = [];
   public installProgress = 0;
   public isInstalling = false;
