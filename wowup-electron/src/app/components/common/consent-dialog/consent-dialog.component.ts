@@ -1,5 +1,5 @@
 import { AfterViewChecked, Component, ElementRef, ViewChild } from "@angular/core";
-import { FormControl, FormGroup } from "@angular/forms";
+import { UntypedFormControl, UntypedFormGroup } from "@angular/forms";
 import { MatDialogRef } from "@angular/material/dialog";
 import { AppConfig } from "../../../../environments/environment";
 import { LinkService } from "../../../services/links/link.service";
@@ -18,15 +18,15 @@ export interface ConsentDialogResult {
 export class ConsentDialogComponent implements AfterViewChecked {
   @ViewChild("dialogContent", { read: ElementRef }) public dialogContent!: ElementRef;
 
-  public consentOptions: FormGroup;
+  public consentOptions: UntypedFormGroup;
 
   public readonly wagoTermsUrl = AppConfig.wago.termsUrl;
   public readonly wagoDataUrl = AppConfig.wago.dataConsentUrl;
 
   public constructor(public dialogRef: MatDialogRef<ConsentDialogComponent>, private _linkService: LinkService) {
-    this.consentOptions = new FormGroup({
-      telemetry: new FormControl(true),
-      wagoProvider: new FormControl(true),
+    this.consentOptions = new UntypedFormGroup({
+      telemetry: new UntypedFormControl(true),
+      wagoProvider: new UntypedFormControl(true),
     });
   }
 

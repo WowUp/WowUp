@@ -1,5 +1,6 @@
 export * from "./install-error";
 import { CustomError } from "ts-custom-error";
+import { WowClientGroup, WowClientType } from "../../common/warcraft/wow-client-type";
 
 import { AddonWarningType } from "../../common/wowup/models";
 import { AddonSearchResult } from "../models/wowup/addon-search-result";
@@ -15,27 +16,15 @@ export class ErrorContainer extends CustomError {
   }
 }
 
-export class ClassicAssetMissingError extends CustomError {
-  public searchResult?: AddonSearchResult;
+export class AssetMissingError extends CustomError {
+  public clientGroup?: WowClientGroup;
 
-  public constructor(message?: string, searchResult?: AddonSearchResult) {
+  public constructor(message?: string, clientGroup?: WowClientGroup) {
     super(message);
 
-    this.searchResult = searchResult;
+    this.clientGroup = clientGroup;
   }
 }
-
-export class BurningCrusadeAssetMissingError extends CustomError {
-  public searchResult?: AddonSearchResult;
-
-  public constructor(message?: string, searchResult?: AddonSearchResult) {
-    super(message);
-
-    this.searchResult = searchResult;
-  }
-}
-
-export class AssetMissingError extends CustomError {}
 
 export class NoReleaseFoundError extends CustomError {}
 

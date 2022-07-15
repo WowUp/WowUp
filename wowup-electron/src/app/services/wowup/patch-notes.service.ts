@@ -16,6 +16,15 @@ export class PatchNotesService {
 
 const CHANGELOGS: ChangeLog[] = [
   {
+    Version: "2.9.0",
+    html: `
+    <h4 style="margin-top: 1em;">New Features</h4>
+    <ul>
+    <li>Add new support for the Wrath of the Lich King Classic Beta client</li>
+    </ul>
+    `,
+  },
+  {
     Version: "2.8.3",
     html: `
     <h4 style="margin-top: 1em;">New Features</h4>
