@@ -128,7 +128,7 @@
     "karma": "6.3.19",
     "karma-coverage-istanbul-reporter": "3.0.3",
     "karma-electron": "7.1.0",
-    "karma-jasmine": "4.0.1",
+    "karma-jasmine": "5.1.0",
     "karma-jasmine-html-reporter": "1.7.0",
     "markdown-it": "12.3.2",
     "messageformat": "2.3.0",
