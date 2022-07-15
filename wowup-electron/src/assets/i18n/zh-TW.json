@@ -178,9 +178,9 @@
       "TOC_NAME_MISMATCH_TOOLTIP": "插件資料夾和 TOC 不匹配"
     },
     "CLIENT_TYPES": {
-      "BETA": "Beta",
+      "BETA": "巨龍崛起 Beta",
       "CLASSIC": "燃燒的遠征",
-      "CLASSICBETA": "燃燒的遠征 Beta",
+      "CLASSICBETA": "巫妖王之怒 Beta",
       "CLASSICERA": "經典舊世",
       "CLASSICERAPTR": "經典舊世大師賽季 PTR",
       "CLASSICPTR": "燃燒的遠征 PTR",
@@ -299,7 +299,7 @@
         "NO_RELEASE_FOUND": "未找到釋出版本 {message}.\n\n要通過 WowUp 下載插件，需要帶有 zip 附件的釋出版本。",
         "NO_SEARCH_RESULTS": "无搜索结果。",
         "TITLE": "插件安裝失敗",
-        "WRATH_ASSET_NOT_FOUND": "No asset was found to download from {message}.\n\nA valid zip file ending with '-wrath' is required in order for WowUp to download it."
+        "WRATH_ASSET_NOT_FOUND": "未找到可下載的附件 {message}。\n\n要通過 WowUp 下載插件，釋出頁面（Releases）上需要檔名以「-wrath」結尾的有效的 zip 檔案。"
       },
       "IMPORT_ASSET_WARNING": "已找到此插件的最新版本壓縮包「{zipName}」，但無法驗證它是否相容此《魔獸世界》客戶端。\n\n如要安裝，請自擔風險。",
       "IMPORT_BUTTON": "匯入",
