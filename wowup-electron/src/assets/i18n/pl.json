@@ -482,7 +482,7 @@
     },
     "OPTIONS": {
       "ADDON": {
-        "AD_REQUIRED_HINT": "Reklama wymagana",
+        "AD_REQUIRED_HINT": "Ad or access key required",
         "CURSE_FORGE_V2": {
           "API_KEY_DESCRIPTION": "Jeśli zażądałeś klucza API CurseForge, możesz go wprowadzić tutaj, aby połączyć się z API.",
           "API_KEY_TITLE": "Klucz API CurseForge",

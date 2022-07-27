@@ -3,7 +3,7 @@ import { catchError, first, map, tap, timeout } from "rxjs/operators";
 import { v4 as uuidv4 } from "uuid";
 import _ from "lodash";
 
-import { ADDON_PROVIDER_WAGO } from "../../common/constants";
+import { ADDON_PROVIDER_WAGO, PREF_WAGO_ACCESS_KEY } from "../../common/constants";
 import { Addon } from "../../common/entities/addon";
 import { DownloadAuth } from "../../common/models/download-request";
 import { WowClientGroup, WowClientType } from "../../common/warcraft/wow-client-type";
@@ -27,6 +27,7 @@ import { SourceRemovedAddonError } from "../errors";
 import { getWowClientGroup } from "../../common/warcraft";
 import { HttpErrorResponse } from "@angular/common/http";
 import { UiMessageService } from "../services/ui-message/ui-message.service";
+import {SensitiveStorageService} from "../services/storage/sensitive-storage.service";
 
 declare type WagoGameVersion = "retail" | "classic" | "bc";
 declare type WagoStability = "stable" | "beta" | "alpha";
@@ -185,7 +186,8 @@ export class WagoAddonProvider extends AddonProvider {
     private _warcraftService: WarcraftService,
     private _tocService: TocService,
     private _uiMessageService: UiMessageService,
-    _networkService: NetworkService
+    private _sensitiveStorageService: SensitiveStorageService,
+    _networkService: NetworkService,
   ) {
     super();
 
@@ -238,7 +240,7 @@ export class WagoAddonProvider extends AddonProvider {
     console.debug(`[wago] scan`, request);
     console.debug(JSON.stringify(request));
 
-    const matchResult = await this.sendMatchesRequest(installation, request);
+    const matchResult = await this.sendMatchesRequest(request);
     console.debug(`[wago] matchResult`, matchResult);
 
     const scanResultMap: { [folder: string]: WagoScanAddon } = {};
@@ -293,10 +295,15 @@ export class WagoAddonProvider extends AddonProvider {
     const url = new URL(`${WAGO_BASE_URL}/addons/popular`);
     url.searchParams.set("game_version", this.getGameVersion(installation.clientType));
 
+    const wagoAccessToken = await this._sensitiveStorageService.getAsync(PREF_WAGO_ACCESS_KEY);
+    if (wagoAccessToken === '') {
+      await firstValueFrom(this.ensureToken());
+    }
+
     const response = await this.sendRequest(() =>
       this._cachingService.transaction(
         `${installation.id}|${url.toString()}`,
-        () => this._circuitBreaker.getJson<WagoPopularAddonsResponse>(url, this.getRequestHeaders()),
+        () => this._circuitBreaker.getJson<WagoPopularAddonsResponse>(url, this.getRequestHeaders(wagoAccessToken !== '' ? wagoAccessToken : this._apiTokenSrc.value)),
         WAGO_FEATURED_ADDONS_CACHE_TIME_SEC
       )
     );
@@ -312,11 +319,14 @@ export class WagoAddonProvider extends AddonProvider {
     installation: WowInstallation,
     channelType?: AddonChannelType
   ): Promise<AddonSearchResult[]> {
-    try {
-      await firstValueFrom(this.ensureToken());
-    } catch (e) {
-      console.error("[wago]", e);
-      return [];
+    const wagoAccessToken = await this._sensitiveStorageService.getAsync(PREF_WAGO_ACCESS_KEY);
+    if (wagoAccessToken === '') {
+      try {
+        await firstValueFrom(this.ensureToken());
+      } catch (e) {
+        console.error("[wago]", e);
+        return [];
+      }
     }
 
     const url = new URL(`${WAGO_BASE_URL}/addons/_search`);
@@ -327,7 +337,7 @@ export class WagoAddonProvider extends AddonProvider {
     const response = await this.sendRequest(() =>
       this._cachingService.transaction(
         `${installation.id}|${query}|${url.toString()}`,
-        () => this._circuitBreaker.getJson<WagoSearchResponse>(url, this.getRequestHeaders()),
+        () => this._circuitBreaker.getJson<WagoSearchResponse>(url, this.getRequestHeaders(wagoAccessToken !== '' ? wagoAccessToken : this._apiTokenSrc.value)),
         WAGO_SEARCH_CACHE_TIME_SEC
       )
     );
@@ -344,8 +354,6 @@ export class WagoAddonProvider extends AddonProvider {
   }
 
   public async getDescription(installation: WowInstallation, externalId: string): Promise<string> {
-    await firstValueFrom(this.ensureToken());
-
     try {
       const response = await this.getAddonById(externalId);
       return convertMarkdown(response?.description ?? "");
@@ -404,7 +412,10 @@ export class WagoAddonProvider extends AddonProvider {
 
   // used when checking for new addon updates
   public async getAll(installation: WowInstallation, addonIds: string[]): Promise<GetAllResult> {
-    await firstValueFrom(this.ensureToken());
+    const wagoAccessToken = await this._sensitiveStorageService.getAsync(PREF_WAGO_ACCESS_KEY);
+    if (wagoAccessToken === '') {
+      await firstValueFrom(this.ensureToken());
+    }
 
     const url = new URL(`${WAGO_BASE_URL}/addons/_recents`).toString();
     const request: WagoRecentsRequest = {
@@ -415,7 +426,7 @@ export class WagoAddonProvider extends AddonProvider {
     const response = await this.sendRequest(() =>
       this._cachingService.transaction(
         `${installation.id}|${url.toString()}`,
-        () => this._circuitBreaker.postJson<WagoRecentsResponse>(url, request, this.getRequestHeaders()),
+        () => this._circuitBreaker.postJson<WagoRecentsResponse>(url, request, this.getRequestHeaders(wagoAccessToken !== '' ? wagoAccessToken : this._apiTokenSrc.value)),
         WAGO_DETAILS_CACHE_TIME_SEC
       )
     );
@@ -453,11 +464,16 @@ export class WagoAddonProvider extends AddonProvider {
       return this._requestQueue.get(url);
     }
 
+    const wagoAccessToken = await this._sensitiveStorageService.getAsync(PREF_WAGO_ACCESS_KEY);
+    if (wagoAccessToken === '') {
+      await firstValueFrom(this.ensureToken());
+    }
+
     const prom = this.sendRequest(() =>
       this._cachingService
         .transaction(
           url,
-          () => this._circuitBreaker.getJson<WagoAddon>(url, this.getRequestHeaders()),
+          () => this._circuitBreaker.getJson<WagoAddon>(url, this.getRequestHeaders(wagoAccessToken !== '' ? wagoAccessToken : this._apiTokenSrc.value)),
           WAGO_DETAILS_CACHE_TIME_SEC
         )
         .finally(() => {
@@ -470,10 +486,15 @@ export class WagoAddonProvider extends AddonProvider {
     return await prom;
   }
 
-  private async sendMatchesRequest(installation: WowInstallation, request: WagoFingerprintRequest) {
+  private async sendMatchesRequest(request: WagoFingerprintRequest) {
     const url = new URL(`${WAGO_BASE_URL}/addons/_match`);
+    const wagoAccessToken = await this._sensitiveStorageService.getAsync(PREF_WAGO_ACCESS_KEY);
+    if (wagoAccessToken === '') {
+      await firstValueFrom(this.ensureToken());
+    }
+
     return await this.sendRequest(() =>
-      this._circuitBreaker.postJson<WagoScanResponse>(url, request, this.getRequestHeaders())
+      this._circuitBreaker.postJson<WagoScanResponse>(url, request, this.getRequestHeaders(wagoAccessToken !== '' ? wagoAccessToken : this._apiTokenSrc.value))
     );
   }
 
@@ -694,11 +715,11 @@ export class WagoAddonProvider extends AddonProvider {
     this._apiTokenSrc.next(token);
   };
 
-  private getRequestHeaders(): {
+  private getRequestHeaders(token: string): {
     [header: string]: string;
   } {
     return {
-      Authorization: `Bearer ${this._apiTokenSrc.value}`,
+      Authorization: `Bearer ${token}`,
     };
   }
 

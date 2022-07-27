@@ -17,7 +17,12 @@ import { FormControl, FormGroup } from "@angular/forms";
 import { MatListOption, MatSelectionListChange } from "@angular/material/list";
 import { TranslateService } from "@ngx-translate/core";
 
-import { ADDON_PROVIDER_WAGO, PREF_CF2_API_KEY, PREF_GITHUB_PERSONAL_ACCESS_TOKEN } from "../../../../common/constants";
+import {
+  ADDON_PROVIDER_WAGO,
+  PREF_CF2_API_KEY,
+  PREF_GITHUB_PERSONAL_ACCESS_TOKEN,
+  PREF_WAGO_ACCESS_KEY,
+} from "../../../../common/constants";
 import { AppConfig } from "../../../../environments/environment";
 import { AddonProviderType } from "../../../addon-providers/addon-provider";
 import { AddonProviderState } from "../../../models/wowup/addon-provider-state";
@@ -47,6 +52,7 @@ export class OptionsAddonSectionComponent implements OnInit, OnDestroy {
   public preferenceForm = new FormGroup({
     cfV2ApiKey: new FormControl(""),
     ghPersonalAccessToken: new FormControl(""),
+    wagoAccessToken: new FormControl(""),
   });
 
   public constructor(
@@ -73,6 +79,18 @@ export class OptionsAddonSectionComponent implements OnInit, OnDestroy {
             tasks.push(
               from(this._sensitiveStorageService.setAsync(PREF_GITHUB_PERSONAL_ACCESS_TOKEN, ch.ghPersonalAccessToken))
             );
+          }
+          if (typeof ch?.wagoAccessToken === "string") {
+            tasks.push(
+              from(this._sensitiveStorageService.setAsync(PREF_WAGO_ACCESS_KEY, ch.wagoAccessToken))
+            );
+
+            const wago = this._addonProviderService.getProvider(ADDON_PROVIDER_WAGO);
+            wago.adRequired = ch.wagoAccessToken === '';
+            if (wago.adRequired && wago.enabled) {
+              wago.enabled = false;
+            }
+            this._addonProviderService._addonProviderChangeSrc.next(wago)
           }
           return combineLatest(tasks);
         }),
@@ -149,9 +167,11 @@ export class OptionsAddonSectionComponent implements OnInit, OnDestroy {
     try {
       const cfV2ApiKey = await this._sensitiveStorageService.getAsync(PREF_CF2_API_KEY);
       const ghPersonalAccessToken = await this._sensitiveStorageService.getAsync(PREF_GITHUB_PERSONAL_ACCESS_TOKEN);
+      const wagoAccessToken = await this._sensitiveStorageService.getAsync(PREF_WAGO_ACCESS_KEY);
 
       this.preferenceForm.get("cfV2ApiKey").setValue(cfV2ApiKey);
       this.preferenceForm.get("ghPersonalAccessToken").setValue(ghPersonalAccessToken);
+      this.preferenceForm.get("wagoAccessToken").setValue(wagoAccessToken);
     } catch (e) {
       console.error(e);
     }
