@@ -483,7 +483,7 @@
     },
     "OPTIONS": {
       "ADDON": {
-        "AD_REQUIRED_HINT": "Необходима реклама",
+        "AD_REQUIRED_HINT": "Ad or access key required",
         "CURSE_FORGE_V2": {
           "API_KEY_DESCRIPTION": "Если Вы запросили ключ CurseForge API, Вы можете ввести его здесь, чтобы подключиться к их API.",
           "API_KEY_TITLE": "Ключ CurseForge API",
