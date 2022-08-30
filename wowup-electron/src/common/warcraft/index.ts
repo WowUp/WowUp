@@ -36,7 +36,6 @@ export function getWowClientGroup(clientType: string | WowClientType): WowClient
       return WowClientGroup.Classic;
     case WowClientType.Classic:
     case WowClientType.ClassicPtr:
-      return WowClientGroup.BurningCrusade;
     case WowClientType.ClassicBeta:
       return WowClientGroup.WOTLK;
     default:

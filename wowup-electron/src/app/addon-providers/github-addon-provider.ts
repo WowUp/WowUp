@@ -344,11 +344,10 @@ export class GitHubAddonProvider extends AddonProvider {
   /** Return the BigWigs metadata flavor for a given client type */
   private getMetadataTargetFlavor(clientType: WowClientType): MetadataFlavor {
     switch (clientType) {
-      case WowClientType.ClassicBeta:
-        return "wrath";
       case WowClientType.Classic:
       case WowClientType.ClassicPtr:
-        return "bcc";
+      case WowClientType.ClassicBeta:
+        return "wrath";
       case WowClientType.ClassicEra:
       case WowClientType.ClassicEraPtr:
         return "classic";
@@ -410,7 +409,6 @@ export class GitHubAddonProvider extends AddonProvider {
         return isClassic;
       case WowClientType.Classic:
       case WowClientType.ClassicPtr:
-        return isBurningCrusade;
       case WowClientType.ClassicBeta:
         return isWotlk;
       default:
@@ -427,7 +425,7 @@ export class GitHubAddonProvider extends AddonProvider {
   }
 
   private isWotlk(asset: GitHubAsset): boolean {
-    return /[-_](wrath)\.zip$/i.test(asset.name);
+    return /[-_](wrath|wotlkc)\.zip$/i.test(asset.name);
   }
 
   private getAddonName(addonId: string): string {

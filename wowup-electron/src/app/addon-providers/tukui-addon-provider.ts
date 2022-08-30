@@ -401,7 +401,6 @@ export class TukUiAddonProvider extends AddonProvider {
         return "classic";
       case WowClientType.Classic:
       case WowClientType.ClassicPtr:
-        return "tbc";
       case WowClientType.ClassicBeta:
         return "wrath";
       case WowClientType.Retail:
