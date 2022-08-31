@@ -6,6 +6,7 @@ export interface WowInstallation {
   clientType: WowClientType;
   location: string;
   label: string;
+  displayName: string;
   selected: boolean;
   defaultAddonChannelType: AddonChannelType;
   defaultAutoUpdate: boolean;

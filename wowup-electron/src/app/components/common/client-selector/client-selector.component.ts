@@ -23,7 +23,7 @@ export class ClientSelectorComponent implements OnInit {
   );
 
   public readonly selectedWowInstallationLabel$ = this._sessionService.selectedWowInstallation$.pipe(
-    map((wowInstall) => wowInstall?.label ?? "")
+    map((wowInstall) => wowInstall?.displayName ?? "")
   );
 
   public wowInstallations$: Observable<WowInstallation[]> = combineLatest([
