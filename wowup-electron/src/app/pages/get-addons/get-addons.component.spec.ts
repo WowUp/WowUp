@@ -54,6 +54,7 @@ describe("GetAddonsComponent", () => {
             clientType: WowClientType.Retail,
             location: "C:/fake_wow",
             label: "Wow Unit Test Client",
+            displayName: "Wow Unit Test Client",
             defaultAutoUpdate: false,
             selected: true,
           };
