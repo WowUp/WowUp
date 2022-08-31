@@ -178,14 +178,14 @@
       "TOC_NAME_MISMATCH_TOOLTIP": "插件文件夹和 TOC 不匹配"
     },
     "CLIENT_TYPES": {
-      "BETA": "巨龙时代 Beta",
-      "CLASSIC": "燃烧的远征",
-      "CLASSICBETA": "巫妖王之怒 Beta",
-      "CLASSICERA": "经典旧世",
-      "CLASSICERAPTR": "经典旧世赛季服 PTR",
-      "CLASSICPTR": "燃烧的远征 PTR",
+      "BETA": "“巨龙时代” Beta 测试",
+      "CLASSIC": "“巫妖王之怒”",
+      "CLASSICBETA": "“巫妖王之怒” 测试服",
+      "CLASSICERA": "魔兽世界（经典怀旧服）",
+      "CLASSICERAPTR": "Classic Season of Mastery PTR",
+      "CLASSICPTR": "公开测试服（巫妖王之怒）",
       "RETAIL": "暗影国度",
-      "RETAILPTR": "暗影国度 PTR"
+      "RETAILPTR": "公共测试服"
     },
     "DATES": {
       "DATETIME_SHORT": "{d, date, short} {d, time, short}",
