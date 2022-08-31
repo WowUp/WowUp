@@ -382,9 +382,8 @@ export class TukUiAddonProvider extends AddonProvider {
         return "classic-addons";
       case WowClientType.Classic:
       case WowClientType.ClassicPtr:
-        return "classic-tbc-addons";
       case WowClientType.ClassicBeta:
-        return "wrath";
+        return "classic-wotlk-addons";
       case WowClientType.Retail:
       case WowClientType.RetailPtr:
       case WowClientType.Beta:
