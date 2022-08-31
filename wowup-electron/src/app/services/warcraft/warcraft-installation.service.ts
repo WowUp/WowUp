@@ -282,7 +282,7 @@ export class WarcraftInstallationService {
   }
 
   private async getDisplayName(label: string, typeName: string): Promise<string> {
-    const defaultName = await this._translateService.get(`COMMON.CLIENT_TYPES.${typeName.toUpperCase()}`).toPromise();
+    const defaultName: string = await this._translateService.get(`COMMON.CLIENT_TYPES.${typeName.toUpperCase()}`).toPromise();
     return label.replace("{defaultName}", defaultName);
   }
 
