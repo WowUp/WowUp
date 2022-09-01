@@ -117,7 +117,7 @@ export class TocService {
       case WowClientType.Classic:
       case WowClientType.ClassicPtr:
       case WowClientType.ClassicBeta:
-        matchedToc = tocFileNames.find((tfn) => /.*[-_](bcc|tbc|wrath|wotlkc)\.toc$/gi.test(tfn)) || "";
+        matchedToc = tocFileNames.find((tfn) => /.*[-_](wrath|wotlkc)\.toc$/gi.test(tfn)) || "";
         break;
       default:
         break;
