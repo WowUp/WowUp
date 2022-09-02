@@ -7,11 +7,7 @@ import { v4 as uuidv4 } from "uuid";
 import { Injectable } from "@angular/core";
 import { TranslateService } from "@ngx-translate/core";
 
-import {
-  DEFAULT_AUTO_UPDATE_PREFERENCE_KEY_SUFFIX,
-  DEFAULT_CHANNEL_PREFERENCE_KEY_SUFFIX,
-  WOW_INSTALLATIONS_KEY,
-} from "../../../common/constants";
+import { WOW_INSTALLATIONS_KEY } from "../../../common/constants";
 import { WowClientGroup, WowClientType } from "../../../common/warcraft/wow-client-type";
 import { AddonChannelType } from "../../../common/wowup/models";
 import { WowInstallation } from "../../../common/warcraft/wow-installation";
