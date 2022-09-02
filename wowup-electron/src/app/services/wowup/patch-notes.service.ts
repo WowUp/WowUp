@@ -21,6 +21,7 @@ const CHANGELOGS: ChangeLog[] = [
     <h4 style="margin-top: 1em;">New Features</h4>
     <ul>
     <li>Add new support for the Wrath of the Lich King Classic Beta client</li>
+    <li>Add new logo for the Dragonflight Beta client</li>
     </ul>
     <h4 style="margin-top: 1em;">Changes</h4>
     <ul>
