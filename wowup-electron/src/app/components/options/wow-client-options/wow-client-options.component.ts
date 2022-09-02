@@ -82,7 +82,8 @@ export class WowClientOptionsComponent implements OnInit, OnDestroy {
       case WowClientType.ClassicEraPtr:
         return "assets/images/wow-classic-logo.png";
       case WowClientType.Beta:
-      case WowClientType.ClassicPtr:
+        return "assets/images/wow-dragonflight-logo.png";
+        case WowClientType.ClassicPtr:
       case WowClientType.Classic:
       case WowClientType.ClassicBeta:
         return "assets/images/wow-classic-wotlk-logo.png";
