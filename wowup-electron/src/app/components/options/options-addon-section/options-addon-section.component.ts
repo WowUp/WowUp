@@ -86,11 +86,23 @@ export class OptionsAddonSectionComponent implements OnInit, OnDestroy {
             );
 
             const wago = this._addonProviderService.getProvider(ADDON_PROVIDER_WAGO);
-            wago.adRequired = ch.wagoAccessToken === '';
+            const hasAccessToken = ch.wagoAccessToken !== '';
+            wago.adRequired = !hasAccessToken;
             if (wago.adRequired && wago.enabled) {
-              wago.enabled = false;
+              const currentState = this.addonProviderStates$.getValue();
+              const wagoState = currentState.filter((provider) => provider.providerName === ADDON_PROVIDER_WAGO);
+              wagoState[0].enabled = false;
+              this.addonProviderStates$.next(currentState);
+              tasks.push(
+                from(this._addonProviderService.setProviderEnabled(ADDON_PROVIDER_WAGO, false))
+              );
             }
-            this._addonProviderService._addonProviderChangeSrc.next(wago)
+
+            if (hasAccessToken && !wago.enabled) {
+              tasks.push(
+                from(this._addonProviderService.setProviderEnabled(ADDON_PROVIDER_WAGO, true))
+              );
+            }
           }
           return combineLatest(tasks);
         }),
