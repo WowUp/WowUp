@@ -1326,8 +1326,8 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
 
   // Sort the toc version column by converting from 'x.x.x' to interface version 'xxxxxx'
   private compareTocVersion(nodeA: RowNode, nodeB: RowNode): number {
-    const v1 = nodeA.data["gameVersion"]?.trim();
-    const v2 = nodeB.data["gameVersion"]?.trim();
+    const v1 = (nodeA.data["gameVersion"] as string)?.trim();
+    const v2 = (nodeB.data["gameVersion"] as string)?.trim();
 
     const iv1 = toInterfaceVersion(v1 || "0.0.0");
     const iv2 = toInterfaceVersion(v2 || "0.0.0");
