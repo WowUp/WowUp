@@ -6,8 +6,6 @@ import { HttpClient, HttpErrorResponse, HttpHeaders } from "@angular/common/http
 import { ADDON_PROVIDER_GITHUB, PREF_GITHUB_PERSONAL_ACCESS_TOKEN } from "../../common/constants";
 import {
   AssetMissingError,
-  BurningCrusadeAssetMissingError,
-  ClassicAssetMissingError,
   GitHubError,
   GitHubFetchReleasesError,
   GitHubFetchRepositoryError,
@@ -17,7 +15,7 @@ import {
 import { GitHubAsset } from "../models/github/github-asset";
 import { GitHubRelease } from "../models/github/github-release";
 import { GitHubRepository } from "../models/github/github-repository";
-import { WowClientGroup, WowClientType } from "../../common/warcraft/wow-client-type";
+import { WowClientType } from "../../common/warcraft/wow-client-type";
 import { AddonChannelType } from "../../common/wowup/models";
 import { AddonSearchResult } from "../models/wowup/addon-search-result";
 import { AddonSearchResultFile } from "../models/wowup/addon-search-result-file";
@@ -28,7 +26,7 @@ import { strictFilterBy } from "../utils/array.utils";
 import { getWowClientGroup } from "../../common/warcraft";
 import { SensitiveStorageService } from "../services/storage/sensitive-storage.service";
 
-type MetadataFlavor = "bcc" | "classic" | "mainline";
+type MetadataFlavor = "bcc" | "classic" | "mainline" | "wrath";
 
 interface GitHubRepoParts {
   repository: string;
@@ -143,13 +141,7 @@ export class GitHubAddonProvider extends AddonProvider {
       const result = await this.getLatestValidAsset(checkRes, installation.clientType);
       console.log("searchByUrl result", result);
       if (!result.matchedAsset && !result.latestAsset) {
-        if (WowClientGroup.Classic === clientGroup) {
-          throw new ClassicAssetMissingError(addonUri.toString());
-        } else if (WowClientGroup.BurningCrusade === clientGroup) {
-          throw new BurningCrusadeAssetMissingError(addonUri.toString());
-        } else {
-          throw new AssetMissingError(addonUri.toString());
-        }
+        throw new AssetMissingError(addonUri.toString(), clientGroup);
       }
 
       const repository = await this.getRepository(repoPath);
@@ -353,9 +345,9 @@ export class GitHubAddonProvider extends AddonProvider {
   private getMetadataTargetFlavor(clientType: WowClientType): MetadataFlavor {
     switch (clientType) {
       case WowClientType.Classic:
-      case WowClientType.ClassicBeta:
       case WowClientType.ClassicPtr:
-        return "bcc";
+      case WowClientType.ClassicBeta:
+        return "wrath";
       case WowClientType.ClassicEra:
       case WowClientType.ClassicEraPtr:
         return "classic";
@@ -418,8 +410,6 @@ export class GitHubAddonProvider extends AddonProvider {
       case WowClientType.Classic:
       case WowClientType.ClassicPtr:
       case WowClientType.ClassicBeta:
-        return isBurningCrusade;
-      case WowClientType.WOTLKBeta:
         return isWotlk;
       default:
         return false;
@@ -427,15 +417,15 @@ export class GitHubAddonProvider extends AddonProvider {
   }
 
   private isClassicAsset(asset: GitHubAsset): boolean {
-    return /[-|_](classic|vanilla)\.zip$/i.test(asset.name);
+    return /[-_](classic|vanilla)\.zip$/i.test(asset.name);
   }
 
   private isBurningCrusadeAsset(asset: GitHubAsset): boolean {
-    return /[-|_](bc|bcc|tbc)\.zip$/i.test(asset.name);
+    return /[-_](bc|bcc|tbc)\.zip$/i.test(asset.name);
   }
 
   private isWotlk(asset: GitHubAsset): boolean {
-    return /[-|_](wrath)\.zip$/i.test(asset.name);
+    return /[-_](wrath|wotlkc)\.zip$/i.test(asset.name);
   }
 
   private getAddonName(addonId: string): string {

@@ -298,7 +298,8 @@
         "NO_ADDON_FOUND": "O Addon não foi encontrado, tenha certeza de que a URL está apontando para a página correta.\n\nQuanto estiver instalando do github, certifique-se de que o repositório possui uma tag release com um arquivo zip contendo o Addon.",
         "NO_RELEASE_FOUND": "Nenhum release foi encontrado para {message}.\n\nRelease válido com recursos em arquivo zip são necessários para que o WowUp possa fazer o download.",
         "NO_SEARCH_RESULTS": "Nenhum resultado de busca encontrado.",
-        "TITLE": "Instalação do Addon Falhou"
+        "TITLE": "Instalação do Addon Falhou",
+        "WRATH_ASSET_NOT_FOUND": "No asset was found to download from {message}.\n\nA valid zip file ending with '-wrath' is required in order for WowUp to download it."
       },
       "IMPORT_ASSET_WARNING": "Não foi possivel verificar se o ultimo release desse addon é compatível com o seu cliente selecionado.\n\nMas nós encontramos um arquivo zip \"{zipName}\".\n\nInstale por sua conta e risco.",
       "IMPORT_BUTTON": "Importar",

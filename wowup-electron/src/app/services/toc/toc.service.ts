@@ -108,27 +108,29 @@ export class TocService {
       case WowClientType.Beta:
       case WowClientType.Retail:
       case WowClientType.RetailPtr:
-        matchedToc = tocFileNames.find((tfn) => /.*[-|_]mainline\.toc$/gi.test(tfn)) || "";
+        matchedToc = tocFileNames.find((tfn) => /.*[-_]mainline\.toc$/gi.test(tfn)) || "";
         break;
       case WowClientType.ClassicEra:
       case WowClientType.ClassicEraPtr:
-        matchedToc = tocFileNames.find((tfn) => /.*[-|_](classic|vanilla)\.toc$/gi.test(tfn)) || "";
+        matchedToc = tocFileNames.find((tfn) => /.*[-_](classic|vanilla)\.toc$/gi.test(tfn)) || "";
         break;
       case WowClientType.Classic:
-      case WowClientType.ClassicBeta:
       case WowClientType.ClassicPtr:
-        matchedToc = tocFileNames.find((tfn) => /.*[-|_](bcc|tbc)\.toc$/gi.test(tfn)) || "";
+      case WowClientType.ClassicBeta:
+        matchedToc = tocFileNames.find((tfn) => /.*[-_](wrath|wotlkc)\.toc$/gi.test(tfn)) || "";
         break;
       default:
         break;
     }
 
     return (
-      matchedToc || tocFileNames.find((tfn) => /.*(?<![-|_](classic|vanilla|bcc|tbc|mainline))\.toc$/gi.test(tfn)) || ""
+      matchedToc ||
+      tocFileNames.find((tfn) => /.*(?<![-_](classic|vanilla|bcc|tbc|mainline|wrath|wotlkc))\.toc$/gi.test(tfn)) ||
+      ""
     );
   }
 
-  public getTocForGameType2(addonFolder: AddonFolder, clientType: WowClientType): tocModels.Toc {
+  public getTocForGameType2(addonFolder: AddonFolder, clientType: WowClientType): tocModels.Toc | undefined {
     let matchedToc = "";
 
     const tocs = addonFolder.tocs;

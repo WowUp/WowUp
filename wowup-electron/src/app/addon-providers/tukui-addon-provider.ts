@@ -383,7 +383,7 @@ export class TukUiAddonProvider extends AddonProvider {
       case WowClientType.Classic:
       case WowClientType.ClassicPtr:
       case WowClientType.ClassicBeta:
-        return "classic-tbc-addons";
+        return "classic-wotlk-addons";
       case WowClientType.Retail:
       case WowClientType.RetailPtr:
       case WowClientType.Beta:
@@ -401,7 +401,7 @@ export class TukUiAddonProvider extends AddonProvider {
       case WowClientType.Classic:
       case WowClientType.ClassicPtr:
       case WowClientType.ClassicBeta:
-        return "tbc";
+        return "wrath";
       case WowClientType.Retail:
       case WowClientType.RetailPtr:
       case WowClientType.Beta:

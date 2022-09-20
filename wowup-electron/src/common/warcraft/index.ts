@@ -35,9 +35,9 @@ export function getWowClientGroup(clientType: string | WowClientType): WowClient
     case WowClientType.ClassicEraPtr:
       return WowClientGroup.Classic;
     case WowClientType.Classic:
-    case WowClientType.ClassicBeta:
     case WowClientType.ClassicPtr:
-      return WowClientGroup.BurningCrusade;
+    case WowClientType.ClassicBeta:
+      return WowClientGroup.WOTLK;
     default:
       throw new Error(`unsupported client type: ${clientType}`);
   }

@@ -75,6 +75,7 @@ import { AddonManageDialogComponent } from "../../components/addons/addon-manage
 import { WtfBackupComponent } from "../../components/addons/wtf-backup/wtf-backup.component";
 import { HasEventTargetAddRemove } from "rxjs/internal/observable/fromEvent";
 import { AddonProviderFactory } from "../../services/addons/addon.provider.factory";
+import { toInterfaceVersion } from "../../utils/addon.utils";
 
 @Component({
   selector: "app-my-addons",
@@ -1323,6 +1324,17 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
     ]);
   }
 
+  // Sort the toc version column by converting from 'x.x.x' to interface version 'xxxxxx'
+  private compareTocVersion(nodeA: RowNode, nodeB: RowNode): number {
+    const v1 = (nodeA.data["gameVersion"] as string)?.trim();
+    const v2 = (nodeB.data["gameVersion"] as string)?.trim();
+
+    const iv1 = toInterfaceVersion(v1 || "0.0.0");
+    const iv2 = toInterfaceVersion(v2 || "0.0.0");
+
+    return iv1 > iv2 ? 1 : -1;
+  }
+
   // If nodes have the same primary value, use the canonical name as a fallback
   private compareElement(nodeA: RowNode, nodeB: RowNode, prop: string): number {
     if (nodeA.data[prop] === nodeB.data[prop]) {
@@ -1399,7 +1411,7 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
         sortable: true,
         minWidth: 125,
         headerName: this._translateService.instant("PAGES.MY_ADDONS.TABLE.GAME_VERSION_COLUMN_HEADER"),
-        comparator: (va, vb, na, nb) => this.compareElement(na, nb, "gameVersion"),
+        comparator: (va, vb, na, nb) => this.compareTocVersion(na, nb),
         ...baseColumn,
       },
       {

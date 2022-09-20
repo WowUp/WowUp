@@ -13,7 +13,7 @@ import {
 } from "rxjs";
 
 import { Component, ElementRef, OnDestroy, OnInit, ViewChild } from "@angular/core";
-import { FormControl, FormGroup } from "@angular/forms";
+import { UntypedFormControl, UntypedFormGroup } from "@angular/forms";
 import { MatListOption, MatSelectionListChange } from "@angular/material/list";
 import { TranslateService } from "@ngx-translate/core";
 
@@ -44,9 +44,9 @@ export class OptionsAddonSectionComponent implements OnInit, OnDestroy {
 
   public addonProviderStates$ = new BehaviorSubject<AddonProviderStateModel[]>([]);
 
-  public preferenceForm = new FormGroup({
-    cfV2ApiKey: new FormControl(""),
-    ghPersonalAccessToken: new FormControl(""),
+  public preferenceForm = new UntypedFormGroup({
+    cfV2ApiKey: new UntypedFormControl(""),
+    ghPersonalAccessToken: new UntypedFormControl(""),
   });
 
   public constructor(
