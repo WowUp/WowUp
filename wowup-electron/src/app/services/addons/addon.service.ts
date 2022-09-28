@@ -1619,7 +1619,17 @@ export class AddonService {
       const matchedAddonFolderNames = matchedAddonFolders.map((mf) => mf.name);
 
       matchedAddonFolders.forEach((maf) => {
+        if (maf.matchingAddon === undefined) {
+          console.warn("matching adding undefined");
+          return;
+        }
+
         const targetToc = this._tocService.getTocForGameType2(maf, installation.clientType);
+        if (targetToc === undefined) {
+          console.warn("toc file undefined", maf, installation.clientType);
+          maf.matchingAddon.warningType = AddonWarningType.TocNameMismatch;
+          return;
+        }
 
         if (!targetToc.fileName.startsWith(maf.name)) {
           console.warn("TOC NAME MISMATCH", maf.name, targetToc.fileName);
