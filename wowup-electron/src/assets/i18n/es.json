@@ -188,7 +188,6 @@
       "RETAILPTR": "RPP Retail"
     },
     "DATES": {
-      "DATETIME_SHORT": "{d, date, short} {d, time, short}",
       "DAYS_AGO": "Hace {count} {count, plural, one{día} other{días}}",
       "HOURS_AGO": "Hace {count} {count, plural, one{hora} other{horas}}",
       "JUST_NOW": "Ahora",

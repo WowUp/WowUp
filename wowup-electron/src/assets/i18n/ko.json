@@ -188,7 +188,6 @@
       "RETAILPTR": "리테일 PTR"
     },
     "DATES": {
-      "DATETIME_SHORT": "{d, date, short} {d, time, short}",
       "DAYS_AGO": "{count}일 전",
       "HOURS_AGO": "{count}시간 전",
       "JUST_NOW": "방금",

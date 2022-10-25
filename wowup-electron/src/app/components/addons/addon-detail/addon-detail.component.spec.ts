@@ -14,7 +14,6 @@ import { Addon } from "../../../../common/entities/addon";
 import { AddonUpdateEvent } from "../../../models/wowup/addon-update-event";
 import { AddonService } from "../../../services/addons/addon.service";
 import { SessionService } from "../../../services/session/session.service";
-import { overrideIconModule } from "../../../tests/mock-mat-icon";
 import { AddonDetailComponent, AddonDetailModel } from "./addon-detail.component";
 import { mockPreload } from "../../../tests/test-helpers";
 import { WowUpService } from "../../../services/wowup/wowup.service";
@@ -63,7 +62,7 @@ describe("AddonDetailComponent", () => {
 
     dialogModel = { listItem: viewModel } as AddonDetailModel;
 
-    let testBed = TestBed.configureTestingModule({
+    const testBed = TestBed.configureTestingModule({
       declarations: [AddonDetailComponent],
       imports: [
         MatModule,
@@ -85,9 +84,7 @@ describe("AddonDetailComponent", () => {
       ],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
       providers: [{ provide: MAT_DIALOG_DATA, useValue: dialogModel }],
-    });
-
-    testBed = overrideIconModule(testBed).overrideComponent(AddonDetailComponent, {
+    }).overrideComponent(AddonDetailComponent, {
       set: {
         providers: [
           { provide: MatDialogRef, useValue: {} },

@@ -188,7 +188,6 @@
       "RETAILPTR": "Retail PTR"
     },
     "DATES": {
-      "DATETIME_SHORT": "{d, date, short} {d, time, short}",
       "DAYS_AGO": "Vor {count} {count, plural, one{Tag} other{Tagen}}",
       "HOURS_AGO": "Vor {count} {count, plural, one{Stunde} other{Stunden}}",
       "JUST_NOW": "Gerade eben",

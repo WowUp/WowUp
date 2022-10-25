@@ -188,7 +188,6 @@
       "RETAILPTR": "Retail PTR"
     },
     "DATES": {
-      "DATETIME_SHORT": "{d, date, short} {d, time, short}",
       "DAYS_AGO": "Před {count} {count, plural, =1{dnem} other{dny}}",
       "HOURS_AGO": "Před {count} {count, plural, =1{hodinou} other{hodinami}}",
       "JUST_NOW": "Právě teď",

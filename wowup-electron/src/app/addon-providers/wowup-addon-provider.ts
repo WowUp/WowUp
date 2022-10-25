@@ -3,7 +3,7 @@ import { from, Observable } from "rxjs";
 import { map } from "rxjs/operators";
 import { v4 as uuidv4 } from "uuid";
 
-import { ADDON_PROVIDER_HUB, APP_PROTOCOL_NAME, IPC_WOWUP_GET_SCAN_RESULTS } from "../../common/constants";
+import { ADDON_PROVIDER_HUB, APP_PROTOCOL_NAME } from "../../common/constants";
 import { Addon } from "../../common/entities/addon";
 import { WowClientGroup, WowClientType } from "../../common/warcraft/wow-client-type";
 import { AddonCategory, AddonChannelType, WowUpScanResult } from "../../common/wowup/models";
@@ -362,11 +362,7 @@ export class WowUpAddonProvider extends AddonProvider {
     return "";
   }
 
-  public getScanResults = async (addonFolders: AddonFolder[]): Promise<AppWowUpScanResult[]> => {
-    const filePaths = addonFolders.map((addonFolder) => addonFolder.path);
-    const scanResults: AppWowUpScanResult[] = await this._electronService.invoke(IPC_WOWUP_GET_SCAN_RESULTS, filePaths);
-    return scanResults;
-  };
+
 
   private async getAddonsByCategory(gameType: WowGameType, category: AddonCategory) {
     const url = new URL(`${API_URL}/addons/category/${category}/${gameType}`);
