@@ -43,11 +43,7 @@ import { HomeComponent } from "./home.component";
     TranslateModule,
     FormsModule,
     OptionsModule,
-    AgGridModule.withComponents([
-      PotentialAddonTableCellComponent,
-      GetAddonStatusColumnComponent,
-      TableContextHeaderCellComponent,
-    ]),
+    AgGridModule,
   ],
   providers: [],
 })
