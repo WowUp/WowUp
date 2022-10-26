@@ -788,6 +788,9 @@ export class AddonService {
 
   public async logDebugData(): Promise<void> {
     const hubProvider = this._addonProviderService.getProvider<WowUpAddonProvider>(ADDON_PROVIDER_HUB);
+    if (hubProvider === undefined) {
+      throw new Error("hub provider not found");
+    }
 
     const clientMap = {};
     const installations = await this._warcraftInstallationService.getWowInstallationsAsync();
@@ -796,10 +799,14 @@ export class AddonService {
 
       const useSymlinkMode = await this._wowUpService.getUseSymlinkMode();
       const addonFolders = await this._warcraftService.listAddons(installation, useSymlinkMode);
+      await this._addonFingerprintService.getFingerprints(addonFolders);
 
       const hubMap = {};
-      const hubScanResults = await hubProvider.getScanResults(addonFolders);
-      hubScanResults.forEach((sr) => (hubMap[sr.folderName] = sr.fingerprint));
+      addonFolders.forEach((af) => {
+        if (af.wowUpScanResults !== undefined) {
+          hubMap[af.wowUpScanResults.folderName] = af.wowUpScanResults.fingerprint;
+        }
+      });
 
       clientMap[clientTypeName] = {
         hub: hubMap,

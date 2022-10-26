@@ -125,6 +125,7 @@ export class InstallFromProtocolDialogComponent implements OnInit, AfterViewInit
 
   private async loadAddon(): Promise<void> {
     try {
+      console.log('this.data.protocol', this.data.protocol)
       const searchResult = await this._addonService.getAddonForProtocol(this.data.protocol);
       if (!searchResult) {
         this.error = ERROR_ADDON_NOT_FOUND;

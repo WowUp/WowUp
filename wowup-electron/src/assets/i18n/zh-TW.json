@@ -188,7 +188,6 @@
       "RETAILPTR": "暗影之境 PTR"
     },
     "DATES": {
-      "DATETIME_SHORT": "{d, date, short} {d, time, short}",
       "DAYS_AGO": "{count} 天前",
       "HOURS_AGO": "{count} 小時前",
       "JUST_NOW": "剛剛",

@@ -188,7 +188,6 @@
       "RETAILPTR": "暗影国度 PTR"
     },
     "DATES": {
-      "DATETIME_SHORT": "{d, date, short} {d, time, short}",
       "DAYS_AGO": "{count} 天前",
       "HOURS_AGO": "{count} 小时前",
       "JUST_NOW": "刚刚",

@@ -188,7 +188,6 @@
       "RETAILPTR": "Актуальный PTR"
     },
     "DATES": {
-      "DATETIME_SHORT": "{d, date, short} {d, time, short}",
       "DAYS_AGO": "{count} {count, plural, one{день} few{дня} other{дней}} назад",
       "HOURS_AGO": "{count} {count, plural, one{час} few{часа} other{часов}} назад",
       "JUST_NOW": "Только что",
