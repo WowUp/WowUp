@@ -51,7 +51,6 @@ import { PipesModule } from "./pipes.module";
     CellWrapTextComponent,
     CenteredSnackbarComponent,
     ClientSelectorComponent,
-    CurseMigrationDialogComponent,
     WebViewComponent,
   ],
 })
