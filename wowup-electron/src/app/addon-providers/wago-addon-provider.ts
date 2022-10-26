@@ -718,7 +718,7 @@ export class WagoAddonProvider extends AddonProvider {
     return from(this._sensitiveStorageService.getAsync(PREF_WAGO_ACCESS_KEY)).pipe(
       switchMap((wagoAccessToken) => {
         console.log(`[wago] stored token`, wagoAccessToken);
-        if (wagoAccessToken !== "") {
+        if (wagoAccessToken !== undefined && wagoAccessToken !== "") {
           this._apiTokenSrc.next(wagoAccessToken);
           return of(wagoAccessToken);
         }

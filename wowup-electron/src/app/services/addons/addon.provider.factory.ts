@@ -109,11 +109,13 @@ export class AddonProviderFactory {
       this._tocService,
       this._uiMessageService,
       this._sensitiveStorageService,
-      this._networkService,
+      this._networkService
     );
-    wago.adRequired = await this._sensitiveStorageService.getAsync(PREF_WAGO_ACCESS_KEY) === ''
 
-    return wago
+    const storedWagoKey = await this._sensitiveStorageService.getAsync(PREF_WAGO_ACCESS_KEY);
+    wago.adRequired = storedWagoKey === undefined || storedWagoKey.length === 0;
+
+    return wago;
   }
 
   public createWowUpCompanionAddonProvider(): WowUpCompanionAddonProvider {
