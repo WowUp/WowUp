@@ -61,7 +61,6 @@ import {
   ConsentDialogResult,
 } from "./components/common/consent-dialog/consent-dialog.component";
 import { WowUpProtocolService } from "./services/wowup/wowup-protocol.service";
-import { CurseMigrationDialogComponent } from "./components/common/curse-migration-dialog/curse-migration-dialog.component";
 
 @Component({
   selector: "app-root",
@@ -262,17 +261,6 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
       }
 
       this.showPreLoad$.next(false);
-
-      if (!this.sessionService.didPromptCfMigration) {
-        // If the user has any addons from old Curse that are not ignored prompt them to rescan
-        const cf2Addons = await this._addonService.getProviderAddons(ADDON_PROVIDER_CURSEFORGEV2);
-        let cfAddons = await this._addonService.getProviderAddons(ADDON_PROVIDER_CURSEFORGE);
-        cfAddons.push(...cf2Addons);
-        cfAddons = cfAddons.filter((addon) => addon.isIgnored === false);
-        if (cfAddons.length > 0) {
-          this.openCurseMigrationDialog();
-        }
-      }
     } catch (e) {
       console.error(e);
     }
@@ -305,17 +293,6 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
   public onRequestInstallFromUrl = (evt: unknown, path?: string): void => {
     this.openInstallFromUrlDialog(path);
   };
-
-  public openCurseMigrationDialog(): void {
-    const dialogRef = this._dialog.open(CurseMigrationDialogComponent, {
-      disableClose: true,
-    });
-
-    dialogRef.afterClosed().subscribe(() => {
-      this.sessionService.didPromptCfMigration = true;
-      this.showRequiredDialogs().catch((e) => console.error(e));
-    });
-  }
 
   public openConsentDialog(): void {
     const dialogRef = this._dialog.open(ConsentDialogComponent, {
