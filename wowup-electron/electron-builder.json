@@ -41,7 +41,7 @@
   },
   "linux": {
     "icon": "electron-build/flatpak/",
-    "target": ["AppImage", "flatpak"],
+    "target": ["AppImage"],
     "asarUnpack": "**/*.node"
   },
   "flatpak": {

@@ -30,7 +30,7 @@
   },
   "linux": {
     "icon": "electron-build/flatpak/",
-    "target": ["AppImage", "flatpak"]
+    "target": ["AppImage"]
   },
   "flatpak": {
     "base": "org.electronjs.Electron2.BaseApp",
@@ -39,18 +39,18 @@
     "sdk": "org.freedesktop.Sdk",
     "baseVersion": "21.08",
     "finishArgs": [
-    	"--socket=wayland",
-    	"--socket=x11",
-    	"--socket=pulseaudio",
+      "--socket=wayland",
+      "--socket=x11",
+      "--socket=pulseaudio",
       "--socket=system-bus",
       "--socket=session-bus",
-    	"--share=ipc",
-    	"--share=network",
+      "--share=ipc",
+      "--share=network",
       "--device=dri",
-    	"--filesystem=xdg-config/WoWUp",
-    	"--filesystem=~/Games",
-    	"--filesystem=~/.wine/drive_c",
-    	"--talk-name=org.freedesktop.Notifications",
+      "--filesystem=xdg-config/WoWUp",
+      "--filesystem=~/Games",
+      "--filesystem=~/.wine/drive_c",
+      "--talk-name=org.freedesktop.Notifications",
       "--talk-name=org.gtk.Notifications",
       "--talk-name=org.kde.StatusNotifierWatcher",
       "--env=APPIMAGE=true"

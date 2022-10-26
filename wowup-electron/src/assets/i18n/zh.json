@@ -27,14 +27,14 @@
     "INVALID_CLIENT_TYPE": "导入字符串和客户端类型不匹配",
     "NO_CHANGE_BADGE_TOOLTIP": "此插件已安装",
     "PASTE_BUTTON": "粘贴",
-    "PROVIDER_MISMATCH": "插件提供方不匹配",
+    "PROVIDER_MISMATCH": "插件安装源不匹配",
     "RESET_BUTTON": "重置",
     "VERSION_MISMATCH": "版本号不匹配"
   },
   "ADS": {
     "AD_EXPLAINER_BUTTON": "为什么会看见广告？",
     "AD_EXPLAINER_DIALOG": {
-      "MESSAGE": "显示此广告是为了支持 <a appExternalLink href=\"https://addons.wago.io/\">wago.io</a> 上辛勤工作、开发出优秀插件的作者们。如果不想看到此广告，可以在 “选项” 中禁用 Wago.io 提供方。",
+      "MESSAGE": "显示此广告是为了支持 <a appExternalLink href=\"https://addons.wago.io/\">wago.io</a> 上辛勤工作、开发出优秀插件的作者们。如果不想看到此广告，可以在 “选项” 中禁用 Wago.io 安装源。",
       "TITLE": "为什么会看见广告？"
     }
   },
@@ -150,7 +150,7 @@
       "INSTALL": "安装",
       "PENDING": "等待中",
       "UNAVAILABLE": "不可用",
-      "UNAVAILABLE_TOOLTIP": "插件作者或提供方将该插件的状态设为不可用",
+      "UNAVAILABLE_TOOLTIP": "插件作者或安装源将该插件的状态设为不可用",
       "UNINSTALL": "卸载",
       "UNKNOWN": "未知",
       "UPDATE": "更新",
@@ -170,17 +170,17 @@
     "ADDON_WARNING": {
       "GENERIC_DESCRIPTION": "WowUp 检测到此插件存在问题，无法更新此插件或提供详细信息。",
       "GENERIC_TOOLTIP": "检测到此插件存在问题",
-      "MISSING_ON_PROVIDER_DESCRIPTION": "此插件可能已被作者或提供方移除。<br>WowUp 无法更新此插件或提供详细信息。",
-      "MISSING_ON_PROVIDER_TOOLTIP": "此插件可能已被提供方移除",
+      "MISSING_ON_PROVIDER_DESCRIPTION": "此插件可能已被作者或安装源移除。<br>WowUp 无法更新此插件或提供详细信息。",
+      "MISSING_ON_PROVIDER_TOOLTIP": "此插件可能已被安装源移除",
       "NO_PROVIDER_FILES_DESCRIPTION": "{providerName} 返回了该插件的相关信息，但不包含匹配当前游戏版本的文件。<br>一旦有匹配该游戏版本的更新，此提示信息将会消失。",
       "NO_PROVIDER_FILES_TOOLTIP": "{providerName} 没有匹配该游戏版本的文件",
       "TOC_NAME_MISMATCH_DESCRIPTION": "此插件的文件夹名字和 TOC 文件中记录的名字不匹配，游戏中可能会出现一些问题。",
       "TOC_NAME_MISMATCH_TOOLTIP": "插件文件夹和 TOC 不匹配"
     },
     "CLIENT_TYPES": {
-      "BETA": "Beta",
+      "BETA": "巨龙时代 Beta",
       "CLASSIC": "燃烧的远征",
-      "CLASSICBETA": "燃烧的远征 Beta",
+      "CLASSICBETA": "巫妖王之怒 Beta",
       "CLASSICERA": "经典旧世",
       "CLASSICERAPTR": "经典旧世赛季服 PTR",
       "CLASSICPTR": "燃烧的远征 PTR",
@@ -224,7 +224,7 @@
       "ADDON_SCAN_ERROR": "在与 {providerName} 匹配插件文件夹时出现错误，请稍后再试。",
       "ADDON_SYNC_ERROR": "从 {providerName} 上检查更新时出现错误。",
       "ADDON_SYNC_FULL_ERROR": "[{installationName}]: 从 {providerName} 上检查 {addonName} 的更新时出现错误，请稍后再试。",
-      "CHANGE_PROVIDER_ERROR": "无法将 {addonName} 的提供方修改为 {providerName}",
+      "CHANGE_PROVIDER_ERROR": "无法将 {addonName} 的安装源修改为 {providerName}",
       "GITHUB_LIMIT_ERROR": "GitHub API 请求次数达到 {max} 次的上限。\n请等到 {reset} 再试。",
       "GITHUB_REPOSITORY_FETCH_ERROR": "检查 {addonName} 的更新失败。\n请检查更新源是否正确，或者忽略此插件。"
     },
@@ -263,7 +263,7 @@
       "POSITIVE_BUTTON": "是"
     },
     "CURSE_MIGRATION": {
-      "MESSAGE": "CurseForge API (V1) 已经关闭，因此 WowUp 不能再从此处获取插件。<br/>不幸的是，这意味着 CurseForge (V1) 提供方已经被移除，且从此处安装的插件再也不会更新了。<br/>推荐进行重新扫描以检查插件是否能从其他提供方获取。<br/>重新扫描将会消耗一些时间。<br/><a appExternalLink href=\"https://wowup.io/guide/wowup/curseforge-migration\">阅读详细信息（英语）。</a>",
+      "MESSAGE": "CurseForge API 已经关闭，因此 WowUp 不能再从此处获取插件。<br/>不幸的是，这意味着 CurseForge 安装源已经被移除，且从此处安装的插件再也不会更新了。<br/>推荐进行重新扫描以检查插件是否能从其他安装源获取。<br/>重新扫描将会消耗一些时间。<br/><a appExternalLink href=\"https://wowup.io/guide/wowup/curseforge-migration\">阅读详细信息（英语）。</a>",
       "NEGATIVE_BUTTON": "稍后手动重新扫描",
       "POSITIVE_BUTTON": "自动重新扫描",
       "RE_SCAN_ERROR": "自动重新扫描失败，请尝试手动扫描。",
@@ -298,7 +298,8 @@
         "NO_ADDON_FOUND": "未找到插件，请检查 URL 是否指向正确的页面。\n\n从 GitHub 安装时，请检查是否存在带有 zip 包的 release tag。",
         "NO_RELEASE_FOUND": "未找到发布版本 {message}.\n\n要通过 WowUp 下载插件，需要带有 zip 附件的发布版本。",
         "NO_SEARCH_RESULTS": "无搜索结果。",
-        "TITLE": "插件安装失败"
+        "TITLE": "插件安装失败",
+        "WRATH_ASSET_NOT_FOUND": "未找到可下载的附件 {message}。\n\n要通过 WowUp 下载插件，发布页面（Releases）上需要文件名以 “-wrath” 结尾的有效 zip 文件。"
       },
       "IMPORT_ASSET_WARNING": "已找到此插件的最新版本压缩包 “{zipName}”，但无法验证它是否兼容此《魔兽世界》客户端。\n\n如要安装，请自担风险。",
       "IMPORT_BUTTON": "导入",
@@ -320,8 +321,8 @@
       },
       "TITLE": "WowUp 权限设置",
       "WAGO": {
-        "DESCRIPTION": "启用 Wago.io 插件提供方。启用此选项将会显示一个广告，以支持你喜欢的插件的作者。",
-        "TOGGLE_LABEL": "启用 Wago.io 提供方"
+        "DESCRIPTION": "启用 Wago.io 插件安装源。启用此选项将会显示一个广告，以支持你喜欢的插件的作者。",
+        "TOGGLE_LABEL": "启用 Wago.io 安装源"
       }
     },
     "SELECT_INSTALLATION": {
@@ -367,7 +368,7 @@
         "ADDON_COLUMN_HEADER": "插件",
         "AUTHOR_COLUMN_HEADER": "作者",
         "DOWNLOAD_COUNT_COLUMN_HEADER": "下载次数",
-        "PROVIDER_COLUMN_HEADER": "提供方",
+        "PROVIDER_COLUMN_HEADER": "安装源",
         "RELEASED_AT_COLUMN_HEADER": "发布时间",
         "STATUS_COLUMN_HEADER": "状态"
       }
@@ -394,7 +395,7 @@
         "BETA_ADDON_CHANNEL": "Beta",
         "CHANNEL_SUBMENU_TITLE": "更新通道",
         "IGNORE_ADDON_BUTTON": "忽略",
-        "PROVIDER_SUBMENU_TITLE": "提供方",
+        "PROVIDER_SUBMENU_TITLE": "安装源",
         "REINSTALL_ADDON_BUTTON": "重新安装",
         "REMOVE_ADDON_BUTTON": "删除",
         "SHOW_FOLDER": "打开文件夹",
@@ -403,8 +404,8 @@
       "ADDON_IS_CODE_REPOSITORY": "插件似乎是代码仓库",
       "ADDON_REMOVED_SNACKBAR": "{addonName} 已成功移除",
       "CHANGE_ADDON_PROVIDER_CONFIRMATION": {
-        "MESSAGE": "是否将 {addonName} 的提供方修改为 {providerName}？此操作将会用 {providerName} 的版本替换现有版本。",
-        "TITLE": "修改插件提供方？"
+        "MESSAGE": "是否将 {addonName} 的安装源修改为 {providerName}？此操作将会用 {providerName} 的版本替换现有版本。",
+        "TITLE": "修改插件安装源？"
       },
       "CHECK_UPDATES_BUTTON": "检查更新",
       "CHECK_UPDATES_BUTTON_TOOLTIP": "检查最新的插件更新",
@@ -423,7 +424,7 @@
         "PAYPAL": "通过 PayPal 支持作者"
       },
       "IMPORT_EXPORT_ADDONS_BUTTON": "导入/导出插件",
-      "MULTIPLE_PROVIDERS_TOOLTIP": "此插件有多个提供方",
+      "MULTIPLE_PROVIDERS_TOOLTIP": "此插件有多个安装源",
       "PAGE_CONTEXT_FOOTER": {
         "ADDONS_INSTALLED": "共 {count} 个插件",
         "JOIN_DISCORD": "在 Discord 上与我们交流（英语）",
@@ -450,7 +451,7 @@
         "AUTO_UPDATE_ICON_TOOLTIP": "自动更新已启用",
         "GAME_VERSION_COLUMN_HEADER": "游戏版本",
         "LATEST_VERSION_COLUMN_HEADER": "最新版本",
-        "PROVIDER_COLUMN_HEADER": "提供方",
+        "PROVIDER_COLUMN_HEADER": "安装源",
         "PROVIDER_RELEASE_CHANNEL": "更新通道",
         "RELEASED_AT_COLUMN_HEADER": "发布时间",
         "STATUS_COLUMN_HEADER": "状态",
@@ -465,7 +466,7 @@
         "DEPENDENCY_TITLE": "是否删除插件依赖项？",
         "TITLE": "是否卸载插件？"
       },
-      "UNKNOWN_ADDON_INFO_TOOLTIP": "已安装的插件与所有提供方均无法匹配。",
+      "UNKNOWN_ADDON_INFO_TOOLTIP": "已安装的插件与所有安装源均无法匹配。",
       "UPDATE_ALL_BUTTON": "全部更新",
       "UPDATE_ALL_BUTTON_TOOLTIP": "更新此客户端的所有插件",
       "UPDATE_ALL_CONTEXT_MENU": {
@@ -489,9 +490,9 @@
           "PROVIDER_NOTE": "需要 API 密钥"
         },
         "ENABLED_PROVIDERS": {
-          "DESCRIPTION": "选择从哪些提供方搜索和安装新插件",
-          "FIELD_LABEL": "启用插件提供方",
-          "INPUT_LABEL": "提供方"
+          "DESCRIPTION": "选择从哪些安装源搜索和安装新插件",
+          "FIELD_LABEL": "启用插件安装源",
+          "INPUT_LABEL": "安装源"
         },
         "GITHUB_PERSONAL_ACCESS_TOKEN": {
           "MESSAGE": "免费的个人访问令牌（PAT）可以提高 GitHub API 调用次数的限制。<a href=\"https://docs.github.com/cn/authentication/keeping-your-account-and-data-secure/creating-a-personal-access-token\">查看中文文档（部分翻译）</a>或<a href=\"https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/creating-a-personal-access-token\">英文文档</a>。",

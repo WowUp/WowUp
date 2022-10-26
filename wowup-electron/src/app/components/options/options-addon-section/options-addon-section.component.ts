@@ -13,7 +13,7 @@ import {
 } from "rxjs";
 
 import { Component, ElementRef, OnDestroy, OnInit, ViewChild } from "@angular/core";
-import { FormControl, FormGroup } from "@angular/forms";
+import { UntypedFormControl, UntypedFormGroup } from "@angular/forms";
 import { MatListOption, MatSelectionListChange } from "@angular/material/list";
 import { TranslateService } from "@ngx-translate/core";
 
@@ -49,10 +49,10 @@ export class OptionsAddonSectionComponent implements OnInit, OnDestroy {
 
   public addonProviderStates$ = new BehaviorSubject<AddonProviderStateModel[]>([]);
 
-  public preferenceForm = new FormGroup({
-    cfV2ApiKey: new FormControl(""),
-    ghPersonalAccessToken: new FormControl(""),
-    wagoAccessToken: new FormControl(""),
+  public preferenceForm = new UntypedFormGroup({
+    cfV2ApiKey: new UntypedFormControl(""),
+    ghPersonalAccessToken: new UntypedFormControl(""),
+    wagoAccessToken: new UntypedFormControl(""),
   });
 
   public constructor(
@@ -86,11 +86,23 @@ export class OptionsAddonSectionComponent implements OnInit, OnDestroy {
             );
 
             const wago = this._addonProviderService.getProvider(ADDON_PROVIDER_WAGO);
-            wago.adRequired = ch.wagoAccessToken === '';
+            const hasAccessToken = ch.wagoAccessToken !== '';
+            wago.adRequired = !hasAccessToken;
             if (wago.adRequired && wago.enabled) {
-              wago.enabled = false;
+              const currentState = this.addonProviderStates$.getValue();
+              const wagoState = currentState.filter((provider) => provider.providerName === ADDON_PROVIDER_WAGO);
+              wagoState[0].enabled = false;
+              this.addonProviderStates$.next(currentState);
+              tasks.push(
+                from(this._addonProviderService.setProviderEnabled(ADDON_PROVIDER_WAGO, false))
+              );
             }
-            this._addonProviderService._addonProviderChangeSrc.next(wago)
+
+            if (hasAccessToken && !wago.enabled) {
+              tasks.push(
+                from(this._addonProviderService.setProviderEnabled(ADDON_PROVIDER_WAGO, true))
+              );
+            }
           }
           return combineLatest(tasks);
         }),

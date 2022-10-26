@@ -29,7 +29,7 @@ import { HttpErrorResponse } from "@angular/common/http";
 import { UiMessageService } from "../services/ui-message/ui-message.service";
 import { SensitiveStorageService } from "../services/storage/sensitive-storage.service";
 
-declare type WagoGameVersion = "retail" | "classic" | "bc";
+declare type WagoGameVersion = "retail" | "classic" | "bc" | "wotlk";
 declare type WagoStability = "stable" | "beta" | "alpha";
 
 interface WagoFingerprintAddon {
@@ -683,6 +683,8 @@ export class WagoAddonProvider extends AddonProvider {
         return "classic";
       case WowClientGroup.Retail:
         return "retail";
+      case WowClientGroup.WOTLK:
+        return "wotlk";
       default:
         throw new Error(`[wago] Un-handled client type: ${clientType}`);
     }

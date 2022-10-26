@@ -7,11 +7,7 @@ import { v4 as uuidv4 } from "uuid";
 import { Injectable } from "@angular/core";
 import { TranslateService } from "@ngx-translate/core";
 
-import {
-  DEFAULT_AUTO_UPDATE_PREFERENCE_KEY_SUFFIX,
-  DEFAULT_CHANNEL_PREFERENCE_KEY_SUFFIX,
-  WOW_INSTALLATIONS_KEY,
-} from "../../../common/constants";
+import { WOW_INSTALLATIONS_KEY } from "../../../common/constants";
 import { WowClientGroup, WowClientType } from "../../../common/warcraft/wow-client-type";
 import { AddonChannelType } from "../../../common/wowup/models";
 import { WowInstallation } from "../../../common/warcraft/wow-installation";
@@ -275,97 +271,9 @@ export class WarcraftInstallationService {
     return label;
   }
 
-  private async migrateAllLegacyInstallations(blizzardAgentPath: string): Promise<string> {
-    if (!blizzardAgentPath) {
-      console.info(`Unable to migrate legacy installations, no agent path`);
-      return "";
-    }
-
-    const legacyInstallations: WowInstallation[] = [];
-    for (const clientType of this._warcraftService.getAllClientTypes()) {
-      try {
-        const legacyInstallation = await this.migrateLegacyInstallations(clientType);
-        if (legacyInstallation) {
-          legacyInstallations.push(legacyInstallation);
-        }
-      } catch (e) {
-        console.error(e);
-      }
-    }
-
-    this._legacyInstallationSrc.next(legacyInstallations);
-
-    return blizzardAgentPath;
-  }
-
-  /**
-   * Migrate the old method of storing installation data into the new more flexible one
-   * @deprecated
-   */
-  private async migrateLegacyInstallations(clientType: WowClientType): Promise<WowInstallation | undefined> {
-    if ([WowClientType.None, WowClientType.ClassicBeta, WowClientType.ClassicEraPtr].includes(clientType)) {
-      return undefined;
-    }
-
-    const typeName = getEnumName(WowClientType, clientType);
-
-    const existingInstallations = await this.getWowInstallationsByClientType(clientType);
-    if (existingInstallations.length > 0) {
-      // console.debug(`Existing install exists for: ${typeName}`);
-      return undefined;
-    }
-
-    const legacyLocationKey = this._warcraftService.getLegacyClientLocationKey(clientType);
-    const legacyLocation = await this._preferenceStorageService.getAsync(legacyLocationKey);
-    if (!legacyLocation) {
-      // console.debug(`Legacy ${typeName}: nothing to migrate`);
-      return undefined;
-    }
-
-    console.log(`Migrating legacy ${typeName} installation`);
-
-    const legacyDefaultChannel = await this.getLegacyDefaultAddonChannel(typeName);
-    const legacyDefaultAutoUpdate = await this.getLegacyDefaultAutoUpdate(typeName);
-
-    const label = await this._translateService.get(`COMMON.CLIENT_TYPES.${typeName.toUpperCase()}`).toPromise();
-
-    const newLocation = this.getFullProductPath(legacyLocation, clientType);
-
-    const newLocationExists = await this._fileService.pathExists(newLocation);
-    if (!newLocationExists) {
-      throw new Error(`Could not migrate legacy installation, path does not exist: ${newLocation}`);
-    }
-
-    const installation: WowInstallation = {
-      id: uuidv4(),
-      clientType,
-      defaultAddonChannelType: legacyDefaultChannel,
-      defaultAutoUpdate: legacyDefaultAutoUpdate,
-      label,
-      location: newLocation,
-      selected: false,
-    };
-
-    await this.addInstallation(installation, false);
-
-    return installation;
-  }
-
   private getFullProductPath(location: string, clientType: WowClientType): string {
     const clientFolderName = getWowClientFolderName(clientType);
     const executableName = this._warcraftService.getExecutableName(clientType);
     return path.join(location, clientFolderName, executableName);
-  }
-
-  private async getLegacyDefaultAddonChannel(typeName: string): Promise<AddonChannelType> {
-    const legacyDefaultChannelKey = `${typeName}${DEFAULT_CHANNEL_PREFERENCE_KEY_SUFFIX}`.toLowerCase();
-    const pref = await this._preferenceStorageService.getAsync(legacyDefaultChannelKey);
-    return parseInt(pref, 10) as AddonChannelType;
-  }
-
-  private async getLegacyDefaultAutoUpdate(typeName: string): Promise<boolean> {
-    const legacyDefaultAutoUpdateKey = `${typeName}${DEFAULT_AUTO_UPDATE_PREFERENCE_KEY_SUFFIX}`.toLowerCase();
-    const pref = await this._preferenceStorageService.getAsync(legacyDefaultAutoUpdateKey);
-    return pref === "true";
   }
 }

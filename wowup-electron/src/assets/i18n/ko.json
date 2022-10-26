@@ -298,7 +298,8 @@
         "NO_ADDON_FOUND": "애드온을 찾을 수 없습니다. 입력하신 주소가 올바른 애드온 페이지를 가리키고 있는지 확인해주세요.\n\nGithub에서 설치할 때는, 애드온을 zip 파일로 묶은 릴리즈 태그가 존재하는 저장소인지 확인하세요.",
         "NO_RELEASE_FOUND": "No releases were found for {message}.\n\nValid release with zip file assets are required for WowUp to download it.",
         "NO_SEARCH_RESULTS": "검색 결과가 없습니다.",
-        "TITLE": "애드온 설치 실패"
+        "TITLE": "애드온 설치 실패",
+        "WRATH_ASSET_NOT_FOUND": "No asset was found to download from {message}.\n\nA valid zip file ending with '-wrath' is required in order for WowUp to download it."
       },
       "IMPORT_ASSET_WARNING": "We were unable to verify if the latest release of this addon is compatible with your selected client.\n\nBut we did find a zip file \"{zipName}\".\n\nInstall at your own risk.",
       "IMPORT_BUTTON": "가져오기",

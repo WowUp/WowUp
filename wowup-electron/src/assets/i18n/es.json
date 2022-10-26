@@ -298,7 +298,8 @@
         "NO_ADDON_FOUND": "No se encontró el addon, asegúrese de que la URL apunta a la página correcta.\n\nSi está instalando desde GitHub, asegúrese de que el repositorio tiene una release tag con un archivo zip conteniendo el addon.",
         "NO_RELEASE_FOUND": "No se encontraron publicaciones para {message}.\n\nSe requiere una versión válida con los recursos contenidos en un archivo zip para que WowUp pueda descargarla.",
         "NO_SEARCH_RESULTS": "No se encontraron resultados.",
-        "TITLE": "Falló la instalación del addon"
+        "TITLE": "Falló la instalación del addon",
+        "WRATH_ASSET_NOT_FOUND": "No se encontró el recurso a descargar desde {message}.\n\nEs necesario un archivo zip válido con el sufijo '-wrath' para que WowUp pueda descargarlo."
       },
       "IMPORT_ASSET_WARNING": "No se pudo comprobar si la última versión de este addon es compatible con el cliente seleccionado. Sin embargo, se encontró un archivo zip \"{zipName}\".\n\n Puede instalarlo bajo su propia responsabilidad.",
       "IMPORT_BUTTON": "Importar",

@@ -160,6 +160,22 @@ export function setPendingOpenUrl(...openUrls: string[]): void {
 export function initializeIpcHandlers(window: BrowserWindow): void {
   log.info("process.versions", process.versions);
 
+  /* eslint-disable @typescript-eslint/no-unsafe-argument */
+  ipcMain.on("webview-log", (evt, level, ...data) => {
+    switch (level) {
+      case "error":
+        log.error(...data);
+        break;
+      case "warn":
+        log.warn(...data);
+        break;
+      default:
+        log.info(...data);
+        break;
+    }
+  });
+  /* eslint-enable @typescript-eslint/no-unsafe-argument */
+
   ipcMain.on("webview-error", (evt, err, msg) => {
     log.error("webview-error", err, msg);
   });

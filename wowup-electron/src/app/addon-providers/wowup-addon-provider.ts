@@ -616,7 +616,7 @@ export class WowUpAddonProvider extends AddonProvider {
       case WowClientType.Classic:
       case WowClientType.ClassicPtr:
       case WowClientType.ClassicBeta:
-        return WowGameType.BurningCrusade;
+        return WowGameType.WOTLK;
       case WowClientType.Retail:
       case WowClientType.RetailPtr:
       case WowClientType.Beta:
@@ -633,6 +633,8 @@ export class WowUpAddonProvider extends AddonProvider {
         return WowClientGroup.Classic;
       case WowGameType.Retail:
         return WowClientGroup.Retail;
+      case WowGameType.WOTLK:
+        return WowClientGroup.WOTLK;
     }
   }
 }

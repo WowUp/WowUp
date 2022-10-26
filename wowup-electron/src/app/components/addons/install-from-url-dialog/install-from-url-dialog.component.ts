@@ -10,14 +10,9 @@ import { TranslateService } from "@ngx-translate/core";
 import { roundDownloadCount, shortenDownloadCount } from "../../../utils/number.utils";
 import { DownloadCountPipe } from "../../../pipes/download-count.pipe";
 import { NO_SEARCH_RESULTS_ERROR } from "../../../../common/constants";
-import {
-  AssetMissingError,
-  BurningCrusadeAssetMissingError,
-  ClassicAssetMissingError,
-  GitHubLimitError,
-  NoReleaseFoundError,
-} from "../../../errors";
+import { AssetMissingError, GitHubLimitError, NoReleaseFoundError } from "../../../errors";
 import { SearchByUrlResult } from "../../../addon-providers/addon-provider";
+import { WowClientGroup } from "../../../../common/warcraft/wow-client-type";
 
 interface DownloadCounts {
   count: number;
@@ -163,16 +158,22 @@ export class InstallFromUrlDialogComponent implements OnDestroy {
         message = this._translateService.instant("DIALOGS.INSTALL_FROM_URL.ERROR.FAILED_TO_CONNECT");
       } else if (message === NO_SEARCH_RESULTS_ERROR) {
         message = this._translateService.instant("DIALOGS.INSTALL_FROM_URL.ERROR.NO_SEARCH_RESULTS");
-      } else if (err instanceof ClassicAssetMissingError) {
-        message = this._translateService.instant("DIALOGS.INSTALL_FROM_URL.ERROR.CLASSIC_ASSET_NOT_FOUND", {
-          message: err.message,
-        });
-      } else if (err instanceof BurningCrusadeAssetMissingError) {
-        message = this._translateService.instant("DIALOGS.INSTALL_FROM_URL.ERROR.BURNING_CRUSADE_ASSET_NOT_FOUND", {
-          message: err.message,
-        });
       } else if (err instanceof AssetMissingError) {
-        message = this._translateService.instant("DIALOGS.INSTALL_FROM_URL.ERROR.ASSET_NOT_FOUND", {
+        let key = "ERROR.ASSET_NOT_FOUND";
+        switch (err.clientGroup) {
+          case WowClientGroup.BurningCrusade:
+            key = "DIALOGS.INSTALL_FROM_URL.ERROR.BURNING_CRUSADE_ASSET_NOT_FOUND";
+            break;
+          case WowClientGroup.Classic:
+            key = "DIALOGS.INSTALL_FROM_URL.ERROR.CLASSIC_ASSET_NOT_FOUND";
+            break;
+          case WowClientGroup.WOTLK:
+            key = "DIALOGS.INSTALL_FROM_URL.ERROR.WRATH_ASSET_NOT_FOUND";
+            break;
+          case WowClientGroup.Retail:
+          default:
+        }
+        message = this._translateService.instant(key, {
           message: err.message,
         });
       } else if (err instanceof NoReleaseFoundError) {

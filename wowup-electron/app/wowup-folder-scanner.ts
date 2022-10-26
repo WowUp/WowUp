@@ -60,7 +60,7 @@ export class WowUpFolderScanner {
   }
 
   private get tocFileRegex() {
-    return /^([^/]+)[\\/]\1([-|_](mainline|bcc|tbc|classic|vanilla))?\.toc$/i;
+    return /^([^/]+)[\\/]\1([-_](mainline|bcc|tbc|classic|vanilla|wrath|wotlkc))?\.toc$/i;
   }
 
   private get bindingsXmlRegex() {

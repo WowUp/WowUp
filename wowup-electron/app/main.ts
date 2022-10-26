@@ -24,7 +24,6 @@ import {
   IPC_WINDOW_LEAVE_FULLSCREEN,
   IPC_WINDOW_MAXIMIZED,
   IPC_WINDOW_MINIMIZED,
-  IPC_WINDOW_RESUME,
   IPC_WINDOW_UNMAXIMIZED,
   USE_HARDWARE_ACCELERATION_PREFERENCE_KEY,
   WINDOW_DEFAULT_HEIGHT,
@@ -33,7 +32,6 @@ import {
   WINDOW_MIN_WIDTH,
   WOWUP_LOGO_FILENAME,
 } from "../src/common/constants";
-import { MainChannels } from "../src/common/wowup";
 import { AppOptions } from "../src/common/wowup/models";
 import { createAppMenu } from "./app-menu";
 import { appUpdater } from "./app-updater";

@@ -16,7 +16,21 @@ export class PatchNotesService {
 
 const CHANGELOGS: ChangeLog[] = [
   {
-    Version: "2.8.2",
+    Version: "2.9.0",
+    html: `
+    <h4 style="margin-top: 1em;">New Features</h4>
+    <ul>
+    <li>Add new support for the Wrath of the Lich King Classic Beta client</li>
+    <li>Add new logo for the Dragonflight Beta client</li>
+    </ul>
+    <h4 style="margin-top: 1em;">Changes</h4>
+    <ul>
+    <li>Chinese locale updates (CyanoHao)</li>
+    </ul>
+    `,
+  },
+  {
+    Version: "2.8.3",
     html: `
     <h4 style="margin-top: 1em;">New Features</h4>
     <ul>
@@ -25,6 +39,7 @@ const CHANGELOGS: ChangeLog[] = [
     </ul>
     <h4 style="margin-top: 1em;">Changes</h4>
     <ul>
+    <li>Allow removal of addons that had their dirs removed prior to delete (Linaori)</li>
     <li>Curse addon provider removed</li>
     <li>CurseV2 addon provider removed</li>
     <li>GitHub update check should now attempt to use release.json</li>
@@ -33,11 +48,15 @@ const CHANGELOGS: ChangeLog[] = [
     <li>Polish locale updates (nydas3k)</li>
     <li>Chinese locale updates (CyanoHao)</li>
     <li>German locale updates (Glow)</li>
+    <li>Hardware media keys no longer captured from media ads</li>
     </ul>
     <h4 style="margin-top: 1em;">Fixes</h4>
     <ul>
+    <li>Allow removing of addons with no directories (Linaori)</li>
     <li>Fix some text wrapping issues on the addon context menu</li>
     <li>Fix an issue with some GitHub repos</li>
+    <li>Fix an issue with saved window position breaking things</li>
+    <li>Fix an issue showing wrath Github releases as retail</li>
     <li>Add a confirmation prompt every time Wago is enabled</li>
     </ul>
     `,
