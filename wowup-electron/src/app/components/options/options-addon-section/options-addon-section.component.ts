@@ -10,6 +10,7 @@ import {
   Subject,
   switchMap,
   takeUntil,
+  zip,
 } from "rxjs";
 
 import { Component, ElementRef, OnDestroy, OnInit, ViewChild } from "@angular/core";
@@ -31,6 +32,7 @@ import { DialogFactory } from "../../../services/dialog/dialog.factory";
 import { LinkService } from "../../../services/links/link.service";
 import { SensitiveStorageService } from "../../../services/storage/sensitive-storage.service";
 import { formatDynamicLinks } from "../../../utils/dom.utils";
+import { FormGroup } from "@angular/forms";
 
 interface AddonProviderStateModel extends AddonProviderState {
   adRequired: boolean;
@@ -49,7 +51,7 @@ export class OptionsAddonSectionComponent implements OnInit, OnDestroy {
 
   public addonProviderStates$ = new BehaviorSubject<AddonProviderStateModel[]>([]);
 
-  public preferenceForm = new UntypedFormGroup({
+  public preferenceForm = new FormGroup({
     cfV2ApiKey: new UntypedFormControl(""),
     ghPersonalAccessToken: new UntypedFormControl(""),
     wagoAccessToken: new UntypedFormControl(""),
@@ -81,30 +83,9 @@ export class OptionsAddonSectionComponent implements OnInit, OnDestroy {
             );
           }
           if (typeof ch?.wagoAccessToken === "string") {
-            tasks.push(
-              from(this._sensitiveStorageService.setAsync(PREF_WAGO_ACCESS_KEY, ch.wagoAccessToken))
-            );
-
-            const wago = this._addonProviderService.getProvider(ADDON_PROVIDER_WAGO);
-            const hasAccessToken = ch.wagoAccessToken !== '';
-            wago.adRequired = !hasAccessToken;
-            if (wago.adRequired && wago.enabled) {
-              const currentState = this.addonProviderStates$.getValue();
-              const wagoState = currentState.filter((provider) => provider.providerName === ADDON_PROVIDER_WAGO);
-              wagoState[0].enabled = false;
-              this.addonProviderStates$.next(currentState);
-              tasks.push(
-                from(this._addonProviderService.setProviderEnabled(ADDON_PROVIDER_WAGO, false))
-              );
-            }
-
-            if (hasAccessToken && !wago.enabled) {
-              tasks.push(
-                from(this._addonProviderService.setProviderEnabled(ADDON_PROVIDER_WAGO, true))
-              );
-            }
+            tasks.push(from(this.onWagoAccessTokenChange(ch.wagoAccessToken)));
           }
-          return combineLatest(tasks);
+          return zip(tasks);
         }),
         catchError((e) => {
           console.error(e);
@@ -193,9 +174,27 @@ export class OptionsAddonSectionComponent implements OnInit, OnDestroy {
     const providerStates = this._addonProviderService.getAddonProviderStates().filter((provider) => provider.canEdit);
     const providerStateModels: AddonProviderStateModel[] = providerStates.map((state) => {
       const provider = this._addonProviderService.getProvider(state.providerName);
+      if (provider === undefined) {
+        throw new Error("loadProviderStates got undefined provider");
+      }
+      
       return { ...state, adRequired: provider.adRequired, providerNote: provider.providerNote };
     });
 
     this.addonProviderStates$.next(providerStateModels);
+  }
+
+  private async onWagoAccessTokenChange(accessToken: string | undefined) {
+    await this._sensitiveStorageService.setAsync(PREF_WAGO_ACCESS_KEY, accessToken);
+
+    const wago = this._addonProviderService.getProvider(ADDON_PROVIDER_WAGO);
+    if (wago === undefined) {
+      console.warn("onWagoAccessTokenChange failed to find wago provider");
+      return;
+    }
+
+    wago.adRequired = accessToken === undefined || accessToken.length === 0;
+
+    await this._addonProviderService.setProviderEnabled(ADDON_PROVIDER_WAGO, wago.enabled);
   }
 }
