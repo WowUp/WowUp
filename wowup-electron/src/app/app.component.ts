@@ -16,8 +16,6 @@ import { MatDialog } from "@angular/material/dialog";
 import { TranslateService } from "@ngx-translate/core";
 
 import {
-  ADDON_PROVIDER_CURSEFORGE,
-  ADDON_PROVIDER_CURSEFORGEV2,
   ALLIANCE_LIGHT_THEME,
   ALLIANCE_THEME,
   CURRENT_THEME_KEY,
