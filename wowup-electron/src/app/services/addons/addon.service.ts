@@ -829,8 +829,9 @@ export class AddonService {
   }
 
   private getLatestGameVersion(tocs: Toc[]) {
-    const versions = tocs.map((toc) => toc.interface);
-    return AddonUtils.getGameVersion(_.orderBy(versions, [], "desc")[0] || "");
+    const versions = tocs.map((toc) => +toc.interface);
+    const ordered = _.orderBy(versions, [], "desc");
+    return AddonUtils.getGameVersion(ordered[0]?.toString() || "");
   }
 
   private async backupOriginalDirectories(addon: Addon): Promise<string[]> {
