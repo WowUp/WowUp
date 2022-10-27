@@ -18,9 +18,14 @@ const CHANGELOGS: ChangeLog[] = [
   {
     Version: "2.9.1",
     html: `
+    <h4 style="margin-top: 1em;">New Features</h4>
+    <ul>
+    <li>Added support for custom Wago API keys (Linaori)</li>
+    </ul>
     <h4 style="margin-top: 1em;">Changes</h4>
     <ul>
     <li>Attempt to fix the weird diagonal line bug</li>
+    <li>Fix issues with 10.x interface version detection/sorting</li>
     <li>Update a bunch of dependencies</li>
     </ul>
     `,
