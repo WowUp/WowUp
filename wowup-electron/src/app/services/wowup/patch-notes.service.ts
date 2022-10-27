@@ -16,6 +16,16 @@ export class PatchNotesService {
 
 const CHANGELOGS: ChangeLog[] = [
   {
+    Version: "2.9.1",
+    html: `
+    <h4 style="margin-top: 1em;">Changes</h4>
+    <ul>
+    <li>Attempt to fix the weird diagonal line bug</li>
+    <li>Update a bunch of dependencies</li>
+    </ul>
+    `,
+  },
+  {
     Version: "2.9.0",
     html: `
     <h4 style="margin-top: 1em;">New Features</h4>
