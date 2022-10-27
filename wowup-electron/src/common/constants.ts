@@ -149,6 +149,7 @@ export const WAGO_PROMPT_KEY = "wago_prompt";
 export const PREF_TABS_COLLAPSED = "tabs_collapsed";
 export const PREF_CF2_API_KEY = "cf2_api_key";
 export const PREF_GITHUB_PERSONAL_ACCESS_TOKEN = "github_personal_access_token";
+export const PREF_WAGO_ACCESS_KEY = "wago_access_key";
 
 export const ACCT_FEATURE_KEYS = [ACCT_PUSH_ENABLED_KEY];
 

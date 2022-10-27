@@ -10,6 +10,7 @@ import {
   Subject,
   switchMap,
   takeUntil,
+  zip,
 } from "rxjs";
 
 import { Component, ElementRef, OnDestroy, OnInit, ViewChild } from "@angular/core";
@@ -17,7 +18,12 @@ import { UntypedFormControl, UntypedFormGroup } from "@angular/forms";
 import { MatListOption, MatSelectionListChange } from "@angular/material/list";
 import { TranslateService } from "@ngx-translate/core";
 
-import { ADDON_PROVIDER_WAGO, PREF_CF2_API_KEY, PREF_GITHUB_PERSONAL_ACCESS_TOKEN } from "../../../../common/constants";
+import {
+  ADDON_PROVIDER_WAGO,
+  PREF_CF2_API_KEY,
+  PREF_GITHUB_PERSONAL_ACCESS_TOKEN,
+  PREF_WAGO_ACCESS_KEY,
+} from "../../../../common/constants";
 import { AppConfig } from "../../../../environments/environment";
 import { AddonProviderType } from "../../../addon-providers/addon-provider";
 import { AddonProviderState } from "../../../models/wowup/addon-provider-state";
@@ -26,6 +32,7 @@ import { DialogFactory } from "../../../services/dialog/dialog.factory";
 import { LinkService } from "../../../services/links/link.service";
 import { SensitiveStorageService } from "../../../services/storage/sensitive-storage.service";
 import { formatDynamicLinks } from "../../../utils/dom.utils";
+import { FormGroup } from "@angular/forms";
 
 interface AddonProviderStateModel extends AddonProviderState {
   adRequired: boolean;
@@ -44,9 +51,10 @@ export class OptionsAddonSectionComponent implements OnInit, OnDestroy {
 
   public addonProviderStates$ = new BehaviorSubject<AddonProviderStateModel[]>([]);
 
-  public preferenceForm = new UntypedFormGroup({
+  public preferenceForm = new FormGroup({
     cfV2ApiKey: new UntypedFormControl(""),
     ghPersonalAccessToken: new UntypedFormControl(""),
+    wagoAccessToken: new UntypedFormControl(""),
   });
 
   public constructor(
@@ -74,7 +82,10 @@ export class OptionsAddonSectionComponent implements OnInit, OnDestroy {
               from(this._sensitiveStorageService.setAsync(PREF_GITHUB_PERSONAL_ACCESS_TOKEN, ch.ghPersonalAccessToken))
             );
           }
-          return combineLatest(tasks);
+          if (typeof ch?.wagoAccessToken === "string") {
+            tasks.push(from(this.onWagoAccessTokenChange(ch.wagoAccessToken)));
+          }
+          return zip(tasks);
         }),
         catchError((e) => {
           console.error(e);
@@ -149,9 +160,11 @@ export class OptionsAddonSectionComponent implements OnInit, OnDestroy {
     try {
       const cfV2ApiKey = await this._sensitiveStorageService.getAsync(PREF_CF2_API_KEY);
       const ghPersonalAccessToken = await this._sensitiveStorageService.getAsync(PREF_GITHUB_PERSONAL_ACCESS_TOKEN);
+      const wagoAccessToken = await this._sensitiveStorageService.getAsync(PREF_WAGO_ACCESS_KEY);
 
       this.preferenceForm.get("cfV2ApiKey").setValue(cfV2ApiKey);
       this.preferenceForm.get("ghPersonalAccessToken").setValue(ghPersonalAccessToken);
+      this.preferenceForm.get("wagoAccessToken").setValue(wagoAccessToken);
     } catch (e) {
       console.error(e);
     }
@@ -161,9 +174,27 @@ export class OptionsAddonSectionComponent implements OnInit, OnDestroy {
     const providerStates = this._addonProviderService.getAddonProviderStates().filter((provider) => provider.canEdit);
     const providerStateModels: AddonProviderStateModel[] = providerStates.map((state) => {
       const provider = this._addonProviderService.getProvider(state.providerName);
+      if (provider === undefined) {
+        throw new Error("loadProviderStates got undefined provider");
+      }
+      
       return { ...state, adRequired: provider.adRequired, providerNote: provider.providerNote };
     });
 
     this.addonProviderStates$.next(providerStateModels);
+  }
+
+  private async onWagoAccessTokenChange(accessToken: string | undefined) {
+    await this._sensitiveStorageService.setAsync(PREF_WAGO_ACCESS_KEY, accessToken);
+
+    const wago = this._addonProviderService.getProvider(ADDON_PROVIDER_WAGO);
+    if (wago === undefined) {
+      console.warn("onWagoAccessTokenChange failed to find wago provider");
+      return;
+    }
+
+    wago.adRequired = accessToken === undefined || accessToken.length === 0;
+
+    await this._addonProviderService.setProviderEnabled(ADDON_PROVIDER_WAGO, wago.enabled);
   }
 }
