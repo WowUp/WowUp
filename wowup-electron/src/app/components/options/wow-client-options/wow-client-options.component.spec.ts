@@ -10,7 +10,6 @@ import { httpLoaderFactory } from "../../../app.module";
 import { WowClientType } from "../../../../common/warcraft/wow-client-type";
 import { WowClientOptionsComponent } from "./wow-client-options.component";
 import { FormsModule } from "@angular/forms";
-import { overrideIconModule } from "../../../tests/mock-mat-icon";
 import { WarcraftInstallationService } from "../../../services/warcraft/warcraft-installation.service";
 import { WarcraftService } from "../../../services/warcraft/warcraft.service";
 import { mockPreload } from "../../../tests/test-helpers";
@@ -42,7 +41,7 @@ describe("WowClientOptionsComponent", () => {
       editingWowInstallationId$: new Observable(),
     });
 
-    let testBed = TestBed.configureTestingModule({
+    const testBed = TestBed.configureTestingModule({
       declarations: [WowClientOptionsComponent],
       imports: [
         MatModule,
@@ -62,8 +61,7 @@ describe("WowClientOptionsComponent", () => {
         }),
       ],
       providers: [MatDialog],
-    });
-    testBed = overrideIconModule(testBed).overrideComponent(WowClientOptionsComponent, {
+    }).overrideComponent(WowClientOptionsComponent, {
       set: {
         providers: [
           { provide: WarcraftInstallationService, useValue: warcraftInstallationService },

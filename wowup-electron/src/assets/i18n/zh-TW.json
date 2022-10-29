@@ -188,7 +188,6 @@
       "RETAILPTR": "測試伺服器"
     },
     "DATES": {
-      "DATETIME_SHORT": "{d, date, short} {d, time, short}",
       "DAYS_AGO": "{count} 天前",
       "HOURS_AGO": "{count} 小時前",
       "JUST_NOW": "剛剛",
@@ -483,7 +482,7 @@
     },
     "OPTIONS": {
       "ADDON": {
-        "AD_REQUIRED_HINT": "啟用此項會顯示廣告",
+        "AD_REQUIRED_HINT": "Ad or access key required",
         "CURSE_FORGE_V2": {
           "API_KEY_DESCRIPTION": "如果申請過 CurseForge API 金鑰，請填入此處以連線到 CurseForge API。",
           "API_KEY_TITLE": "CurseForge API 金鑰",

@@ -1,9 +1,9 @@
 const { contextBridge, ipcRenderer } = require("electron");
-const log = require("electron-log");
-const { join } = require("path");
-const { inspect } = require("util");
+// const log = require("electron-log");
+// const { join } = require("path");
+// const { inspect } = require("util");
 
-const LOG_PATH = getArg("log-path");
+// const LOG_PATH = getArg("log-path");
 
 const BACKOFF_KEY = "wago-backoff";
 const BACKOFF_SET_KEY = "wago-backoff-set";
@@ -12,39 +12,41 @@ const BACKOFF_MAX_WAIT = 2 * 60000;
 
 let keyExpectedTimeout = undefined;
 
-function getArg(argKey) {
-  for (const arg of window.process.argv) {
-    const [key, val] = arg.split("=");
-    if (key === `--${argKey}`) {
-      return val;
-    }
-  }
+// function getArg(argKey) {
+//   for (const arg of window.process.argv) {
+//     const [key, val] = arg.split("=");
+//     if (key === `--${argKey}`) {
+//       return val;
+//     }
+//   }
 
-  throw new Error(`Arg not found: ${argKey}`);
-}
+//   throw new Error(`Arg not found: ${argKey}`);
+// }
 
-log.transports.file.resolvePath = (variables) => {
-  return join(LOG_PATH, variables.fileName);
-};
+// log.transports.file.resolvePath = (variables) => {
+//   return join(LOG_PATH, variables.fileName);
+// };
 
-/* eslint-disable @typescript-eslint/no-unsafe-argument */
+// /* eslint-disable @typescript-eslint/no-unsafe-argument */
 console.log = function (...data) {
-  log.info(...data);
+  ipcRenderer.send("webview-log", "info", ...data);
 };
+
 console.warn = function (...data) {
-  log.warn(...data);
+  ipcRenderer.send("webview-log", "warn", ...data);
 };
+
 console.error = function (...data) {
-  log.error(...data);
+  ipcRenderer.send("webview-log", "error", ...data);
 };
-/* eslint-enable @typescript-eslint/no-unsafe-argument */
+// /* eslint-enable @typescript-eslint/no-unsafe-argument */
 
 window.addEventListener(
   "error",
   function (e) {
     const errMsg = e.error?.toString() || "unknown error on " + window.location;
     console.error(`[wago-preload] error listener:`, e.message, errMsg);
-    ipcRenderer.send("webview-error", inspect(e.error), e.message);
+    ipcRenderer.send("webview-error", e.error, e.message);
 
     if (keyExpectedTimeout != undefined) {
       backoffReload();

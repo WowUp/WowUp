@@ -20,7 +20,6 @@ import { WarcraftService } from "../../services/warcraft/warcraft.service";
 import { WowUpAddonService } from "../../services/wowup/wowup-addon.service";
 import { WowUpService } from "../../services/wowup/wowup.service";
 import { MyAddonsComponent } from "./my-addons.component";
-import { overrideIconModule } from "../../tests/mock-mat-icon";
 import { WarcraftInstallationService } from "../../services/warcraft/warcraft-installation.service";
 import { RelativeDurationPipe } from "../../pipes/relative-duration-pipe";
 import { PushService } from "../../services/push/push.service";
@@ -106,7 +105,7 @@ describe("MyAddonsComponent", () => {
       wowInstallations$: new BehaviorSubject<any[]>([]),
     });
 
-    let testBed = TestBed.configureTestingModule({
+    const testBed = TestBed.configureTestingModule({
       declarations: [MyAddonsComponent, InvertBoolPipe],
       imports: [
         MatModule,
@@ -127,9 +126,7 @@ describe("MyAddonsComponent", () => {
       ],
       providers: [MatDialog, RelativeDurationPipe],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
-    });
-
-    testBed = overrideIconModule(testBed).overrideComponent(MyAddonsComponent, {
+    }).overrideComponent(MyAddonsComponent, {
       set: {
         providers: [
           { provide: AddonService, useValue: addonServiceSpy },

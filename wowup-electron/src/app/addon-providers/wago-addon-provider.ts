@@ -1,9 +1,9 @@
 import { BehaviorSubject, firstValueFrom, from, Observable, of } from "rxjs";
-import { catchError, first, map, tap, timeout } from "rxjs/operators";
+import { catchError, first, map, switchMap, tap, timeout } from "rxjs/operators";
 import { v4 as uuidv4 } from "uuid";
 import _ from "lodash";
 
-import { ADDON_PROVIDER_WAGO } from "../../common/constants";
+import { ADDON_PROVIDER_WAGO, PREF_WAGO_ACCESS_KEY } from "../../common/constants";
 import { Addon } from "../../common/entities/addon";
 import { DownloadAuth } from "../../common/models/download-request";
 import { WowClientGroup, WowClientType } from "../../common/warcraft/wow-client-type";
@@ -27,6 +27,7 @@ import { SourceRemovedAddonError } from "../errors";
 import { getWowClientGroup } from "../../common/warcraft";
 import { HttpErrorResponse } from "@angular/common/http";
 import { UiMessageService } from "../services/ui-message/ui-message.service";
+import { SensitiveStorageService } from "../services/storage/sensitive-storage.service";
 
 declare type WagoGameVersion = "retail" | "classic" | "bc" | "wotlk";
 declare type WagoStability = "stable" | "beta" | "alpha";
@@ -185,6 +186,7 @@ export class WagoAddonProvider extends AddonProvider {
     private _warcraftService: WarcraftService,
     private _tocService: TocService,
     private _uiMessageService: UiMessageService,
+    private _sensitiveStorageService: SensitiveStorageService,
     _networkService: NetworkService
   ) {
     super();
@@ -238,7 +240,7 @@ export class WagoAddonProvider extends AddonProvider {
     console.debug(`[wago] scan`, request);
     console.debug(JSON.stringify(request));
 
-    const matchResult = await this.sendMatchesRequest(installation, request);
+    const matchResult = await this.sendMatchesRequest(request);
     console.debug(`[wago] matchResult`, matchResult);
 
     const scanResultMap: { [folder: string]: WagoScanAddon } = {};
@@ -293,6 +295,8 @@ export class WagoAddonProvider extends AddonProvider {
     const url = new URL(`${WAGO_BASE_URL}/addons/popular`);
     url.searchParams.set("game_version", this.getGameVersion(installation.clientType));
 
+    await firstValueFrom(this.ensureToken());
+
     const response = await this.sendRequest(() =>
       this._cachingService.transaction(
         `${installation.id}|${url.toString()}`,
@@ -344,8 +348,6 @@ export class WagoAddonProvider extends AddonProvider {
   }
 
   public async getDescription(installation: WowInstallation, externalId: string): Promise<string> {
-    await firstValueFrom(this.ensureToken());
-
     try {
       const response = await this.getAddonById(externalId);
       return convertMarkdown(response?.description ?? "");
@@ -453,6 +455,8 @@ export class WagoAddonProvider extends AddonProvider {
       return this._requestQueue.get(url);
     }
 
+    await firstValueFrom(this.ensureToken());
+
     const prom = this.sendRequest(() =>
       this._cachingService
         .transaction(
@@ -470,8 +474,10 @@ export class WagoAddonProvider extends AddonProvider {
     return await prom;
   }
 
-  private async sendMatchesRequest(installation: WowInstallation, request: WagoFingerprintRequest) {
+  private async sendMatchesRequest(request: WagoFingerprintRequest) {
     const url = new URL(`${WAGO_BASE_URL}/addons/_match`);
+    await firstValueFrom(this.ensureToken());
+
     return await this.sendRequest(() =>
       this._circuitBreaker.postJson<WagoScanResponse>(url, request, this.getRequestHeaders())
     );
@@ -709,13 +715,23 @@ export class WagoAddonProvider extends AddonProvider {
       throw new Error("[wago] circuit breaker is open");
     }
 
-    return this._apiTokenSrc.pipe(
-      timeout(timeoutMs),
-      first((token) => token !== ""),
-      tap(() => console.log(`[wago] ensureToken`)),
-      catchError(() => {
-        console.error("[wago] no token received after timeout");
-        return of("");
+    return from(this._sensitiveStorageService.getAsync(PREF_WAGO_ACCESS_KEY)).pipe(
+      switchMap((wagoAccessToken) => {
+        console.log(`[wago] stored token`, wagoAccessToken);
+        if (wagoAccessToken !== undefined && wagoAccessToken !== "") {
+          this._apiTokenSrc.next(wagoAccessToken);
+          return of(wagoAccessToken);
+        }
+
+        return this._apiTokenSrc.pipe(
+          timeout(timeoutMs),
+          first((token) => token !== ""),
+          tap(() => console.log(`[wago] ensureToken`)),
+          catchError(() => {
+            console.error("[wago] no token received after timeout");
+            return of("");
+          })
+        );
       })
     );
   }

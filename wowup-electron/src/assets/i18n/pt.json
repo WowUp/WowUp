@@ -188,7 +188,6 @@
       "RETAILPTR": "Reino de Teste Público"
     },
     "DATES": {
-      "DATETIME_SHORT": "{d, date, short} {d, time, short}",
       "DAYS_AGO": "{count} {count, plural, one{dia} other{dias}} atrás",
       "HOURS_AGO": "{count} {count, plural, one{hora} other{horas}} atrás",
       "JUST_NOW": "Recentemente",
@@ -483,7 +482,7 @@
     },
     "OPTIONS": {
       "ADDON": {
-        "AD_REQUIRED_HINT": "Anúncio necessário",
+        "AD_REQUIRED_HINT": "Ad or access key required",
         "CURSE_FORGE_V2": {
           "API_KEY_DESCRIPTION": "If you have requested a CurseForge API key you can input it here to connect to their API.",
           "API_KEY_TITLE": "CurseForge API Key",

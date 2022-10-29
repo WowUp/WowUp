@@ -188,7 +188,6 @@
       "RETAILPTR": "Publiczny Serwer Testowy"
     },
     "DATES": {
-      "DATETIME_SHORT": "{d, date, short} {d, time, short}",
       "DAYS_AGO": "{count} {count, plural, =1{dzień} other{dni}} temu",
       "HOURS_AGO": "{count} {count, plural, =1{godzinę} other{godziny}} temu",
       "JUST_NOW": "Przed chwilą",
@@ -483,7 +482,7 @@
     },
     "OPTIONS": {
       "ADDON": {
-        "AD_REQUIRED_HINT": "Reklama wymagana",
+        "AD_REQUIRED_HINT": "Ad or access key required",
         "CURSE_FORGE_V2": {
           "API_KEY_DESCRIPTION": "Jeśli zażądałeś klucza API CurseForge, możesz go wprowadzić tutaj, aby połączyć się z API.",
           "API_KEY_TITLE": "Klucz API CurseForge",

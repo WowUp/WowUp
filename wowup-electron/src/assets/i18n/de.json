@@ -188,7 +188,6 @@
       "RETAILPTR": "Öffentlicher Testrealm (PTR)"
     },
     "DATES": {
-      "DATETIME_SHORT": "{d, date, short} {d, time, short}",
       "DAYS_AGO": "Vor {count} {count, plural, one{Tag} other{Tagen}}",
       "HOURS_AGO": "Vor {count} {count, plural, one{Stunde} other{Stunden}}",
       "JUST_NOW": "Gerade eben",
@@ -483,7 +482,7 @@
     },
     "OPTIONS": {
       "ADDON": {
-        "AD_REQUIRED_HINT": "Werbung erforderlich",
+        "AD_REQUIRED_HINT": "Werbung oder API-Schlüssel erforderlich",
         "CURSE_FORGE_V2": {
           "API_KEY_DESCRIPTION": "Wenn du einen CurseForge-API-Schlüssel angefordert hast, kannst du ihn hier eingeben, um dich mit deren API zu verbinden.",
           "API_KEY_TITLE": "CurseForge API-Schlüssel",

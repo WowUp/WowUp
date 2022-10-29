@@ -188,7 +188,6 @@
       "RETAILPTR": "公共测试服"
     },
     "DATES": {
-      "DATETIME_SHORT": "{d, date, short} {d, time, short}",
       "DAYS_AGO": "{count} 天前",
       "HOURS_AGO": "{count} 小时前",
       "JUST_NOW": "刚刚",
@@ -483,7 +482,7 @@
     },
     "OPTIONS": {
       "ADDON": {
-        "AD_REQUIRED_HINT": "启用此项会显示广告",
+        "AD_REQUIRED_HINT": "Ad or access key required",
         "CURSE_FORGE_V2": {
           "API_KEY_DESCRIPTION": "如果申请过 CurseForge API 密钥，请填入此处以连接到 CurseForge API。",
           "API_KEY_TITLE": "CurseForge API 密钥",

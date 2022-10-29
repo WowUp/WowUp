@@ -10,7 +10,6 @@ import { CenteredSnackbarComponent } from "../components/common/centered-snackba
 import { ClientSelectorComponent } from "../components/common/client-selector/client-selector.component";
 import { ConfirmDialogComponent } from "../components/common/confirm-dialog/confirm-dialog.component";
 import { ConsentDialogComponent } from "../components/common/consent-dialog/consent-dialog.component";
-import { CurseMigrationDialogComponent } from "../components/common/curse-migration-dialog/curse-migration-dialog.component";
 import { ExternalUrlConfirmationDialogComponent } from "../components/common/external-url-confirmation-dialog/external-url-confirmation-dialog.component";
 import { PatchNotesDialogComponent } from "../components/common/patch-notes-dialog/patch-notes-dialog.component";
 import { ProgressButtonComponent } from "../components/common/progress-button/progress-button.component";
@@ -35,7 +34,6 @@ import { PipesModule } from "./pipes.module";
     CellWrapTextComponent,
     CenteredSnackbarComponent,
     ClientSelectorComponent,
-    CurseMigrationDialogComponent,
     WebViewComponent,
   ],
   imports: [CommonModule, FormsModule, TranslateModule, MatModule, PipesModule, ReactiveFormsModule],
@@ -53,7 +51,6 @@ import { PipesModule } from "./pipes.module";
     CellWrapTextComponent,
     CenteredSnackbarComponent,
     ClientSelectorComponent,
-    CurseMigrationDialogComponent,
     WebViewComponent,
   ],
 })

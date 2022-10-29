@@ -84,7 +84,7 @@ export abstract class AddonProvider {
     return Promise.resolve([]);
   }
 
-  public searchByUrl(addonUri: URL, installation: WowInstallation): Promise<SearchByUrlResult> {
+  public searchByUrl(addonUri: URL, installation: WowInstallation): Promise<SearchByUrlResult | undefined> {
     return Promise.resolve({});
   }
 

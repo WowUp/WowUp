@@ -149,6 +149,7 @@ export const WAGO_PROMPT_KEY = "wago_prompt";
 export const PREF_TABS_COLLAPSED = "tabs_collapsed";
 export const PREF_CF2_API_KEY = "cf2_api_key";
 export const PREF_GITHUB_PERSONAL_ACCESS_TOKEN = "github_personal_access_token";
+export const PREF_WAGO_ACCESS_KEY = "wago_access_key";
 
 export const ACCT_FEATURE_KEYS = [ACCT_PUSH_ENABLED_KEY];
 
@@ -171,7 +172,7 @@ export const NO_LATEST_SEARCH_RESULT_FILES_ERROR = "no-latest-search-result-file
 export const WINDOW_DEFAULT_WIDTH = 1280;
 export const WINDOW_DEFAULT_HEIGHT = 720;
 export const WINDOW_MIN_WIDTH = 940;
-export const WINDOW_MIN_HEIGHT = 500;
+export const WINDOW_MIN_HEIGHT = 700;
 export const MIN_VISIBLE_ON_SCREEN = 32;
 export const WOWUP_LOGO_FILENAME = "wowup_logo_purple.png";
 export const WOWUP_LOGO_MAC_SYSTEM_TRAY = "wowupBlackLgNopadTemplate.png";
