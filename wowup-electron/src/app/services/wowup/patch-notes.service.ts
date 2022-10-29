@@ -21,6 +21,7 @@ const CHANGELOGS: ChangeLog[] = [
     <h4 style="margin-top: 1em;">New Features</h4>
     <ul>
     <li>Added support for custom Wago API keys (Linaori)</li>
+    <li>Added support Dragonflight</li>
     </ul>
     <h4 style="margin-top: 1em;">Changes</h4>
     <ul>
