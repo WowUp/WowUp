@@ -179,13 +179,13 @@
     },
     "CLIENT_TYPES": {
       "BETA": "巨龍崛起 Beta",
-      "CLASSIC": "燃燒的遠征",
+      "CLASSIC": "巫妖王之怒",
       "CLASSICBETA": "巫妖王之怒 Beta",
       "CLASSICERA": "經典舊世",
       "CLASSICERAPTR": "經典舊世大師賽季 PTR",
-      "CLASSICPTR": "燃燒的遠征 PTR",
-      "RETAIL": "暗影之境",
-      "RETAILPTR": "暗影之境 PTR"
+      "CLASSICPTR": "巫妖王之怒 PTR",
+      "RETAIL": "巨龍崛起",
+      "RETAILPTR": "巨龍崛起 PTR"
     },
     "DATES": {
       "DAYS_AGO": "{count} 天前",

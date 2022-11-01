@@ -179,13 +179,13 @@
     },
     "CLIENT_TYPES": {
       "BETA": "巨龙时代 Beta",
-      "CLASSIC": "燃烧的远征",
+      "CLASSIC": "巫妖王之怒",
       "CLASSICBETA": "巫妖王之怒 Beta",
       "CLASSICERA": "经典旧世",
       "CLASSICERAPTR": "经典旧世赛季服 PTR",
-      "CLASSICPTR": "燃烧的远征 PTR",
-      "RETAIL": "暗影国度",
-      "RETAILPTR": "暗影国度 PTR"
+      "CLASSICPTR": "巫妖王之怒 PTR",
+      "RETAIL": "巨龙时代",
+      "RETAILPTR": "巨龙时代 PTR"
     },
     "DATES": {
       "DAYS_AGO": "{count} 天前",
