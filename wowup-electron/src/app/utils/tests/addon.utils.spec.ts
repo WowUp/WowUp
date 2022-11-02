@@ -18,12 +18,12 @@ describe("AddonUtils", () => {
 
   it("Should accept empty str", () => {
     const gameVersion = AddonUtils.getGameVersion("");
-    expect(gameVersion).toEqual("");
+    expect(gameVersion).toEqual("0.0.0");
   });
 
   it("Should accept undefined", () => {
     const gameVersion = AddonUtils.getGameVersion(undefined);
-    expect(gameVersion).toEqual("");
+    expect(gameVersion).toEqual("0.0.0");
   });
 
   it("Should convert 10.1.2", () => {

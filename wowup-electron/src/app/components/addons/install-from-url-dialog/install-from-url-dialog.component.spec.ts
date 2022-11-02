@@ -13,7 +13,6 @@ import { AddonService } from "../../../services/addons/addon.service";
 import { SessionService } from "../../../services/session/session.service";
 import { InstallFromUrlDialogComponent } from "./install-from-url-dialog.component";
 import { IconService } from "../../../services/icons/icon.service";
-import { overrideIconModule } from "../../../tests/mock-mat-icon";
 
 describe("InstallFromUrlDialogComponent", () => {
   console.log("InstallFromUrlDialogComponent");
@@ -23,7 +22,7 @@ describe("InstallFromUrlDialogComponent", () => {
   let addonServiceSpy: any;
 
   beforeEach(async () => {
-    let testBed = TestBed.configureTestingModule({
+    const testBed = TestBed.configureTestingModule({
       declarations: [InstallFromUrlDialogComponent],
       imports: [
         MatModule,
@@ -41,9 +40,7 @@ describe("InstallFromUrlDialogComponent", () => {
           },
         }),
       ],
-    });
-
-    testBed = overrideIconModule(testBed).overrideComponent(InstallFromUrlDialogComponent, {
+    }).overrideComponent(InstallFromUrlDialogComponent, {
       set: {
         providers: [
           DownloadCountPipe,

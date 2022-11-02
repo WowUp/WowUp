@@ -18,7 +18,7 @@ import { WarcraftService } from "../warcraft/warcraft.service";
 import { WowUpApiService } from "../wowup-api/wowup-api.service";
 import { WagoAddonProvider } from "../../addon-providers/wago-addon-provider";
 import { AddonProviderState } from "../../models/wowup/addon-provider-state";
-import { ADDON_PROVIDER_UNKNOWN, WAGO_PROMPT_KEY } from "../../../common/constants";
+import { ADDON_PROVIDER_UNKNOWN, PREF_WAGO_ACCESS_KEY, WAGO_PROMPT_KEY } from "../../../common/constants";
 import { Subject } from "rxjs";
 import { PreferenceStorageService } from "../storage/preference-storage.service";
 import { SensitiveStorageService } from "../storage/sensitive-storage.service";
@@ -28,7 +28,7 @@ import { UiMessageService } from "../ui-message/ui-message.service";
   providedIn: "root",
 })
 export class AddonProviderFactory {
-  private readonly _addonProviderChangeSrc = new Subject<AddonProvider>();
+  public readonly _addonProviderChangeSrc = new Subject<AddonProvider>();
 
   private _providerMap: Map<string, AddonProvider> = new Map();
 
@@ -59,7 +59,7 @@ export class AddonProviderFactory {
       this.createRaiderIoAddonProvider(),
       this.createWowUpCompanionAddonProvider(),
       this.createWowUpAddonProvider(),
-      this.createWagoAddonProvider(),
+      await this.createWagoAddonProvider(),
       // this.createCurseAddonProvider(),
       // this.createCurseV2AddonProvider(),
       this.createTukUiAddonProvider(),
@@ -101,15 +101,21 @@ export class AddonProviderFactory {
     this._addonProviderChangeSrc.next(provider);
   }
 
-  public createWagoAddonProvider(): WagoAddonProvider {
-    return new WagoAddonProvider(
+  public async createWagoAddonProvider(): Promise<WagoAddonProvider> {
+    const wago = new WagoAddonProvider(
       this._electronService,
       this._cachingService,
       this._warcraftService,
       this._tocService,
       this._uiMessageService,
+      this._sensitiveStorageService,
       this._networkService
     );
+
+    const storedWagoKey = await this._sensitiveStorageService.getAsync(PREF_WAGO_ACCESS_KEY);
+    wago.adRequired = storedWagoKey === undefined || storedWagoKey.length === 0;
+
+    return wago;
   }
 
   public createWowUpCompanionAddonProvider(): WowUpCompanionAddonProvider {

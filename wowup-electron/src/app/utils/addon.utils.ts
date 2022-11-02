@@ -42,20 +42,20 @@ export function needsInstall(addon: Addon): boolean {
   return !addon.installedVersion;
 }
 
-export function getGameVersion(gameVersion: string | undefined): string {
-  if (!gameVersion) {
-    return "";
+export function getGameVersion(interfaceStr: string | undefined): string {
+  if (typeof interfaceStr !== "string" || interfaceStr.length === 0) {
+    return Array(3).fill("0").join(".");
   }
 
-  if (gameVersion.toString().indexOf(".") !== -1) {
-    return gameVersion;
+  if (interfaceStr.toString().indexOf(".") !== -1) {
+    return interfaceStr;
   }
 
   // split the long interface into 3 chunks, major minor patch
   const chunks = [
-    gameVersion.substr(0, gameVersion.length - 4),
-    gameVersion.substr(gameVersion.length - 4, 2),
-    gameVersion.substr(gameVersion.length - 2, 2),
+    interfaceStr.substring(0, interfaceStr.length - 4),
+    interfaceStr.substring(interfaceStr.length - 4, interfaceStr.length - 2),
+    interfaceStr.substring(interfaceStr.length - 2),
   ];
   return chunks.map((c) => parseInt(c, 10)).join(".");
 }

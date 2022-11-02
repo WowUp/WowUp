@@ -11,7 +11,6 @@ import { AddonService } from "../../../services/addons/addon.service";
 import { IconService } from "../../../services/icons/icon.service";
 import { SessionService } from "../../../services/session/session.service";
 import { WarcraftInstallationService } from "../../../services/warcraft/warcraft-installation.service";
-import { overrideIconModule } from "../../../tests/mock-mat-icon";
 
 import {
   InstallFromProtocolDialogComponent,
@@ -41,7 +40,7 @@ describe("InstallFromProtocolDialogComponent", () => {
 
     dialogModel = { protocol: "" };
 
-    let testBed = TestBed.configureTestingModule({
+    const testBed = TestBed.configureTestingModule({
       declarations: [InstallFromProtocolDialogComponent],
       imports: [
         MatModule,
@@ -61,9 +60,7 @@ describe("InstallFromProtocolDialogComponent", () => {
       ],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
       providers: [{ provide: MAT_DIALOG_DATA, useValue: dialogModel }],
-    });
-
-    testBed = overrideIconModule(testBed).overrideComponent(InstallFromProtocolDialogComponent, {
+    }).overrideComponent(InstallFromProtocolDialogComponent, {
       set: {
         providers: [
           { provide: MatDialogRef, useValue: {} },

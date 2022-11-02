@@ -17,7 +17,6 @@ import { SessionService } from "../../services/session/session.service";
 import { WarcraftService } from "../../services/warcraft/warcraft.service";
 import { WowUpService } from "../../services/wowup/wowup.service";
 import { GetAddonsComponent } from "./get-addons.component";
-import { overrideIconModule } from "../../tests/mock-mat-icon";
 import { SnackbarService } from "../../services/snackbar/snackbar.service";
 import { WarcraftInstallationService } from "../../services/warcraft/warcraft-installation.service";
 import { DownloadCountPipe } from "../../pipes/download-count.pipe";
@@ -83,7 +82,7 @@ describe("GetAddonsComponent", () => {
       wowInstallations$: new BehaviorSubject<any[]>([]),
     });
 
-    let testBed = TestBed.configureTestingModule({
+    const testBed = TestBed.configureTestingModule({
       declarations: [GetAddonsComponent],
       imports: [
         MatModule,
@@ -105,9 +104,7 @@ describe("GetAddonsComponent", () => {
       ],
       providers: [MatDialog, RelativeDurationPipe, DownloadCountPipe],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
-    });
-
-    testBed = overrideIconModule(testBed).overrideComponent(GetAddonsComponent, {
+    }).overrideComponent(GetAddonsComponent, {
       set: {
         providers: [
           { provide: AddonService, useValue: addonServiceSpy },
