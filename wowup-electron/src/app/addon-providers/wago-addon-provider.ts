@@ -440,7 +440,7 @@ export class WagoAddonProvider extends AddonProvider {
     });
   }
 
-  public getDownloadAuth(): DownloadAuth | undefined {
+  public async getDownloadAuth(): Promise<DownloadAuth | undefined> {
     return {
       queryParams: {
         token: this._apiTokenSrc.value,

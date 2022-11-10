@@ -130,7 +130,7 @@ export abstract class AddonProvider {
     return undefined;
   }
 
-  public getDownloadAuth(): DownloadAuth | undefined {
+  public async getDownloadAuth(): Promise<DownloadAuth | undefined> {
     return undefined;
   }
 }

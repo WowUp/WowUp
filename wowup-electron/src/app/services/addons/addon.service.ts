@@ -650,11 +650,13 @@ export class AddonService {
     let unzippedDirectory = "";
 
     try {
+      const downloadAuth = await addonProvider.getDownloadAuth();
+
       const downloadOptions: DownloadOptions = {
         fileName: downloadFileName,
         outputFolder: this._wowUpService.applicationDownloadsFolderPath,
         url: addon.downloadUrl,
-        auth: addonProvider.getDownloadAuth(),
+        auth: downloadAuth,
       };
 
       downloadedFilePath = await this._downloadService.downloadZipFile(downloadOptions);
