@@ -80,7 +80,6 @@ export class GetAddonsComponent implements OnInit, OnDestroy {
   public columnDefs$ = new BehaviorSubject<ColDef[]>([]);
   public rowData$ = this._rowDataSrc.asObservable();
   public enableControls$ = this._sessionService.enableControls$;
-  public frameworkComponents = {};
   public columnTypes: {
     [key: string]: ColDef;
   } = { nonEditableColumn: { editable: false } };
@@ -224,13 +223,6 @@ export class GetAddonsComponent implements OnInit, OnDestroy {
     this._addonService.searchError$.pipe(takeUntil(this._destroy$)).subscribe((error) => {
       this.displayError(error);
     });
-
-    this.frameworkComponents = {
-      potentialAddonRenderer: PotentialAddonTableCellComponent,
-      statusRenderer: GetAddonStatusColumnComponent,
-      contextHeader: TableContextHeaderCellComponent,
-      wrapTextCell: CellWrapTextComponent,
-    };
 
     this.columnDefs$.next(this.createColumns());
 
@@ -381,7 +373,7 @@ export class GetAddonsComponent implements OnInit, OnDestroy {
 
   private createColumns(): ColDef[] {
     const baseColumn = {
-      headerComponent: "contextHeader",
+      headerComponent: TableContextHeaderCellComponent,
       headerComponentParams: {
         onHeaderContext: this.onHeaderContext,
       },
@@ -400,7 +392,7 @@ export class GetAddonsComponent implements OnInit, OnDestroy {
         flex: 2,
         headerName: this._translateService.instant("PAGES.GET_ADDONS.TABLE.ADDON_COLUMN_HEADER"),
         sortable: true,
-        cellRenderer: "potentialAddonRenderer",
+        cellRenderer: PotentialAddonTableCellComponent,
         cellRendererParams: {
           channel: this.defaultAddonChannel,
           clientType: this.selectedClient,
@@ -434,7 +426,7 @@ export class GetAddonsComponent implements OnInit, OnDestroy {
         sortable: true,
         headerName: this._translateService.instant("PAGES.GET_ADDONS.TABLE.AUTHOR_COLUMN_HEADER"),
         comparator: (va, vb, na, nb) => this.compareElement(na, nb, "author"),
-        cellRenderer: "wrapTextCell",
+        cellRenderer: CellWrapTextComponent,
         ...baseColumn,
       },
       {
@@ -450,7 +442,7 @@ export class GetAddonsComponent implements OnInit, OnDestroy {
         flex: 1,
         headerName: this._translateService.instant("PAGES.GET_ADDONS.TABLE.STATUS_COLUMN_HEADER"),
         comparator: (va, vb, na, nb) => this.compareElement(na, nb, "status"),
-        cellRenderer: "statusRenderer",
+        cellRenderer: GetAddonStatusColumnComponent,
         ...baseColumn,
       },
     ];
