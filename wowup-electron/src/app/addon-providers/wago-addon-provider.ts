@@ -440,12 +440,12 @@ export class WagoAddonProvider extends AddonProvider {
     });
   }
 
-  public async getDownloadAuth(): Promise<DownloadAuth | undefined> {
-    return {
+  public getDownloadAuth(): Promise<DownloadAuth | undefined> {
+    return Promise.resolve({
       queryParams: {
         token: this._apiTokenSrc.value,
       },
-    };
+    });
   }
 
   private async getAddonById(addonId: string): Promise<WagoAddon> {

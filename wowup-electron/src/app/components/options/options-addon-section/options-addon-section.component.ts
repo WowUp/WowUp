@@ -1,7 +1,6 @@
 import {
   BehaviorSubject,
   catchError,
-  combineLatest,
   debounceTime,
   first,
   from,
@@ -14,7 +13,7 @@ import {
 } from "rxjs";
 
 import { Component, ElementRef, OnDestroy, OnInit, ViewChild } from "@angular/core";
-import { UntypedFormControl, UntypedFormGroup } from "@angular/forms";
+import { UntypedFormControl } from "@angular/forms";
 import { MatListOption, MatSelectionListChange } from "@angular/material/list";
 import { TranslateService } from "@ngx-translate/core";
 
@@ -177,7 +176,7 @@ export class OptionsAddonSectionComponent implements OnInit, OnDestroy {
       if (provider === undefined) {
         throw new Error("loadProviderStates got undefined provider");
       }
-      
+
       return { ...state, adRequired: provider.adRequired, providerNote: provider.providerNote };
     });
 
