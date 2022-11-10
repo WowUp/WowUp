@@ -138,10 +138,18 @@ export class WowUpAddonService {
     try {
       const availableUpdates = addons.filter(this.canUpdateAddon).map(this.getAddonVersion);
 
+      let interfaceVersion = "";
+
+      try {
+        interfaceVersion = toInterfaceVersion(wowUpAddon.gameVersion || "");
+      } catch (e) {
+        console.error(e);
+      }
+
       const wowUpAddonData: WowUpAddonData = {
         updatesAvailable: availableUpdates,
         generatedAt: new Date().toString(),
-        interfaceVersion: toInterfaceVersion(wowUpAddon.gameVersion ?? ""),
+        interfaceVersion,
         wowUpAddonName: wowUpAddon.installedFolders ?? "",
         wowUpAddonVersion: wowUpAddon.installedVersion ?? "",
       };

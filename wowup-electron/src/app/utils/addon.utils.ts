@@ -60,6 +60,10 @@ export function getGameVersion(interfaceStr: string | undefined): string {
   return chunks.map((c) => parseInt(c, 10)).join(".");
 }
 
+/**
+ * Accepts n semver (10.0.0) and formats it as an interface version (100000)
+ * if the format is invalid or missing throw error
+ */
 export function toInterfaceVersion(version: string): string {
   if (!version) {
     throw new Error("interface version empty or undefined");

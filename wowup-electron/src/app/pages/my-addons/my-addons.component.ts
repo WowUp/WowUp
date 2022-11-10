@@ -1320,10 +1320,15 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
     const v1 = (nodeA.data["gameVersion"] as string)?.trim();
     const v2 = (nodeB.data["gameVersion"] as string)?.trim();
 
-    const iv1 = +toInterfaceVersion(v1 || "0.0.0");
-    const iv2 = +toInterfaceVersion(v2 || "0.0.0");
+    try {
+      const iv1 = +toInterfaceVersion(v1 || "0.0.0");
+      const iv2 = +toInterfaceVersion(v2 || "0.0.0");
 
-    return iv1 > iv2 ? 1 : -1;
+      return iv1 > iv2 ? 1 : -1;
+    } catch (e) {
+      console.error(e);
+      return -1;
+    }
   }
 
   // If nodes have the same primary value, use the canonical name as a fallback
