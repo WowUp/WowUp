@@ -16,6 +16,17 @@ export class PatchNotesService {
 
 const CHANGELOGS: ChangeLog[] = [
   {
+    Version: "2.9.2",
+    html: `
+    <h4 style="margin-top: 1em;">Changes</h4>
+    <ul>
+    <li>Improved private GitHub repo support</li>
+    <li>Disable the ability to shift + click columns</li>
+    <li>Update a bunch of dependencies</li>
+    </ul>
+    `,
+  },
+  {
     Version: "2.9.1",
     html: `
     <h4 style="margin-top: 1em;">New Features</h4>
