@@ -656,7 +656,7 @@ export function initializeIpcHandlers(window: BrowserWindow): void {
 
           if (typeof arg.auth?.headers === "object") {
             for (const [key, value] of Object.entries(arg.auth.headers)) {
-              log.info(`Setting header: ${key}=${value}`);
+              log.info(`Setting header: ${key}=${value.substring(0,3)}***`);
               req.setHeader(key, value);
             }
           }
