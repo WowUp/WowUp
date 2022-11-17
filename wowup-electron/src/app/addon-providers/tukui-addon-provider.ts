@@ -180,6 +180,8 @@ export class TukUiAddonProvider extends AddonProvider {
         ? targetToc.tukUiProjectFolders.split(",").map((f) => f.trim())
         : [addonFolder.name];
 
+      const hasPatch = typeof tukUiAddon.patch === "string" && tukUiAddon.patch.toLowerCase() !== "all";
+
       addonFolder.matchingAddon = {
         autoUpdateEnabled: false,
         autoUpdateNotificationsEnabled: false,
@@ -192,7 +194,7 @@ export class TukUiAddonProvider extends AddonProvider {
         downloadUrl: tukUiAddon.url,
         externalId: tukUiAddon.id.toString(),
         externalUrl: tukUiAddon.web_url,
-        gameVersion: getGameVersion(tukUiAddon.patch),
+        gameVersion: hasPatch ? getGameVersion(tukUiAddon.patch) : undefined,
         installedAt: addonFolder.fileStats?.birthtime ?? new Date(0),
         installedFolders: installedFolders,
         installedFolderList: installedFolderList,
@@ -284,11 +286,13 @@ export class TukUiAddonProvider extends AddonProvider {
       return undefined;
     }
 
+    const hasPatch = typeof addon.patch === "string" && addon.patch.toLowerCase() !== "all";
+
     const latestFile: AddonSearchResultFile = {
       channelType: AddonChannelType.Stable,
       folders: folderName ? [folderName] : [],
       downloadUrl: addon.url,
-      gameVersion: getGameVersion(addon.patch),
+      gameVersion: hasPatch ? getGameVersion(addon.patch) : "",
       version: addon.version,
       releaseDate: new Date(`${addon.lastupdate} UTC`),
       changelog: await this.formatChangelog(addon),
