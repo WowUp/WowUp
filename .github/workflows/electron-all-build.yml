@@ -41,6 +41,10 @@ jobs:
       - name: Install Angular CLI
         run: npm install -g @angular/cli
 
+      - name: dmg-license
+        if: matrix.os == 'macos-11'
+        run: npm install -g dmg-license
+
       - name: Build Linux App
         if: matrix.os == 'ubuntu-latest'
         env:
