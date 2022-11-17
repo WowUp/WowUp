@@ -43,7 +43,9 @@ jobs:
 
       - name: dmg-license
         if: matrix.os == 'macos-11'
-        run: npm install -g dmg-license
+        run: |
+          cd ./wowup-electron
+          npm i dmg-license
 
       - name: Build Linux App
         if: matrix.os == 'ubuntu-latest'
