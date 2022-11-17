@@ -234,9 +234,11 @@ export class GitHubAddonProvider extends AddonProvider {
     const asset = assetResult.matchedAsset || assetResult.latestAsset;
     console.debug("asset", asset);
 
+    const hasPat = await this.hasPersonalAccessKey();
+
     const searchResultFile: AddonSearchResultFile = {
       channelType: AddonChannelType.Stable,
-      downloadUrl: asset.browser_download_url,
+      downloadUrl: hasPat ? asset.url : asset.browser_download_url,
       folders: [addonName],
       gameVersion: "",
       version: asset.name,
