@@ -41,9 +41,9 @@ jobs:
       - name: Install Angular CLI
         run: npm install -g @angular/cli
 
-      - name: dmg-license
-        if: matrix.os == 'macos-11'
-        run: npm install -g dmg-license
+      # - name: dmg-license
+      #   if: matrix.os == 'macos-11'
+      #   run: npm install -g dmg-license
 
       - name: Build Linux App
         if: matrix.os == 'ubuntu-latest'
@@ -51,7 +51,7 @@ jobs:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token
         run: |
           cd ./wowup-electron
-          npm ci --force
+          npm i
           npm run electron:publish
 
       - name: Build Mac App
@@ -65,7 +65,7 @@ jobs:
           NOTARIZE_APPLE_TEAM_ID: ${{ secrets.NOTARIZE_APPLE_TEAM_ID }}
         run: |
           cd ./wowup-electron
-          npm ci --force
+          npm i
           npm run electron:publish
 
       - name: Build Windows App
@@ -74,4 +74,4 @@ jobs:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token
           CSC_LINK: ${{ secrets.WINDOWS_CSC_LINK }}
           CSC_KEY_PASSWORD: ${{ secrets.WINDOWS_CSC_KEY_PASSWORD }}
-        run: cd ./wowup-electron && npm ci --force && npm run electron:publish
+        run: cd ./wowup-electron && npm i && npm run electron:publish
