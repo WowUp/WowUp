@@ -28,7 +28,7 @@ import { UiMessageService } from "../ui-message/ui-message.service";
   providedIn: "root",
 })
 export class AddonProviderFactory {
-  public readonly _addonProviderChangeSrc = new Subject<AddonProvider>();
+  private readonly _addonProviderChangeSrc = new Subject<AddonProvider>();
 
   private _providerMap: Map<string, AddonProvider> = new Map();
 
@@ -83,11 +83,11 @@ export class AddonProviderFactory {
 
   public async setProviderEnabled(type: AddonProviderType, enabled: boolean): Promise<void> {
     if (!this._providerMap.has(type)) {
-      throw new Error("cannot set provider state, not found");
+      throw new Error(`cannot set provider state, not found: ${type}`);
     }
 
     const provider = this._providerMap.get(type);
-    if (!provider.allowEdit) {
+    if (!provider || !provider.allowEdit) {
       throw new Error(`this provider is not editable: ${type}`);
     }
 
@@ -231,6 +231,10 @@ export class AddonProviderFactory {
   }
 
   public canShowChangelog(providerName: string | undefined): boolean {
+    if (providerName === undefined) {
+      return false;
+    }
+
     return this.getProvider(providerName)?.canShowChangelog ?? false;
   }
 

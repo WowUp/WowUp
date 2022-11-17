@@ -506,11 +506,14 @@ export class AddonService {
     const autoUpdateAddons = await this.getAutoUpdateEnabledAddons();
     const addonsWithUpdates = autoUpdateAddons.filter((addon) => AddonUtils.needsUpdate(addon));
 
-    const tasks = addonsWithUpdates.map((addon) =>
-      this.updateAddon(addon.id)
+    const tasks = addonsWithUpdates.map((addon) => {
+      if (typeof addon.id !== "string") {
+        return Promise.resolve(undefined);
+      }
+      return this.updateAddon(addon.id)
         .then(() => addon)
-        .catch((e) => console.error(e))
-    );
+        .catch((e) => console.error(e));
+    });
 
     const results = await Promise.all(tasks);
     return results.filter((res) => res !== undefined).map((res) => res as Addon);
