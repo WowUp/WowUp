@@ -172,7 +172,7 @@
     "uuid": "9.0.0",
     "wait-on": "6.0.1",
     "webdriver-manager": "12.1.8",
-    "zone.js": "0.11.5"
+    "zone.js": "0.12.0"
   },
   "engines": {
     "node": ">=16.0.0"
