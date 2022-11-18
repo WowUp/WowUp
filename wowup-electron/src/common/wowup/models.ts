@@ -53,14 +53,6 @@ export interface SystemTrayConfig {
   checkUpdateLabel: string;
 }
 
-export interface WowUpScanResult {
-  fileCount: number;
-  fileFingerprints: string[];
-  fingerprint: string;
-  folderName: string;
-  path: string;
-}
-
 export type PushAction = "addon-update";
 
 export interface PushNotification<T extends PushNotificationData | string> {

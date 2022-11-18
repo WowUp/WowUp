@@ -85,7 +85,7 @@ import { DownloadStatusType } from "../src/common/models/download-status-type";
 import { FsDirent, TreeNode } from "../src/common/models/ipc-events";
 import { UnzipRequest } from "../src/common/models/unzip-request";
 import { RendererChannels } from "../src/common/wowup";
-import { MenuConfig, SystemTrayConfig, WowUpScanResult } from "../src/common/wowup/models";
+import { MenuConfig, SystemTrayConfig } from "../src/common/wowup/models";
 import { createAppMenu } from "./app-menu";
 import * as fsp from "fs/promises";
 
@@ -109,7 +109,7 @@ import { GetDirectoryTreeRequest } from "../src/common/models/ipc-request";
 import { ProductDb } from "../src/common/wowup/product-db";
 import { restoreWindow } from "./window-state";
 import { firstValueFrom, from, mergeMap, toArray } from "rxjs";
-import { Addon, FsStats } from "wowup-lib-core";
+import { Addon, AddonScanResult, FsStats } from "wowup-lib-core";
 
 let PENDING_OPEN_URLS: string[] = [];
 
@@ -367,7 +367,7 @@ export function initializeIpcHandlers(window: BrowserWindow): void {
     return true;
   });
 
-  handle(IPC_WOWUP_GET_SCAN_RESULTS, async (evt, filePaths: string[]): Promise<WowUpScanResult[]> => {
+  handle(IPC_WOWUP_GET_SCAN_RESULTS, async (evt, filePaths: string[]): Promise<AddonScanResult[]> => {
     const taskResults = await firstValueFrom(
       from(filePaths).pipe(
         mergeMap((folder) => from(new WowUpFolderScanner(folder).scanFolder()), 3),
