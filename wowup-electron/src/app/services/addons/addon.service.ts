@@ -32,7 +32,7 @@ import { AddonScanError, AddonSyncError, GenericProviderError } from "../../erro
 import { AddonInstallState } from "../../models/wowup/addon-install-state";
 import { AddonUpdateEvent } from "../../models/wowup/addon-update-event";
 import * as AddonUtils from "../../utils/addon.utils";
-import { getEnumName } from "../../utils/enum.utils";
+import { getEnumName } from "wowup-lib-core/lib/utils";
 import * as SearchResults from "../../utils/search-result.utils";
 import { capitalizeString } from "../../utils/string.utils";
 import { AnalyticsService } from "../analytics/analytics.service";

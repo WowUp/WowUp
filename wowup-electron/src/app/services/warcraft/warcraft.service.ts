@@ -8,7 +8,7 @@ import { ElectronService } from "../electron/electron.service";
 import * as constants from "../../../common/constants";
 import { InstalledProduct } from "../../models/warcraft/installed-product";
 import { SelectItem } from "../../models/wowup/select-item";
-import { getEnumList, getEnumName } from "../../utils/enum.utils";
+import { getEnumName, getEnumList } from "wowup-lib-core/lib/utils";
 import { FileService } from "../files/file.service";
 import { PreferenceStorageService } from "../storage/preference-storage.service";
 import { TocService } from "../toc/toc.service";

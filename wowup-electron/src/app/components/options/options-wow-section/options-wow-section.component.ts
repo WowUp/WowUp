@@ -7,7 +7,7 @@ import { TranslateService } from "@ngx-translate/core";
 
 import { WarcraftInstallationService } from "../../../services/warcraft/warcraft-installation.service";
 import { WarcraftService } from "../../../services/warcraft/warcraft.service";
-import { getEnumList } from "../../../utils/enum.utils";
+import { getEnumList } from "wowup-lib-core/lib/utils";
 import { AlertDialogComponent } from "../../common/alert-dialog/alert-dialog.component";
 import { WowClientType, WowInstallation } from "wowup-lib-core";
 

@@ -6,6 +6,7 @@ import { AppConfig } from "../../environments/environment";
 import { SourceRemovedAddonError } from "../errors";
 import {
   AddonReleaseGameVersion,
+  WowGameType,
   WowUpAddonReleaseRepresentation,
   WowUpAddonRepresentation,
 } from "../models/wowup-api/addon-representations";
@@ -21,7 +22,7 @@ import { ElectronService } from "../services";
 import { CachingService } from "../services/caching/caching-service";
 import { CircuitBreakerWrapper, NetworkService } from "../services/network/network.service";
 import { getGameVersion } from "../utils/addon.utils";
-import { getEnumName } from "../utils/enum.utils";
+import { getEnumName } from "wowup-lib-core/lib/utils";
 import {
   Addon,
   AddonCategory,
@@ -36,7 +37,6 @@ import {
   ProtocolSearchResult,
   WowClientGroup,
   WowClientType,
-  WowGameType,
   WowInstallation,
 } from "wowup-lib-core";
 

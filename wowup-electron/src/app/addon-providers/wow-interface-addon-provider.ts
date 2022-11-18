@@ -12,7 +12,7 @@ import { CachingService } from "../services/caching/caching-service";
 import { CircuitBreakerWrapper, NetworkService } from "../services/network/network.service";
 import { getGameVersion } from "../utils/addon.utils";
 import { convertBbcode } from "../utils/bbcode.utils";
-import { getEnumName } from "../utils/enum.utils";
+import { getEnumName } from "wowup-lib-core/lib/utils";
 import { strictFilter } from "../utils/array.utils";
 import { TocService } from "../services/toc/toc.service";
 import {

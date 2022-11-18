@@ -5,7 +5,7 @@ import { ADDON_PROVIDER_WOWUP_COMPANION, WOWUP_DATA_ADDON_FOLDER_NAME } from "..
 import { FileService } from "../services/files/file.service";
 import { TocService } from "../services/toc/toc.service";
 import { getGameVersion } from "../utils/addon.utils";
-import { getEnumName } from "../utils/enum.utils";
+import { getEnumName } from "wowup-lib-core/lib/utils";
 import { AddonChannelType, AddonFolder, AddonProvider, WowInstallation } from "wowup-lib-core";
 
 export const X_WOWUP_ADDON_PROVIDER = "wowup-app";

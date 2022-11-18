@@ -12,7 +12,7 @@ import { ElectronService } from "../../../services";
 import { SessionService } from "../../../services/session/session.service";
 import { WarcraftInstallationService } from "../../../services/warcraft/warcraft-installation.service";
 import { WarcraftService } from "../../../services/warcraft/warcraft.service";
-import { getEnumList, getEnumName } from "../../../utils/enum.utils";
+import { getEnumList, getEnumName } from "wowup-lib-core/lib/utils";
 import { ConfirmDialogComponent } from "../../common/confirm-dialog/confirm-dialog.component";
 import { AddonChannelType, WowClientType, WowInstallation } from "wowup-lib-core";
 

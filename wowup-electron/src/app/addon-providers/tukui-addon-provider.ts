@@ -7,7 +7,7 @@ import { TukUiAddon } from "../models/tukui/tukui-addon";
 import { CachingService } from "../services/caching/caching-service";
 import { CircuitBreakerWrapper, NetworkService } from "../services/network/network.service";
 import { getGameVersion } from "../utils/addon.utils";
-import { getEnumName } from "../utils/enum.utils";
+import { getEnumName } from "wowup-lib-core/lib/utils";
 import { TocService } from "../services/toc/toc.service";
 import {
   AddonCategory,

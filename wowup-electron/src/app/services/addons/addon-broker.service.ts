@@ -4,7 +4,7 @@ import { Injectable } from "@angular/core";
 import { nanoid } from "nanoid";
 
 import { getWowClientGroup } from "../../../common/warcraft";
-import { getEnumName } from "../../utils/enum.utils";
+import { getEnumName } from "wowup-lib-core/lib/utils";
 import { AddonStorageService } from "../storage/addon-storage.service";
 import { WarcraftService } from "../warcraft/warcraft.service";
 import { AddonService } from "./addon.service";

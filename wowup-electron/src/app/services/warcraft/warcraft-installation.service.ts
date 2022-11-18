@@ -9,7 +9,7 @@ import { TranslateService } from "@ngx-translate/core";
 
 import { WOW_INSTALLATIONS_KEY } from "../../../common/constants";
 import { getWowClientFolderName, getWowClientGroup } from "../../../common/warcraft";
-import { getEnumName } from "../../utils/enum.utils";
+import { getEnumName } from "wowup-lib-core/lib/utils";
 import { ElectronService } from "../electron/electron.service";
 import { FileService } from "../files/file.service";
 import { PreferenceStorageService } from "../storage/preference-storage.service";

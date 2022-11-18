@@ -39,7 +39,7 @@ import { AddonProviderState } from "../../models/wowup/addon-provider-state";
 import { ColumnState } from "../../models/wowup/column-state";
 import { PreferenceChange } from "../../models/wowup/preference-change";
 import { SortOrder } from "../../models/wowup/sort-order";
-import { getEnumList, getEnumName } from "../../utils/enum.utils";
+import { getEnumName, getEnumList } from "wowup-lib-core/lib/utils";
 import { ElectronService } from "../electron/electron.service";
 import { FileService } from "../files/file.service";
 import { PreferenceStorageService } from "../storage/preference-storage.service";
