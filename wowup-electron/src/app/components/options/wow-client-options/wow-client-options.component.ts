@@ -8,15 +8,13 @@ import { MatSelectChange } from "@angular/material/select";
 import { MatSlideToggleChange } from "@angular/material/slide-toggle";
 import { TranslateService } from "@ngx-translate/core";
 
-import { WowClientType } from "../../../../common/warcraft/wow-client-type";
-import { WowInstallation } from "../../../../common/warcraft/wow-installation";
-import { AddonChannelType } from "../../../../common/wowup/models";
 import { ElectronService } from "../../../services";
 import { SessionService } from "../../../services/session/session.service";
 import { WarcraftInstallationService } from "../../../services/warcraft/warcraft-installation.service";
 import { WarcraftService } from "../../../services/warcraft/warcraft.service";
 import { getEnumList, getEnumName } from "../../../utils/enum.utils";
 import { ConfirmDialogComponent } from "../../common/confirm-dialog/confirm-dialog.component";
+import { AddonChannelType, WowClientType, WowInstallation } from "wowup-lib-core";
 
 @Component({
   selector: "app-wow-client-options",

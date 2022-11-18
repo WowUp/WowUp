@@ -78,12 +78,11 @@ import {
   IPC_WINDOW_IS_FULLSCREEN,
   IPC_WINDOW_IS_MAXIMIZED,
 } from "../src/common/constants";
-import { Addon } from "../src/common/entities/addon";
 import { CopyFileRequest } from "../src/common/models/copy-file-request";
 import { DownloadRequest } from "../src/common/models/download-request";
 import { DownloadStatus } from "../src/common/models/download-status";
 import { DownloadStatusType } from "../src/common/models/download-status-type";
-import { FsDirent, FsStats, TreeNode } from "../src/common/models/ipc-events";
+import { FsDirent, TreeNode } from "../src/common/models/ipc-events";
 import { UnzipRequest } from "../src/common/models/unzip-request";
 import { RendererChannels } from "../src/common/wowup";
 import { MenuConfig, SystemTrayConfig, WowUpScanResult } from "../src/common/wowup/models";
@@ -110,6 +109,7 @@ import { GetDirectoryTreeRequest } from "../src/common/models/ipc-request";
 import { ProductDb } from "../src/common/wowup/product-db";
 import { restoreWindow } from "./window-state";
 import { firstValueFrom, from, mergeMap, toArray } from "rxjs";
+import { Addon, FsStats } from "wowup-lib-core";
 
 let PENDING_OPEN_URLS: string[] = [];
 
@@ -271,6 +271,7 @@ export function initializeIpcHandlers(window: BrowserWindow): void {
   });
 
   handle(IPC_SET_LOGIN_ITEM_SETTINGS, (evt, settings: Settings) => {
+    console.log("IPC_SET_LOGIN_ITEM_SETTINGS", settings);
     return app.setLoginItemSettings(settings);
   });
 
@@ -656,7 +657,7 @@ export function initializeIpcHandlers(window: BrowserWindow): void {
 
           if (typeof arg.auth?.headers === "object") {
             for (const [key, value] of Object.entries(arg.auth.headers)) {
-              log.info(`Setting header: ${key}=${value.substring(0,3)}***`);
+              log.info(`Setting header: ${key}=${value.substring(0, 3)}***`);
               req.setHeader(key, value);
             }
           }

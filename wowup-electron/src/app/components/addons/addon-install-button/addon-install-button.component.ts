@@ -5,10 +5,10 @@ import { ChangeDetectorRef, Component, EventEmitter, Input, OnDestroy, OnInit, O
 import { TranslateService } from "@ngx-translate/core";
 
 import { AddonInstallState } from "../../../models/wowup/addon-install-state";
-import { AddonSearchResult } from "../../../models/wowup/addon-search-result";
 import { AddonUpdateEvent } from "../../../models/wowup/addon-update-event";
 import { AddonService } from "../../../services/addons/addon.service";
 import { SessionService } from "../../../services/session/session.service";
+import { AddonSearchResult } from "wowup-lib-core";
 
 @Component({
   selector: "app-addon-install-button",

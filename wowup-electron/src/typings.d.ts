@@ -9,4 +9,3 @@ interface Window {
 }
 
 declare type DetailsTabType = "description" | "changelog" | "previews";
-declare type AddonIgnoreReason = "git_repo" | "missing_dependency" | "unknown";

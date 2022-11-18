@@ -1,11 +1,10 @@
 import * as _ from "lodash";
-import { AddonChannelType, AddonDependency, AddonDependencyType } from "../../common/wowup/models";
-import { Addon } from "../../common/entities/addon";
 import { AddonInstallState } from "../models/wowup/addon-install-state";
 import { AddonStatusSortOrder } from "../models/wowup/addon-status-sort-order";
 import * as AddonUtils from "../utils/addon.utils";
 import { ADDON_PROVIDER_UNKNOWN } from "../../common/constants";
 import * as objectHash from "object-hash";
+import { Addon, AddonChannelType, AddonDependency, AddonDependencyType } from "wowup-lib-core";
 
 export class AddonViewModel {
   public addon: Addon | undefined;

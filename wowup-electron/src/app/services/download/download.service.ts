@@ -3,10 +3,11 @@ import { v4 as uuidv4 } from "uuid";
 import { Injectable } from "@angular/core";
 
 import { IPC_DOWNLOAD_FILE_CHANNEL } from "../../../common/constants";
-import { DownloadAuth, DownloadRequest } from "../../../common/models/download-request";
+import { DownloadRequest } from "../../../common/models/download-request";
 import { DownloadStatus } from "../../../common/models/download-status";
 import { DownloadStatusType } from "../../../common/models/download-status-type";
 import { ElectronService } from "../electron/electron.service";
+import { DownloadAuth } from "wowup-lib-core";
 
 export interface DownloadOptions {
   auth?: DownloadAuth;

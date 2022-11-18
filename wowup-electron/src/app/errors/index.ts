@@ -1,8 +1,6 @@
 export * from "./install-error";
 import { CustomError } from "ts-custom-error";
-import { WowClientGroup } from "../../common/warcraft/wow-client-type";
-
-import { AddonWarningType } from "../../common/wowup/models";
+import { AddonWarningType, WowClientGroup } from "wowup-lib-core";
 
 export class ErrorContainer extends CustomError {
   public readonly innerError?: Error;

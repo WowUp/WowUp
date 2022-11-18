@@ -70,6 +70,7 @@
     "pushy-electron": "1.0.10",
     "rxjs": "7.5.6",
     "win-ca": "3.5.0",
+    "wowup-lib-core": "file:../../WowUp.Lib/Core",
     "yauzl": "2.10.0"
   },
   "devDependencies": {

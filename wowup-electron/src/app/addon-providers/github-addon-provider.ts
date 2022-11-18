@@ -1,5 +1,5 @@
 import * as _ from "lodash";
-import { firstValueFrom, from, mergeMap, Observable, toArray } from "rxjs";
+import { firstValueFrom, from, mergeMap, toArray } from "rxjs";
 
 import { HttpClient, HttpErrorResponse, HttpHeaders } from "@angular/common/http";
 
@@ -15,17 +15,21 @@ import {
 import { GitHubAsset } from "../models/github/github-asset";
 import { GitHubRelease } from "../models/github/github-release";
 import { GitHubRepository } from "../models/github/github-repository";
-import { WowClientType } from "../../common/warcraft/wow-client-type";
-import { AddonChannelType } from "../../common/wowup/models";
-import { AddonSearchResult } from "../models/wowup/addon-search-result";
-import { AddonSearchResultFile } from "../models/wowup/addon-search-result-file";
-import { AddonProvider, GetAllResult, SearchByUrlResult } from "./addon-provider";
-import { WowInstallation } from "../../common/warcraft/wow-installation";
 import { convertMarkdown } from "../utils/markdown.utlils";
 import { strictFilterBy } from "../utils/array.utils";
 import { getWowClientGroup } from "../../common/warcraft";
 import { SensitiveStorageService } from "../services/storage/sensitive-storage.service";
-import { DownloadAuth } from "../../common/models/download-request";
+import {
+  AddonChannelType,
+  AddonProvider,
+  AddonSearchResult,
+  AddonSearchResultFile,
+  DownloadAuth,
+  GetAllResult,
+  SearchByUrlResult,
+  WowClientType,
+  WowInstallation,
+} from "wowup-lib-core";
 
 type MetadataFlavor = "bcc" | "classic" | "mainline" | "wrath";
 
@@ -204,8 +208,11 @@ export class GitHubAddonProvider extends AddonProvider {
     return `${parsed.owner}/${parsed.repository}`;
   }
 
-  public getById(addonId: string, installation: WowInstallation): Observable<AddonSearchResult | undefined> {
-    return from(this.getByIdAsync(addonId, installation));
+  public override async getById(
+    addonId: string,
+    installation: WowInstallation
+  ): Promise<AddonSearchResult | undefined> {
+    return await this.getByIdAsync(addonId, installation);
   }
 
   private async getByIdAsync(addonId: string, installation: WowInstallation) {

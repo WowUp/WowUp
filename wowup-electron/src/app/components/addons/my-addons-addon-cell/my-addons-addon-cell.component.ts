@@ -7,11 +7,11 @@ import { Component } from "@angular/core";
 import { TranslateService } from "@ngx-translate/core";
 
 import { ADDON_PROVIDER_UNKNOWN } from "../../../../common/constants";
-import { AddonChannelType, AddonDependencyType, AddonWarningType } from "../../../../common/wowup/models";
 import { AddonViewModel } from "../../../business-objects/addon-view-model";
 import { DialogFactory } from "../../../services/dialog/dialog.factory";
 import { SessionService } from "../../../services/session/session.service";
 import * as AddonUtils from "../../../utils/addon.utils";
+import { AddonChannelType, AddonDependencyType, AddonWarningType } from "wowup-lib-core";
 
 @Component({
   selector: "app-my-addons-addon-cell",

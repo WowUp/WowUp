@@ -2,7 +2,6 @@ import { Component, OnDestroy, OnInit } from "@angular/core";
 import { BehaviorSubject, Subscription } from "rxjs";
 import { map } from "rxjs/operators";
 import { AddonInstallState } from "../../../models/wowup/addon-install-state";
-import { WowInstallation } from "../../../../common/warcraft/wow-installation";
 import {
   AddonBrokerService,
   ExportPayload,
@@ -13,6 +12,7 @@ import {
 import { SessionService } from "../../../services/session/session.service";
 import { SnackbarService } from "../../../services/snackbar/snackbar.service";
 import { ElectronService } from "../../../services";
+import { WowInstallation } from "wowup-lib-core";
 
 interface ImportComparisonViewModel extends ImportComparison {
   isInstalling?: boolean;

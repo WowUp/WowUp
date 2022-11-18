@@ -6,11 +6,8 @@ import { Injectable } from "@angular/core";
 
 import { ElectronService } from "../electron/electron.service";
 import * as constants from "../../../common/constants";
-import { WowClientType } from "../../../common/warcraft/wow-client-type";
 import { InstalledProduct } from "../../models/warcraft/installed-product";
-import { AddonFolder } from "../../models/wowup/addon-folder";
 import { SelectItem } from "../../models/wowup/select-item";
-import { WowInstallation } from "../../../common/warcraft/wow-installation";
 import { getEnumList, getEnumName } from "../../utils/enum.utils";
 import { FileService } from "../files/file.service";
 import { PreferenceStorageService } from "../storage/preference-storage.service";
@@ -19,8 +16,8 @@ import { WarcraftServiceImpl } from "./warcraft.service.impl";
 import { WarcraftServiceLinux } from "./warcraft.service.linux";
 import { WarcraftServiceMac } from "./warcraft.service.mac";
 import { WarcraftServiceWin } from "./warcraft.service.win";
-import { Toc } from "../../models/wowup/toc";
 import { ProductDb } from "../../../common/wowup/product-db";
+import { AddonFolder, Toc, WowClientType, WowInstallation } from "wowup-lib-core";
 
 @Injectable({
   providedIn: "root",

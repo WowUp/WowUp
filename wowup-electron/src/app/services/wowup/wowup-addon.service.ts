@@ -8,16 +8,14 @@ import {
   WOWUP_ASSET_FOLDER_NAME,
   WOWUP_DATA_ADDON_FOLDER_NAME,
 } from "../../../common/constants";
-import { Addon } from "../../../common/entities/addon";
-import { AddonChannelType } from "../../../common/wowup/models";
 import { AddonInstallState } from "../../models/wowup/addon-install-state";
-import { WowInstallation } from "../../../common/warcraft/wow-installation";
 import { toInterfaceVersion } from "../../utils/addon.utils";
 import { AddonProviderFactory } from "../addons/addon.provider.factory";
 import { AddonService } from "../addons/addon.service";
 import { FileService } from "../files/file.service";
 import { WarcraftInstallationService } from "../warcraft/warcraft-installation.service";
 import { WarcraftService } from "../warcraft/warcraft.service";
+import { Addon, AddonChannelType, WowInstallation } from "wowup-lib-core";
 
 enum WowUpAddonFileType {
   Raw,

@@ -23,8 +23,6 @@ import {
   ADDON_PROVIDER_WAGO,
   DEFAULT_CHANNEL_PREFERENCE_KEY_SUFFIX,
 } from "../../../common/constants";
-import { WowClientType } from "../../../common/warcraft/wow-client-type";
-import { AddonCategory, AddonChannelType } from "../../../common/wowup/models";
 import { GetAddonListItem } from "../../business-objects/get-addon-list-item";
 import { CellWrapTextComponent } from "../../components/common/cell-wrap-text/cell-wrap-text.component";
 import { GetAddonStatusColumnComponent } from "../../components/addons/get-addon-status-cell/get-addon-status-cell.component";
@@ -35,7 +33,6 @@ import {
 } from "../../components/addons/potential-addon-table-cell/potential-addon-table-cell.component";
 import { TableContextHeaderCellComponent } from "../../components/addons/table-context-header-cell/table-context-header-cell.component";
 import { GenericProviderError } from "../../errors";
-import { AddonSearchResult } from "../../models/wowup/addon-search-result";
 import { ColumnState } from "../../models/wowup/column-state";
 import { DownloadCountPipe } from "../../pipes/download-count.pipe";
 import { RelativeDurationPipe } from "../../pipes/relative-duration-pipe";
@@ -49,8 +46,8 @@ import { WarcraftService } from "../../services/warcraft/warcraft.service";
 import { WowUpService } from "../../services/wowup/wowup.service";
 import { getEnumKeys } from "../../utils/enum.utils";
 import { camelToSnakeCase } from "../../utils/string.utils";
-import { WowInstallation } from "../../../common/warcraft/wow-installation";
 import { AddonProviderFactory } from "../../services/addons/addon.provider.factory";
+import { AddonCategory, AddonChannelType, AddonSearchResult, WowClientType, WowInstallation } from "wowup-lib-core";
 
 interface CategoryItem {
   category: AddonCategory;

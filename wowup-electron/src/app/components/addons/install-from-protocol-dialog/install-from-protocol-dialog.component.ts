@@ -6,11 +6,10 @@ import { AfterViewInit, Component, Inject, OnInit } from "@angular/core";
 import { UntypedFormControl } from "@angular/forms";
 import { MAT_DIALOG_DATA, MatDialogRef } from "@angular/material/dialog";
 
-import { ProtocolSearchResult } from "../../../models/wowup/protocol-search-result";
 import { AddonService } from "../../../services/addons/addon.service";
 import { SessionService } from "../../../services/session/session.service";
 import { WarcraftInstallationService } from "../../../services/warcraft/warcraft-installation.service";
-import { WowInstallation } from "../../../../common/warcraft/wow-installation";
+import { ProtocolSearchResult, WowInstallation } from "wowup-lib-core";
 
 export interface InstallFromProtocolDialogComponentData {
   protocol: string;
@@ -125,7 +124,7 @@ export class InstallFromProtocolDialogComponent implements OnInit, AfterViewInit
 
   private async loadAddon(): Promise<void> {
     try {
-      console.log('this.data.protocol', this.data.protocol)
+      console.log("this.data.protocol", this.data.protocol);
       const searchResult = await this._addonService.getAddonForProtocol(this.data.protocol);
       if (!searchResult) {
         this.error = ERROR_ADDON_NOT_FOUND;

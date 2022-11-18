@@ -2,8 +2,7 @@ import { AgRendererComponent } from "ag-grid-angular";
 import { ICellRendererParams } from "ag-grid-community";
 
 import { Component, EventEmitter, Input, Output } from "@angular/core";
-
-import { AddonSearchResult } from "../../../models/wowup/addon-search-result";
+import { AddonSearchResult } from "wowup-lib-core";
 
 @Component({
   selector: "app-get-addon-status-cell",

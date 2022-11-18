@@ -24,7 +24,6 @@ import {
   PREF_WAGO_ACCESS_KEY,
 } from "../../../../common/constants";
 import { AppConfig } from "../../../../environments/environment";
-import { AddonProviderType } from "../../../addon-providers/addon-provider";
 import { AddonProviderState } from "../../../models/wowup/addon-provider-state";
 import { AddonProviderFactory } from "../../../services/addons/addon.provider.factory";
 import { DialogFactory } from "../../../services/dialog/dialog.factory";
@@ -32,6 +31,7 @@ import { LinkService } from "../../../services/links/link.service";
 import { SensitiveStorageService } from "../../../services/storage/sensitive-storage.service";
 import { formatDynamicLinks } from "../../../utils/dom.utils";
 import { FormGroup } from "@angular/forms";
+import { AddonProviderType } from "wowup-lib-core";
 
 interface AddonProviderStateModel extends AddonProviderState {
   adRequired: boolean;

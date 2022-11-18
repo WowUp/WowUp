@@ -24,10 +24,11 @@ import {
 } from "../../../common/constants";
 import { CopyFileRequest } from "../../../common/models/copy-file-request";
 import { UnzipRequest } from "../../../common/models/unzip-request";
-import { FsDirent, FsStats, TreeNode } from "../../../common/models/ipc-events";
+import { FsDirent, TreeNode } from "../../../common/models/ipc-events";
 import { ElectronService } from "../electron/electron.service";
 import { GetDirectoryTreeOptions, GetDirectoryTreeRequest } from "../../../common/models/ipc-request";
 import { ZipEntry } from "../../../common/models/ipc-response";
+import { FsStats } from "wowup-lib-core";
 
 @Injectable({
   providedIn: "root",
