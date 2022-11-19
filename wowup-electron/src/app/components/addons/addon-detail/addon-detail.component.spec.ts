@@ -10,7 +10,6 @@ import { TranslateCompiler, TranslateLoader, TranslateModule } from "@ngx-transl
 
 import { httpLoaderFactory } from "../../../app.module";
 import { AddonViewModel } from "../../../business-objects/addon-view-model";
-import { Addon } from "../../../../common/entities/addon";
 import { AddonUpdateEvent } from "../../../models/wowup/addon-update-event";
 import { AddonService } from "../../../services/addons/addon.service";
 import { SessionService } from "../../../services/session/session.service";
@@ -23,6 +22,7 @@ import { LightboxModule } from "ng-gallery/lightbox";
 import { MatModule } from "../../../modules/mat-module";
 import { AddonUiService } from "../../../services/addons/addon-ui.service";
 import { AddonProviderFactory } from "../../../services/addons/addon.provider.factory";
+import { Addon } from "wowup-lib-core";
 
 describe("AddonDetailComponent", () => {
   let dialogModel: AddonDetailModel;

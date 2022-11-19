@@ -1,5 +1,5 @@
 import { BehaviorSubject, firstValueFrom, from, Observable, of } from "rxjs";
-import { catchError, first, map, switchMap, tap, timeout } from "rxjs/operators";
+import { catchError, first, switchMap, tap, timeout } from "rxjs/operators";
 import { v4 as uuidv4 } from "uuid";
 import _ from "lodash";
 

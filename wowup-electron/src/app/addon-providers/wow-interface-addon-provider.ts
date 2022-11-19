@@ -1,6 +1,4 @@
 import * as _ from "lodash";
-import { from, Observable } from "rxjs";
-import { map } from "rxjs/operators";
 import { v4 as uuidv4 } from "uuid";
 
 import { HttpErrorResponse } from "@angular/common/http";

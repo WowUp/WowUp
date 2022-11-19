@@ -303,7 +303,7 @@ export class WowUpAddonProvider extends AddonProvider {
 
     const searchResults: AddonSearchResult[] = _.map(response?.addons, (addon) =>
       this.getSearchResult(addon, gameType)
-    ).filter((sr) => sr !== undefined) as AddonSearchResult[];
+    ).filter((sr): sr is AddonSearchResult => sr !== undefined);
 
     return searchResults ?? [];
   }
@@ -324,9 +324,9 @@ export class WowUpAddonProvider extends AddonProvider {
       }
     );
 
-    const fingerprints: string[] = _.filter(scanResults, (res) => typeof res.scanResult?.fingerprint === "string").map(
-      (result) => result.scanResult?.fingerprint
-    ) as string[];
+    const fingerprints: string[] = _.map(scanResults, (res) => res.scanResult?.fingerprint).filter(
+      (fp): fp is string => typeof fp === "string"
+    );
     console.log("[WowUpFingerprints]", JSON.stringify(fingerprints));
 
     const fingerprintResponse = await this.getAddonsByFingerprints(fingerprints);
@@ -542,7 +542,7 @@ export class WowUpAddonProvider extends AddonProvider {
       releases.map((release) =>
         release.previews?.filter((preview) => preview.preview_type === "image").map((preview) => preview.url)
       )
-    ).filter((url) => typeof url === "string") as string[];
+    ).filter((url): url is string => typeof url === "string");
 
     return _.uniq(urls);
   }

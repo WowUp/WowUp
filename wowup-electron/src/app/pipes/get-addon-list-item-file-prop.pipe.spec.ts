@@ -6,7 +6,8 @@ import { httpLoaderFactory } from "../app.module";
 import { TranslateMessageFormatCompiler } from "ngx-translate-messageformat-compiler";
 import { Component } from "@angular/core";
 import { GetAddonListItem } from "../business-objects/get-addon-list-item";
-import { AddonChannelType } from "../../common/wowup/models";
+import { AddonChannelType } from "wowup-lib-core";
+import { AddonInstallState } from "../models/wowup/addon-install-state";
 
 @Component({
   template: `<p>{{ item | getAddonListItemFileProp: "version":channel }}</p>`,
@@ -14,9 +15,25 @@ import { AddonChannelType } from "../../common/wowup/models";
 class TestAddonListItemFilePropComponent {
   public item: GetAddonListItem = {
     searchResult: {
+      author: "",
+      externalId: "",
+      externalUrl: "",
+      name: "",
+      providerName: "",
+      thumbnailUrl: "",
       files: [],
     },
-  } as GetAddonListItem;
+    releasedAt: 1,
+    downloadCount: 0,
+    name: "",
+    author: "",
+    thumbnailUrl: "",
+    providerName: "",
+    latestAddonChannel: AddonChannelType.Stable,
+    canonicalName: "",
+    installState: AddonInstallState.Complete,
+    externalId: "",
+  };
   public channel: AddonChannelType = AddonChannelType.Stable;
 }
 
