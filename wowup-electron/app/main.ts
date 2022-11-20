@@ -526,7 +526,11 @@ function getBackgroundColor() {
 }
 
 function canStartHidden() {
-  return argv.hidden || app.getLoginItemSettings().wasOpenedAsHidden;
+  const loginItems = app.getLoginItemSettings();
+  loginItems?.launchItems.forEach((li) => {
+    console.log(`launchItem: ${li.name} args -> ${li.args.join(",")}`);
+  });
+  return argv.hidden || loginItems.wasOpenedAsHidden;
 }
 
 function getUserAgent() {
