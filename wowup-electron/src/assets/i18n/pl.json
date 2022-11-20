@@ -572,6 +572,8 @@
         "ADD_CLIENT_BUTTON": "Dodaj nowy",
         "AUTO_UPDATE_DESCRIPTION": "Wszystkie istniejące i nowo zainstalowane addony będą domyślnie ustawione na automatyczną aktualizację.",
         "AUTO_UPDATE_LABEL": "Automatyczna aktualizacja",
+        "IS_HIDDEN_LABEL": "Hide client",
+        "IS_HIDDEN_DESCRIPTION": "Hide this client in the pages My Addons and Get Addons",
         "CANCEL_WOW_DIRECTORY_SELECT_BUTTON": "Anuluj",
         "CLEAR_INSTALL_LOCATION_DIALOG": {
           "MESSAGE": "Czy na pewno chcesz usunąć instalację w \"{location}\"? Spowoduje to usunięcie wszystkich zapisanych informacji o addonach dla tego klienta.\n\nTwoje foldery addonów nie zostaną usunięte.",

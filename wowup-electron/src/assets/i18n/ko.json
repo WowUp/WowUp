@@ -572,6 +572,8 @@
         "ADD_CLIENT_BUTTON": "Add New",
         "AUTO_UPDATE_DESCRIPTION": "새로 설치되는 애드온의 자동업데이트 옵션을 활성화합니다.",
         "AUTO_UPDATE_LABEL": "자동 업데이트",
+        "IS_HIDDEN_LABEL": "Hide client",
+        "IS_HIDDEN_DESCRIPTION": "Hide this client in the pages My Addons and Get Addons",
         "CANCEL_WOW_DIRECTORY_SELECT_BUTTON": "Cancel",
         "CLEAR_INSTALL_LOCATION_DIALOG": {
           "MESSAGE": "{clientName}의 설치 위치 정보를 삭제할까요?\n이 클라이언트의 저장된 애드온 정보는 모두 사라지지만 애드온 디렉토리는 삭제되지 않습니다.",

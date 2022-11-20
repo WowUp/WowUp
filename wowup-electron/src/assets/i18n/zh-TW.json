@@ -572,6 +572,8 @@
         "ADD_CLIENT_BUTTON": "新增",
         "AUTO_UPDATE_DESCRIPTION": "新安裝的插件將預設設定為自動更新",
         "AUTO_UPDATE_LABEL": "自動更新",
+        "IS_HIDDEN_LABEL": "Hide client",
+        "IS_HIDDEN_DESCRIPTION": "Hide this client in the pages My Addons and Get Addons",
         "CANCEL_WOW_DIRECTORY_SELECT_BUTTON": "取消",
         "CLEAR_INSTALL_LOCATION_DIALOG": {
           "MESSAGE": "是否忘記 {clientName} 的安裝路徑？此操作將會刪除 WowUp 記錄的此客戶端所安裝插件資訊。\n\n插件資料夾不會被刪除。",

@@ -572,6 +572,8 @@
         "ADD_CLIENT_BUTTON": "Aggiungi Nuovo",
         "AUTO_UPDATE_DESCRIPTION": "I nuovi addons installati saranno impostati per l'aggiornamento automatico ",
         "AUTO_UPDATE_LABEL": "Aggiornamento Automatico",
+        "IS_HIDDEN_LABEL": "Hide client",
+        "IS_HIDDEN_DESCRIPTION": "Hide this client in the pages My Addons and Get Addons",
         "CANCEL_WOW_DIRECTORY_SELECT_BUTTON": "Cancella",
         "CLEAR_INSTALL_LOCATION_DIALOG": {
           "MESSAGE": "Sei sicuro di voler ripulire il percorso d'installazione per {clientName}? Questo rimuverà tutte le informazioni salvate dell'addon per questo client.\n\nLe tue cartelle degli addons non verranno rimosse.",

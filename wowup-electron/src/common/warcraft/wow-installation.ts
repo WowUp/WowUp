@@ -10,4 +10,5 @@ export interface WowInstallation {
   defaultAddonChannelType: AddonChannelType;
   defaultAutoUpdate: boolean;
   availableUpdateCount?: number;
+  isHidden?: boolean;
 }
