@@ -25,6 +25,8 @@ import {
   IPC_WINDOW_MAXIMIZED,
   IPC_WINDOW_MINIMIZED,
   IPC_WINDOW_UNMAXIMIZED,
+  START_MINIMIZED_PREFERENCE_KEY,
+  START_WITH_SYSTEM_PREFERENCE_KEY,
   USE_HARDWARE_ACCELERATION_PREFERENCE_KEY,
   WINDOW_DEFAULT_HEIGHT,
   WINDOW_DEFAULT_WIDTH,
@@ -526,6 +528,12 @@ function getBackgroundColor() {
 }
 
 function canStartHidden() {
+  const systemStart = preferenceStore.get<string>(START_WITH_SYSTEM_PREFERENCE_KEY);
+  const startMin = preferenceStore.get<string>(START_MINIMIZED_PREFERENCE_KEY);
+
+  console.log(`START_WITH_SYSTEM_PREFERENCE_KEY: ${systemStart}`)
+  console.log(`START_MINIMIZED_PREFERENCE_KEY: ${startMin}`)
+
   const loginItems = app.getLoginItemSettings();
   loginItems?.launchItems.forEach((li) => {
     console.log(`launchItem: ${li.name} args -> ${li.args.join(",")}`);
