@@ -528,11 +528,11 @@ function getBackgroundColor() {
 }
 
 function canStartHidden() {
-  const systemStart = preferenceStore.get<string>(START_WITH_SYSTEM_PREFERENCE_KEY);
-  const startMin = preferenceStore.get<string>(START_MINIMIZED_PREFERENCE_KEY);
+  const systemStart = preferenceStore.get(START_WITH_SYSTEM_PREFERENCE_KEY) as string;
+  const startMin = preferenceStore.get(START_MINIMIZED_PREFERENCE_KEY) as string;
 
-  console.log(`START_WITH_SYSTEM_PREFERENCE_KEY: ${systemStart}`)
-  console.log(`START_MINIMIZED_PREFERENCE_KEY: ${startMin}`)
+  console.log(`START_WITH_SYSTEM_PREFERENCE_KEY: ${systemStart}`);
+  console.log(`START_MINIMIZED_PREFERENCE_KEY: ${startMin}`);
 
   const loginItems = app.getLoginItemSettings();
   loginItems?.launchItems.forEach((li) => {
