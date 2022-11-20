@@ -1,21 +1,22 @@
 import * as _ from "lodash";
 import { basename, join } from "path";
-import { from, Observable } from "rxjs";
-import { map } from "rxjs/operators";
 
 import { HttpClient } from "@angular/common/http";
 
 import { ADDON_PROVIDER_ZIP } from "../../common/constants";
-import { Addon } from "../../common/entities/addon";
-import { AddonChannelType } from "../../common/wowup/models";
-import { AddonSearchResult } from "../models/wowup/addon-search-result";
-import { AddonSearchResultFile } from "../models/wowup/addon-search-result-file";
-import { Toc } from "../models/wowup/toc";
 import { FileService } from "../services/files/file.service";
 import { TocService } from "../services/toc/toc.service";
 import { WarcraftService } from "../services/warcraft/warcraft.service";
-import { AddonProvider, SearchByUrlResult } from "./addon-provider";
-import { WowInstallation } from "../../common/warcraft/wow-installation";
+import {
+  Addon,
+  AddonChannelType,
+  AddonProvider,
+  AddonSearchResult,
+  AddonSearchResultFile,
+  SearchByUrlResult,
+  Toc,
+  WowInstallation,
+} from "wowup-lib-core";
 
 const VALID_ZIP_CONTENT_TYPES = ["application/zip", "application/x-zip-compressed", "application/octet-stream"];
 
@@ -139,40 +140,38 @@ export class ZipAddonProvider extends AddonProvider {
     };
   }
 
-  public getById(addonId: string): Observable<AddonSearchResult> {
+  public override async getById(addonId: string): Promise<AddonSearchResult | undefined> {
     const addonUri = new URL(addonId);
 
     if (!addonUri.pathname.toLowerCase().endsWith(".zip")) {
       throw new Error(`Invalid zip URL ${addonUri.toString()}`);
     }
 
-    return from(this.validateUrlContentType(addonUri)).pipe(
-      map(() => {
-        const fileName = _.last(addonUri.pathname.split("/")) ?? "unknown";
+    await this.validateUrlContentType(addonUri);
 
-        const searchResultFile: AddonSearchResultFile = {
-          channelType: AddonChannelType.Stable,
-          downloadUrl: addonUri.toString(),
-          folders: [],
-          gameVersion: "",
-          version: fileName,
-          releaseDate: new Date(),
-        };
+    const fileName = _.last(addonUri.pathname.split("/")) ?? "unknown";
 
-        const potentialAddon: AddonSearchResult = {
-          author: "",
-          downloadCount: 1,
-          externalId: addonUri.toString(),
-          externalUrl: addonUri.origin,
-          name: fileName,
-          providerName: this.name,
-          thumbnailUrl: "",
-          files: [searchResultFile],
-        };
+    const searchResultFile: AddonSearchResultFile = {
+      channelType: AddonChannelType.Stable,
+      downloadUrl: addonUri.toString(),
+      folders: [],
+      gameVersion: "",
+      version: fileName,
+      releaseDate: new Date(),
+    };
 
-        return potentialAddon;
-      })
-    );
+    const potentialAddon: AddonSearchResult = {
+      author: "",
+      downloadCount: 1,
+      externalId: addonUri.toString(),
+      externalUrl: addonUri.origin,
+      name: fileName,
+      providerName: this.name,
+      thumbnailUrl: "",
+      files: [searchResultFile],
+    };
+
+    return potentialAddon;
   }
 
   private async validateUrlContentType(addonUri: URL) {

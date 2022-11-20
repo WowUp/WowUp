@@ -4,7 +4,6 @@ import { BehaviorSubject, combineLatest, from, Subject } from "rxjs";
 import { Injectable } from "@angular/core";
 
 import { CURRENT_THEME_KEY, SELECTED_DETAILS_TAB_KEY, TAB_INDEX_SETTINGS } from "../../../common/constants";
-import { WowInstallation } from "../../../common/warcraft/wow-installation";
 import { PreferenceStorageService } from "../storage/preference-storage.service";
 import { WarcraftInstallationService } from "../warcraft/warcraft-installation.service";
 import { ColumnState } from "../../models/wowup/column-state";
@@ -13,6 +12,7 @@ import { WowUpAccountService } from "../wowup/wowup-account.service";
 import { AddonService } from "../addons/addon.service";
 import { AddonProviderFactory } from "../addons/addon.provider.factory";
 import { WowUpService } from "../wowup/wowup.service";
+import { WowInstallation } from "wowup-lib-core";
 
 @Injectable({
   providedIn: "root",

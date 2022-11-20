@@ -1,8 +1,8 @@
 import { Injectable } from "@angular/core";
 import * as path from "path";
+import { FsStats, WowInstallation } from "wowup-lib-core";
 
-import { FsStats, TreeNode } from "../../../common/models/ipc-events";
-import { WowInstallation } from "../../../common/warcraft/wow-installation";
+import { TreeNode } from "../../../common/models/ipc-events";
 import { FileService } from "../files/file.service";
 import { WowUpService } from "../wowup/wowup.service";
 

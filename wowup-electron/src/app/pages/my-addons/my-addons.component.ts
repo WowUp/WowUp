@@ -43,8 +43,6 @@ import { MatMenuTrigger } from "@angular/material/menu";
 import { MatRadioChange } from "@angular/material/radio";
 import { TranslateService } from "@ngx-translate/core";
 
-import { Addon } from "../../../common/entities/addon";
-import { WowClientType } from "../../../common/warcraft/wow-client-type";
 import { AddonViewModel } from "../../business-objects/addon-view-model";
 import { CellWrapTextComponent } from "../../components/common/cell-wrap-text/cell-wrap-text.component";
 import { ConfirmDialogComponent } from "../../components/common/confirm-dialog/confirm-dialog.component";
@@ -55,7 +53,6 @@ import { TableContextHeaderCellComponent } from "../../components/addons/table-c
 import { AddonInstallState } from "../../models/wowup/addon-install-state";
 import { AddonUpdateEvent } from "../../models/wowup/addon-update-event";
 import { ColumnState } from "../../models/wowup/column-state";
-import { WowInstallation } from "../../../common/warcraft/wow-installation";
 import { RelativeDurationPipe } from "../../pipes/relative-duration-pipe";
 import { ElectronService } from "../../services";
 import { AddonService } from "../../services/addons/addon.service";
@@ -76,6 +73,7 @@ import { WtfBackupComponent } from "../../components/addons/wtf-backup/wtf-backu
 import { HasEventTargetAddRemove } from "rxjs/internal/observable/fromEvent";
 import { AddonProviderFactory } from "../../services/addons/addon.provider.factory";
 import { toInterfaceVersion } from "../../utils/addon.utils";
+import { Addon, WowClientType, WowInstallation } from "wowup-lib-core";
 
 @Component({
   selector: "app-my-addons",

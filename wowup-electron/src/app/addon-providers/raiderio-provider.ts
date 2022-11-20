@@ -1,14 +1,11 @@
-import { WowInstallation } from "../../common/warcraft/wow-installation";
 import * as _ from "lodash";
 import { v4 as uuidv4 } from "uuid";
 
 import { ADDON_PROVIDER_RAIDERIO } from "../../common/constants";
-import { AddonChannelType } from "../../common/wowup/models";
-import { AddonFolder } from "../models/wowup/addon-folder";
-import { getEnumName } from "../utils/enum.utils";
-import { AddonProvider } from "./addon-provider";
 import { getGameVersion } from "../utils/addon.utils";
 import { TocService } from "../services/toc/toc.service";
+import { AddonChannelType, AddonFolder, AddonProvider, WowInstallation } from "wowup-lib-core";
+import { getEnumName } from "wowup-lib-core/lib/utils";
 
 export class RaiderIoAddonProvider extends AddonProvider {
   private readonly _scanWebsite = "https://raider.io";

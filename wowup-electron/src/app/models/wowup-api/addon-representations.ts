@@ -1,4 +1,9 @@
-import { WowGameType } from "./wow-game-type";
+export enum WowGameType {
+  Retail = "retail",
+  Classic = "classic",
+  BurningCrusade = "burningCrusade",
+  WOTLK = "wotlk",
+}
 
 export interface WowUpAddonFundingLinkRepresentation {
   platform: string;

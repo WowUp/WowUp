@@ -1,6 +1,6 @@
 import * as path from "path";
+import { WowClientType } from "wowup-lib-core";
 import { WOW_CLASSIC_ERA_FOLDER, WOW_CLASSIC_ERA_PTR_FOLDER } from "../../../common/constants";
-import { WowClientType } from "../../../common/warcraft/wow-client-type";
 import { InstalledProduct } from '../../models/warcraft/installed-product';
 import { ElectronService } from "../electron/electron.service";
 import { FileService } from "../files/file.service";

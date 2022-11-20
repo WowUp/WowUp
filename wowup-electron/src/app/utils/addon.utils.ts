@@ -1,6 +1,5 @@
 import { orderBy, filter } from "lodash";
-import { Addon, AddonExternalId } from "../../common/entities/addon";
-import { AddonDependency, AddonDependencyType } from "../../common/wowup/models";
+import { Addon, AddonDependency, AddonDependencyType, AddonExternalId } from "wowup-lib-core";
 
 export function getAllProviders(addon: Addon): AddonExternalId[] {
   return orderBy(addon.externalIds, ["providerName"], ["asc"]);

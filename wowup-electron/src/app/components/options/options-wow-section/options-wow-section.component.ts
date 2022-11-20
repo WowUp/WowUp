@@ -5,12 +5,11 @@ import { Component, OnInit } from "@angular/core";
 import { MatDialog } from "@angular/material/dialog";
 import { TranslateService } from "@ngx-translate/core";
 
-import { WowClientType } from "../../../../common/warcraft/wow-client-type";
 import { WarcraftInstallationService } from "../../../services/warcraft/warcraft-installation.service";
 import { WarcraftService } from "../../../services/warcraft/warcraft.service";
-import { getEnumList } from "../../../utils/enum.utils";
+import { getEnumList } from "wowup-lib-core/lib/utils";
 import { AlertDialogComponent } from "../../common/alert-dialog/alert-dialog.component";
-import { WowInstallation } from "../../../../common/warcraft/wow-installation";
+import { WowClientType, WowInstallation } from "wowup-lib-core";
 
 @Component({
   selector: "app-options-wow-section",

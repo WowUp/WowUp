@@ -1,6 +1,6 @@
 import { last } from "lodash";
 import { Gallery, GalleryItem, ImageItem } from "ng-gallery";
-import { BehaviorSubject,  from, Observable, of, Subject } from "rxjs";
+import { BehaviorSubject, from, Observable, of, Subject } from "rxjs";
 import { catchError, filter, first, map, takeUntil, tap } from "rxjs/operators";
 
 import {
@@ -20,11 +20,7 @@ import { MatTabChangeEvent, MatTabGroup } from "@angular/material/tabs";
 import { TranslateService } from "@ngx-translate/core";
 
 import { ADDON_PROVIDER_GITHUB, ADDON_PROVIDER_UNKNOWN, TAB_INDEX_MY_ADDONS } from "../../../../common/constants";
-import { Addon, AddonFundingLink } from "../../../../common/entities/addon";
-import { AddonChannelType, AddonDependency, AddonDependencyType } from "../../../../common/wowup/models";
 import { AddonViewModel } from "../../../business-objects/addon-view-model";
-import { AddonSearchResult } from "../../../models/wowup/addon-search-result";
-import { AddonSearchResultDependency } from "../../../models/wowup/addon-search-result-dependency";
 import { AddonUpdateEvent } from "../../../models/wowup/addon-update-event";
 import { AddonService } from "../../../services/addons/addon.service";
 import { LinkService } from "../../../services/links/link.service";
@@ -35,6 +31,15 @@ import * as SearchResult from "../../../utils/search-result.utils";
 import { AddonUiService } from "../../../services/addons/addon-ui.service";
 import { AddonProviderFactory } from "../../../services/addons/addon.provider.factory";
 import { WowUpService } from "../../../services/wowup/wowup.service";
+import {
+  Addon,
+  AddonChannelType,
+  AddonDependency,
+  AddonDependencyType,
+  AddonFundingLink,
+  AddonSearchResult,
+  AddonSearchResultDependency,
+} from "wowup-lib-core";
 
 export interface AddonDetailModel {
   listItem?: AddonViewModel;
@@ -129,8 +134,8 @@ export class AddonDetailComponent implements OnInit, OnDestroy, AfterViewChecked
   }
 
   public ngOnInit(): void {
-    console.log('model', this.model);
-    
+    console.log("model", this.model);
+
     this.canShowChangelog = this._addonProviderService.canShowChangelog(this.getProviderName());
 
     this.thumbnailLetter = this.getThumbnailLetter();
@@ -431,7 +436,7 @@ export class AddonDetailComponent implements OnInit, OnDestroy, AfterViewChecked
     const selectedInstallation = this._sessionService.getSelectedWowInstallation();
     if (!selectedInstallation) {
       console.warn("No selected installation");
-      return;
+      return false;
     }
 
     const externalId = this.model.searchResult?.externalId ?? this.model.listItem?.addon?.externalId ?? "";
@@ -442,6 +447,7 @@ export class AddonDetailComponent implements OnInit, OnDestroy, AfterViewChecked
     }
 
     console.warn("Invalid list item addon when verifying if installed");
+    return false;
   }
 
   private selectInitialTab(): Observable<void> {

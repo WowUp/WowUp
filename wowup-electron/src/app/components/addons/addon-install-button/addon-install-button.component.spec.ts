@@ -5,13 +5,13 @@ import { HttpClient, HttpClientModule } from "@angular/common/http";
 import { TestBed } from "@angular/core/testing";
 import { TranslateCompiler, TranslateLoader, TranslateModule } from "@ngx-translate/core";
 
-import { WowClientType } from "../../../../common/warcraft/wow-client-type";
 import { httpLoaderFactory } from "../../../app.module";
 import { AddonUpdateEvent } from "../../../models/wowup/addon-update-event";
 import { AddonService } from "../../../services/addons/addon.service";
 import { SessionService } from "../../../services/session/session.service";
 import { ProgressButtonComponent } from "../../common/progress-button/progress-button.component";
 import { AddonInstallButtonComponent } from "./addon-install-button.component";
+import { WowClientType } from "wowup-lib-core";
 
 describe("AddonInstallButtonComponent", () => {
   let addonServiceSpy: AddonService;

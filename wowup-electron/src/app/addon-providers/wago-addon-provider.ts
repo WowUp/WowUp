@@ -1,33 +1,37 @@
 import { BehaviorSubject, firstValueFrom, from, Observable, of } from "rxjs";
-import { catchError, first, map, switchMap, tap, timeout } from "rxjs/operators";
+import { catchError, first, switchMap, tap, timeout } from "rxjs/operators";
 import { v4 as uuidv4 } from "uuid";
 import _ from "lodash";
 
 import { ADDON_PROVIDER_WAGO, PREF_WAGO_ACCESS_KEY } from "../../common/constants";
-import { Addon } from "../../common/entities/addon";
-import { DownloadAuth } from "../../common/models/download-request";
-import { WowClientGroup, WowClientType } from "../../common/warcraft/wow-client-type";
-import { WowInstallation } from "../../common/warcraft/wow-installation";
-import { AddonChannelType, AdPageOptions } from "../../common/wowup/models";
 import { AppConfig } from "../../environments/environment";
-import { AddonFolder } from "../models/wowup/addon-folder";
-import { AddonSearchResult } from "../models/wowup/addon-search-result";
-import { AddonSearchResultFile } from "../models/wowup/addon-search-result-file";
-import { AppWowUpScanResult } from "../models/wowup/app-wowup-scan-result";
 import { ElectronService } from "../services";
 import { CachingService } from "../services/caching/caching-service";
 import { CircuitBreakerWrapper, NetworkService } from "../services/network/network.service";
 import { TocService } from "../services/toc/toc.service";
 import { WarcraftService } from "../services/warcraft/warcraft.service";
 import { getGameVersion } from "../utils/addon.utils";
-import { getEnumName } from "../utils/enum.utils";
+import { getEnumName } from "wowup-lib-core/lib/utils";
 import { convertMarkdown } from "../utils/markdown.utlils";
-import { AddonProvider, GetAllResult } from "./addon-provider";
 import { SourceRemovedAddonError } from "../errors";
 import { getWowClientGroup } from "../../common/warcraft";
 import { HttpErrorResponse } from "@angular/common/http";
 import { UiMessageService } from "../services/ui-message/ui-message.service";
 import { SensitiveStorageService } from "../services/storage/sensitive-storage.service";
+import {
+  Addon,
+  AddonChannelType,
+  AddonFolder,
+  AddonProvider,
+  AddonSearchResult,
+  AddonSearchResultFile,
+  AdPageOptions,
+  DownloadAuth,
+  GetAllResult,
+  WowClientGroup,
+  WowClientType,
+  WowInstallation,
+} from "wowup-lib-core";
 
 declare type WagoGameVersion = "retail" | "classic" | "bc" | "wotlk";
 declare type WagoStability = "stable" | "beta" | "alpha";
@@ -204,7 +208,7 @@ export class WagoAddonProvider extends AddonProvider {
     return typeof addonId === "string" && addonId.length >= 8 && addonId.length <= 10;
   }
 
-  public async scan(
+  public override async scan(
     installation: WowInstallation,
     addonChannelType: AddonChannelType,
     addonFolders: AddonFolder[]
@@ -343,8 +347,9 @@ export class WagoAddonProvider extends AddonProvider {
     return searchResults;
   }
 
-  public getById(addonId: string): Observable<AddonSearchResult | undefined> {
-    return from(this.getAddonById(addonId)).pipe(map((response) => this.toSearchResultFromDetails(response)));
+  public override async getById(addonId: string): Promise<AddonSearchResult | undefined> {
+    const response = await this.getAddonById(addonId);
+    return this.toSearchResultFromDetails(response);
   }
 
   public async getDescription(installation: WowInstallation, externalId: string): Promise<string> {
@@ -405,7 +410,7 @@ export class WagoAddonProvider extends AddonProvider {
   }
 
   // used when checking for new addon updates
-  public async getAll(installation: WowInstallation, addonIds: string[]): Promise<GetAllResult> {
+  public override async getAll(installation: WowInstallation, addonIds: string[]): Promise<GetAllResult> {
     await firstValueFrom(this.ensureToken());
 
     const url = new URL(`${WAGO_BASE_URL}/addons/_recents`).toString();
@@ -690,15 +695,11 @@ export class WagoAddonProvider extends AddonProvider {
     }
   }
 
-  // Scan the actual folders, luckily wago uses the same fingerprint method as wowup
-  private getScanResults = async (addonFolders: AddonFolder[]): Promise<AppWowUpScanResult[]> => {
-    const filePaths = addonFolders.map((addonFolder) => addonFolder.path);
-    const scanResults: AppWowUpScanResult[] = await this._electronService.invoke("wowup-get-scan-results", filePaths);
-    return scanResults;
-  };
-
   private onWagoTokenReceived = (evt, token: string) => {
     console.log(`[wago] onWagoTokenReceived`);
+    // Whenever we get a new token, manually re-enable the circuit breaker
+    this._circuitBreaker.enable();
+
     this._apiTokenSrc.next(token);
   };
 

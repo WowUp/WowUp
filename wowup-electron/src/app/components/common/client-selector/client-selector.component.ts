@@ -1,7 +1,7 @@
 import { Component, Input, OnInit } from "@angular/core";
 import { BehaviorSubject, combineLatest, Observable } from "rxjs";
 import { map, switchMap } from "rxjs/operators";
-import { WowInstallation } from "../../../../common/warcraft/wow-installation";
+import { WowInstallation } from "wowup-lib-core";
 import { AddonService } from "../../../services/addons/addon.service";
 import { SessionService } from "../../../services/session/session.service";
 import { WarcraftInstallationService } from "../../../services/warcraft/warcraft-installation.service";

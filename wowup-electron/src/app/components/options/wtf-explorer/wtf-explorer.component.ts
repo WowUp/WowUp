@@ -8,10 +8,9 @@ import { ElectronService } from "../../../services";
 import { WarcraftService } from "../../../services/warcraft/warcraft.service";
 import { WtfNode, WtfService } from "../../../services/wtf/wtf.service";
 import { removeExtension } from "../../../utils/string.utils";
-import { AddonFolder } from "../../../models/wowup/addon-folder";
 import { WarcraftInstallationService } from "../../../services/warcraft/warcraft-installation.service";
 import { formatSize } from "../../../utils/number.utils";
-import { WowInstallation } from "../../../../common/warcraft/wow-installation";
+import { AddonFolder, WowInstallation } from "wowup-lib-core";
 
 interface SavedVariable {
   name: string;

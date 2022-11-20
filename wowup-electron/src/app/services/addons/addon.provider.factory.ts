@@ -1,6 +1,6 @@
 import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
-import { AddonProvider, AddonProviderType } from "../../addon-providers/addon-provider";
+import { AddonProvider, AddonProviderType } from "wowup-lib-core";
 import { GitHubAddonProvider } from "../../addon-providers/github-addon-provider";
 import { TukUiAddonProvider } from "../../addon-providers/tukui-addon-provider";
 import { WowInterfaceAddonProvider } from "../../addon-providers/wow-interface-addon-provider";
@@ -54,14 +54,12 @@ export class AddonProviderFactory {
     if (this._providerMap.size !== 0) {
       return;
     }
-    const providers = [
+    const providers: AddonProvider[] = [
       this.createZipAddonProvider(),
       this.createRaiderIoAddonProvider(),
       this.createWowUpCompanionAddonProvider(),
       this.createWowUpAddonProvider(),
       await this.createWagoAddonProvider(),
-      // this.createCurseAddonProvider(),
-      // this.createCurseV2AddonProvider(),
       this.createTukUiAddonProvider(),
       this.createWowInterfaceAddonProvider(),
       this.createGitHubAddonProvider(),

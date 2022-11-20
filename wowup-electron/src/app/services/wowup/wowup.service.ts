@@ -35,18 +35,16 @@ import {
   USE_SYMLINK_MODE_PREFERENCE_KEY,
   WOWUP_RELEASE_CHANNEL_PREFERENCE_KEY,
 } from "../../../common/constants";
-import { WowClientType } from "../../../common/warcraft/wow-client-type";
-import { AddonChannelType } from "../../../common/wowup/models";
 import { AddonProviderState } from "../../models/wowup/addon-provider-state";
 import { ColumnState } from "../../models/wowup/column-state";
 import { PreferenceChange } from "../../models/wowup/preference-change";
 import { SortOrder } from "../../models/wowup/sort-order";
-import { getEnumList, getEnumName } from "../../utils/enum.utils";
+import { getEnumName, getEnumList } from "wowup-lib-core/lib/utils";
 import { ElectronService } from "../electron/electron.service";
 import { FileService } from "../files/file.service";
 import { PreferenceStorageService } from "../storage/preference-storage.service";
 import { WowUpReleaseChannelType } from "../../../common/wowup/wowup-release-channel-type";
-import { AddonProviderType } from "../../addon-providers/addon-provider";
+import { AddonChannelType, AddonProviderType, WowClientType } from "wowup-lib-core";
 
 @Injectable({
   providedIn: "root",
@@ -190,6 +188,7 @@ export class WowUpService {
 
   public async getStartMinimized(): Promise<boolean> {
     const preference = await this._preferenceStorageService.getAsync(START_MINIMIZED_PREFERENCE_KEY);
+    console.log("getStartMinimized", typeof preference, preference);
     return preference === "true";
   }
 

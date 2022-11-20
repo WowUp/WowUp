@@ -1,4 +1,4 @@
-import { WowClientType } from "../../../common/warcraft/wow-client-type";
+import { WowClientType } from "wowup-lib-core";
 
 export interface InstalledProduct {
   name: string;

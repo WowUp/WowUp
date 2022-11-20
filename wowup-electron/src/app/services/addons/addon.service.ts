@@ -26,30 +26,13 @@ import {
   USER_ACTION_ADDON_SEARCH,
   USER_ACTION_BROWSE_CATEGORY,
 } from "../../../common/constants";
-import { Addon, AddonExternalId } from "../../../common/entities/addon";
-import { WowClientType } from "../../../common/warcraft/wow-client-type";
-import {
-  AddonCategory,
-  AddonChannelType,
-  AddonDependency,
-  AddonDependencyType,
-  AddonWarningType,
-} from "../../../common/wowup/models";
-import { AddonProvider, SearchByUrlResult } from "../../addon-providers/addon-provider";
-// import { CurseAddonProvider } from "../../addon-providers/curse-addon-provider";
+
 import { WowUpAddonProvider } from "../../addon-providers/wowup-addon-provider";
 import { AddonScanError, AddonSyncError, GenericProviderError } from "../../errors";
-import { AddonFolder } from "../../models/wowup/addon-folder";
 import { AddonInstallState } from "../../models/wowup/addon-install-state";
-import { AddonSearchResult } from "../../models/wowup/addon-search-result";
-import { AddonSearchResultDependency } from "../../models/wowup/addon-search-result-dependency";
-import { AddonSearchResultFile } from "../../models/wowup/addon-search-result-file";
 import { AddonUpdateEvent } from "../../models/wowup/addon-update-event";
-import { ProtocolSearchResult } from "../../models/wowup/protocol-search-result";
-import { Toc } from "../../models/wowup/toc";
-import { WowInstallation } from "../../../common/warcraft/wow-installation";
 import * as AddonUtils from "../../utils/addon.utils";
-import { getEnumName } from "../../utils/enum.utils";
+import { getEnumName } from "wowup-lib-core/lib/utils";
 import * as SearchResults from "../../utils/search-result.utils";
 import { capitalizeString } from "../../utils/string.utils";
 import { AnalyticsService } from "../analytics/analytics.service";
@@ -62,6 +45,25 @@ import { WarcraftService } from "../warcraft/warcraft.service";
 import { WowUpService } from "../wowup/wowup.service";
 import { AddonProviderFactory } from "./addon.provider.factory";
 import { AddonFingerprintService } from "./addon-fingerprint.service";
+import {
+  Addon,
+  AddonCategory,
+  AddonChannelType,
+  AddonDependency,
+  AddonDependencyType,
+  AddonExternalId,
+  AddonFolder,
+  AddonProvider,
+  AddonSearchResult,
+  AddonSearchResultDependency,
+  AddonSearchResultFile,
+  AddonWarningType,
+  ProtocolSearchResult,
+  SearchByUrlResult,
+  Toc,
+  WowClientType,
+  WowInstallation,
+} from "wowup-lib-core";
 
 export enum ScanUpdateType {
   Start,
@@ -925,7 +927,7 @@ export class AddonService {
     return this._addonStorage.get(addonId);
   }
 
-  public async getAddonByUrl(url: URL, installation: WowInstallation): Promise<SearchByUrlResult> {
+  public async getAddonByUrl(url: URL, installation: WowInstallation): Promise<SearchByUrlResult | undefined> {
     const provider = this._addonProviderService.getAddonProviderForUri(url);
     if (!provider) {
       console.warn(`No provider found for url: ${url.toString()}`);
@@ -947,7 +949,7 @@ export class AddonService {
       throw new Error(`Provider not found: ${providerName}`);
     }
 
-    return provider.getById(externalId, installation).pipe(
+    return from(provider.getById(externalId, installation)).pipe(
       map((searchResult) => {
         if (!searchResult) {
           console.warn("provider get by id returned nothing");
@@ -1412,10 +1414,9 @@ export class AddonService {
   }
 
   private getExternalIdsForProvider(addonProvider: AddonProvider, addons: Addon[]): string[] {
-    return addons
-      .filter((addon) => addon.providerName === addonProvider.name)
+    return _.filter(addons, (addon) => addon.providerName === addonProvider.name)
       .map((f) => f.externalId)
-      .filter((id) => !!id);
+      .filter((id): id is string => typeof id === "string");
   }
 
   private async removeGitFolders(addonFolders: AddonFolder[]) {

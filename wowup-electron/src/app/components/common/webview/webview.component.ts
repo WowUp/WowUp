@@ -1,7 +1,7 @@
 import { AfterViewInit, Component, ElementRef, Input, NgZone, OnDestroy, ViewChild } from "@angular/core";
 import { nanoid } from "nanoid";
 import { filter, Subject, takeUntil } from "rxjs";
-import { AdPageOptions } from "../../../../common/wowup/models";
+import { AdPageOptions } from "wowup-lib-core";
 import { ElectronService } from "../../../services/electron/electron.service";
 import { FileService } from "../../../services/files/file.service";
 import { LinkService } from "../../../services/links/link.service";

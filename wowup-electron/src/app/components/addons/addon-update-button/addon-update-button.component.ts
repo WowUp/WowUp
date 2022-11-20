@@ -4,13 +4,13 @@ import { filter } from "rxjs/operators";
 import { ChangeDetectorRef, Component, EventEmitter, Input, OnDestroy, OnInit, Output } from "@angular/core";
 import { TranslateService } from "@ngx-translate/core";
 
-import { WowClientType } from "../../../../common/warcraft/wow-client-type";
 import { AddonViewModel } from "../../../business-objects/addon-view-model";
 import { AddonInstallState } from "../../../models/wowup/addon-install-state";
 import { AddonUpdateEvent } from "../../../models/wowup/addon-update-event";
 import { AddonService } from "../../../services/addons/addon.service";
-import { getEnumName } from "../../../utils/enum.utils";
+import { getEnumName } from "wowup-lib-core/lib/utils";
 import { ADDON_PROVIDER_UNKNOWN } from "../../../../common/constants";
+import { WowClientType } from "wowup-lib-core";
 
 @Component({
   selector: "app-addon-update-button",
