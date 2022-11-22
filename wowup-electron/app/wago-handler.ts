@@ -25,7 +25,7 @@ class WagoHandler {
     // Just forward the token event out to the window
     // this is not a handler, just a passive listener
     ipcMain.on("wago-token-received", (evt, token: string) => {
-      if (token.length < 20) {
+      if (typeof token !== "string" || token.length < 20) {
         log.warn(`[wago-handler] malformed token detected: ${token.length}`);
         return;
       }
@@ -40,8 +40,6 @@ class WagoHandler {
   public initializeWebContents(webContents: WebContents) {
     if (this._webContents !== undefined) {
       this.removeListeners(this._webContents);
-      // log.warn("[wago-handler] unable to set webContents, already exists", this._webContents.id, webContents.id);
-      // return;
     }
 
     this._webContents = webContents;
@@ -50,7 +48,7 @@ class WagoHandler {
     webContents.on("did-fail-load", this.onDidFail);
     webContents.on("will-navigate", this.onWillNavigate);
     webContents.on("did-finish-load", () => {
-      log.debug("[wago-handler] did-finish-load", this._tokenMap, webContents.id);
+      log.debug("[wago-handler] did-finish-load");
       if (this._tokenMap.has(webContents.id)) {
         this.stopTimeout();
       }

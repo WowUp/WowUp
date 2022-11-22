@@ -210,7 +210,7 @@ export class WagoAddonProvider extends AddonProvider {
         tap((change) => {
           if (change.key === PREF_WAGO_ACCESS_KEY) {
             console.log("[wago] wago secret set", change.value.length);
-            if (typeof change.value === "string" && change.value.length > 20) {
+            if (this.isValidToken(change.value)) {
               this._wagoSecret = change.value;
               this._circuitBreaker.close();
             } else {
@@ -226,7 +226,7 @@ export class WagoAddonProvider extends AddonProvider {
       .pipe(
         first(),
         tap((accessKey) => {
-          if (typeof accessKey === "string" && accessKey.length > 20) {
+          if (this.isValidToken(accessKey)) {
             this._wagoSecret = accessKey;
             console.debug("[wago] secret key set");
           }
@@ -731,8 +731,8 @@ export class WagoAddonProvider extends AddonProvider {
   }
 
   private onWagoTokenReceived = (evt, token: string) => {
-    console.log(`[wago] onWagoTokenReceived: ${token.length}`, token);
-    if (token.length < 20) {
+    console.log(`[wago] onWagoTokenReceived: ${token.length}`);
+    if (!this.isValidToken(token)) {
       console.warn("[wagp] malformed token detected");
       return;
     }
@@ -746,10 +746,14 @@ export class WagoAddonProvider extends AddonProvider {
   private getRequestHeaders(): {
     [header: string]: string;
   } {
-    const token = this._wagoSecret.length > 20 ? this._wagoSecret : this._apiTokenSrc.value;
+    const token = this.isValidToken(this._wagoSecret) ? this._wagoSecret : this._apiTokenSrc.value;
     return {
       Authorization: `Bearer ${token}`,
     };
+  }
+
+  private isValidToken(token: string) {
+    return typeof token === "string" && token.length > 20;
   }
 
   //
@@ -759,7 +763,7 @@ export class WagoAddonProvider extends AddonProvider {
     }
 
     // if we have a secret set, use that
-    if (this._wagoSecret.length > 20) {
+    if (this.isValidToken(this._wagoSecret)) {
       console.log("[wago] using secret", this._wagoSecret.length);
       return of(this._wagoSecret);
     }
@@ -767,7 +771,7 @@ export class WagoAddonProvider extends AddonProvider {
     // wait for a public token from the ad frame
     return this._apiTokenSrc.pipe(
       timeout(timeoutMs),
-      first((token) => typeof token === "string" && token.length > 20),
+      first((token) => this.isValidToken(token)),
       tap((token) => console.log(`[wago] token ready`, token.length)),
       catchError(() => {
         console.error("[wago] no token received after timeout");
