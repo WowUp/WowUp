@@ -42,7 +42,7 @@ import * as platform from "./platform";
 import { initializeDefaultPreferences } from "./preferences";
 import { PUSH_NOTIFICATION_EVENT, pushEvents } from "./push";
 import { initializeStoreIpcHandlers, preferenceStore } from "./stores";
-import { wagoHandler } from "./wago";
+import { wagoHandler } from "./wago-handler";
 import * as windowState from "./window-state";
 
 // LOGGING SETUP
