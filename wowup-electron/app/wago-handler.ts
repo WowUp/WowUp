@@ -1,4 +1,4 @@
-import { BrowserWindow, ipcMain, WebContents } from "electron";
+import { BrowserWindow, ipcMain, powerMonitor, WebContents } from "electron";
 import * as log from "electron-log";
 
 class WagoHandler {
@@ -8,7 +8,14 @@ class WagoHandler {
   private _webContents: WebContents | undefined = undefined;
   private _tokenMap = new Map<number, boolean>();
 
-  initialize(window: BrowserWindow): void {
+  public constructor() {
+    powerMonitor.on("resume", () => {
+      log.info("[wago-handler] powerMonitor resume");
+      this._webContents?.reload();
+    });
+  }
+
+  public initialize(window: BrowserWindow): void {
     if (this._initialized) {
       return;
     }
@@ -30,7 +37,7 @@ class WagoHandler {
     });
   }
 
-  initializeWebContents(webContents: WebContents) {
+  public initializeWebContents(webContents: WebContents) {
     if (this._webContents !== undefined) {
       this.removeListeners(this._webContents);
       // log.warn("[wago-handler] unable to set webContents, already exists", this._webContents.id, webContents.id);
