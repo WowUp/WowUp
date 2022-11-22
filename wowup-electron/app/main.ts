@@ -42,6 +42,7 @@ import * as platform from "./platform";
 import { initializeDefaultPreferences } from "./preferences";
 import { PUSH_NOTIFICATION_EVENT, pushEvents } from "./push";
 import { initializeStoreIpcHandlers, preferenceStore } from "./stores";
+import { wagoHandler } from "./wago";
 import * as windowState from "./window-state";
 
 // LOGGING SETUP
@@ -284,6 +285,7 @@ function createWindow(): BrowserWindow {
 
   initializeIpcHandlers(win);
   initializeStoreIpcHandlers();
+  wagoHandler.initialize(win);
 
   pushEvents.on(PUSH_NOTIFICATION_EVENT, (data) => {
     win.webContents.send(IPC_PUSH_NOTIFICATION, data);
@@ -311,12 +313,8 @@ function createWindow(): BrowserWindow {
   win.webContents.on("did-attach-webview", (evt, webContents) => {
     webContents.session.setUserAgent(webContents.userAgent);
 
-    webContents.on("preload-error", (evt) => {
-      log.error("[webview] preload-error", evt);
-    });
-
-    webContents.on("did-fail-provisional-load", (evt) => {
-      log.error("[webview] did-fail-provisional-load", evt);
+    webContents.on("preload-error", (evt, path, e) => {
+      log.error("[webview] preload-error", e.message);
     });
 
     webContents.session.setPermissionRequestHandler((contents, permission, callback) => {
@@ -333,29 +331,11 @@ function createWindow(): BrowserWindow {
       return false;
     });
 
-    webContents.on("did-fail-load", (evt, code, desc, url) => {
-      log.error("[webview] did-fail-load", code, desc, url);
-      setTimeout(() => {
-        log.error("[webview] reload");
-        webContents.reload();
-      }, 2000);
-    });
-
-    webContents.on("will-navigate", (evt, url) => {
-      log.debug("[webview] will-navigate", url);
-      if (webContents.getURL() === url) {
-        log.debug(`[webview] reload detected`);
-      } else {
-        evt.preventDefault(); // block the webview from navigating at all
+    webContents.on("did-start-navigation", (evt, url) => {
+      if (url === "https://addons.wago.io/wowup_ad") {
+        log.debug("[webview] did-start-navigation", url);
+        wagoHandler.initializeWebContents(webContents);
       }
-    });
-
-    // webview allowpopups must be enabled for any link to work
-    // https://www.electronjs.org/docs/latest/api/webview-tag#allowpopups
-    webContents.setWindowOpenHandler((details) => {
-      log.debug("[webview] setWindowOpenHandler");
-      win.webContents.send("webview-new-window", details); // forward this new window to the app for processing
-      return { action: "deny" };
     });
   });
 
