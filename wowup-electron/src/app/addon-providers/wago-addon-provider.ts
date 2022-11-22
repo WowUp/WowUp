@@ -1,5 +1,5 @@
 import { BehaviorSubject, firstValueFrom, from, Observable, of } from "rxjs";
-import { catchError, first, tap, timeout } from "rxjs/operators";
+import { catchError, filter, first, tap, timeout } from "rxjs/operators";
 import { v4 as uuidv4 } from "uuid";
 import _ from "lodash";
 
@@ -206,20 +206,16 @@ export class WagoAddonProvider extends AddonProvider {
 
     // Watch for the change of the wago secret in the store
     this._sensitiveStorageService.change$
-      .pipe(
-        tap((change) => {
-          if (change.key === PREF_WAGO_ACCESS_KEY) {
-            console.log("[wago] wago secret set", change.value.length);
-            if (this.isValidToken(change.value)) {
-              this._wagoSecret = change.value;
-              this._circuitBreaker.close();
-            } else {
-              this._wagoSecret = "";
-            }
-          }
-        })
-      )
-      .subscribe();
+      .pipe(filter((change) => change.key == PREF_WAGO_ACCESS_KEY))
+      .subscribe((change) => {
+        console.log("[wago] wago secret set", change.value.length);
+        if (this.isValidToken(change.value as string)) {
+          this._wagoSecret = change.value;
+          this._circuitBreaker.close();
+        } else {
+          this._wagoSecret = "";
+        }
+      });
 
     // Initial load of the wago secret
     from(this._sensitiveStorageService.getAsync(PREF_WAGO_ACCESS_KEY))
