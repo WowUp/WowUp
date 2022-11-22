@@ -1,5 +1,5 @@
 import { BehaviorSubject, firstValueFrom, from, Observable, of } from "rxjs";
-import { catchError, first, switchMap, tap, timeout } from "rxjs/operators";
+import { catchError, filter, first, tap, timeout } from "rxjs/operators";
 import { v4 as uuidv4 } from "uuid";
 import _ from "lodash";
 
@@ -171,6 +171,7 @@ export class WagoAddonProvider extends AddonProvider {
   private readonly _circuitBreaker: CircuitBreakerWrapper;
 
   private _apiTokenSrc = new BehaviorSubject<string>("");
+  private _wagoSecret = "";
 
   // This is our internal http queue, prevents duplicated requests for some routes
   private _requestQueue: Map<string, Promise<any>> = new Map();
@@ -202,6 +203,36 @@ export class WagoAddonProvider extends AddonProvider {
     );
 
     this._electronService.on("wago-token-received", this.onWagoTokenReceived);
+
+    // Watch for the change of the wago secret in the store
+    this._sensitiveStorageService.change$
+      .pipe(filter((change) => change.key == PREF_WAGO_ACCESS_KEY))
+      .subscribe((change) => {
+        console.log("[wago] wago secret set", change.value.length);
+        if (this.isValidToken(change.value as string)) {
+          this._wagoSecret = change.value;
+          this._circuitBreaker.close();
+        } else {
+          this._wagoSecret = "";
+        }
+      });
+
+    // Initial load of the wago secret
+    from(this._sensitiveStorageService.getAsync(PREF_WAGO_ACCESS_KEY))
+      .pipe(
+        first(),
+        tap((accessKey) => {
+          if (this.isValidToken(accessKey)) {
+            this._wagoSecret = accessKey;
+            console.debug("[wago] secret key set");
+          }
+        }),
+        catchError((e) => {
+          console.error("[wago] failed to load secret key", e);
+          return of(undefined);
+        })
+      )
+      .subscribe();
   }
 
   public isValidAddonId(addonId: string): boolean {
@@ -696,9 +727,14 @@ export class WagoAddonProvider extends AddonProvider {
   }
 
   private onWagoTokenReceived = (evt, token: string) => {
-    console.log(`[wago] onWagoTokenReceived`);
+    console.log(`[wago] onWagoTokenReceived: ${token.length}`);
+    if (!this.isValidToken(token)) {
+      console.warn("[wagp] malformed token detected");
+      return;
+    }
+
     // Whenever we get a new token, manually re-enable the circuit breaker
-    this._circuitBreaker.enable();
+    this._circuitBreaker.close();
 
     this._apiTokenSrc.next(token);
   };
@@ -706,33 +742,36 @@ export class WagoAddonProvider extends AddonProvider {
   private getRequestHeaders(): {
     [header: string]: string;
   } {
+    const token = this.isValidToken(this._wagoSecret) ? this._wagoSecret : this._apiTokenSrc.value;
     return {
-      Authorization: `Bearer ${this._apiTokenSrc.value}`,
+      Authorization: `Bearer ${token}`,
     };
   }
 
+  private isValidToken(token: string) {
+    return typeof token === "string" && token.length > 20;
+  }
+
+  //
   private ensureToken(timeoutMs = 10000): Observable<string> {
     if (this._circuitBreaker.isOpen()) {
       throw new Error("[wago] circuit breaker is open");
     }
 
-    return from(this._sensitiveStorageService.getAsync(PREF_WAGO_ACCESS_KEY)).pipe(
-      switchMap((wagoAccessToken) => {
-        console.log(`[wago] stored token`, wagoAccessToken);
-        if (wagoAccessToken !== undefined && wagoAccessToken !== "") {
-          this._apiTokenSrc.next(wagoAccessToken);
-          return of(wagoAccessToken);
-        }
+    // if we have a secret set, use that
+    if (this.isValidToken(this._wagoSecret)) {
+      console.log("[wago] using secret", this._wagoSecret.length);
+      return of(this._wagoSecret);
+    }
 
-        return this._apiTokenSrc.pipe(
-          timeout(timeoutMs),
-          first((token) => token !== ""),
-          tap(() => console.log(`[wago] ensureToken`)),
-          catchError(() => {
-            console.error("[wago] no token received after timeout");
-            return of("");
-          })
-        );
+    // wait for a public token from the ad frame
+    return this._apiTokenSrc.pipe(
+      timeout(timeoutMs),
+      first((token) => this.isValidToken(token)),
+      tap((token) => console.log(`[wago] token ready`, token.length)),
+      catchError(() => {
+        console.error("[wago] no token received after timeout");
+        return of("");
       })
     );
   }
