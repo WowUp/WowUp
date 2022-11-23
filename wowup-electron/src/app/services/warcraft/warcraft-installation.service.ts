@@ -1,6 +1,6 @@
 import * as _ from "lodash";
 import * as path from "path";
-import { from, ReplaySubject, Subject } from "rxjs";
+import { firstValueFrom, from, ReplaySubject, Subject } from "rxjs";
 import { map, tap } from "rxjs/operators";
 import { v4 as uuidv4 } from "uuid";
 
@@ -41,6 +41,14 @@ export class WarcraftInstallationService {
     private _electronService: ElectronService
   ) {
     this._wowInstallationsSrc.subscribe((installations) => {
+      for (const installation of installations) {
+        // Saved display names can be unreliable (e.g. language change,
+        // expansion release). Always regenerate them.
+        const typeName = getEnumName(WowClientType, installation.clientType);
+        this.getDisplayName(installation.label, typeName)
+          .then((displayName) => (installation.displayName = displayName))
+          .catch(() => {});
+      }
       this._wowInstallations = installations;
     });
 
@@ -126,6 +134,9 @@ export class WarcraftInstallationService {
   }
 
   public async updateWowInstallation(wowInstallation: WowInstallation): Promise<void> {
+    const typeName = getEnumName(WowClientType, wowInstallation.clientType);
+    wowInstallation.displayName = await this.getDisplayName(wowInstallation.label, typeName);
+
     const storedInstallations = await this.getWowInstallationsAsync();
     const matchIndex = _.findIndex(storedInstallations, (installation) => installation.id === wowInstallation.id);
 
@@ -202,7 +213,8 @@ export class WarcraftInstallationService {
     const typeName = getEnumName(WowClientType, clientType);
     const currentInstallations = await this.getWowInstallationsByClientType(clientType);
 
-    const label = await this.getNewInstallLabel(typeName, currentInstallations.length);
+    const label = currentInstallations.length ? `{defaultName} ${currentInstallations.length + 1}` : "{defaultName}";
+    const displayName = await this.getDisplayName(label, typeName);
 
     const installation: WowInstallation = {
       id: uuidv4(),
@@ -210,6 +222,7 @@ export class WarcraftInstallationService {
       defaultAddonChannelType: AddonChannelType.Stable,
       defaultAutoUpdate: false,
       label: label,
+      displayName: displayName,
       location: applicationPath,
       selected: false,
     };
@@ -231,7 +244,8 @@ export class WarcraftInstallationService {
       const typeName = getEnumName(WowClientType, product.clientType);
       const currentInstallations = await this.getWowInstallationsByClientType(product.clientType);
 
-      const label = await this.getNewInstallLabel(typeName, currentInstallations.length);
+      const label = currentInstallations.length ? `{defaultName} ${currentInstallations.length + 1}` : "{defaultName}";
+      const displayName = await this.getDisplayName(label, typeName);
 
       const fullProductPath = this.getFullProductPath(product.location, product.clientType);
 
@@ -243,6 +257,7 @@ export class WarcraftInstallationService {
         id: uuidv4(),
         clientType: product.clientType,
         label,
+        displayName,
         location: fullProductPath,
         selected: false,
         defaultAddonChannelType: AddonChannelType.Stable,
@@ -260,13 +275,11 @@ export class WarcraftInstallationService {
     this._wowInstallationsSrc.next(wowInstallations);
   }
 
-  private async getNewInstallLabel(typeName: string, installCt: number): Promise<string> {
-    let label = await this._translateService.get(`COMMON.CLIENT_TYPES.${typeName.toUpperCase()}`).toPromise();
-    if (installCt > 0) {
-      label += ` ${installCt + 1}`;
-    }
-
-    return label;
+  private async getDisplayName(label: string, typeName: string): Promise<string> {
+    const defaultName: string = await firstValueFrom(
+      this._translateService.get(`COMMON.CLIENT_TYPES.${typeName.toUpperCase()}`)
+    );
+    return label.replace("{defaultName}", defaultName);
   }
 
   private getFullProductPath(location: string, clientType: WowClientType): string {

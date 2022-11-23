@@ -178,14 +178,14 @@
       "TOC_NAME_MISMATCH_TOOLTIP": "Der Ordner dieses Addons stimmt nicht mit der TOC-Datei überein"
     },
     "CLIENT_TYPES": {
-      "BETA": "Beta",
-      "CLASSIC": "Classic",
-      "CLASSICBETA": "Classic Beta",
-      "CLASSICERA": "Classic Era",
-      "CLASSICERAPTR": "Classic Era PTR",
-      "CLASSICPTR": "Classic PTR",
-      "RETAIL": "Retail",
-      "RETAILPTR": "Retail PTR"
+      "BETA": "Beta von Dragonflight",
+      "CLASSIC": "Wrath of the Lich King Classic",
+      "CLASSICBETA": "Beta von Wrath of the Lich King Classic",
+      "CLASSICERA": "World of Warcraft Classic",
+      "CLASSICERAPTR": "Classic Season of Mastery PTR",
+      "CLASSICPTR": "Öffentlicher Testrealm (Wrath Classic)",
+      "RETAIL": "Dragonflight",
+      "RETAILPTR": "Öffentlicher Testrealm (PTR)"
     },
     "DATES": {
       "DAYS_AGO": "Vor {count} {count, plural, one{Tag} other{Tagen}}",

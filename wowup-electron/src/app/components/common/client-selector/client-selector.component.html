@@ -25,7 +25,7 @@
       </mat-select-trigger>
       <mat-option [value]="installation.id" *ngFor="let installation of wowInstallations$ | async">
         <div class="d-flex">
-          <div class="flex-grow-1">{{ installation.label }}</div>
+          <div class="flex-grow-1">{{ installation.displayName }}</div>
           <div *ngIf="updates && installation.availableUpdateCount > 0">
             <div class="d-inline update-badge ml-1 text-white">
               {{ installation.availableUpdateCount }}

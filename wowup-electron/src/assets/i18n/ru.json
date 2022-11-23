@@ -178,14 +178,14 @@
       "TOC_NAME_MISMATCH_TOOLTIP": "Папка этой модификации не соответствует названию"
     },
     "CLIENT_TYPES": {
-      "BETA": "Бета",
-      "CLASSIC": "Классический",
-      "CLASSICBETA": "Классический Бета",
-      "CLASSICERA": "Эпоха классики",
-      "CLASSICERAPTR": "Эпоха классики PTR",
-      "CLASSICPTR": "Классический PTR",
-      "RETAIL": "Актуальный",
-      "RETAILPTR": "Актуальный PTR"
+      "BETA": "Бета Dragonflight",
+      "CLASSIC": "Wrath of the Lich King Classic",
+      "CLASSICBETA": "Бета Wrath of the Lich King Classic",
+      "CLASSICERA": "World of Warcraft Classic",
+      "CLASSICERAPTR": "Classic Season of Mastery PTR",
+      "CLASSICPTR": "PTR (Wrath Classic)",
+      "RETAIL": "Dragonflight",
+      "RETAILPTR": "Тестовый игровой мир (PTR)"
     },
     "DATES": {
       "DAYS_AGO": "{count} {count, plural, one{день} few{дня} other{дней}} назад",

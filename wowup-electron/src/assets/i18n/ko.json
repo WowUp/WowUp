@@ -178,14 +178,14 @@
       "TOC_NAME_MISMATCH_TOOLTIP": "This addon's folder does not match the toc"
     },
     "CLIENT_TYPES": {
-      "BETA": "베타",
-      "CLASSIC": "클래식",
-      "CLASSICBETA": "클래식 베타",
-      "CLASSICERA": "Classic Era",
-      "CLASSICERAPTR": "Classic Era PTR",
-      "CLASSICPTR": "클래식 PTR",
-      "RETAIL": "리테일",
-      "RETAILPTR": "리테일 PTR"
+      "BETA": "용군단 베타",
+      "CLASSIC": "리치 왕의 분노 클래식",
+      "CLASSICBETA": "리치 왕의 분노 클래식 베타",
+      "CLASSICERA": "월드 오브 워크래프트 클래식",
+      "CLASSICERAPTR": "Classic Season of Mastery PTR",
+      "CLASSICPTR": "공개 테스트 서버 (리치 왕의 분노 클래식)",
+      "RETAIL": "용군단",
+      "RETAILPTR": "공개 테스트 서버"
     },
     "DATES": {
       "DAYS_AGO": "{count}일 전",

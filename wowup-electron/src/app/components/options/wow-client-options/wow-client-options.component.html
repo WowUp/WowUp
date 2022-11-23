@@ -3,7 +3,7 @@
     <img [src]="wowLogoImage" />
   </div>
   <mat-card-title class="row">
-    <div *ngIf="(editMode$ | async) === false" class="flex-grow-1">{{ installationModel.label }}</div>
+    <div *ngIf="(editMode$ | async) === false" class="flex-grow-1">{{ installationModel.displayName }}</div>
     <mat-form-field *ngIf="(editMode$ | async) === true" class="no-input-border w-100">
       <input matInput [(ngModel)]="installationModel.label" />
     </mat-form-field>

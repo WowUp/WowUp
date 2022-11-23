@@ -107,7 +107,7 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
   public readonly selectedWowInstallation$ = this._sessionService.selectedWowInstallation$;
 
   public readonly selectedWowInstallationLabel$ = this._sessionService.selectedWowInstallation$.pipe(
-    map((wowInstall) => wowInstall?.label ?? "")
+    map((wowInstall) => wowInstall?.displayName ?? "")
   );
 
   public readonly selectedWowInstallationId$ = this._sessionService.selectedWowInstallation$.pipe(
