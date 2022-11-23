@@ -1,4 +1,5 @@
 import { Injectable } from "@angular/core";
+import { Addon } from "wowup-lib-core";
 
 import {
   IPC_ADDONS_SAVE_ALL,
@@ -8,7 +9,6 @@ import {
   IPC_STORE_REMOVE_OBJECT,
   IPC_STORE_GET_ALL,
 } from "../../../common/constants";
-import { Addon } from "../../../common/entities/addon";
 import { ElectronService } from "../electron/electron.service";
 
 @Injectable({

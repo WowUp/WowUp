@@ -1,33 +1,37 @@
 import { BehaviorSubject, firstValueFrom, from, Observable, of } from "rxjs";
-import { catchError, first, map, switchMap, tap, timeout } from "rxjs/operators";
+import { catchError, filter, first, tap, timeout } from "rxjs/operators";
 import { v4 as uuidv4 } from "uuid";
 import _ from "lodash";
 
 import { ADDON_PROVIDER_WAGO, PREF_WAGO_ACCESS_KEY } from "../../common/constants";
-import { Addon } from "../../common/entities/addon";
-import { DownloadAuth } from "../../common/models/download-request";
-import { WowClientGroup, WowClientType } from "../../common/warcraft/wow-client-type";
-import { WowInstallation } from "../../common/warcraft/wow-installation";
-import { AddonChannelType, AdPageOptions } from "../../common/wowup/models";
 import { AppConfig } from "../../environments/environment";
-import { AddonFolder } from "../models/wowup/addon-folder";
-import { AddonSearchResult } from "../models/wowup/addon-search-result";
-import { AddonSearchResultFile } from "../models/wowup/addon-search-result-file";
-import { AppWowUpScanResult } from "../models/wowup/app-wowup-scan-result";
 import { ElectronService } from "../services";
 import { CachingService } from "../services/caching/caching-service";
 import { CircuitBreakerWrapper, NetworkService } from "../services/network/network.service";
 import { TocService } from "../services/toc/toc.service";
 import { WarcraftService } from "../services/warcraft/warcraft.service";
 import { getGameVersion } from "../utils/addon.utils";
-import { getEnumName } from "../utils/enum.utils";
+import { getEnumName } from "wowup-lib-core/lib/utils";
 import { convertMarkdown } from "../utils/markdown.utlils";
-import { AddonProvider, GetAllResult } from "./addon-provider";
 import { SourceRemovedAddonError } from "../errors";
 import { getWowClientGroup } from "../../common/warcraft";
 import { HttpErrorResponse } from "@angular/common/http";
 import { UiMessageService } from "../services/ui-message/ui-message.service";
 import { SensitiveStorageService } from "../services/storage/sensitive-storage.service";
+import {
+  Addon,
+  AddonChannelType,
+  AddonFolder,
+  AddonProvider,
+  AddonSearchResult,
+  AddonSearchResultFile,
+  AdPageOptions,
+  DownloadAuth,
+  GetAllResult,
+  WowClientGroup,
+  WowClientType,
+  WowInstallation,
+} from "wowup-lib-core";
 
 declare type WagoGameVersion = "retail" | "classic" | "bc" | "wotlk";
 declare type WagoStability = "stable" | "beta" | "alpha";
@@ -167,6 +171,7 @@ export class WagoAddonProvider extends AddonProvider {
   private readonly _circuitBreaker: CircuitBreakerWrapper;
 
   private _apiTokenSrc = new BehaviorSubject<string>("");
+  private _wagoSecret = "";
 
   // This is our internal http queue, prevents duplicated requests for some routes
   private _requestQueue: Map<string, Promise<any>> = new Map();
@@ -198,13 +203,43 @@ export class WagoAddonProvider extends AddonProvider {
     );
 
     this._electronService.on("wago-token-received", this.onWagoTokenReceived);
+
+    // Watch for the change of the wago secret in the store
+    this._sensitiveStorageService.change$
+      .pipe(filter((change) => change.key == PREF_WAGO_ACCESS_KEY))
+      .subscribe((change) => {
+        console.log("[wago] wago secret set", change.value.length);
+        if (this.isValidToken(change.value as string)) {
+          this._wagoSecret = change.value;
+          this._circuitBreaker.close();
+        } else {
+          this._wagoSecret = "";
+        }
+      });
+
+    // Initial load of the wago secret
+    from(this._sensitiveStorageService.getAsync(PREF_WAGO_ACCESS_KEY))
+      .pipe(
+        first(),
+        tap((accessKey) => {
+          if (this.isValidToken(accessKey)) {
+            this._wagoSecret = accessKey;
+            console.debug("[wago] secret key set");
+          }
+        }),
+        catchError((e) => {
+          console.error("[wago] failed to load secret key", e);
+          return of(undefined);
+        })
+      )
+      .subscribe();
   }
 
   public isValidAddonId(addonId: string): boolean {
     return typeof addonId === "string" && addonId.length >= 8 && addonId.length <= 10;
   }
 
-  public async scan(
+  public override async scan(
     installation: WowInstallation,
     addonChannelType: AddonChannelType,
     addonFolders: AddonFolder[]
@@ -343,8 +378,9 @@ export class WagoAddonProvider extends AddonProvider {
     return searchResults;
   }
 
-  public getById(addonId: string): Observable<AddonSearchResult | undefined> {
-    return from(this.getAddonById(addonId)).pipe(map((response) => this.toSearchResultFromDetails(response)));
+  public override async getById(addonId: string): Promise<AddonSearchResult | undefined> {
+    const response = await this.getAddonById(addonId);
+    return this.toSearchResultFromDetails(response);
   }
 
   public async getDescription(installation: WowInstallation, externalId: string): Promise<string> {
@@ -405,7 +441,7 @@ export class WagoAddonProvider extends AddonProvider {
   }
 
   // used when checking for new addon updates
-  public async getAll(installation: WowInstallation, addonIds: string[]): Promise<GetAllResult> {
+  public override async getAll(installation: WowInstallation, addonIds: string[]): Promise<GetAllResult> {
     await firstValueFrom(this.ensureToken());
 
     const url = new URL(`${WAGO_BASE_URL}/addons/_recents`).toString();
@@ -440,12 +476,12 @@ export class WagoAddonProvider extends AddonProvider {
     });
   }
 
-  public getDownloadAuth(): DownloadAuth | undefined {
-    return {
+  public getDownloadAuth(): Promise<DownloadAuth | undefined> {
+    return Promise.resolve({
       queryParams: {
         token: this._apiTokenSrc.value,
       },
-    };
+    });
   }
 
   private async getAddonById(addonId: string): Promise<WagoAddon> {
@@ -690,48 +726,52 @@ export class WagoAddonProvider extends AddonProvider {
     }
   }
 
-  // Scan the actual folders, luckily wago uses the same fingerprint method as wowup
-  private getScanResults = async (addonFolders: AddonFolder[]): Promise<AppWowUpScanResult[]> => {
-    const filePaths = addonFolders.map((addonFolder) => addonFolder.path);
-    const scanResults: AppWowUpScanResult[] = await this._electronService.invoke("wowup-get-scan-results", filePaths);
-    return scanResults;
-  };
-
   private onWagoTokenReceived = (evt, token: string) => {
-    console.log(`[wago] onWagoTokenReceived`);
+    console.log(`[wago] onWagoTokenReceived: ${token.length}`);
+    if (!this.isValidToken(token)) {
+      console.warn("[wagp] malformed token detected");
+      return;
+    }
+
+    // Whenever we get a new token, manually re-enable the circuit breaker
+    this._circuitBreaker.close();
+
     this._apiTokenSrc.next(token);
   };
 
   private getRequestHeaders(): {
     [header: string]: string;
   } {
+    const token = this.isValidToken(this._wagoSecret) ? this._wagoSecret : this._apiTokenSrc.value;
     return {
-      Authorization: `Bearer ${this._apiTokenSrc.value}`,
+      Authorization: `Bearer ${token}`,
     };
   }
 
+  private isValidToken(token: string) {
+    return typeof token === "string" && token.length > 20;
+  }
+
+  //
   private ensureToken(timeoutMs = 10000): Observable<string> {
     if (this._circuitBreaker.isOpen()) {
       throw new Error("[wago] circuit breaker is open");
     }
 
-    return from(this._sensitiveStorageService.getAsync(PREF_WAGO_ACCESS_KEY)).pipe(
-      switchMap((wagoAccessToken) => {
-        console.log(`[wago] stored token`, wagoAccessToken);
-        if (wagoAccessToken !== undefined && wagoAccessToken !== "") {
-          this._apiTokenSrc.next(wagoAccessToken);
-          return of(wagoAccessToken);
-        }
+    // if we have a secret set, use that
+    if (this.isValidToken(this._wagoSecret)) {
+      console.log("[wago] using secret", this._wagoSecret.length);
+      return of(this._wagoSecret);
+    }
 
-        return this._apiTokenSrc.pipe(
-          timeout(timeoutMs),
-          first((token) => token !== ""),
-          tap(() => console.log(`[wago] ensureToken`)),
-          catchError(() => {
-            console.error("[wago] no token received after timeout");
-            return of("");
-          })
-        );
+    // wait for a public token from the ad frame
+    return this._apiTokenSrc.pipe(
+      timeout(timeoutMs),
+      first((token) => this.isValidToken(token)),
+      tap((token) => console.log(`[wago] token ready`, token.length)),
+      catchError(() => {
+        console.error("[wago] no token received after timeout");
+        return of("");
       })
     );
   }

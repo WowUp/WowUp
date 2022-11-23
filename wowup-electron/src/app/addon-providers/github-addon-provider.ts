@@ -1,5 +1,5 @@
 import * as _ from "lodash";
-import { firstValueFrom, from, mergeMap, Observable, toArray } from "rxjs";
+import { firstValueFrom, from, mergeMap, toArray } from "rxjs";
 
 import { HttpClient, HttpErrorResponse, HttpHeaders } from "@angular/common/http";
 
@@ -15,16 +15,21 @@ import {
 import { GitHubAsset } from "../models/github/github-asset";
 import { GitHubRelease } from "../models/github/github-release";
 import { GitHubRepository } from "../models/github/github-repository";
-import { WowClientType } from "../../common/warcraft/wow-client-type";
-import { AddonChannelType } from "../../common/wowup/models";
-import { AddonSearchResult } from "../models/wowup/addon-search-result";
-import { AddonSearchResultFile } from "../models/wowup/addon-search-result-file";
-import { AddonProvider, GetAllResult, SearchByUrlResult } from "./addon-provider";
-import { WowInstallation } from "../../common/warcraft/wow-installation";
 import { convertMarkdown } from "../utils/markdown.utlils";
 import { strictFilterBy } from "../utils/array.utils";
 import { getWowClientGroup } from "../../common/warcraft";
 import { SensitiveStorageService } from "../services/storage/sensitive-storage.service";
+import {
+  AddonChannelType,
+  AddonProvider,
+  AddonSearchResult,
+  AddonSearchResultFile,
+  DownloadAuth,
+  GetAllResult,
+  SearchByUrlResult,
+  WowClientType,
+  WowInstallation,
+} from "wowup-lib-core";
 
 type MetadataFlavor = "bcc" | "classic" | "mainline" | "wrath";
 
@@ -70,6 +75,20 @@ export class GitHubAddonProvider extends AddonProvider {
 
   public constructor(private _httpClient: HttpClient, private _sensitiveStorageService: SensitiveStorageService) {
     super();
+  }
+
+  public async getDownloadAuth(): Promise<DownloadAuth | undefined> {
+    const hasPat = await this.hasPersonalAccessKey();
+    if (hasPat) {
+      const headers = await this.getAuthorizationHeader();
+      headers.Accept = "application/octet-stream";
+
+      return {
+        headers,
+      };
+    } else {
+      return undefined;
+    }
   }
 
   public async getAll(installation: WowInstallation, addonIds: string[]): Promise<GetAllResult> {
@@ -144,6 +163,7 @@ export class GitHubAddonProvider extends AddonProvider {
         throw new AssetMissingError(addonUri.toString(), clientGroup);
       }
 
+      const hasPat = await this.hasPersonalAccessKey();
       const repository = await this.getRepository(repoPath);
       const author = repository.owner.login;
       const authorImageUrl = repository.owner.avatar_url;
@@ -160,7 +180,7 @@ export class GitHubAddonProvider extends AddonProvider {
         files: [
           {
             channelType: result.release.prerelease ? AddonChannelType.Beta : AddonChannelType.Stable,
-            downloadUrl: asset.browser_download_url,
+            downloadUrl: hasPat ? asset.url : asset.browser_download_url,
             folders: [],
             gameVersion: "",
             releaseDate: new Date(result.release.published_at),
@@ -188,8 +208,11 @@ export class GitHubAddonProvider extends AddonProvider {
     return `${parsed.owner}/${parsed.repository}`;
   }
 
-  public getById(addonId: string, installation: WowInstallation): Observable<AddonSearchResult | undefined> {
-    return from(this.getByIdAsync(addonId, installation));
+  public override async getById(
+    addonId: string,
+    installation: WowInstallation
+  ): Promise<AddonSearchResult | undefined> {
+    return await this.getByIdAsync(addonId, installation);
   }
 
   private async getByIdAsync(addonId: string, installation: WowInstallation) {
@@ -218,9 +241,11 @@ export class GitHubAddonProvider extends AddonProvider {
     const asset = assetResult.matchedAsset || assetResult.latestAsset;
     console.debug("asset", asset);
 
+    const hasPat = await this.hasPersonalAccessKey();
+
     const searchResultFile: AddonSearchResultFile = {
       channelType: AddonChannelType.Stable,
-      downloadUrl: asset.browser_download_url,
+      downloadUrl: hasPat ? asset.url : asset.browser_download_url,
       folders: [addonName],
       gameVersion: "",
       version: asset.name,
@@ -308,7 +333,10 @@ export class GitHubAddonProvider extends AddonProvider {
       throw new Error("No metadata asset found");
     }
 
-    return await this.getWithRateLimit<ReleaseMeta>(metadataAsset.browser_download_url);
+    const hasPat = await this.hasPersonalAccessKey();
+    const url = hasPat ? metadataAsset.url : metadataAsset.browser_download_url;
+
+    return await this.getWithRateLimit<ReleaseMeta>(url, hasPat);
   }
 
   /** Check if any of the assets are the BigWigs metadata json file */
@@ -495,13 +523,27 @@ export class GitHubAddonProvider extends AddonProvider {
     return parseInt(headers.get(key) ?? "", 10);
   }
 
-  private async getWithRateLimit<T>(url: URL | string): Promise<T> {
-    try {
-      const personalAccessToken = await this._sensitiveStorageService.getAsync(PREF_GITHUB_PERSONAL_ACCESS_TOKEN);
-      const headers: any = {};
+  private async hasPersonalAccessKey(): Promise<boolean> {
+    const pat = await this._sensitiveStorageService.getAsync(PREF_GITHUB_PERSONAL_ACCESS_TOKEN);
+    return typeof pat === "string" && pat.length > 0;
+  }
 
-      if (personalAccessToken) {
-        headers.Authorization = `token ${personalAccessToken}`;
+  private async getAuthorizationHeader(): Promise<{ [param: string]: string }> {
+    const personalAccessToken = await this._sensitiveStorageService.getAsync(PREF_GITHUB_PERSONAL_ACCESS_TOKEN);
+    const headers: { [param: string]: string } = {};
+    if (typeof personalAccessToken === "string" && personalAccessToken.length > 0) {
+      headers.Authorization = `token ${personalAccessToken}`;
+    }
+
+    return headers;
+  }
+
+  private async getWithRateLimit<T>(url: URL | string, expectBinary = false): Promise<T> {
+    try {
+      const headers = await this.getAuthorizationHeader();
+
+      if (expectBinary) {
+        headers.Accept = "application/octet-stream";
       }
 
       return await firstValueFrom(this._httpClient.get<T>(url.toString(), { headers }));

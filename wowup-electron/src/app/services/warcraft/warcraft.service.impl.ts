@@ -1,5 +1,5 @@
-import { WowClientType } from "../../../common/warcraft/wow-client-type";
-import { InstalledProduct } from '../../models/warcraft/installed-product';
+import { WowClientType } from "wowup-lib-core";
+import { InstalledProduct } from "../../models/warcraft/installed-product";
 
 export interface WarcraftServiceImpl {
   getExecutableExtension(): string;

@@ -178,14 +178,14 @@
       "TOC_NAME_MISMATCH_TOOLTIP": "插件文件夹和 TOC 不匹配"
     },
     "CLIENT_TYPES": {
-      "BETA": "“巨龙时代” Beta 测试",
-      "CLASSIC": "“巫妖王之怒”",
-      "CLASSICBETA": "“巫妖王之怒” 测试服",
-      "CLASSICERA": "魔兽世界（经典怀旧服）",
-      "CLASSICERAPTR": "Classic Season of Mastery PTR",
-      "CLASSICPTR": "公开测试服（巫妖王之怒）",
+      "BETA": "巨龙时代 Beta",
+      "CLASSIC": "巫妖王之怒",
+      "CLASSICBETA": "巫妖王之怒 Beta",
+      "CLASSICERA": "经典旧世",
+      "CLASSICERAPTR": "经典旧世赛季服 PTR",
+      "CLASSICPTR": "巫妖王之怒 PTR",
       "RETAIL": "巨龙时代",
-      "RETAILPTR": "公共测试服"
+      "RETAILPTR": "巨龙时代 PTR"
     },
     "DATES": {
       "DAYS_AGO": "{count} 天前",
@@ -482,7 +482,7 @@
     },
     "OPTIONS": {
       "ADDON": {
-        "AD_REQUIRED_HINT": "Ad or access key required",
+        "AD_REQUIRED_HINT": "启用此项需要提供访问密钥或显示广告",
         "CURSE_FORGE_V2": {
           "API_KEY_DESCRIPTION": "如果申请过 CurseForge API 密钥，请填入此处以连接到 CurseForge API。",
           "API_KEY_TITLE": "CurseForge API 密钥",

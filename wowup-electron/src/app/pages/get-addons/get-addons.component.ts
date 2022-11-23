@@ -23,8 +23,6 @@ import {
   ADDON_PROVIDER_WAGO,
   DEFAULT_CHANNEL_PREFERENCE_KEY_SUFFIX,
 } from "../../../common/constants";
-import { WowClientType } from "../../../common/warcraft/wow-client-type";
-import { AddonCategory, AddonChannelType } from "../../../common/wowup/models";
 import { GetAddonListItem } from "../../business-objects/get-addon-list-item";
 import { CellWrapTextComponent } from "../../components/common/cell-wrap-text/cell-wrap-text.component";
 import { GetAddonStatusColumnComponent } from "../../components/addons/get-addon-status-cell/get-addon-status-cell.component";
@@ -35,7 +33,6 @@ import {
 } from "../../components/addons/potential-addon-table-cell/potential-addon-table-cell.component";
 import { TableContextHeaderCellComponent } from "../../components/addons/table-context-header-cell/table-context-header-cell.component";
 import { GenericProviderError } from "../../errors";
-import { AddonSearchResult } from "../../models/wowup/addon-search-result";
 import { ColumnState } from "../../models/wowup/column-state";
 import { DownloadCountPipe } from "../../pipes/download-count.pipe";
 import { RelativeDurationPipe } from "../../pipes/relative-duration-pipe";
@@ -47,10 +44,10 @@ import { SnackbarService } from "../../services/snackbar/snackbar.service";
 import { WarcraftInstallationService } from "../../services/warcraft/warcraft-installation.service";
 import { WarcraftService } from "../../services/warcraft/warcraft.service";
 import { WowUpService } from "../../services/wowup/wowup.service";
-import { getEnumKeys } from "../../utils/enum.utils";
+import { getEnumKeys } from "wowup-lib-core/lib/utils";
 import { camelToSnakeCase } from "../../utils/string.utils";
-import { WowInstallation } from "../../../common/warcraft/wow-installation";
 import { AddonProviderFactory } from "../../services/addons/addon.provider.factory";
+import { AddonCategory, AddonChannelType, AddonSearchResult, WowClientType, WowInstallation } from "wowup-lib-core";
 
 interface CategoryItem {
   category: AddonCategory;
@@ -80,7 +77,6 @@ export class GetAddonsComponent implements OnInit, OnDestroy {
   public columnDefs$ = new BehaviorSubject<ColDef[]>([]);
   public rowData$ = this._rowDataSrc.asObservable();
   public enableControls$ = this._sessionService.enableControls$;
-  public frameworkComponents = {};
   public columnTypes: {
     [key: string]: ColDef;
   } = { nonEditableColumn: { editable: false } };
@@ -224,13 +220,6 @@ export class GetAddonsComponent implements OnInit, OnDestroy {
     this._addonService.searchError$.pipe(takeUntil(this._destroy$)).subscribe((error) => {
       this.displayError(error);
     });
-
-    this.frameworkComponents = {
-      potentialAddonRenderer: PotentialAddonTableCellComponent,
-      statusRenderer: GetAddonStatusColumnComponent,
-      contextHeader: TableContextHeaderCellComponent,
-      wrapTextCell: CellWrapTextComponent,
-    };
 
     this.columnDefs$.next(this.createColumns());
 
@@ -381,7 +370,7 @@ export class GetAddonsComponent implements OnInit, OnDestroy {
 
   private createColumns(): ColDef[] {
     const baseColumn = {
-      headerComponent: "contextHeader",
+      headerComponent: TableContextHeaderCellComponent,
       headerComponentParams: {
         onHeaderContext: this.onHeaderContext,
       },
@@ -400,7 +389,7 @@ export class GetAddonsComponent implements OnInit, OnDestroy {
         flex: 2,
         headerName: this._translateService.instant("PAGES.GET_ADDONS.TABLE.ADDON_COLUMN_HEADER"),
         sortable: true,
-        cellRenderer: "potentialAddonRenderer",
+        cellRenderer: PotentialAddonTableCellComponent,
         cellRendererParams: {
           channel: this.defaultAddonChannel,
           clientType: this.selectedClient,
@@ -434,7 +423,7 @@ export class GetAddonsComponent implements OnInit, OnDestroy {
         sortable: true,
         headerName: this._translateService.instant("PAGES.GET_ADDONS.TABLE.AUTHOR_COLUMN_HEADER"),
         comparator: (va, vb, na, nb) => this.compareElement(na, nb, "author"),
-        cellRenderer: "wrapTextCell",
+        cellRenderer: CellWrapTextComponent,
         ...baseColumn,
       },
       {
@@ -450,7 +439,7 @@ export class GetAddonsComponent implements OnInit, OnDestroy {
         flex: 1,
         headerName: this._translateService.instant("PAGES.GET_ADDONS.TABLE.STATUS_COLUMN_HEADER"),
         comparator: (va, vb, na, nb) => this.compareElement(na, nb, "status"),
-        cellRenderer: "statusRenderer",
+        cellRenderer: GetAddonStatusColumnComponent,
         ...baseColumn,
       },
     ];

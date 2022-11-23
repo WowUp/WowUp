@@ -25,6 +25,8 @@ import {
   IPC_WINDOW_MAXIMIZED,
   IPC_WINDOW_MINIMIZED,
   IPC_WINDOW_UNMAXIMIZED,
+  START_MINIMIZED_PREFERENCE_KEY,
+  START_WITH_SYSTEM_PREFERENCE_KEY,
   USE_HARDWARE_ACCELERATION_PREFERENCE_KEY,
   WINDOW_DEFAULT_HEIGHT,
   WINDOW_DEFAULT_WIDTH,
@@ -40,6 +42,7 @@ import * as platform from "./platform";
 import { initializeDefaultPreferences } from "./preferences";
 import { PUSH_NOTIFICATION_EVENT, pushEvents } from "./push";
 import { initializeStoreIpcHandlers, preferenceStore } from "./stores";
+import { wagoHandler } from "./wago-handler";
 import * as windowState from "./window-state";
 
 // LOGGING SETUP
@@ -282,6 +285,7 @@ function createWindow(): BrowserWindow {
 
   initializeIpcHandlers(win);
   initializeStoreIpcHandlers();
+  wagoHandler.initialize(win);
 
   pushEvents.on(PUSH_NOTIFICATION_EVENT, (data) => {
     win.webContents.send(IPC_PUSH_NOTIFICATION, data);
@@ -309,12 +313,8 @@ function createWindow(): BrowserWindow {
   win.webContents.on("did-attach-webview", (evt, webContents) => {
     webContents.session.setUserAgent(webContents.userAgent);
 
-    webContents.on("preload-error", (evt) => {
-      log.error("[webview] preload-error", evt);
-    });
-
-    webContents.on("did-fail-provisional-load", (evt) => {
-      log.error("[webview] did-fail-provisional-load", evt);
+    webContents.on("preload-error", (evt, path, e) => {
+      log.error("[webview] preload-error", e.message);
     });
 
     webContents.session.setPermissionRequestHandler((contents, permission, callback) => {
@@ -331,29 +331,11 @@ function createWindow(): BrowserWindow {
       return false;
     });
 
-    webContents.on("did-fail-load", (evt, code, desc, url) => {
-      log.error("[webview] did-fail-load", code, desc, url);
-      setTimeout(() => {
-        log.error("[webview] reload");
-        webContents.reload();
-      }, 2000);
-    });
-
-    webContents.on("will-navigate", (evt, url) => {
-      log.debug("[webview] will-navigate", url);
-      if (webContents.getURL() === url) {
-        log.debug(`[webview] reload detected`);
-      } else {
-        evt.preventDefault(); // block the webview from navigating at all
+    webContents.on("did-start-navigation", (evt, url) => {
+      if (url === "https://addons.wago.io/wowup_ad") {
+        log.debug("[webview] did-start-navigation", url);
+        wagoHandler.initializeWebContents(webContents);
       }
-    });
-
-    // webview allowpopups must be enabled for any link to work
-    // https://www.electronjs.org/docs/latest/api/webview-tag#allowpopups
-    webContents.setWindowOpenHandler((details) => {
-      log.debug("[webview] setWindowOpenHandler");
-      win.webContents.send("webview-new-window", details); // forward this new window to the app for processing
-      return { action: "deny" };
     });
   });
 
@@ -526,7 +508,17 @@ function getBackgroundColor() {
 }
 
 function canStartHidden() {
-  return argv.hidden || app.getLoginItemSettings().wasOpenedAsHidden;
+  const systemStart = preferenceStore.get(START_WITH_SYSTEM_PREFERENCE_KEY) as string;
+  const startMin = preferenceStore.get(START_MINIMIZED_PREFERENCE_KEY) as string;
+
+  console.log(`START_WITH_SYSTEM_PREFERENCE_KEY: ${systemStart}`);
+  console.log(`START_MINIMIZED_PREFERENCE_KEY: ${startMin}`);
+
+  const loginItems = app.getLoginItemSettings();
+  loginItems?.launchItems.forEach((li) => {
+    console.log(`launchItem: ${li.name} args -> ${li.args.join(",")}`);
+  });
+  return argv.hidden || loginItems.wasOpenedAsHidden;
 }
 
 function getUserAgent() {

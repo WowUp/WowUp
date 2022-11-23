@@ -1,6 +1,6 @@
 import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
-import { AddonProvider, AddonProviderType } from "../../addon-providers/addon-provider";
+import { AddonProvider, AddonProviderType } from "wowup-lib-core";
 import { GitHubAddonProvider } from "../../addon-providers/github-addon-provider";
 import { TukUiAddonProvider } from "../../addon-providers/tukui-addon-provider";
 import { WowInterfaceAddonProvider } from "../../addon-providers/wow-interface-addon-provider";
@@ -28,7 +28,7 @@ import { UiMessageService } from "../ui-message/ui-message.service";
   providedIn: "root",
 })
 export class AddonProviderFactory {
-  public readonly _addonProviderChangeSrc = new Subject<AddonProvider>();
+  private readonly _addonProviderChangeSrc = new Subject<AddonProvider>();
 
   private _providerMap: Map<string, AddonProvider> = new Map();
 
@@ -54,14 +54,12 @@ export class AddonProviderFactory {
     if (this._providerMap.size !== 0) {
       return;
     }
-    const providers = [
+    const providers: AddonProvider[] = [
       this.createZipAddonProvider(),
       this.createRaiderIoAddonProvider(),
       this.createWowUpCompanionAddonProvider(),
       this.createWowUpAddonProvider(),
       await this.createWagoAddonProvider(),
-      // this.createCurseAddonProvider(),
-      // this.createCurseV2AddonProvider(),
       this.createTukUiAddonProvider(),
       this.createWowInterfaceAddonProvider(),
       this.createGitHubAddonProvider(),
@@ -83,11 +81,11 @@ export class AddonProviderFactory {
 
   public async setProviderEnabled(type: AddonProviderType, enabled: boolean): Promise<void> {
     if (!this._providerMap.has(type)) {
-      throw new Error("cannot set provider state, not found");
+      throw new Error(`cannot set provider state, not found: ${type}`);
     }
 
     const provider = this._providerMap.get(type);
-    if (!provider.allowEdit) {
+    if (!provider || !provider.allowEdit) {
       throw new Error(`this provider is not editable: ${type}`);
     }
 
@@ -231,6 +229,10 @@ export class AddonProviderFactory {
   }
 
   public canShowChangelog(providerName: string | undefined): boolean {
+    if (providerName === undefined) {
+      return false;
+    }
+
     return this.getProvider(providerName)?.canShowChangelog ?? false;
   }
 

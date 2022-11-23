@@ -1,7 +1,6 @@
 import {
   BehaviorSubject,
   catchError,
-  combineLatest,
   debounceTime,
   first,
   from,
@@ -14,7 +13,7 @@ import {
 } from "rxjs";
 
 import { Component, ElementRef, OnDestroy, OnInit, ViewChild } from "@angular/core";
-import { UntypedFormControl, UntypedFormGroup } from "@angular/forms";
+import { UntypedFormControl } from "@angular/forms";
 import { MatListOption, MatSelectionListChange } from "@angular/material/list";
 import { TranslateService } from "@ngx-translate/core";
 
@@ -25,7 +24,6 @@ import {
   PREF_WAGO_ACCESS_KEY,
 } from "../../../../common/constants";
 import { AppConfig } from "../../../../environments/environment";
-import { AddonProviderType } from "../../../addon-providers/addon-provider";
 import { AddonProviderState } from "../../../models/wowup/addon-provider-state";
 import { AddonProviderFactory } from "../../../services/addons/addon.provider.factory";
 import { DialogFactory } from "../../../services/dialog/dialog.factory";
@@ -33,6 +31,7 @@ import { LinkService } from "../../../services/links/link.service";
 import { SensitiveStorageService } from "../../../services/storage/sensitive-storage.service";
 import { formatDynamicLinks } from "../../../utils/dom.utils";
 import { FormGroup } from "@angular/forms";
+import { AddonProviderType } from "wowup-lib-core";
 
 interface AddonProviderStateModel extends AddonProviderState {
   adRequired: boolean;
@@ -177,7 +176,7 @@ export class OptionsAddonSectionComponent implements OnInit, OnDestroy {
       if (provider === undefined) {
         throw new Error("loadProviderStates got undefined provider");
       }
-      
+
       return { ...state, adRequired: provider.adRequired, providerNote: provider.providerNote };
     });
 
@@ -193,7 +192,7 @@ export class OptionsAddonSectionComponent implements OnInit, OnDestroy {
       return;
     }
 
-    wago.adRequired = accessToken === undefined || accessToken.length === 0;
+    wago.adRequired = accessToken === undefined || accessToken.length <= 20;
 
     await this._addonProviderService.setProviderEnabled(ADDON_PROVIDER_WAGO, wago.enabled);
   }

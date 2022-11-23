@@ -1,23 +1,25 @@
 import * as _ from "lodash";
-import { from, Observable, of } from "rxjs";
-import { map, switchMap } from "rxjs/operators";
 import { v4 as uuidv4 } from "uuid";
 import * as stringSimilarity from "string-similarity";
 
 import { ADDON_PROVIDER_TUKUI } from "../../common/constants";
-import { WowClientType } from "../../common/warcraft/wow-client-type";
-import { AddonCategory, AddonChannelType } from "../../common/wowup/models";
 import { TukUiAddon } from "../models/tukui/tukui-addon";
-import { AddonFolder } from "../models/wowup/addon-folder";
-import { AddonSearchResult } from "../models/wowup/addon-search-result";
-import { AddonSearchResultFile } from "../models/wowup/addon-search-result-file";
-import { WowInstallation } from "../../common/warcraft/wow-installation";
 import { CachingService } from "../services/caching/caching-service";
 import { CircuitBreakerWrapper, NetworkService } from "../services/network/network.service";
 import { getGameVersion } from "../utils/addon.utils";
-import { getEnumName } from "../utils/enum.utils";
-import { AddonProvider, GetAllResult } from "./addon-provider";
+import { getEnumName } from "wowup-lib-core/lib/utils";
 import { TocService } from "../services/toc/toc.service";
+import {
+  AddonCategory,
+  AddonChannelType,
+  AddonFolder,
+  AddonProvider,
+  AddonSearchResult,
+  AddonSearchResultFile,
+  GetAllResult,
+  WowClientType,
+  WowInstallation,
+} from "wowup-lib-core";
 
 const API_URL = "https://www.tukui.org/api.php";
 const CLIENT_API_URL = "https://www.tukui.org/client-api.php";
@@ -110,11 +112,16 @@ export class TukUiAddonProvider extends AddonProvider {
     return await this.mapAddonsToSearchResults(similarAddons);
   }
 
-  public getById(addonId: string, installation: WowInstallation): Observable<AddonSearchResult | undefined> {
-    return from(this.getAllAddons(installation.clientType)).pipe(
-      map((addons) => _.find(addons, (addon) => addon.id === addonId)),
-      switchMap((match) => (match !== undefined ? from(this.toSearchResult(match, "")) : of(undefined)))
-    );
+  public override async getById(
+    addonId: string,
+    installation: WowInstallation
+  ): Promise<AddonSearchResult | undefined> {
+    const addons = await this.getAllAddons(installation.clientType);
+
+    const match = _.find(addons, (addon) => addon.id === addonId);
+    if (match !== undefined) {
+      return await this.toSearchResult(match, "");
+    }
   }
 
   public isValidAddonUri(): boolean {
@@ -180,6 +187,8 @@ export class TukUiAddonProvider extends AddonProvider {
         ? targetToc.tukUiProjectFolders.split(",").map((f) => f.trim())
         : [addonFolder.name];
 
+      const hasPatch = typeof tukUiAddon.patch === "string" && tukUiAddon.patch.toLowerCase() !== "all";
+
       addonFolder.matchingAddon = {
         autoUpdateEnabled: false,
         autoUpdateNotificationsEnabled: false,
@@ -192,7 +201,7 @@ export class TukUiAddonProvider extends AddonProvider {
         downloadUrl: tukUiAddon.url,
         externalId: tukUiAddon.id.toString(),
         externalUrl: tukUiAddon.web_url,
-        gameVersion: getGameVersion(tukUiAddon.patch),
+        gameVersion: hasPatch ? getGameVersion(tukUiAddon.patch) : undefined,
         installedAt: addonFolder.fileStats?.birthtime ?? new Date(0),
         installedFolders: installedFolders,
         installedFolderList: installedFolderList,
@@ -284,11 +293,13 @@ export class TukUiAddonProvider extends AddonProvider {
       return undefined;
     }
 
+    const hasPatch = typeof addon.patch === "string" && addon.patch.toLowerCase() !== "all";
+
     const latestFile: AddonSearchResultFile = {
       channelType: AddonChannelType.Stable,
       folders: folderName ? [folderName] : [],
       downloadUrl: addon.url,
-      gameVersion: getGameVersion(addon.patch),
+      gameVersion: hasPatch ? getGameVersion(addon.patch) : "",
       version: addon.version,
       releaseDate: new Date(`${addon.lastupdate} UTC`),
       changelog: await this.formatChangelog(addon),

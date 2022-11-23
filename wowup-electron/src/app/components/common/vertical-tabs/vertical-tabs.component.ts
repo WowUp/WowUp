@@ -17,12 +17,12 @@ import { AppConfig } from "../../../../environments/environment";
 import { ElectronService } from "../../../services";
 import { SessionService } from "../../../services/session/session.service";
 import { WarcraftInstallationService } from "../../../services/warcraft/warcraft-installation.service";
-import { AdPageOptions } from "../../../../common/wowup/models";
 import { AddonProviderFactory } from "../../../services/addons/addon.provider.factory";
 import { MatDialog } from "@angular/material/dialog";
 import { AlertDialogComponent } from "../alert-dialog/alert-dialog.component";
 import { TranslateService } from "@ngx-translate/core";
 import { PreferenceStorageService } from "../../../services/storage/preference-storage.service";
+import { AdPageOptions } from "wowup-lib-core";
 
 interface Tab {
   titleKey?: string;

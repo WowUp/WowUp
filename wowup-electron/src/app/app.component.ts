@@ -1,3 +1,6 @@
+// eslint-disable-next-line @typescript-eslint/triple-slash-reference
+/// <reference path="../typings.d.ts" />
+
 import * as _ from "lodash";
 import { BehaviorSubject, from, of } from "rxjs";
 import { catchError, delay, filter, first, map, switchMap } from "rxjs/operators";
@@ -34,7 +37,6 @@ import {
   WOWUP_LOGO_FILENAME,
   ZOOM_FACTOR_KEY,
 } from "../common/constants";
-import { Addon } from "../common/entities/addon";
 import { AppUpdateState, MenuConfig, SystemTrayConfig } from "../common/wowup/models";
 import { AppConfig } from "../environments/environment";
 import { InstallFromUrlDialogComponent } from "./components/addons/install-from-url-dialog/install-from-url-dialog.component";
@@ -59,6 +61,7 @@ import {
   ConsentDialogResult,
 } from "./components/common/consent-dialog/consent-dialog.component";
 import { WowUpProtocolService } from "./services/wowup/wowup-protocol.service";
+import { Addon } from "wowup-lib-core";
 
 @Component({
   selector: "app-root",

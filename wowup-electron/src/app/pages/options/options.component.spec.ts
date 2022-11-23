@@ -31,11 +31,17 @@ describe("OptionsComponent", () => {
         currentTheme: "horde ofc",
       }
     );
-    electronServiceSpy = jasmine.createSpyObj("ElectronService", [""], {
-      isWin: false,
-      isLinux: true,
-      isMac: false,
-    });
+    electronServiceSpy = jasmine.createSpyObj(
+      "ElectronService",
+      {
+        invoke: new Promise(() => {}),
+      },
+      {
+        isWin: false,
+        isLinux: true,
+        isMac: false,
+      }
+    );
 
     await TestBed.configureTestingModule({
       declarations: [OptionsComponent],

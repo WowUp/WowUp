@@ -1,4 +1,4 @@
-import { AddonProviderType } from "../../addon-providers/addon-provider";
+import { AddonProviderType } from "wowup-lib-core";
 
 export interface AddonProviderState {
   providerName: AddonProviderType;

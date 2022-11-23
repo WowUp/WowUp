@@ -43,8 +43,6 @@ import { MatMenuTrigger } from "@angular/material/menu";
 import { MatRadioChange } from "@angular/material/radio";
 import { TranslateService } from "@ngx-translate/core";
 
-import { Addon } from "../../../common/entities/addon";
-import { WowClientType } from "../../../common/warcraft/wow-client-type";
 import { AddonViewModel } from "../../business-objects/addon-view-model";
 import { CellWrapTextComponent } from "../../components/common/cell-wrap-text/cell-wrap-text.component";
 import { ConfirmDialogComponent } from "../../components/common/confirm-dialog/confirm-dialog.component";
@@ -55,7 +53,6 @@ import { TableContextHeaderCellComponent } from "../../components/addons/table-c
 import { AddonInstallState } from "../../models/wowup/addon-install-state";
 import { AddonUpdateEvent } from "../../models/wowup/addon-update-event";
 import { ColumnState } from "../../models/wowup/column-state";
-import { WowInstallation } from "../../../common/warcraft/wow-installation";
 import { RelativeDurationPipe } from "../../pipes/relative-duration-pipe";
 import { ElectronService } from "../../services";
 import { AddonService } from "../../services/addons/addon.service";
@@ -76,6 +73,7 @@ import { WtfBackupComponent } from "../../components/addons/wtf-backup/wtf-backu
 import { HasEventTargetAddRemove } from "rxjs/internal/observable/fromEvent";
 import { AddonProviderFactory } from "../../services/addons/addon.provider.factory";
 import { toInterfaceVersion } from "../../utils/addon.utils";
+import { Addon, WowClientType, WowInstallation } from "wowup-lib-core";
 
 @Component({
   selector: "app-my-addons",
@@ -185,7 +183,6 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
   // Grid
   public rowDataG: any[] = [];
   public columnDefs$ = new BehaviorSubject<ColDef[]>([]);
-  public frameworkComponents = {};
   public gridApi!: GridApi;
   public gridColumnApi!: ColumnApi;
   public rowClassRules = {
@@ -333,14 +330,6 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
       addonInstalledSub,
       addonRemovedSub
     );
-
-    this.frameworkComponents = {
-      myAddonRenderer: MyAddonsAddonCellComponent,
-      myAddonStatus: MyAddonStatusCellComponent,
-      contextHeader: TableContextHeaderCellComponent,
-      wrapTextCell: CellWrapTextComponent,
-      dateTooltipCell: DateTooltipCellComponent,
-    };
 
     this.columnDefs$.next(this.createColumns());
   }
@@ -1329,10 +1318,15 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
     const v1 = (nodeA.data["gameVersion"] as string)?.trim();
     const v2 = (nodeB.data["gameVersion"] as string)?.trim();
 
-    const iv1 = +toInterfaceVersion(v1 || "0.0.0");
-    const iv2 = +toInterfaceVersion(v2 || "0.0.0");
+    try {
+      const iv1 = +toInterfaceVersion(v1 || "0.0.0");
+      const iv2 = +toInterfaceVersion(v2 || "0.0.0");
 
-    return iv1 > iv2 ? 1 : -1;
+      return iv1 > iv2 ? 1 : -1;
+    } catch (e) {
+      console.error(e);
+      return -1;
+    }
   }
 
   // If nodes have the same primary value, use the canonical name as a fallback
@@ -1349,7 +1343,7 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
 
   private createColumns(): ColDef[] {
     const baseColumn = {
-      headerComponent: "contextHeader",
+      headerComponent: TableContextHeaderCellComponent,
       headerComponentParams: {
         onHeaderContext: this.onHeaderContext,
       },
@@ -1363,7 +1357,7 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
 
     return [
       {
-        cellRenderer: "myAddonRenderer",
+        cellRenderer: MyAddonsAddonCellComponent,
         field: "hash",
         flex: 2,
         minWidth: 300,
@@ -1375,7 +1369,7 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
         ...baseColumn,
       },
       {
-        cellRenderer: "myAddonStatus",
+        cellRenderer: MyAddonStatusCellComponent,
         comparator: (va, vb, na, nb) => this.compareElement(na, nb, "sortOrder"),
         field: "sortOrder",
         headerName: this._translateService.instant("PAGES.MY_ADDONS.TABLE.STATUS_COLUMN_HEADER"),
@@ -1389,7 +1383,7 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
         headerName: this._translateService.instant("PAGES.MY_ADDONS.TABLE.UPDATED_AT_COLUMN_HEADER"),
         comparator: (va, vb, na, nb) => this.compareElement(na, nb, "installedAt"),
         ...baseColumn,
-        cellRenderer: "dateTooltipCell",
+        cellRenderer: DateTooltipCellComponent,
       },
       {
         field: "latestVersion",
@@ -1404,7 +1398,7 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
         headerName: this._translateService.instant("PAGES.MY_ADDONS.TABLE.RELEASED_AT_COLUMN_HEADER"),
         comparator: (va, vb, na, nb) => this.compareElement(na, nb, "releasedAt"),
         ...baseColumn,
-        cellRenderer: "dateTooltipCell",
+        cellRenderer: DateTooltipCellComponent,
       },
       {
         field: "gameVersion",
@@ -1438,7 +1432,7 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
         flex: 1,
         headerName: this._translateService.instant("PAGES.MY_ADDONS.TABLE.AUTHOR_COLUMN_HEADER"),
         comparator: (va, vb, na, nb) => this.compareElement(na, nb, "author"),
-        cellRenderer: "wrapTextCell",
+        cellRenderer: CellWrapTextComponent,
         ...baseColumn,
       },
     ];

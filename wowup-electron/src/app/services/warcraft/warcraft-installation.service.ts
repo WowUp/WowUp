@@ -8,15 +8,13 @@ import { Injectable } from "@angular/core";
 import { TranslateService } from "@ngx-translate/core";
 
 import { WOW_INSTALLATIONS_KEY } from "../../../common/constants";
-import { WowClientGroup, WowClientType } from "../../../common/warcraft/wow-client-type";
-import { AddonChannelType } from "../../../common/wowup/models";
-import { WowInstallation } from "../../../common/warcraft/wow-installation";
-import { getEnumName } from "../../utils/enum.utils";
+import { getWowClientFolderName, getWowClientGroup } from "../../../common/warcraft";
+import { getEnumName } from "wowup-lib-core/lib/utils";
 import { ElectronService } from "../electron/electron.service";
 import { FileService } from "../files/file.service";
 import { PreferenceStorageService } from "../storage/preference-storage.service";
 import { WarcraftService } from "./warcraft.service";
-import { getWowClientFolderName, getWowClientGroup } from "../../../common/warcraft";
+import { AddonChannelType, WowClientGroup, WowClientType, WowInstallation } from "wowup-lib-core";
 
 @Injectable({
   providedIn: "root",

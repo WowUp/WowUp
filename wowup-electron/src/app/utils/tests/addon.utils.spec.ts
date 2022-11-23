@@ -41,6 +41,12 @@ describe("AddonUtils", () => {
     expect(gameVersion).toEqual("90102");
   });
 
+
+  it("Should interface 10.0", () => {
+    const gameVersion = AddonUtils.toInterfaceVersion("10.0");
+    expect(gameVersion).toEqual("100000");
+  });
+
   it("Should interface 9.11.22", () => {
     const gameVersion = AddonUtils.toInterfaceVersion("9.11.22");
     expect(gameVersion).toEqual("91122");

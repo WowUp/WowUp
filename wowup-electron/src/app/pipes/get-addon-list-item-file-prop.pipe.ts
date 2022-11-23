@@ -1,6 +1,6 @@
 import { Pipe, PipeTransform } from "@angular/core";
+import { AddonChannelType } from "wowup-lib-core";
 import { GetAddonListItem } from "../business-objects/get-addon-list-item";
-import { AddonChannelType } from "../../common/wowup/models";
 import * as SearchResults from "../utils/search-result.utils";
 
 @Pipe({

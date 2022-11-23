@@ -1,27 +1,29 @@
 import * as _ from "lodash";
-import { from, Observable } from "rxjs";
-import { map } from "rxjs/operators";
 import { v4 as uuidv4 } from "uuid";
 
 import { HttpErrorResponse } from "@angular/common/http";
 
 import { ADDON_PROVIDER_WOWINTERFACE } from "../../common/constants";
-import { Addon } from "../../common/entities/addon";
-import { AddonChannelType } from "../../common/wowup/models";
 import { SourceRemovedAddonError } from "../errors";
 import { AddonDetailsResponse } from "../models/wow-interface/addon-details-response";
-import { AddonFolder } from "../models/wowup/addon-folder";
-import { AddonSearchResult } from "../models/wowup/addon-search-result";
-import { AddonSearchResultFile } from "../models/wowup/addon-search-result-file";
-import { WowInstallation } from "../../common/warcraft/wow-installation";
 import { CachingService } from "../services/caching/caching-service";
 import { CircuitBreakerWrapper, NetworkService } from "../services/network/network.service";
 import { getGameVersion } from "../utils/addon.utils";
 import { convertBbcode } from "../utils/bbcode.utils";
-import { getEnumName } from "../utils/enum.utils";
-import { AddonProvider, GetAllResult, SearchByUrlResult } from "./addon-provider";
+import { getEnumName } from "wowup-lib-core/lib/utils";
 import { strictFilter } from "../utils/array.utils";
 import { TocService } from "../services/toc/toc.service";
+import {
+  Addon,
+  AddonChannelType,
+  AddonFolder,
+  AddonProvider,
+  AddonSearchResult,
+  AddonSearchResultFile,
+  GetAllResult,
+  SearchByUrlResult,
+  WowInstallation,
+} from "wowup-lib-core";
 
 const API_URL = "https://api.mmoui.com/v4/game/WOW";
 const ADDON_URL = "https://www.wowinterface.com/downloads/info";
@@ -118,10 +120,11 @@ export class WowInterfaceAddonProvider extends AddonProvider {
     };
   }
 
-  public getById(addonId: string): Observable<AddonSearchResult | undefined> {
-    return from(this.getAddonDetails(addonId)).pipe(
-      map((result) => (result ? this.toAddonSearchResult(result, "") : undefined))
-    );
+  public override async getById(addonId: string): Promise<AddonSearchResult | undefined> {
+    const result = await this.getAddonDetails(addonId);
+    if (result !== undefined) {
+      return this.toAddonSearchResult(result, "");
+    }
   }
 
   public async getAllById(addonIds: string[]): Promise<AddonSearchResult[]> {
@@ -139,7 +142,7 @@ export class WowInterfaceAddonProvider extends AddonProvider {
     return !!addonId && !isNaN(parseInt(addonId, 10));
   }
 
-  public async scan(
+  public override async scan(
     installation: WowInstallation,
     addonChannelType: AddonChannelType,
     addonFolders: AddonFolder[]

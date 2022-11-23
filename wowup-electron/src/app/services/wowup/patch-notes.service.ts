@@ -16,6 +16,23 @@ export class PatchNotesService {
 
 const CHANGELOGS: ChangeLog[] = [
   {
+    Version: "2.9.2",
+    html: `
+    <h4 style="margin-top: 1em;">Changes</h4>
+    <ul>
+    <li>Spanish locale updates (SkollVargr)</li>
+    <li>German locale updates (maestrohdude)</li>
+    <li>Improved private GitHub repo support</li>
+    <li>Disable the ability to shift + click columns</li>
+    <li>Update a bunch of dependencies</li>
+    </ul>
+    <h4 style="margin-top: 1em;">Fixes</h4>
+    <ul>
+    <li>Rendering lists should no longer fail due to malformed game version</li>
+    </ul>
+    `,
+  },
+  {
     Version: "2.9.1",
     html: `
     <h4 style="margin-top: 1em;">New Features</h4>

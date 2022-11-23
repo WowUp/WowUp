@@ -1,16 +1,12 @@
 import * as _ from "lodash";
-import { from, Observable } from "rxjs";
-import { map } from "rxjs/operators";
 import { v4 as uuidv4 } from "uuid";
 
 import { ADDON_PROVIDER_HUB, APP_PROTOCOL_NAME } from "../../common/constants";
-import { Addon } from "../../common/entities/addon";
-import { WowClientGroup, WowClientType } from "../../common/warcraft/wow-client-type";
-import { AddonCategory, AddonChannelType, WowUpScanResult } from "../../common/wowup/models";
 import { AppConfig } from "../../environments/environment";
 import { SourceRemovedAddonError } from "../errors";
 import {
   AddonReleaseGameVersion,
+  WowGameType,
   WowUpAddonReleaseRepresentation,
   WowUpAddonRepresentation,
 } from "../models/wowup-api/addon-representations";
@@ -22,20 +18,32 @@ import {
   WowUpSearchAddonsResponse,
 } from "../models/wowup-api/api-responses";
 import { GetAddonsByFingerprintResponse } from "../models/wowup-api/get-addons-by-fingerprint.response";
-import { WowGameType } from "../models/wowup-api/wow-game-type";
-import { AddonFolder } from "../models/wowup/addon-folder";
-import { AddonSearchResult } from "../models/wowup/addon-search-result";
-import { AddonSearchResultFile } from "../models/wowup/addon-search-result-file";
-import { AppWowUpScanResult } from "../models/wowup/app-wowup-scan-result";
-import { WowInstallation } from "../../common/warcraft/wow-installation";
 import { ElectronService } from "../services";
 import { CachingService } from "../services/caching/caching-service";
 import { CircuitBreakerWrapper, NetworkService } from "../services/network/network.service";
 import { getGameVersion } from "../utils/addon.utils";
-import { getEnumName } from "../utils/enum.utils";
-import { AddonProvider, GetAllBatchResult, GetAllResult } from "./addon-provider";
-import { ProtocolSearchResult } from "../models/wowup/protocol-search-result";
+import { getEnumName } from "wowup-lib-core/lib/utils";
+import {
+  Addon,
+  AddonCategory,
+  AddonChannelType,
+  AddonFolder,
+  AddonProvider,
+  AddonScanResult,
+  AddonSearchResult,
+  AddonSearchResultFile,
+  GetAllBatchResult,
+  GetAllResult,
+  ProtocolSearchResult,
+  WowClientGroup,
+  WowClientType,
+  WowInstallation,
+} from "wowup-lib-core";
 
+interface WowUpScanResult {
+  scanResult?: AddonScanResult;
+  exactMatch?: WowUpAddonRepresentation;
+}
 interface ProtocolData {
   addonId: string;
   releaseId: string;
@@ -265,20 +273,19 @@ export class WowUpAddonProvider extends AddonProvider {
     return !isNaN(idNumber) && isFinite(idNumber) && idNumber > 0;
   }
 
-  public getById(addonId: string, installation: WowInstallation): Observable<AddonSearchResult> {
+  public override async getById(
+    addonId: string,
+    installation: WowInstallation
+  ): Promise<AddonSearchResult | undefined> {
     const gameType = this.getWowGameType(installation.clientType);
     const url = new URL(`${API_URL}/addons/${addonId}`);
-    const task = this._cachingService.transaction(
+    const result = await this._cachingService.transaction(
       url.toString(),
       () => this._circuitBreaker.getJson<WowUpGetAddonResponse>(url),
       CHANGELOG_CACHE_TTL_SEC
     );
 
-    return from(task).pipe(
-      map((result) => {
-        return this.getSearchResult(result.addon, gameType);
-      })
-    );
+    return this.getSearchResult(result.addon, gameType);
   }
 
   public async getReleaseById(addonId: string, releaseId: string): Promise<WowUpGetAddonReleaseResponse> {
@@ -294,44 +301,54 @@ export class WowUpAddonProvider extends AddonProvider {
     const gameType = this.getWowGameType(installation.clientType);
     const response = await this.getAddonsByCategory(gameType, category);
 
-    const searchResults = _.map(response?.addons, (addon) => this.getSearchResult(addon, gameType)).filter(
-      (sr) => sr !== undefined
-    );
+    const searchResults: AddonSearchResult[] = _.map(response?.addons, (addon) =>
+      this.getSearchResult(addon, gameType)
+    ).filter((sr): sr is AddonSearchResult => sr !== undefined);
 
-    return searchResults;
+    return searchResults ?? [];
   }
 
-  public async scan(
+  public override async scan(
     installation: WowInstallation,
     addonChannelType: AddonChannelType,
     addonFolders: AddonFolder[]
   ): Promise<void> {
     const gameType = this.getWowGameType(installation.clientType);
 
-    const scanResults = addonFolders.map((af) => af.wowUpScanResults).filter((sr) => sr !== undefined);
+    const scanResults: WowUpScanResult[] = _.filter(addonFolders, (af) => af.wowUpScanResults !== undefined).map(
+      (af) => {
+        const wuSr: WowUpScanResult = {
+          scanResult: af.wowUpScanResults,
+        };
+        return wuSr;
+      }
+    );
 
-    const fingerprints = scanResults.map((result) => result.fingerprint);
+    const fingerprints: string[] = _.map(scanResults, (res) => res.scanResult?.fingerprint).filter(
+      (fp): fp is string => typeof fp === "string"
+    );
     console.log("[WowUpFingerprints]", JSON.stringify(fingerprints));
+
     const fingerprintResponse = await this.getAddonsByFingerprints(fingerprints);
 
-    for (const scanResult of scanResults) {
+    for (const wuScanResult of scanResults) {
       const fingerprintMatches = fingerprintResponse.exactMatches.filter((exactMatch) =>
-        this.hasMatchingFingerprint(scanResult, exactMatch.matched_release)
+        this.hasMatchingFingerprint(wuScanResult, exactMatch.matched_release)
       );
 
       let clientMatch = fingerprintMatches.find((exactMatch) => this.hasGameType(exactMatch.matched_release, gameType));
 
       if (!clientMatch && fingerprintMatches.length > 0) {
-        console.warn(`No matching client type found for ${scanResult.folderName}, using fallback`);
+        console.warn(`No matching client type found for ${wuScanResult.scanResult?.folderName}, using fallback`);
         clientMatch = fingerprintMatches[0];
       }
 
-      scanResult.exactMatch = clientMatch;
+      wuScanResult.exactMatch = clientMatch;
     }
 
     for (const addonFolder of addonFolders) {
-      const scanResult = scanResults.find((sr) => sr.path === addonFolder.path);
-      if (!scanResult || !scanResult.exactMatch) {
+      const scanResult = scanResults.find((sr) => sr.scanResult?.path === addonFolder.path);
+      if (scanResult === undefined || scanResult.exactMatch === undefined) {
         continue;
       }
 
@@ -362,8 +379,6 @@ export class WowUpAddonProvider extends AddonProvider {
     return "";
   }
 
-
-
   private async getAddonsByCategory(gameType: WowGameType, category: AddonCategory) {
     const url = new URL(`${API_URL}/addons/category/${category}/${gameType}`);
     return await this._cachingService.transaction(
@@ -390,7 +405,7 @@ export class WowUpAddonProvider extends AddonProvider {
       return false;
     }
 
-    return release.addonFolders.some((addonFolder) => addonFolder.fingerprint == scanResult.fingerprint);
+    return release.addonFolders.some((addonFolder) => addonFolder.fingerprint == scanResult.scanResult?.fingerprint);
   }
 
   private hasGameType(release: WowUpAddonReleaseRepresentation | undefined, clientType: WowGameType): boolean {
@@ -523,11 +538,11 @@ export class WowUpAddonProvider extends AddonProvider {
 
   // Currently we only support images, so we filter for those
   private getScreenshotUrls(releases: WowUpAddonReleaseRepresentation[]): string[] {
-    const urls = _.flatten(
+    const urls: string[] = _.flatten(
       releases.map((release) =>
         release.previews?.filter((preview) => preview.preview_type === "image").map((preview) => preview.url)
       )
-    ).filter((url) => !!url);
+    ).filter((url): url is string => typeof url === "string");
 
     return _.uniq(urls);
   }
@@ -535,7 +550,7 @@ export class WowUpAddonProvider extends AddonProvider {
   private getAddon(
     installation: WowInstallation,
     addonChannelType: AddonChannelType,
-    scanResult: AppWowUpScanResult
+    scanResult: WowUpScanResult
   ): Addon {
     const gameType = this.getWowGameType(installation.clientType);
     const matchedRelease = scanResult.exactMatch?.matched_release;

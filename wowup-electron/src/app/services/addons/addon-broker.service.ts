@@ -3,17 +3,15 @@ import _ from "lodash";
 import { Injectable } from "@angular/core";
 import { nanoid } from "nanoid";
 
-import { Addon } from "../../../common/entities/addon";
-import { WowClientType } from "../../../common/warcraft/wow-client-type";
 import { getWowClientGroup } from "../../../common/warcraft";
-import { WowInstallation } from "../../../common/warcraft/wow-installation";
-import { getEnumName } from "../../utils/enum.utils";
+import { getEnumName } from "wowup-lib-core/lib/utils";
 import { AddonStorageService } from "../storage/addon-storage.service";
 import { WarcraftService } from "../warcraft/warcraft.service";
 import { AddonService } from "./addon.service";
 import { Subject } from "rxjs";
 import { AddonInstallState } from "../../models/wowup/addon-install-state";
 import { ElectronService } from "..";
+import { Addon, WowClientType, WowInstallation } from "wowup-lib-core";
 
 export type ExportReleaseType = "stable" | "beta" | "alpha";
 export type ImportState = "no-change" | "added" | "conflict";

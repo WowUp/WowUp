@@ -1,10 +1,10 @@
 import * as _ from "lodash";
 import * as path from "path";
 import * as log from "electron-log";
-import { WowUpScanResult } from "../src/common/wowup/models";
 import { exists, readDirRecursive, hashFile, hashString } from "./file.utils";
 import * as fsp from "fs/promises";
 import { firstValueFrom, from, mergeMap, toArray } from "rxjs";
+import { AddonScanResult } from "wowup-lib-core";
 
 const INVALID_PATH_CHARS = [
   "|",
@@ -75,7 +75,7 @@ export class WowUpFolderScanner {
     return /<!--.*?-->/gis;
   }
 
-  public async scanFolder(): Promise<WowUpScanResult> {
+  public async scanFolder(): Promise<AddonScanResult> {
     const files = await readDirRecursive(this._folderPath);
     files.forEach((fp) => (this._fileMap[fp.toLowerCase()] = fp));
 
@@ -97,9 +97,11 @@ export class WowUpFolderScanner {
     const hashConcat = _.orderBy(fingerprintList).join("");
     const fingerprint = hashString(hashConcat);
 
-    const result: WowUpScanResult = {
+    const result: AddonScanResult = {
+      source: 'wowup',
       fileFingerprints: fingerprintList,
       fingerprint,
+      fingerprintNum: 0,
       path: this._folderPath,
       folderName: path.basename(this._folderPath),
       fileCount: matchingFiles.length,
