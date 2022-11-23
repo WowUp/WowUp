@@ -1,6 +1,6 @@
 import * as _ from "lodash";
 import * as path from "path";
-import { from, ReplaySubject, Subject } from "rxjs";
+import { firstValueFrom, from, ReplaySubject, Subject } from "rxjs";
 import { map, tap } from "rxjs/operators";
 import { v4 as uuidv4 } from "uuid";
 
@@ -45,9 +45,9 @@ export class WarcraftInstallationService {
         // Saved display names can be unreliable (e.g. language change,
         // expansion release). Always regenerate them.
         const typeName = getEnumName(WowClientType, installation.clientType);
-        this.getDisplayName(installation.label, typeName).then(
-          displayName => installation.displayName = displayName
-        ).catch(() => {});
+        this.getDisplayName(installation.label, typeName)
+          .then((displayName) => (installation.displayName = displayName))
+          .catch(() => {});
       }
       this._wowInstallations = installations;
     });
@@ -276,7 +276,9 @@ export class WarcraftInstallationService {
   }
 
   private async getDisplayName(label: string, typeName: string): Promise<string> {
-    const defaultName: string = await this._translateService.get(`COMMON.CLIENT_TYPES.${typeName.toUpperCase()}`).toPromise();
+    const defaultName: string = await firstValueFrom(
+      this._translateService.get(`COMMON.CLIENT_TYPES.${typeName.toUpperCase()}`)
+    );
     return label.replace("{defaultName}", defaultName);
   }
 
