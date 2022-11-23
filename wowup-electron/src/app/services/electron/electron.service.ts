@@ -137,22 +137,22 @@ export class ElectronService {
     });
 
     this.onRendererEvent(IPC_POWER_MONITOR_LOCK, () => {
-      console.log("POWER_MONITOR_LOCK received");
+      console.log("POWER_MONITOR_LOCK received", `navigator.onLine: ${navigator.onLine}`);
       this._powerMonitorSrc.next(IPC_POWER_MONITOR_LOCK);
     });
 
     this.onRendererEvent(IPC_POWER_MONITOR_UNLOCK, () => {
-      console.log("POWER_MONITOR_UNLOCK received");
+      console.log("POWER_MONITOR_UNLOCK received", `navigator.onLine: ${navigator.onLine}`);
       this._powerMonitorSrc.next(IPC_POWER_MONITOR_UNLOCK);
     });
 
     this.onRendererEvent(IPC_POWER_MONITOR_SUSPEND, () => {
-      console.log("POWER_MONITOR_SUSPEND received");
+      console.log("POWER_MONITOR_SUSPEND received", `navigator.onLine: ${navigator.onLine}`);
       this._powerMonitorSrc.next(IPC_POWER_MONITOR_SUSPEND);
     });
 
     this.onRendererEvent(IPC_POWER_MONITOR_RESUME, () => {
-      console.log("POWER_MONITOR_RESUME received");
+      console.log("POWER_MONITOR_RESUME received", `navigator.onLine: ${navigator.onLine}`);
       this._powerMonitorSrc.next(IPC_POWER_MONITOR_RESUME);
     });
 

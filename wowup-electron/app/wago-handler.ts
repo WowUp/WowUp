@@ -11,6 +11,7 @@ class WagoHandler {
   public constructor() {
     powerMonitor.on("resume", () => {
       log.info("[wago-handler] powerMonitor resume");
+      this._tokenMap.clear();
       this._webContents?.reload();
     });
   }
@@ -48,7 +49,7 @@ class WagoHandler {
     webContents.on("did-fail-load", this.onDidFail);
     webContents.on("will-navigate", this.onWillNavigate);
     webContents.on("did-finish-load", () => {
-      log.debug("[wago-handler] did-finish-load");
+      // log.debug("[wago-handler] did-finish-load");
       if (this._tokenMap.has(webContents.id)) {
         this.stopTimeout();
       }
