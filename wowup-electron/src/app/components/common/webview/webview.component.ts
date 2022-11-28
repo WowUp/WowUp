@@ -122,8 +122,6 @@ export class WebViewComponent implements OnDestroy, AfterViewInit {
   }
 
   private onWebviewReady = () => {
-    console.debug("onWebviewReady", this._tag);
-
     this._webviewReady = true;
 
     this._sessionService.debugAdFrame$.pipe(takeUntil(this.destroy$)).subscribe(() => {
