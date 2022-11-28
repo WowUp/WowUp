@@ -3,7 +3,7 @@ import { catchError, filter, first, tap, timeout } from "rxjs/operators";
 import { v4 as uuidv4 } from "uuid";
 import _ from "lodash";
 
-import { ADDON_PROVIDER_WAGO, PREF_WAGO_ACCESS_KEY } from "../../common/constants";
+import { ADDON_PROVIDER_WAGO, IPC_POWER_MONITOR_RESUME, PREF_WAGO_ACCESS_KEY } from "../../common/constants";
 import { AppConfig } from "../../environments/environment";
 import { ElectronService } from "../services";
 import { CachingService } from "../services/caching/caching-service";
@@ -233,6 +233,11 @@ export class WagoAddonProvider extends AddonProvider {
         })
       )
       .subscribe();
+
+    // clear the token on resume so we wait for a new one
+    this._electronService.powerMonitor$.pipe(filter((state) => state === IPC_POWER_MONITOR_RESUME)).subscribe(() => {
+      this._apiTokenSrc.next("");
+    });
   }
 
   public isValidAddonId(addonId: string): boolean {
