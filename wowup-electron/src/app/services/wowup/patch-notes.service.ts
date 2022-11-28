@@ -20,6 +20,10 @@ const CHANGELOGS: ChangeLog[] = [
     html: `
     <h4 style="margin-top: 1em;">Changes</h4>
     <ul>
+    <li>Dynamic WoW client names (CyanoHao)</li>
+    </ul>
+    <h4 style="margin-top: 1em;">Changes</h4>
+    <ul>
     <li>Spanish locale updates (SkollVargr)</li>
     <li>German locale updates (maestrohdude)</li>
     <li>Improved private GitHub repo support</li>
