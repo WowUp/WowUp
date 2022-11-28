@@ -514,8 +514,6 @@
         "APP_RELEASE_CHANNEL_DROPDOWN_LABEL": "Kanal",
         "APP_RELEASE_CHANNEL_LABEL": "App-Release-Kanal",
         "CURRENT_LANGUAGE_LABEL": "Aktuelle Sprache",
-        "CURSE_PROTOCOL_DESCRIPTION": "Beim Herunterladen von Addons von der CurseForge-Website übernimmt WowUp die Installation",
-        "CURSE_PROTOCOL_LABEL": "CurseForge-Download-Links verarbeiten",
         "ENABLE_APP_BADGE_DESCRIPTION": "Zeigt auf dem App-Symbol einen Zähler, mit der Anzahl an verfügbaren Updates an.",
         "ENABLE_APP_BADGE_LABEL": "App-Badge-Benachrichtigung aktivieren",
         "ENABLE_SYSTEM_NOTIFICATIONS_DESCRIPTION": "Aktivieren/Deaktivieren verschiedener Systembenachrichtigungen",

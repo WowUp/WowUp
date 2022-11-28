@@ -514,8 +514,6 @@
         "APP_RELEASE_CHANNEL_DROPDOWN_LABEL": "更新通道",
         "APP_RELEASE_CHANNEL_LABEL": "應用程式更新通道",
         "CURRENT_LANGUAGE_LABEL": "當前語言",
-        "CURSE_PROTOCOL_DESCRIPTION": "從 CurseForge 網站下載插件時，WowUp 將會接管安裝過程",
-        "CURSE_PROTOCOL_LABEL": "接管 CurseForge 下載連結",
         "ENABLE_APP_BADGE_DESCRIPTION": "在應用程式圖示上用角標顯示可更新的插件數量。",
         "ENABLE_APP_BADGE_LABEL": "啟用數字角標通知",
         "ENABLE_SYSTEM_NOTIFICATIONS_DESCRIPTION": "啟用各種系統通知彈窗，如自動更新插件通知。",

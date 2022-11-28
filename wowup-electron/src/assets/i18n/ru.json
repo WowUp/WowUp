@@ -514,8 +514,6 @@
         "APP_RELEASE_CHANNEL_DROPDOWN_LABEL": "Канал",
         "APP_RELEASE_CHANNEL_LABEL": "Канал выпуска приложения",
         "CURRENT_LANGUAGE_LABEL": "Текущий язык",
-        "CURSE_PROTOCOL_DESCRIPTION": "При загрузке модификаций с сайта CurseForge, WowUp будет брать установку на себя.",
-        "CURSE_PROTOCOL_LABEL": "Обрабатывать ссылки на установку с CurseForge",
         "ENABLE_APP_BADGE_DESCRIPTION": "Показывать количество доступных обновлений на значке приложения.",
         "ENABLE_APP_BADGE_LABEL": "Включить уведомления на значке приложения",
         "ENABLE_SYSTEM_NOTIFICATIONS_DESCRIPTION": "Включить различные окна системных уведомлений, такие как автоматически обновлённые модификации.",

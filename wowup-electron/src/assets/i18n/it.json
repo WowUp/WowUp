@@ -514,8 +514,6 @@
         "APP_RELEASE_CHANNEL_DROPDOWN_LABEL": "Channel",
         "APP_RELEASE_CHANNEL_LABEL": "Application Release Channel",
         "CURRENT_LANGUAGE_LABEL": "Lingua Corrente",
-        "CURSE_PROTOCOL_DESCRIPTION": "Quando si scaricano addons dal sito Web CurseForge, WowUp ne gestirà l'installazione",
-        "CURSE_PROTOCOL_LABEL": "Gestisci i link dei downloads da CurseForge",
         "ENABLE_APP_BADGE_DESCRIPTION": "Mostra un indicatore di notifica sull'icona dell'applicazione con il numero di addons con un aggiornamento disponibile.",
         "ENABLE_APP_BADGE_LABEL": "Abilita indicatore di notifica",
         "ENABLE_SYSTEM_NOTIFICATIONS_DESCRIPTION": "Abilita i vari popup di notifica del sistema, come gli addons aggiornati automaticamente.",
