@@ -498,7 +498,12 @@
           "PLACEHOLDER": "個人訪問令牌（PAT）",
           "TITLE": "GitHub 個人訪問令牌（PAT）"
         },
-        "TITLE": "插件"
+        "TITLE": "插件",
+        "WAGO_ACCESS_KEY": {
+          "MESSAGE": "Use the Wago provider without seeing advertisements. <a href=\"https://addons.wago.io/patreon\">Learn More</a>",
+          "PLACEHOLDER": "Access Key",
+          "TITLE": "Wago Access Key"
+        }
       },
       "APPLICATION": {
         "APP_RELEASE_CHANNEL_CONFIRMATION_DESCRIPTION_BETA": "切換到 Beta 通道後，將會收到包含最新的錯誤修正和功能的版本。要切換回穩定版本，只能解除安裝 WowUp 並重新安裝。\n\n儘管 Beta 通道通常能正常工作，但仍需自擔風險。",

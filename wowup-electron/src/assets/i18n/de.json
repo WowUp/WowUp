@@ -498,7 +498,12 @@
           "PLACEHOLDER": "Persönliches Zugriffstoken",
           "TITLE": "Persönliches GitHub-Zugriffstoken"
         },
-        "TITLE": "Addons"
+        "TITLE": "Addons",
+        "WAGO_ACCESS_KEY": {
+          "MESSAGE": "Use the Wago provider without seeing advertisements. <a href=\"https://addons.wago.io/patreon\">Learn More</a>",
+          "PLACEHOLDER": "Access Key",
+          "TITLE": "Wago Access Key"
+        }
       },
       "APPLICATION": {
         "APP_RELEASE_CHANNEL_CONFIRMATION_DESCRIPTION_BETA": "Wenn du zum Beta-Kanal wechseln, erhälst du experimentelle Builds, die Fehlerbehebungen sowie neue und kommende Funktionen enthalten. Du kannst nur zur aktuellen stabilen Version zurückkehren, indem du deine vorhandene Anwendung deinstallierst und von wowup.io neu installierst.\n\nSolange der Beta-Kanal funktionsfähig ist, verwende ihn auf eigene Gefahr.",
