@@ -300,7 +300,8 @@ function createWindow(): BrowserWindow {
   });
 
   win.webContents.userAgent = USER_AGENT;
-
+  win.webContents.setAudioMuted(true);
+  
   win.webContents.on("will-attach-webview", (evt, webPreferences) => {
     log.debug("will-attach-webview");
 
