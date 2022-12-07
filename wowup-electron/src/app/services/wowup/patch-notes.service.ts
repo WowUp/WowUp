@@ -33,6 +33,7 @@ const CHANGELOGS: ChangeLog[] = [
     <h4 style="margin-top: 1em;">Fixes</h4>
     <ul>
     <li>Rendering lists should no longer fail due to malformed game version</li>
+    <li>Audio should now be muted just in case of an annoying ad</li>
     </ul>
     `,
   },
