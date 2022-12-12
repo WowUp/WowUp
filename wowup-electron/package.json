@@ -115,7 +115,7 @@
     "@types/lodash": "4.14.188",
     "@types/markdown-it": "12.2.3",
     "@types/mocha": "10.0.0",
-    "@types/node": "16.18.0",
+    "@types/node": "18.11.13",
     "@types/object-hash": "2.2.1",
     "@types/opossum": "6.2.2",
     "@types/slug": "5.0.3",
