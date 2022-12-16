@@ -13,12 +13,12 @@ export function wasFullScreen() {
   return preferenceStore.get(`main-window-is-fullscreen`) as boolean;
 }
 
-export function saveWindowConfig(window: BrowserWindow): void {
+export function saveWindowConfig(window: BrowserWindow | null): void {
+  if (window === null) {
+    return;
+  }
+  
   try {
-    if (!window) {
-      return;
-    }
-
     preferenceStore.set(`main-window-is-maximized`, window.isMaximized());
     preferenceStore.set(`main-window-is-minimized`, window.isMinimized());
     preferenceStore.set(`main-window-is-fullscreen`, window.isFullScreen());

@@ -1,4 +1,4 @@
-import { app, BrowserWindow, BrowserWindowConstructorOptions, powerMonitor } from "electron";
+import { app, BrowserWindow, BrowserWindowConstructorOptions, dialog, powerMonitor } from "electron";
 import * as log from "electron-log";
 import { find } from "lodash";
 import * as minimist from "minimist";
@@ -50,7 +50,7 @@ import * as windowState from "./window-state";
 const LOG_PATH = join(app.getPath("userData"), "logs");
 app.setAppLogsPath(LOG_PATH);
 log.transports.file.resolvePath = (variables: log.PathVariables) => {
-  return join(LOG_PATH, variables.fileName);
+  return join(LOG_PATH, variables.fileName ?? "log-file.txt");
 };
 log.info("Main starting");
 log.info(`Electron: ${process.versions.electron}`);
@@ -84,7 +84,7 @@ const USER_AGENT = getUserAgent();
 log.info("USER_AGENT", USER_AGENT);
 
 let appIsQuitting = false;
-let win: BrowserWindow = null;
+let win: BrowserWindow | null = null;
 let loadFailCount = 0;
 
 initializeDefaultPreferences();
@@ -185,7 +185,9 @@ app.on("activate", () => {
 
 app.on("child-process-gone", (e, details) => {
   log.warn("child-process-gone", inspect(details));
-  if (details.reason === "killed") {
+  if (details.reason === "crashed") {
+    onChildProcessCrashed(details);
+  } else if (details.reason === "killed") {
     app.quit();
   }
 });
@@ -226,6 +228,30 @@ powerMonitor.on("unlock-screen", () => {
 });
 
 let lastCrash = 0;
+
+const crashMap = new Map<string, number>();
+const exitOnCrashServices = ["network.mojom.NetworkService"];
+/** If a particular child process crashes too many times, notify the user and exit the app to attempt preventing softlock of system */
+function onChildProcessCrashed(details: Electron.Details) {
+  if (typeof details.serviceName !== "string") {
+    return;
+  }
+  if (!exitOnCrashServices.includes(details.serviceName)) {
+    return;
+  }
+
+  let ct = crashMap.get(details.serviceName) ?? 0;
+  ct += 1;
+  crashMap.set(details.serviceName, ct);
+
+  if (ct >= 3) {
+    dialog.showErrorBox(
+      "Child Process Failure",
+      `Child process ${details.serviceName} has crashed too many times, app will now exit`
+    );
+    app.quit();
+  }
+}
 
 function createWindow(): BrowserWindow {
   if (win) {
@@ -288,20 +314,20 @@ function createWindow(): BrowserWindow {
   wagoHandler.initialize(win);
 
   pushEvents.on(PUSH_NOTIFICATION_EVENT, (data) => {
-    win.webContents.send(IPC_PUSH_NOTIFICATION, data);
+    win?.webContents.send(IPC_PUSH_NOTIFICATION, data);
   });
 
   win.on("blur", () => {
-    win.webContents.send("blur");
+    win?.webContents.send("blur");
   });
 
   win.on("focus", () => {
-    win.webContents.send("focus");
+    win?.webContents.send("focus");
   });
 
   win.webContents.userAgent = USER_AGENT;
   win.webContents.setAudioMuted(true);
-  
+
   win.webContents.on("will-attach-webview", (evt, webPreferences) => {
     log.debug("will-attach-webview");
 
@@ -319,7 +345,7 @@ function createWindow(): BrowserWindow {
     });
 
     webContents.session.setPermissionRequestHandler((contents, permission, callback) => {
-      log.warn("setPermissionRequestHandler", permission);
+      log.warn("[webview] setPermissionRequestHandler", permission);
       return callback(false);
     });
 
@@ -328,7 +354,7 @@ function createWindow(): BrowserWindow {
         return true;
       }
 
-      log.warn("setPermissionCheckHandler", permission, origin);
+      log.warn("[webview] setPermissionCheckHandler", permission, origin);
       return false;
     });
 
@@ -384,31 +410,27 @@ function createWindow(): BrowserWindow {
       return;
     }
 
-    // win.webContents.session.setPermissionRequestHandler((contents, permission, callback) => {
-    //   log.warn("win setPermissionRequestHandler", permission);
-    //   return callback(false);
-    // });
+    win?.webContents.session.setPermissionRequestHandler((contents, permission, callback) => {
+      log.warn("win setPermissionRequestHandler", permission);
+      return callback(false);
+    });
 
-    // win.webContents.session.setPermissionCheckHandler((contents, permission, origin) => {
-    //   log.warn("win setPermissionCheckHandler", permission, origin);
-    //   return false;
-    // });
+    win?.webContents.session.setPermissionCheckHandler((contents, permission, origin) => {
+      log.warn("win setPermissionCheckHandler", permission, origin);
+      return false;
+    });
 
-    win.show();
+    win?.show();
   });
 
   win.once("show", () => {
     // win.webContents.openDevTools();
 
     if (windowState.wasFullScreen()) {
-      win.setFullScreen(true);
+      win?.setFullScreen(true);
     }
 
     appUpdater.checkForUpdates().catch((e) => console.error(e));
-
-    win.on("show", () => {
-      // win?.webContents?.send(IPC_WINDOW_RESUME);
-    });
   });
 
   if (platform.isLinux || platform.isWin) {
@@ -427,8 +449,8 @@ function createWindow(): BrowserWindow {
       return;
     }
     e.preventDefault();
-    win.hide();
-    win.setSkipTaskbar(true);
+    win?.hide();
+    win?.setSkipTaskbar(true);
 
     if (platform.isMac) {
       app.setBadgeCount(0);
@@ -485,9 +507,13 @@ function createWindow(): BrowserWindow {
   return win;
 }
 
-function loadMainUrl(window: BrowserWindow) {
+async function loadMainUrl(window: BrowserWindow | null): Promise<void> {
+  if (window === null) {
+    return;
+  }
+
   const url = pathToFileURL(join(__dirname, "..", "dist", "index.html"));
-  return window?.loadURL(url.toString());
+  return await window?.loadURL(url.toString());
 }
 
 async function onActivate() {

@@ -20,6 +20,10 @@ export function onMenuZoomReset(win: BrowserWindow): void {
 }
 
 function createMacMenuItems(win: BrowserWindow, config?: MenuConfig): Array<MenuItemConstructorOptions | MenuItem> {
+  if (config === undefined) {
+    return [];
+  }
+
   const viewMenu: MenuItemConstructorOptions = {
     label: config.viewLabel,
     submenu: [
@@ -66,6 +70,10 @@ function createMacMenuItems(win: BrowserWindow, config?: MenuConfig): Array<Menu
 }
 
 function createLinuxMenuItems(win: BrowserWindow, config?: MenuConfig): Array<MenuItemConstructorOptions | MenuItem> {
+  if (config === undefined) {
+    return [];
+  }
+
   const viewMenu: MenuItemConstructorOptions = {
     label: config.viewLabel,
     submenu: [
@@ -102,6 +110,10 @@ function createLinuxMenuItems(win: BrowserWindow, config?: MenuConfig): Array<Me
 }
 
 function createWindowsMenuItems(win: BrowserWindow, config?: MenuConfig): Array<MenuItemConstructorOptions | MenuItem> {
+  if (config === undefined) {
+    return [];
+  }
+  
   const viewMenu: MenuItemConstructorOptions = {
     label: config.viewLabel,
     submenu: [{ label: config.toggleDevToolsLabel, role: "toggleDevTools", accelerator: "CommandOrControl+Shift+I" }],
@@ -167,7 +179,11 @@ function createMenuItems(win: BrowserWindow, config?: MenuConfig): Array<MenuIte
   return [];
 }
 
-export function createAppMenu(win: BrowserWindow, config?: MenuConfig): boolean {
+export function createAppMenu(win: BrowserWindow | null, config?: MenuConfig): boolean {
+  if (win === null) {
+    return false;
+  }
+
   const menuItems = createMenuItems(win, config);
 
   Menu.setApplicationMenu(Menu.buildFromTemplate(menuItems));

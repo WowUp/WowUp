@@ -149,10 +149,16 @@ export class TukUiAddonProvider extends AddonProvider {
 
     for (const addonFolder of tukProjectAddonFolders) {
       const targetToc = this._tocService.getTocForGameType2(addonFolder, installation.clientType);
+      if (targetToc === undefined) {
+        console.warn(`[TukUI]: target toc was undefined`, installation.clientType, addonFolder);
+        continue;
+      }
+
       console.debug(`[TukUI]: target ${targetToc.fileName}, ${targetToc.title}, ${targetToc.tukUiProjectId}`);
 
       let tukUiAddon: TukUiAddon;
-      if (targetToc?.tukUiProjectId) {
+      if (typeof targetToc.tukUiProjectId === "string" && targetToc.tukUiProjectId.length > 0) {
+        console.debug(`[TukUI]: searching by project id`, targetToc.tukUiProjectId);
         const match = _.find(allAddons, (addon) => addon.id.toString() === targetToc.tukUiProjectId);
         if (!match) {
           continue;
@@ -160,6 +166,7 @@ export class TukUiAddonProvider extends AddonProvider {
 
         tukUiAddon = match;
       } else {
+        console.debug(`[TukUI]: falling back to title search`, targetToc.title);
         const results = await this.searchAddons(targetToc.title, installation.clientType);
         const firstResult = _.first(results);
         if (!firstResult) {
