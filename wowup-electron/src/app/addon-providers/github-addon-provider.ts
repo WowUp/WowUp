@@ -12,9 +12,6 @@ import {
   GitHubLimitError,
   SourceRemovedAddonError,
 } from "../errors";
-import { GitHubAsset } from "../models/github/github-asset";
-import { GitHubRelease } from "../models/github/github-release";
-import { GitHubRepository } from "../models/github/github-repository";
 import { convertMarkdown } from "../utils/markdown.utlils";
 import { strictFilterBy } from "../utils/array.utils";
 import { getWowClientGroup } from "../../common/warcraft";
@@ -28,8 +25,8 @@ import {
   GetAllResult,
   SearchByUrlResult,
   WowClientType,
-  WowInstallation,
 } from "wowup-lib-core";
+import { GitHubAsset, GitHubRelease, GitHubRepository, WowInstallation } from "wowup-lib-core/lib/models";
 
 type MetadataFlavor = "bcc" | "classic" | "mainline" | "wrath";
 
@@ -53,7 +50,7 @@ interface ReleaseMetaItemMetadata {
   interface: number;
 }
 
-const API_URL = "https://api.github.com/repos";
+const API_URL = "https://api.com/repos";
 const RELEASE_CONTENT_TYPES = {
   XZIP: "application/x-zip-compressed",
   ZIP: "application/zip",
@@ -100,8 +97,10 @@ export class GitHubAddonProvider extends AddonProvider {
     );
 
     const result: GetAllResult = {
-      errors: _.concat(taskResults.map((tr) => tr.error).filter((e) => !!e)),
-      searchResults: _.concat(taskResults.map((tr) => tr.searchResult).filter((sr) => !!sr)),
+      errors: _.concat(taskResults.map((tr) => tr.error).filter((e): e is Error => e !== undefined)),
+      searchResults: _.concat(
+        taskResults.map((tr) => tr.searchResult).filter((sr): sr is AddonSearchResult => sr !== undefined)
+      ),
     };
 
     return result;
@@ -110,8 +109,8 @@ export class GitHubAddonProvider extends AddonProvider {
   private async handleGetAllItem(
     addonId: string,
     installation: WowInstallation
-  ): Promise<{ searchResult: AddonSearchResult; error: Error }> {
-    const result = {
+  ): Promise<{ searchResult: AddonSearchResult | undefined; error: Error | undefined }> {
+    const result: { searchResult: AddonSearchResult | undefined; error: Error | undefined } = {
       searchResult: undefined,
       error: undefined,
     };
@@ -171,7 +170,7 @@ export class GitHubAddonProvider extends AddonProvider {
       const asset = result.matchedAsset || result.latestAsset;
       const potentialAddon: AddonSearchResult = {
         author: author,
-        downloadCount: asset.download_count,
+        downloadCount: asset?.download_count ?? 0,
         externalId: this.createExternalId(addonUri),
         externalUrl: repository.html_url,
         name: repository.name,
@@ -179,19 +178,19 @@ export class GitHubAddonProvider extends AddonProvider {
         thumbnailUrl: authorImageUrl,
         files: [
           {
-            channelType: result.release.prerelease ? AddonChannelType.Beta : AddonChannelType.Stable,
-            downloadUrl: hasPat ? asset.url : asset.browser_download_url,
+            channelType: result.release?.prerelease ? AddonChannelType.Beta : AddonChannelType.Stable,
+            downloadUrl: (hasPat ? asset?.url : asset?.browser_download_url) ?? "",
             folders: [],
             gameVersion: "",
-            releaseDate: new Date(result.release.published_at),
-            version: asset.name,
+            releaseDate: new Date(result.release?.published_at ?? ""),
+            version: asset?.name ?? "",
           },
         ],
       };
 
       // If there was not an exact match, throw an error with the addon we created as the metadata
       if (!result.matchedAsset) {
-        searchByUrlResult.errors.push(new AssetMissingError(addonUri.toString()));
+        searchByUrlResult.errors?.push(new AssetMissingError(addonUri.toString()));
       }
 
       searchByUrlResult.searchResult = potentialAddon;
@@ -245,12 +244,12 @@ export class GitHubAddonProvider extends AddonProvider {
 
     const searchResultFile: AddonSearchResultFile = {
       channelType: AddonChannelType.Stable,
-      downloadUrl: hasPat ? asset.url : asset.browser_download_url,
+      downloadUrl: (hasPat ? asset?.url : asset?.browser_download_url) ?? "",
       folders: [addonName],
       gameVersion: "",
-      version: asset.name,
-      releaseDate: new Date(asset.created_at),
-      changelog: convertMarkdown(assetResult.release.body),
+      version: asset?.name ?? "",
+      releaseDate: new Date(asset?.created_at ?? ""),
+      changelog: convertMarkdown(assetResult?.release?.body ?? ""),
     };
 
     const searchResult: AddonSearchResult = {
@@ -268,7 +267,7 @@ export class GitHubAddonProvider extends AddonProvider {
   }
 
   public isValidAddonUri(addonUri: URL): boolean {
-    return !!addonUri.host && addonUri.host.endsWith("github.com");
+    return !!addonUri.host && addonUri.host.endsWith("com");
   }
 
   public isValidAddonId(addonId: string): boolean {
@@ -278,13 +277,17 @@ export class GitHubAddonProvider extends AddonProvider {
   private async getLatestValidAsset(
     releases: GitHubRelease[],
     clientType: WowClientType
-  ): Promise<{ matchedAsset: GitHubAsset; release: GitHubRelease; latestAsset: GitHubAsset }> {
+  ): Promise<{
+    matchedAsset: GitHubAsset | undefined;
+    release: GitHubRelease | undefined;
+    latestAsset: GitHubAsset | undefined;
+  }> {
     let sortedReleases = releases.filter((r) => !r.draft);
     sortedReleases = _.sortBy(sortedReleases, (release) => new Date(release.published_at)).reverse();
     sortedReleases = _.take(sortedReleases, 5);
 
     let validAsset: GitHubAsset | undefined = undefined;
-    let latestRelease: GitHubRelease = _.first(sortedReleases);
+    let latestRelease: GitHubRelease | undefined = _.first(sortedReleases);
     let latestAsset = this.getValidAssetForAny(latestRelease);
 
     for (const release of sortedReleases) {
@@ -397,7 +400,11 @@ export class GitHubAddonProvider extends AddonProvider {
     return _.first(sortedAssets);
   }
 
-  private getValidAssetForAny(release: GitHubRelease): GitHubAsset | undefined {
+  private getValidAssetForAny(release: GitHubRelease | undefined): GitHubAsset | undefined {
+    if (release === undefined) {
+      return undefined;
+    }
+
     const sortedAssets = _.filter(release.assets, (asset) => this.isNotNoLib(asset) && this.isValidContentType(asset));
     return _.first(sortedAssets);
   }

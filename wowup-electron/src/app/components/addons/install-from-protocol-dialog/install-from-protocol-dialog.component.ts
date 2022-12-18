@@ -9,7 +9,8 @@ import { MAT_DIALOG_DATA, MatDialogRef } from "@angular/material/dialog";
 import { AddonService } from "../../../services/addons/addon.service";
 import { SessionService } from "../../../services/session/session.service";
 import { WarcraftInstallationService } from "../../../services/warcraft/warcraft-installation.service";
-import { ProtocolSearchResult, WowInstallation } from "wowup-lib-core";
+import { ProtocolSearchResult } from "wowup-lib-core";
+import { WowInstallation } from "wowup-lib-core/lib/models";
 
 export interface InstallFromProtocolDialogComponentData {
   protocol: string;

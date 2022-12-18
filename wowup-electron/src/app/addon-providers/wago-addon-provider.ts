@@ -30,8 +30,8 @@ import {
   GetAllResult,
   WowClientGroup,
   WowClientType,
-  WowInstallation,
 } from "wowup-lib-core";
+import { WowInstallation } from "wowup-lib-core/lib/models";
 
 declare type WagoGameVersion = "retail" | "classic" | "bc" | "wotlk";
 declare type WagoStability = "stable" | "beta" | "alpha";

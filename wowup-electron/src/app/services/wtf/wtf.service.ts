@@ -1,6 +1,7 @@
 import { Injectable } from "@angular/core";
 import * as path from "path";
-import { FsStats, WowInstallation } from "wowup-lib-core";
+import { FsStats } from "wowup-lib-core";
+import { WowInstallation } from "wowup-lib-core/lib/models";
 
 import { TreeNode } from "../../../common/models/ipc-events";
 import { FileService } from "../files/file.service";
@@ -38,7 +39,7 @@ export interface WtfBackupMeta {
   path: string;
   isDirectory: boolean;
   size: number;
-  hash: string;
+  hash?: string;
 }
 
 export interface WtfBackup {
@@ -111,7 +112,11 @@ export class WtfService {
     return entries.filter((entry) => entry !== SAVED_VARIABLES_FOLDER);
   }
 
-  public async getCharacters(installation: WowInstallation, account: string, server: string): Promise<string[]> {
+  public async getCharacters(
+    installation: WowInstallation,
+    account: string,
+    server: string
+  ): Promise<string[]> {
     const serverPath = path.join(this.getAccountsPath(installation), account, server);
     const entries = await this._fileService.listDirectories(serverPath);
     return entries;
@@ -351,7 +356,9 @@ export class WtfService {
     await this._fileService.createDirectory(backupPath);
   }
 
-  private async createBackupMetadataFile(installation: WowInstallation): Promise<[string, WtfBackupMetadataFile]> {
+  private async createBackupMetadataFile(
+    installation: WowInstallation
+  ): Promise<[string, WtfBackupMetadataFile]> {
     const backupMetaList = await this.getBackupMetaList(installation);
     const backupMetadata: WtfBackupMetadataFile = {
       contents: backupMetaList,

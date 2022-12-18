@@ -14,7 +14,8 @@ import { WarcraftInstallationService } from "../../../services/warcraft/warcraft
 import { WarcraftService } from "../../../services/warcraft/warcraft.service";
 import { getEnumList, getEnumName } from "wowup-lib-core/lib/utils";
 import { ConfirmDialogComponent } from "../../common/confirm-dialog/confirm-dialog.component";
-import { AddonChannelType, WowClientType, WowInstallation } from "wowup-lib-core";
+import { AddonChannelType, WowClientType } from "wowup-lib-core";
+import { WowInstallation } from "wowup-lib-core/lib/models";
 
 @Component({
   selector: "app-wow-client-options",

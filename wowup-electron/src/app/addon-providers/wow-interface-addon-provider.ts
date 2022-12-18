@@ -5,7 +5,6 @@ import { HttpErrorResponse } from "@angular/common/http";
 
 import { ADDON_PROVIDER_WOWINTERFACE } from "../../common/constants";
 import { SourceRemovedAddonError } from "../errors";
-import { AddonDetailsResponse } from "../models/wow-interface/addon-details-response";
 import { CachingService } from "../services/caching/caching-service";
 import { CircuitBreakerWrapper, NetworkService } from "../services/network/network.service";
 import { getGameVersion } from "../utils/addon.utils";
@@ -22,8 +21,8 @@ import {
   AddonSearchResultFile,
   GetAllResult,
   SearchByUrlResult,
-  WowInstallation,
 } from "wowup-lib-core";
+import { AddonDetailsResponse, WowInstallation } from "wowup-lib-core/lib/models";
 
 const API_URL = "https://api.mmoui.com/v4/game/WOW";
 const ADDON_URL = "https://www.wowinterface.com/downloads/info";
@@ -150,7 +149,9 @@ export class WowInterfaceAddonProvider extends AddonProvider {
     const wowiFolders = addonFolders.filter((folder) =>
       folder.tocs.some((toc) => !!toc.wowInterfaceId && toc.loadOnDemand !== "1")
     );
-    const addonIds = _.uniq(_.flatten(wowiFolders.map((folder) => folder.tocs.map((toc) => toc.wowInterfaceId))));
+    const addonIds = _.uniq(
+      _.flatten(wowiFolders.map((folder) => folder.tocs.map((toc) => toc.wowInterfaceId)))
+    ).filter((aid): aid is string => aid !== undefined);
 
     const addonDetails = await this.getAllAddonDetails(addonIds);
 
@@ -241,7 +242,7 @@ export class WowInterfaceAddonProvider extends AddonProvider {
       downloadUrl: response.downloadUri,
       externalId: response.id.toString(),
       externalUrl: this.getAddonUrl(response),
-      gameVersion: getGameVersion(targetToc.interface),
+      gameVersion: getGameVersion(targetToc?.interface),
       installedAt: new Date(),
       installedFolders: addonFolder.name,
       installedFolderList: [addonFolder.name],

@@ -62,8 +62,8 @@ import {
   SearchByUrlResult,
   Toc,
   WowClientType,
-  WowInstallation,
 } from "wowup-lib-core";
+import { WowInstallation } from "wowup-lib-core/lib/models";
 
 export enum ScanUpdateType {
   Start,
@@ -259,7 +259,10 @@ export class AddonService {
     );
   }
 
-  public async getCategoryPage(category: AddonCategory, installation: WowInstallation): Promise<AddonSearchResult[]> {
+  public async getCategoryPage(
+    category: AddonCategory,
+    installation: WowInstallation
+  ): Promise<AddonSearchResult[]> {
     const providers = this._addonProviderService.getEnabledAddonProviders();
 
     this._analyticsService.trackAction(USER_ACTION_BROWSE_CATEGORY, {
@@ -1267,7 +1270,11 @@ export class AddonService {
     return newAddons;
   }
 
-  private async syncProviderAddons(installation: WowInstallation, addons: Addon[], addonProvider: AddonProvider) {
+  private async syncProviderAddons(
+    installation: WowInstallation,
+    addons: Addon[],
+    addonProvider: AddonProvider
+  ) {
     // console.debug(`syncProviderAddons`, installation.label, addonProvider.name);
 
     const providerAddonIds = this.getExternalIdsForProvider(addonProvider, addons);
@@ -1903,7 +1910,11 @@ export class AddonService {
     return await this._addonStorage.getByExternalIdAsync(externalId, providerName, installationId);
   }
 
-  public async isInstalled(externalId: string, providerName: string, installation: WowInstallation): Promise<boolean> {
+  public async isInstalled(
+    externalId: string,
+    providerName: string,
+    installation: WowInstallation
+  ): Promise<boolean> {
     const addon = await this.getByExternalId(externalId, providerName, installation.id);
     return !!addon;
   }

@@ -4,8 +4,9 @@ import { v4 as uuidv4 } from "uuid";
 import { ADDON_PROVIDER_RAIDERIO } from "../../common/constants";
 import { getGameVersion } from "../utils/addon.utils";
 import { TocService } from "../services/toc/toc.service";
-import { AddonChannelType, AddonFolder, AddonProvider, WowInstallation } from "wowup-lib-core";
+import { AddonChannelType, AddonFolder, AddonProvider } from "wowup-lib-core";
 import { getEnumName } from "wowup-lib-core/lib/utils";
+import { WowInstallation } from "wowup-lib-core/lib/models";
 
 export class RaiderIoAddonProvider extends AddonProvider {
   private readonly _scanWebsite = "https://raider.io";

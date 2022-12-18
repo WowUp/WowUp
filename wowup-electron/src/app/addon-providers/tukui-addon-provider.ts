@@ -3,7 +3,6 @@ import { v4 as uuidv4 } from "uuid";
 import * as stringSimilarity from "string-similarity";
 
 import { ADDON_PROVIDER_TUKUI } from "../../common/constants";
-import { TukUiAddon } from "../models/tukui/tukui-addon";
 import { CachingService } from "../services/caching/caching-service";
 import { CircuitBreakerWrapper, NetworkService } from "../services/network/network.service";
 import { getGameVersion } from "../utils/addon.utils";
@@ -18,8 +17,8 @@ import {
   AddonSearchResultFile,
   GetAllResult,
   WowClientType,
-  WowInstallation,
 } from "wowup-lib-core";
+import { TukUiAddon, WowInstallation } from "wowup-lib-core/lib/models";
 
 const API_URL = "https://www.tukui.org/api.php";
 const CLIENT_API_URL = "https://www.tukui.org/client-api.php";
@@ -46,7 +45,10 @@ export class TukUiAddonProvider extends AddonProvider {
     this._circuitBreaker = this._networkService.getCircuitBreaker(`${this.name}_main`);
   }
 
-  public async getCategory(category: AddonCategory, installation: WowInstallation): Promise<AddonSearchResult[]> {
+  public async getCategory(
+    category: AddonCategory,
+    installation: WowInstallation
+  ): Promise<AddonSearchResult[]> {
     const addonCategories = this.mapAddonCategory(category);
 
     const allAddons = await this.getAllAddons(installation.clientType);

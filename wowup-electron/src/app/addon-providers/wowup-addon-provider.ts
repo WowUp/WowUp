@@ -37,8 +37,8 @@ import {
   ProtocolSearchResult,
   WowClientGroup,
   WowClientType,
-  WowInstallation,
 } from "wowup-lib-core";
+import { WowInstallation } from "wowup-lib-core/lib/models";
 
 interface WowUpScanResult {
   scanResult?: AddonScanResult;

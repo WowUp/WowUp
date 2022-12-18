@@ -1,7 +1,7 @@
 import * as path from "path";
 import { WowClientType } from "wowup-lib-core";
+import { InstalledProduct } from "wowup-lib-core/lib/models";
 import { WOW_CLASSIC_ERA_FOLDER, WOW_CLASSIC_ERA_PTR_FOLDER } from "../../../common/constants";
-import { InstalledProduct } from '../../models/warcraft/installed-product';
 import { ElectronService } from "../electron/electron.service";
 import { FileService } from "../files/file.service";
 import { WarcraftServiceImpl } from "./warcraft.service.impl";
@@ -22,22 +22,19 @@ const WOW_APP_NAMES = [
   WOW_CLASSIC_BETA_NAME,
 ];
 
-const LUTRIS_CONFIG_PATH = "/.config/lutris/system.yml"
+const LUTRIS_CONFIG_PATH = "/.config/lutris/system.yml";
 // Search in this order until products are found on one.
 // All WoW products can be found under any or all of them,
 // since each of them are essentially just Battle.net
 // launchers with a different install path.
-const LUTRIS_WOW_DIRS = [
-  "battlenet/drive_c",
-  "world-of-warcraft/drive_c",
-  "world-of-warcraft-classic/drive_c"]
+const LUTRIS_WOW_DIRS = ["battlenet/drive_c", "world-of-warcraft/drive_c", "world-of-warcraft-classic/drive_c"];
 
 // BLIZZARD STRINGS
 const WINDOWS_BLIZZARD_AGENT_PATH = "ProgramData/Battle.net/Agent";
 const BLIZZARD_PRODUCT_DB_NAME = "product.db";
 
 export class WarcraftServiceLinux implements WarcraftServiceImpl {
-  public constructor(private _electronService: ElectronService, private _fileService: FileService) { }
+  public constructor(private _electronService: ElectronService, private _fileService: FileService) {}
 
   public getExecutableExtension(): string {
     return "exe";
@@ -64,7 +61,6 @@ export class WarcraftServiceLinux implements WarcraftServiceImpl {
         console.log(`Found WoW products at ${agentPath}`);
         return agentPath;
       }
-
     } catch (e) {
       console.error("Failed to search for blizzard products", e);
     }
@@ -77,13 +73,17 @@ export class WarcraftServiceLinux implements WarcraftServiceImpl {
     const agentPathPrefixRegex = new RegExp(`(.*drive_c)`);
     for (const product of decodedProducts) {
       console.log(`location: ${location.toString()} agentPath: ${agentPath}`);
-      const agentPathPrefix = agentPathPrefixRegex.exec(agentPath)[1].trim();
-      resolvedProducts.push(
-        {
-          ...product,
-          location: path.join(agentPathPrefix, product.location.substr(3))
-        } as InstalledProduct);
+      const regexResults = agentPathPrefixRegex.exec(agentPath);
+      if (regexResults === null) {
+        console.warn("No agentPath match found");
+        continue;
+      }
 
+      const agentPathPrefix = regexResults[1].trim();
+      resolvedProducts.push({
+        ...product,
+        location: path.join(agentPathPrefix, product.location.substr(3)),
+      } as InstalledProduct);
     }
     return resolvedProducts;
   }
@@ -96,20 +96,25 @@ export class WarcraftServiceLinux implements WarcraftServiceImpl {
       if (lutrisConfigExists) {
         const lutrisConfig = await this._fileService.readFile(resolvedPath);
         const libraryPathRegex = new RegExp(`game_path: (.*)`);
-        const libraryPath = libraryPathRegex.exec(lutrisConfig)[1].trim();
+        const regexResults = libraryPathRegex.exec(lutrisConfig);
+        if (regexResults === null) {
+          throw new Error("No matching game_path found");
+        }
+
+        const libraryPath = regexResults[1].trim();
         const libraryPathExists = await this._fileService.pathExists(libraryPath);
         if (libraryPathExists) {
           for (const wowDir of LUTRIS_WOW_DIRS) {
-            const productPath = path.join(libraryPath, wowDir)
+            const productPath = path.join(libraryPath, wowDir);
             const productPathExists = await this._fileService.pathExists(productPath);
             if (productPathExists) {
               console.log(`Found WoW product in Lutris library at ${productPath}`);
-              return productPath
+              return productPath;
             }
           }
         }
       }
-      throw new Error()
+      throw new Error();
     } catch (e) {
       console.error("Failed to search for Lutris library location", e);
     }

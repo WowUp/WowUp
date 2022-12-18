@@ -73,7 +73,8 @@ import { WtfBackupComponent } from "../../components/addons/wtf-backup/wtf-backu
 import { HasEventTargetAddRemove } from "rxjs/internal/observable/fromEvent";
 import { AddonProviderFactory } from "../../services/addons/addon.provider.factory";
 import { toInterfaceVersion } from "../../utils/addon.utils";
-import { Addon, WowClientType, WowInstallation } from "wowup-lib-core";
+import { Addon, WowClientType } from "wowup-lib-core";
+import { WowInstallation } from "wowup-lib-core/lib/models";
 
 @Component({
   selector: "app-my-addons",

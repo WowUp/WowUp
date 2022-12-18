@@ -14,8 +14,9 @@ import { AddonProviderFactory } from "../addons/addon.provider.factory";
 import { AddonService } from "../addons/addon.service";
 import { FileService } from "../files/file.service";
 import { WarcraftInstallationService } from "../warcraft/warcraft-installation.service";
+import { Addon, AddonChannelType } from "wowup-lib-core";
+import { WowInstallation } from "wowup-lib-core/lib/models";
 import { WarcraftService } from "../warcraft/warcraft.service";
-import { Addon, AddonChannelType, WowInstallation } from "wowup-lib-core";
 
 enum WowUpAddonFileType {
   Raw,
@@ -115,6 +116,10 @@ export class WowUpAddonService {
 
     const addonFolderPath = this._warcraftService.getAddonFolderPath(installation);
     const addonFolder = await this._warcraftService.getAddonFolder(addonFolderPath, WOWUP_DATA_ADDON_FOLDER_NAME);
+    if (addonFolder === undefined) {
+      console.warn("Could not find addon folder", addonFolderPath);
+      return;
+    }
 
     const provider = this._addonProviderFactory.createWowUpCompanionAddonProvider();
     await provider.scan(installation, AddonChannelType.Stable, [addonFolder]);

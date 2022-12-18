@@ -12,7 +12,7 @@ import {
 import { SessionService } from "../../../services/session/session.service";
 import { SnackbarService } from "../../../services/snackbar/snackbar.service";
 import { ElectronService } from "../../../services";
-import { WowInstallation } from "wowup-lib-core";
+import { WowInstallation } from "wowup-lib-core/lib/models";
 
 interface ImportComparisonViewModel extends ImportComparison {
   isInstalling?: boolean;

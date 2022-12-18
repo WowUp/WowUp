@@ -10,7 +10,8 @@ import { WtfNode, WtfService } from "../../../services/wtf/wtf.service";
 import { removeExtension } from "../../../utils/string.utils";
 import { WarcraftInstallationService } from "../../../services/warcraft/warcraft-installation.service";
 import { formatSize } from "../../../utils/number.utils";
-import { AddonFolder, WowInstallation } from "wowup-lib-core";
+import { AddonFolder } from "wowup-lib-core";
+import { WowInstallation } from "wowup-lib-core/lib/models";
 
 interface SavedVariable {
   name: string;

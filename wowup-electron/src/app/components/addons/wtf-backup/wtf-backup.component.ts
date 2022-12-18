@@ -2,7 +2,7 @@ import { Component, OnInit } from "@angular/core";
 import { TranslateService } from "@ngx-translate/core";
 import { BehaviorSubject, from, of } from "rxjs";
 import { catchError, first, map, switchMap } from "rxjs/operators";
-import { WowInstallation } from "wowup-lib-core";
+import { WowInstallation } from "wowup-lib-core/lib/models";
 import { ElectronService } from "../../../services";
 import { DialogFactory } from "../../../services/dialog/dialog.factory";
 import { SessionService } from "../../../services/session/session.service";

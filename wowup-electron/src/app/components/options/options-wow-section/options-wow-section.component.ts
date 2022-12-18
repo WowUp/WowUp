@@ -9,7 +9,8 @@ import { WarcraftInstallationService } from "../../../services/warcraft/warcraft
 import { WarcraftService } from "../../../services/warcraft/warcraft.service";
 import { getEnumList } from "wowup-lib-core/lib/utils";
 import { AlertDialogComponent } from "../../common/alert-dialog/alert-dialog.component";
-import { WowClientType, WowInstallation } from "wowup-lib-core";
+import { WowClientType } from "wowup-lib-core";
+import { WowInstallation } from "wowup-lib-core/lib/models";
 
 @Component({
   selector: "app-options-wow-section",
