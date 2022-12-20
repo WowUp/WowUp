@@ -41,7 +41,7 @@ import { initializeIpcHandlers, setPendingOpenUrl } from "./ipc-events";
 import * as platform from "./platform";
 import { initializeDefaultPreferences } from "./preferences";
 import { PUSH_NOTIFICATION_EVENT, pushEvents } from "./push";
-import { initializeStoreIpcHandlers, preferenceStore } from "./stores";
+import { getPreferenceStore, initializeStoreIpcHandlers } from "./stores";
 import { wagoHandler } from "./wago-handler";
 import * as windowState from "./window-state";
 
@@ -99,7 +99,7 @@ app.setAsDefaultProtocolClient(APP_PROTOCOL_NAME);
 app.setAppUserModelId(APP_USER_MODEL_ID);
 
 // HARDWARE ACCELERATION SETUP
-if (preferenceStore.get(USE_HARDWARE_ACCELERATION_PREFERENCE_KEY) === "false") {
+if (getPreferenceStore().get(USE_HARDWARE_ACCELERATION_PREFERENCE_KEY) === "false") {
   log.info("Hardware acceleration disabled");
   app.disableHardwareAcceleration();
 } else {
@@ -444,7 +444,7 @@ function createWindow(): BrowserWindow {
   }
 
   win.on("close", (e) => {
-    if (appIsQuitting || preferenceStore.get(COLLAPSE_TO_TRAY_PREFERENCE_KEY) !== "true") {
+    if (appIsQuitting || getPreferenceStore().get(COLLAPSE_TO_TRAY_PREFERENCE_KEY) !== "true") {
       pushEvents.removeAllListeners(PUSH_NOTIFICATION_EVENT);
       return;
     }
@@ -530,21 +530,24 @@ async function onActivate() {
 }
 
 function getBackgroundColor() {
-  const savedTheme = preferenceStore.get(CURRENT_THEME_KEY) as string;
+  const savedTheme = getPreferenceStore().get(CURRENT_THEME_KEY) as string | undefined;
   return savedTheme && savedTheme.indexOf("light") !== -1 ? DEFAULT_LIGHT_BG_COLOR : DEFAULT_BG_COLOR;
 }
 
 function canStartHidden() {
-  const systemStart = preferenceStore.get(START_WITH_SYSTEM_PREFERENCE_KEY) as string;
-  const startMin = preferenceStore.get(START_MINIMIZED_PREFERENCE_KEY) as string;
+  const prefStore = getPreferenceStore();
+  const systemStart = prefStore?.get(START_WITH_SYSTEM_PREFERENCE_KEY) as string | undefined;
+  const startMin = prefStore?.get(START_MINIMIZED_PREFERENCE_KEY) as string | undefined;
 
   console.log(`START_WITH_SYSTEM_PREFERENCE_KEY: ${systemStart}`);
   console.log(`START_MINIMIZED_PREFERENCE_KEY: ${startMin}`);
 
   const loginItems = app.getLoginItemSettings();
-  loginItems?.launchItems.forEach((li) => {
-    console.log(`launchItem: ${li.name} args -> ${li.args.join(",")}`);
-  });
+  if (Array.isArray(loginItems?.launchItems)) {
+    loginItems.launchItems.forEach((li) => {
+      console.log(`launchItem: ${li.name} args -> ${li.args.join(",")}`);
+    });
+  }
   return argv.hidden || loginItems.wasOpenedAsHidden;
 }
 

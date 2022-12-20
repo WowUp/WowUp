@@ -11,15 +11,23 @@ import {
   SENSITIVE_STORE_NAME,
 } from "../src/common/constants";
 
-export const addonStore = new Store({ name: ADDON_STORE_NAME });
-export const preferenceStore = new Store({ name: PREFERENCE_STORE_NAME });
-export const sensitiveStore = new Store({ name: SENSITIVE_STORE_NAME });
+const addonStore = new Store({ name: ADDON_STORE_NAME });
+const preferenceStore = new Store({ name: PREFERENCE_STORE_NAME });
+const sensitiveStore = new Store({ name: SENSITIVE_STORE_NAME });
 
 const stores: { [storeName: string]: Store } = {
   [ADDON_STORE_NAME]: addonStore,
   [PREFERENCE_STORE_NAME]: preferenceStore,
   [SENSITIVE_STORE_NAME]: sensitiveStore,
 };
+
+export function getPreferenceStore(): Store {
+  return preferenceStore
+}
+
+export function getAddonStore(): Store {
+  return addonStore;
+}
 
 export function initializeStoreIpcHandlers(): void {
   // Return the store value for a specific key

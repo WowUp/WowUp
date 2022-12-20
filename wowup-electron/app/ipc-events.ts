@@ -77,6 +77,8 @@ import {
   IPC_PUSH_SUBSCRIBE,
   IPC_WINDOW_IS_FULLSCREEN,
   IPC_WINDOW_IS_MAXIMIZED,
+  PREFERENCE_STORE_NAME,
+  ZOOM_FACTOR_KEY,
 } from "../src/common/constants";
 import { CopyFileRequest } from "../src/common/models/copy-file-request";
 import { DownloadRequest } from "../src/common/models/download-request";
@@ -101,7 +103,7 @@ import {
   remove,
   zipFile,
 } from "./file.utils";
-import { addonStore } from "./stores";
+import { getAddonStore, getPreferenceStore } from "./stores";
 import { createTray } from "./system-tray";
 import { WowUpFolderScanner } from "./wowup-folder-scanner";
 import * as push from "./push";
@@ -235,7 +237,10 @@ export function initializeIpcHandlers(window: BrowserWindow): void {
   handle(IPC_SET_ZOOM_FACTOR, (evt, zoomFactor: number) => {
     if (window?.webContents) {
       window.webContents.zoomFactor = zoomFactor;
+    } else {
+      log.warn("could not set zoom factor, no web contents");
     }
+    getPreferenceStore().set(ZOOM_FACTOR_KEY, zoomFactor);
   });
 
   handle(IPC_ADDONS_SAVE_ALL, (evt, addons: Addon[]) => {
@@ -243,8 +248,19 @@ export function initializeIpcHandlers(window: BrowserWindow): void {
       return;
     }
 
+    const addonStore = getAddonStore();
+    if (addonStore === undefined) {
+      log.warn("IPC_ADDONS_SAVE_ALL failed, addon store undefined");
+      return;
+    }
+
     for (const addon of addons) {
-      addonStore.set(addon.id, addon);
+      if (typeof addon.id !== "string") {
+        log.warn("malformed addon not saved", addon);
+        continue;
+      }
+
+      addonStore?.set(addon.id, addon);
     }
   });
 
@@ -576,7 +592,11 @@ export function initializeIpcHandlers(window: BrowserWindow): void {
 
       try {
         const action = _dlMap.get(key);
-        action.call(null, evt, item, wc);
+        if (typeof action === "function") {
+          action?.call(null, evt, item, wc);
+        } else {
+          log.warn("could not call will-download action, undefined");
+        }
       } catch (e) {
         log.error(e);
       } finally {
@@ -707,9 +727,9 @@ export function initializeIpcHandlers(window: BrowserWindow): void {
 }
 
 // Adapted from https://github.com/thejoshwolfe/yauzl/blob/96f0eb552c560632a754ae0e1701a7edacbda389/examples/unzip.js#L124
-function handleZipFile(err: Error, zipfile: yauzl.ZipFile, targetDir: string): Promise<boolean> {
+function handleZipFile(err: Error | null, zipfile: yauzl.ZipFile, targetDir: string): Promise<boolean> {
   return new Promise((resolve, reject) => {
-    if (err) {
+    if (err !== null) {
       return reject(err);
     }
 

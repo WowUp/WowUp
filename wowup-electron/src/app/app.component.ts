@@ -236,6 +236,7 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
 
   private async loadZoom() {
     const zoomPref = await this._preferenceStore.getAsync(ZOOM_FACTOR_KEY);
+    console.log('zoomPref', zoomPref)
     const zoomFactor = parseFloat(zoomPref);
     if (!isNaN(zoomFactor) && isFinite(zoomFactor)) {
       this._zoomService.setZoomFactor(zoomFactor).catch((e) => console.error(e));
