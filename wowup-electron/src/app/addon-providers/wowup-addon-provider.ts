@@ -4,20 +4,7 @@ import { v4 as uuidv4 } from "uuid";
 import { ADDON_PROVIDER_HUB, APP_PROTOCOL_NAME } from "../../common/constants";
 import { AppConfig } from "../../environments/environment";
 import { SourceRemovedAddonError } from "../errors";
-import {
-  AddonReleaseGameVersion,
-  WowGameType,
-  WowUpAddonReleaseRepresentation,
-  WowUpAddonRepresentation,
-} from "../models/wowup-api/addon-representations";
-import {
-  GetFeaturedAddonsResponse,
-  WowUpGetAddonReleaseResponse,
-  WowUpGetAddonResponse,
-  WowUpGetAddonsResponse,
-  WowUpSearchAddonsResponse,
-} from "../models/wowup-api/api-responses";
-import { GetAddonsByFingerprintResponse } from "../models/wowup-api/get-addons-by-fingerprint.response";
+
 import { ElectronService } from "../services";
 import { CachingService } from "../services/caching/caching-service";
 import { CircuitBreakerWrapper, NetworkService } from "../services/network/network.service";
@@ -37,8 +24,20 @@ import {
   ProtocolSearchResult,
   WowClientGroup,
   WowClientType,
+  WowGameType,
 } from "wowup-lib-core";
-import { WowInstallation } from "wowup-lib-core/lib/models";
+import {
+  AddonReleaseGameVersion,
+  GetAddonsByFingerprintResponse,
+  GetFeaturedAddonsResponse,
+  WowInstallation,
+  WowUpAddonReleaseRepresentation,
+  WowUpAddonRepresentation,
+  WowUpGetAddonReleaseResponse,
+  WowUpGetAddonResponse,
+  WowUpGetAddonsResponse,
+  WowUpSearchAddonsResponse,
+} from "wowup-lib-core/lib/models";
 
 interface WowUpScanResult {
   scanResult?: AddonScanResult;

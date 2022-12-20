@@ -20,8 +20,8 @@ import { ElectronService } from "../electron/electron.service";
 import { LinkService } from "../links/link.service";
 import { PreferenceStorageService } from "../storage/preference-storage.service";
 import { WowUpApiService } from "../wowup-api/wowup-api.service";
-import { WowUpGetAccountResponse } from "../../models/wowup-api/api-responses";
 import { HttpErrorResponse } from "@angular/common/http";
+import { WowUpGetAccountResponse } from "wowup-lib-core/lib/models";
 
 @Injectable({
   providedIn: "root",

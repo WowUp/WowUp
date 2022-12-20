@@ -1,6 +1,6 @@
 import { Injectable } from "@angular/core";
+import { WowUpGetAccountResponse } from "wowup-lib-core/lib/models";
 import { AppConfig } from "../../../environments/environment";
-import { WowUpGetAccountResponse } from "../../models/wowup-api/api-responses";
 import { CachingService } from "../caching/caching-service";
 import { CircuitBreakerWrapper, NetworkService } from "../network/network.service";
 
