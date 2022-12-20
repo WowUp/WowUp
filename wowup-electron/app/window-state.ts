@@ -3,28 +3,29 @@ import * as log from "electron-log";
 
 import { IPC_WINDOW_RESUME, MIN_VISIBLE_ON_SCREEN, WINDOW_MIN_HEIGHT, WINDOW_MIN_WIDTH } from "../src/common/constants";
 import * as platform from "./platform";
-import { preferenceStore } from "./stores";
+import { getPreferenceStore } from "./stores";
 
 export function wasMaximized() {
-  return preferenceStore.get(`main-window-is-maximized`) as boolean;
+  return getPreferenceStore().get(`main-window-is-maximized`) as boolean;
 }
 
 export function wasFullScreen() {
-  return preferenceStore.get(`main-window-is-fullscreen`) as boolean;
+  return getPreferenceStore().get(`main-window-is-fullscreen`) as boolean;
 }
 
 export function saveWindowConfig(window: BrowserWindow | null): void {
   if (window === null) {
     return;
   }
-  
+
   try {
-    preferenceStore.set(`main-window-is-maximized`, window.isMaximized());
-    preferenceStore.set(`main-window-is-minimized`, window.isMinimized());
-    preferenceStore.set(`main-window-is-fullscreen`, window.isFullScreen());
+    const prefStore = getPreferenceStore();
+    prefStore.set(`main-window-is-maximized`, window.isMaximized());
+    prefStore.set(`main-window-is-minimized`, window.isMinimized());
+    prefStore.set(`main-window-is-fullscreen`, window.isFullScreen());
 
     if (!window.isMinimized() && !window.isMaximized()) {
-      preferenceStore.set(`main-window-state`, window.getBounds());
+      prefStore.set(`main-window-state`, window.getBounds());
     } else if (window.isMaximized()) {
       // Attempt to reduce the placement so its remember but in bounds
       const bounds = window.getBounds();
@@ -32,7 +33,7 @@ export function saveWindowConfig(window: BrowserWindow | null): void {
       bounds.y += 50;
       bounds.width -= 100;
       bounds.height -= 100;
-      preferenceStore.set(`main-window-state`, bounds);
+      prefStore.set(`main-window-state`, bounds);
     }
 
     log.info("window config saved");
@@ -68,7 +69,7 @@ export function restoreMainWindowBounds(mainWindow: BrowserWindow) {
 }
 
 export function getWindowConfig() {
-  let state: Rectangle = preferenceStore.get(`main-window-state`) as Rectangle;
+  let state: Rectangle = getPreferenceStore().get(`main-window-state`) as Rectangle;
   if (!state) {
     state = {
       height: 0,
