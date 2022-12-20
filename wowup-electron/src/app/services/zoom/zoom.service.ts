@@ -2,7 +2,7 @@ import { BehaviorSubject } from "rxjs";
 
 import { Injectable } from "@angular/core";
 
-import { IPC_GET_ZOOM_FACTOR, IPC_SET_ZOOM_FACTOR, ZOOM_FACTOR_KEY } from "../../../common/constants";
+import { IPC_GET_ZOOM_FACTOR, IPC_SET_ZOOM_FACTOR } from "../../../common/constants";
 import { ZOOM_SCALE, ZoomDirection } from "../../utils/zoom.utils";
 import { ElectronService } from "../electron/electron.service";
 import { PreferenceStorageService } from "../storage/preference-storage.service";

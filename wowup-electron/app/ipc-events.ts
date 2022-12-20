@@ -77,7 +77,6 @@ import {
   IPC_PUSH_SUBSCRIBE,
   IPC_WINDOW_IS_FULLSCREEN,
   IPC_WINDOW_IS_MAXIMIZED,
-  PREFERENCE_STORE_NAME,
   ZOOM_FACTOR_KEY,
 } from "../src/common/constants";
 import { CopyFileRequest } from "../src/common/models/copy-file-request";

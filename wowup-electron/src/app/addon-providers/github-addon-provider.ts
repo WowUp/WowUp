@@ -30,6 +30,12 @@ import { GitHubAsset, GitHubRelease, GitHubRepository, WowInstallation } from "w
 
 type MetadataFlavor = "bcc" | "classic" | "mainline" | "wrath";
 
+interface LatestValidAsset {
+  matchedAsset: GitHubAsset | undefined;
+  release: GitHubRelease | undefined;
+  latestAsset: GitHubAsset | undefined;
+}
+
 interface GitHubRepoParts {
   repository: string;
   owner: string;
@@ -274,14 +280,7 @@ export class GitHubAddonProvider extends AddonProvider {
     return addonId.indexOf("/") !== -1;
   }
 
-  private async getLatestValidAsset(
-    releases: GitHubRelease[],
-    clientType: WowClientType
-  ): Promise<{
-    matchedAsset: GitHubAsset | undefined;
-    release: GitHubRelease | undefined;
-    latestAsset: GitHubAsset | undefined;
-  }> {
+  private async getLatestValidAsset(releases: GitHubRelease[], clientType: WowClientType): Promise<LatestValidAsset> {
     let sortedReleases = releases.filter((r) => !r.draft);
     sortedReleases = _.sortBy(sortedReleases, (release) => new Date(release.published_at)).reverse();
     sortedReleases = _.take(sortedReleases, 5);
