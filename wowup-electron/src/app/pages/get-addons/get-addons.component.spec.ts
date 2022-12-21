@@ -23,7 +23,8 @@ import { RelativeDurationPipe } from "../../pipes/relative-duration-pipe";
 import { MatModule } from "../../modules/mat-module";
 import { PipesModule } from "../../modules/pipes.module";
 import { AddonProviderFactory } from "../../services/addons/addon.provider.factory";
-import { AddonChannelType, WowClientType, WowInstallation } from "wowup-lib-core";
+import { AddonChannelType, WowClientType } from "wowup-lib-core";
+import { WowInstallation } from "wowup-lib-core/lib/models";
 
 describe("GetAddonsComponent", () => {
   let component: GetAddonsComponent;
