@@ -56,7 +56,7 @@ interface ReleaseMetaItemMetadata {
   interface: number;
 }
 
-const API_URL = "https://api.com/repos";
+const API_URL = "https://api.github.com/repos";
 const RELEASE_CONTENT_TYPES = {
   XZIP: "application/x-zip-compressed",
   ZIP: "application/zip",
