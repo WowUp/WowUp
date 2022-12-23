@@ -247,10 +247,6 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
     },
   ];
 
-  public get displayedColumns(): string[] {
-    return this.columns.filter((col) => col.visible).map((col) => col.name);
-  }
-
   public constructor(
     private _addonService: AddonService,
     private _addonProviderService: AddonProviderFactory,
@@ -432,6 +428,10 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
         tap((data) => {
           this.gridApi.setRowData(data);
           this.setPageContextText();
+        }),
+        debounceTime(200),
+        tap(() => {
+          this.autoSizeColumns();
         })
       )
       .subscribe();
