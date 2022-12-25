@@ -34,7 +34,7 @@
   "ADS": {
     "AD_EXPLAINER_BUTTON": "Hvorfor ser jeg denne reklamen?",
     "AD_EXPLAINER_DIALOG": {
-      "MESSAGE": "For å kunne bruke <a appExternalLink href=\"https://addons.wago.io/\">wago.io</a> som leverandør av utvidelser og støtte forfatterene deres for deres harde arbeid med favorittutvidelsene dine, er vi nødt til å vise denne reklamen.\n\nHvis du ikke vil se denne reklamen kan du alltids deaktivere wago.io som leverandør i fanen for alternativer.",
+      "MESSAGE": "For å kunne bruke <a appExternalLink href=\"https://addons.wago.io/\">wago.io</a> som leverandør av utvidelser og støtte skaperene deres for deres harde arbeid med favorittutvidelsene dine, er vi nødt til å vise denne reklamen.\n\nHvis du ikke vil se denne reklamen kan du alltids deaktivere wago.io som leverandør i fanen for alternativer.",
       "TITLE": "Hvorfor ser jeg denne reklamen?"
     }
   },
@@ -148,34 +148,34 @@
     "ADDON_STATE": {
       "IGNORED": "Ignorert",
       "INSTALL": "Installer",
-      "PENDING": "Pending",
-      "UNAVAILABLE": "Unavailable",
-      "UNAVAILABLE_TOOLTIP": "This author or provider has made this addon unavailable",
+      "PENDING": "Venter",
+      "UNAVAILABLE": "Utilgjengelig",
+      "UNAVAILABLE_TOOLTIP": "Denne skaperen eller leverandøren har gjort denne utvidelsen utilgjengelig",
       "UNINSTALL": "Avinstaller",
-      "UNKNOWN": "",
+      "UNKNOWN": "Ukjent",
       "UPDATE": "Oppdater",
       "UPTODATE": "Oppdatert",
-      "WARNING": "Warning"
+      "WARNING": "Advarsel"
     },
     "ADDON_STATUS": {
       "BACKINGUP": "Sikkerhetskopierer",
       "COMPLETE": "Installert",
-      "DOWNLOADING": "Laster Ned",
-      "ERROR": "Error",
+      "DOWNLOADING": "Laster ned",
+      "ERROR": "Feil",
       "INSTALLING": "Installerer",
       "PENDING": "Venter",
       "UNINSTALLING": "Avinstallerer",
       "UPDATING": "Oppdaterer..."
     },
     "ADDON_WARNING": {
-      "GENERIC_DESCRIPTION": "We have detected an issue with this addon. We are no longer able to update this addon or provide details.",
-      "GENERIC_TOOLTIP": "We have detected an issue with this addon",
-      "MISSING_ON_PROVIDER_DESCRIPTION": "This addon appears to have been removed by either the author or the addon provider.<br>We are no longer able to update this addon or provide details.",
-      "MISSING_ON_PROVIDER_TOOLTIP": "This addon appears to have been removed by the provider",
-      "NO_PROVIDER_FILES_DESCRIPTION": "{providerName} properly returned this addon, however, it did not have any files matching this game version.<br>Once there is an update matching this game version this warning should go away.",
-      "NO_PROVIDER_FILES_TOOLTIP": "{providerName} did not have any matching game version files",
-      "TOC_NAME_MISMATCH_DESCRIPTION": "This addon's folder name did not match with the expected toc file, you may experience issues with this addon in-game.",
-      "TOC_NAME_MISMATCH_TOOLTIP": "This addon's folder does not match the toc"
+      "GENERIC_DESCRIPTION": "Vi har støtt på et problem med denne utvidelsen. Vi kan ikke lenger oppdatere denne utvidelsen eller tilby detaljer.",
+      "GENERIC_TOOLTIP": "Vi har støtt på et problem med denne utvidelsen",
+      "MISSING_ON_PROVIDER_DESCRIPTION": "Denne utvidelsen ser ut til å ha blitt fjernet av enten skaperen eller utvidelsesleverandøren.<br>Vi kan ikke lenger oppdatere denne utvidelsen eller gi detaljer.",
+      "MISSING_ON_PROVIDER_TOOLTIP": "Denne utvidelsen ser ut til å ha blitt fjernet av leverandøren",
+      "NO_PROVIDER_FILES_DESCRIPTION": "{providerName} returnerte denne utvidelsen på riktig måte, men det var ingen filer som samsvarte med denne spillversjonen.<br>Når det er en oppdatering som samsvarer med denne spillversjonen bør denne advarselen forsvinne.",
+      "NO_PROVIDER_FILES_TOOLTIP": "{providerName} hadde ingen samsvarende spillversjonsfiler",
+      "TOC_NAME_MISMATCH_DESCRIPTION": "Mappenavnet til denne utvidelsen samsvarte ikke med den forventede TOC-filen. Du kan oppleve problemer med denne utvidelsen i spillet.",
+      "TOC_NAME_MISMATCH_TOOLTIP": "Mappen til denne utvidelsen samsvarer ikke med TOC-filen"
     },
     "CLIENT_TYPES": {
       "BETA": "Dragonflight Beta",
@@ -191,50 +191,50 @@
       "DAYS_AGO": "{count} {count, plural, one{dag} other{dager}} siden",
       "HOURS_AGO": "{count} {count, plural, one{time} other{timer}} siden",
       "JUST_NOW": "Akkurat nå",
-      "MONTHS_AGO": "{count} {count, plural, one{month} other{months}} ago",
-      "YEARS_AGO": "{count} {count, plural, one{year} other{years}} ago",
+      "MONTHS_AGO": "{count} {count, plural, one{måned} other{måneder}} siden",
+      "YEARS_AGO": "{count} år siden",
       "YESTERDAY": "I går"
     },
     "DEPENDENCY": {
-      "TOOLTIP": "{dependencyCount} required {dependencyCount, plural, one{dependency} other{dependencies}}"
+      "TOOLTIP": "{dependencyCount} {dependencyCount, plural, one{avhengighet} other{avhengigheter}} påkreves"
     },
     "DOWNLOAD_COUNT": {
       "e+0": "{count}",
       "e+1": "{count}",
       "e+2": "{count}",
-      "e+3": "{count} thousand",
-      "e+4": "{count} thousand",
-      "e+5": "{count} thousand",
-      "e+6": "{count} million",
-      "e+7": "{count} million",
-      "e+8": "{count} million",
-      "e+9": "{count} billion"
+      "e+3": "{count} tusen",
+      "e+4": "{count} tusen",
+      "e+5": "{count} tusen",
+      "e+6": "{count} {count, plural, =1{million} other{millioner}}",
+      "e+7": "{count} millioner",
+      "e+8": "{count} millioner",
+      "e+9": "{count} {count, plural, =1{milliard} other{milliarder}}"
     },
     "ENUM": {
       "ADDON_CHANNEL_TYPE": {
-        "ALPHA": "Alpha",
+        "ALPHA": "Alfa",
         "BETA": "Beta",
-        "STABLE": "Stable"
+        "STABLE": "Stabil"
       }
     },
     "ERRORS": {
-      "ACCOUNT_PUSH_TOGGLE_FAILED_ERROR": "Failed to toggle instant updates for your account. Please try again later, or reach out on Discord.",
-      "ADDON_INSTALL_ERROR": "Failed to install addon, {addonName}. Please try again later.",
-      "ADDON_SCAN_ERROR": "An error occurred matching your addon folders with {providerName}, please try again later.",
-      "ADDON_SYNC_ERROR": "An error occurred checking for updates from: {providerName}",
-      "ADDON_SYNC_FULL_ERROR": "[{installationName}]: An error occurred checking for updates to {addonName} from {providerName}, please try again later.",
-      "CHANGE_PROVIDER_ERROR": "Failed to change provider for {addonName} to {providerName}",
-      "GITHUB_LIMIT_ERROR": "You have reached your GitHub API limit of {max} requests.\nPlease wait until {reset} and try again.",
-      "GITHUB_REPOSITORY_FETCH_ERROR": "Failed to check updates for {addonName}.\nPlease verify that the repository is correct or set this addon to be ignored."
+      "ACCOUNT_PUSH_TOGGLE_FAILED_ERROR": "Kunne ikke slå på umiddelbare oppdateringer for kontoen din. Vennligst prøv igjen senere eller ta kontakt med oss på Discord.",
+      "ADDON_INSTALL_ERROR": "Utvidelsen '{addonName}' kunne ikke installeres. Vennligst prøv igjen senere.",
+      "ADDON_SCAN_ERROR": "Det oppstod en feil når vi skulle matche mappene til utvidelsen med {providerName}. Vennligst prøv igjen senere.",
+      "ADDON_SYNC_ERROR": "Det oppstod en feil under søk etter oppdateringer fra {providerName}. Vennligst prøv igjen senere.",
+      "ADDON_SYNC_FULL_ERROR": "[{installationName}]: Det oppstod en feil under søk etter oppdateringer til '{addonName}' fra {providerName}. Vennligst prøv igjen senere.",
+      "CHANGE_PROVIDER_ERROR": "Bytte av leverandør av '{addonName}' over til {providerName} mislyktes.",
+      "GITHUB_LIMIT_ERROR": "Du har nådd API-grensen til GitHub på {max} forespørsler.\nVent til {reset} og prøv igjen.",
+      "GITHUB_REPOSITORY_FETCH_ERROR": "Kunne ikke sjekke etter oppdateringer for {addonName}. Vennligst verifiser at repoet er korrekt, eller sett denne utvidelsen til å være 'Ignorert'"
     },
     "PROGRESS_SPINNER": {
       "LOADING": "Laster..."
     },
-    "PROVIDER_ERROR": "Error contacting {providerName}",
+    "PROVIDER_ERROR": "Kunne ikke koble til {providerName}",
     "SEARCH": {
-      "NO_ADDONS": "No addons found"
+      "NO_ADDONS": "Ingen utvidelser funnet"
     },
-    "WOW_EXE_SELECTION_NAME": "WoW Executable"
+    "WOW_EXE_SELECTION_NAME": "WoW App (kjørbar)"
   },
   "DIALOGS": {
     "ADDON_DETAILS": {
