@@ -238,102 +238,102 @@
   },
   "DIALOGS": {
     "ADDON_DETAILS": {
-      "ADDON_ID_PREFIX": "Addon ID:",
+      "ADDON_ID_PREFIX": "Utvidelsens ID:",
       "BY_AUTHOR": "Av {authorName}",
-      "CHANGELOG_TAB": "Changelog",
-      "COPY_ADDON_ID_SNACKBAR": "Addon ID copied to clipboard",
-      "COPY_ADDON_ID_TOOLTIP": "Copy addon ID to clipboard",
-      "DEPENDENCY_TEXT": "This addon has {dependencyCount} required {dependencyCount, plural, one{dependency} other{dependencies}}",
-      "DESCRIPTION_NOT_FOUND": "No description found",
-      "DESCRIPTION_TAB": "Description",
-      "FUNDING_LINK_TITLE": "Support this author",
-      "IMAGES_TAB": "Previews",
-      "MISSING_DEPENDENCIES": "Missing dependencies",
-      "NO_CHANGELOG_TEXT": "No changelog available",
+      "CHANGELOG_TAB": "Endringslogg",
+      "COPY_ADDON_ID_SNACKBAR": "Utvidelsens ID kopiert til utklippstavlen",
+      "COPY_ADDON_ID_TOOLTIP": "Kopier utvidelsens ID til utklippstavlen",
+      "DEPENDENCY_TEXT": "Denne utvidelsen har {dependencyCount} {dependencyCount, plural, one{nødvendig} other{nødvendige}} {dependencyCount, plural, one{avhengighet} other{avhengigheter}}",
+      "DESCRIPTION_NOT_FOUND": "Ingen beskrivelse funnet",
+      "DESCRIPTION_TAB": "Beskrivelse",
+      "FUNDING_LINK_TITLE": "Støtt denne skaperen",
+      "IMAGES_TAB": "Forhåndsvisning",
+      "MISSING_DEPENDENCIES": "Manglende avhengigheter",
+      "NO_CHANGELOG_TEXT": "Ingen endringslogg tilgjengelig",
       "VIEW_IN_BROWSER_BUTTON": "Se i nettleser",
-      "VIEW_ON_PROVIDER_PREFIX": "View on"
+      "VIEW_ON_PROVIDER_PREFIX": "Se på"
     },
     "ALERT": {
-      "ERROR_TITLE": "Error",
-      "POSITIVE_BUTTON": "Okey"
+      "ERROR_TITLE": "Feil",
+      "POSITIVE_BUTTON": "OK"
     },
     "CONFIRM": {
       "NEGATIVE_BUTTON": "Nei",
       "POSITIVE_BUTTON": "Ja"
     },
     "CURSE_MIGRATION": {
-      "MESSAGE": "The CurseForge API has been shutdown so WowUp can no longer fetch addon information from it.<br/>Unfortunately, this means that the CurseForge provider has been removed and your addons from CurseForge will no longer be updated.<br/>It is recommended that you perform a re-scan in order to see what addons can be found on other providers.<br/>The Re-Scan process may take a while.<br/><a appExternalLink href=\"https://wowup.io/guide/wowup/curseforge-migration\">Read more here.</a>",
-      "NEGATIVE_BUTTON": "Manually Re-Scan",
-      "POSITIVE_BUTTON": "Automatically Re-Scan",
-      "RE_SCAN_ERROR": "The automatic Re-Scan failed, please try again manually.",
-      "RE_SCAN_SUCCESS": "The automatic Re-Scan has finished you're ready to go.",
-      "TITLE": "CurseForge Migration"
+      "MESSAGE": "CurseForge sitt API har blitt stengt, så WowUp kan ikke lenger hente informasjon om utvidelser fra det.<br/>Dessverre betyr dette at CurseForge-leverandøren er fjernet, og utvidelsene dine fra CurseForge vil ikke lenger oppdateres.<br/>Det anbefales at du utfører en ny skann for å se hvilke utvidelser som finnes hos andre leverandører.<br/>Å skanne på nytt kan ta en stund.<br/><a appExternalLink href=\"https://wowup.io/guide/wowup/curseforge-migration\">Les mer her.</a>",
+      "NEGATIVE_BUTTON": "Manuelt skann på nytt",
+      "POSITIVE_BUTTON": "Automatisk skann på nytt",
+      "RE_SCAN_ERROR": "Den automatiske skannen feilet, vennligst prøv på nytt med en manuell skann.",
+      "RE_SCAN_SUCCESS": "Den automatiske skannen er ferdig, og du kan fortsette videre.",
+      "TITLE": "CurseForge-migrasjon"
     },
     "INSTALL_FROM_PROTOCOL": {
-      "ADDON_INSTALLED": "Addon is installed!",
-      "ADDON_INSTALLING": "Installing addon",
-      "CANCEL_BUTTON": "Close",
+      "ADDON_INSTALLED": "Utvidelsen er installert!",
+      "ADDON_INSTALLING": "Installerer utvidelse",
+      "CANCEL_BUTTON": "Lukk",
       "ERRORS": {
-        "ADDON_NOT_FOUND": "No addon was found for the protocol: {protocol}",
-        "GENERIC": "Error fetching data for protocol: {protocol}",
-        "NO_VALID_WOW_INSTALLATIONS": "No WoW client installed for protocol: {protocol}"
+        "ADDON_NOT_FOUND": "Ingen utvidelse ble funnet for protokollen '{protocol}'",
+        "GENERIC": "Feil ved henting av data for protokoll '{protocol}'",
+        "NO_VALID_WOW_INSTALLATIONS": "Ingen WoW-klient installert for protokollen '{protocol}'"
       },
-      "INSTALL_BUTTON": "Install",
-      "TITLE": "Install Addon From {providerName}"
+      "INSTALL_BUTTON": "Installer",
+      "TITLE": "Installer utvidelse fra {providerName}"
     },
     "INSTALL_FROM_URL": {
       "ADDON_URL_INPUT_LABEL": "Utvidelsens URL",
-      "ADDON_URL_INPUT_PLACEHOLDER": "F.Eks. GitHub eller WowInterface URL",
+      "ADDON_URL_INPUT_PLACEHOLDER": "F.eks. GitHub- eller WowInterface-URL",
       "CLOSE_BUTTON": "Lukk",
       "DESCRIPTION": "Hvis du vil installere en utvidelse direkte fra en URL kan du lime den inn i feltet nedenfor.",
-      "DOWNLOAD_COUNT": "{textCount} {count, plural, one{download} other{downloads}} on {provider}",
+      "DOWNLOAD_COUNT": "{textCount} {count, plural, one{nedlasting} other{nedlastinger}} på {provider}",
       "ERROR": {
-        "ASSET_NOT_FOUND": "No asset was found to download {message}.\n\nA valid zip file is required to be in the release in order for WowUp to download it.",
-        "BURNING_CRUSADE_ASSET_NOT_FOUND": "No asset was found to download from {message}.\n\nA valid zip file ending with '-bc' is required in order for WowUp to download it.",
-        "CLASSIC_ASSET_NOT_FOUND": "No asset was found to download from {message}.\n\nA valid zip file ending with '-classic' is required in order for WowUp to download it.",
-        "FAILED_TO_CONNECT": "Cannot connect to API, please wait a bit and try again.",
-        "INSTALL_FAILED": "Something went wrong when trying to install the addon, please try again.\n\nIf this message keeps showing up, you can get help on Discord in the #wowup-support channel.",
-        "INVALID_URL": "The given value is not a valid URL. Examples of valid addon URLs are:\n\t- https://github.com/WowUp/WowUp.Addon\n\t- https://www.wowinterface.com/downloads/info25610-8.3-014.html\n\t- https://www.curseforge.com/wow/addons/altoholic",
-        "NO_ADDON_FOUND": "No addon was found, make sure your URL is pointing to the correct page.\n\nWhen installing from github, please make sure the repository has a release tag with a zip archive containing the addon.",
-        "NO_RELEASE_FOUND": "No releases were found for {message}.\n\nValid release with zip file assets are required for WowUp to download it.",
-        "NO_SEARCH_RESULTS": "No search results were found.",
-        "TITLE": "Addon Installation Failed",
-        "WRATH_ASSET_NOT_FOUND": "No asset was found to download from {message}.\n\nA valid zip file ending with '-wrath' is required in order for WowUp to download it."
+        "ASSET_NOT_FOUND": "Ingen ressurs ble funnet for å laste ned {message}.\n\nEn gyldig ZIP-fil må inkluderes med utgivelsen for at WowUp skal kunne laste den ned.",
+        "BURNING_CRUSADE_ASSET_NOT_FOUND": "Ingen ressurs ble funnet for å laste ned fra {message}.\n\nEn gyldig ZIP-fil som slutter på '-bc' må inkluderes i utgivelsen for at WowUp skal kunne laste den ned.",
+        "CLASSIC_ASSET_NOT_FOUND": "Ingen ressurs ble funnet for å laste ned fra {message}.\n\nEn gyldig ZIP-fil som slutter på '-classic' må inkluderes i utgivelsen for at WowUp skal kunne laste den ned.",
+        "FAILED_TO_CONNECT": "Kunne ikke koble til API-et. Vent litt og prøv igjen.",
+        "INSTALL_FAILED": "Noe gikk galt under forsøket på å installere utvidelsen, vennligst prøv igjen.\n\nHvis du får denne meldingen gjentatte ganger kan du be om hjelp på vår Discord i kanalen #wowup-support",
+        "INVALID_URL": "Den angitte nettadressen er ugyldig. Eksempler på gyldige nettadresser er:\n\t- https://github.com/WowUp/WowUp.Addon\n\t- https://www.wowinterface.com/downloads/info25610-8.3-014.html\n\t- https://www.curseforge.com/wow/addons/altoholic",
+        "NO_ADDON_FOUND": "Ingen utvidelser ble funnet. Sørg for at URL-en går til riktig nettsted.\n\nHvis du prøver å installere en utvidelse fra GitHub, sørg for at repoet har Release-Tags med et ZIP-arkiv som inneholder utvidelsen.",
+        "NO_RELEASE_FOUND": "Ingen utgivelse ble funnet for {message}.\n\nEn gyldig utgivelse med ZIP-fil-ressurser kreves for at WowUp skal kunne laste den ned.",
+        "NO_SEARCH_RESULTS": "Ingen søkeresultater ble funnet",
+        "TITLE": "Installasjon av utvidelse feilet",
+        "WRATH_ASSET_NOT_FOUND": "Ingen ressurs ble funnet å laste ned fra  {message}.\n\nEn gyldig ZIP-fil som slutter med '-wrath' kreves for at WowUp skal kunne laste den ned."
       },
-      "IMPORT_ASSET_WARNING": "We were unable to verify if the latest release of this addon is compatible with your selected client.\n\nBut we did find a zip file \"{zipName}\".\n\nInstall at your own risk.",
+      "IMPORT_ASSET_WARNING": "Vi kunne ikke verifisere om den nyeste versjonen av denne utvidelsen er kompatibel med den valgte klienten.\n\nMen vi fant en ZIP-fil \"{zipName}\".\n\nInstaller på egen risiko.",
       "IMPORT_BUTTON": "Importer",
-      "IMPORT_WARNING_TITLE": "Addon Import Warning",
+      "IMPORT_WARNING_TITLE": "Advarsel om utvidelsesimport",
       "INSTALL_BUTTON": "Installer",
       "INSTALL_SUCCESS_LABEL": "Installert!",
-      "SUPPORTED_SOURCES": "Støtter WowInterface og GitHub*",
-      "TITLE": "Installer Utvidelse fra URL"
+      "SUPPORTED_SOURCES": "Støtter WowInterface og GitHub",
+      "TITLE": "Installer utvidelse fra URL"
     },
     "NEW_VERSION_POPUP": {
-      "TITLE": "Patch Notes {versionNumber}"
+      "TITLE": "Nytt i versjon {versionNumber}"
     },
     "PERMISSIONS": {
-      "MESSAGE": "Before we get started we need to setup a few permissions for the app.",
-      "POSITIVE_BUTTON": "Confirm",
+      "MESSAGE": "Før vi starter må vi sette opp noen tillatelser for appen.",
+      "POSITIVE_BUTTON": "Bekreft",
       "TELEMETRY": {
-        "DESCRIPTION": "Help improve WowUp by sending anonymous app install data and/or errors?",
-        "TOGGLE_LABEL": "Allow Telemetry"
+        "DESCRIPTION": "Vil du bidra til å forbedre WowUp ved å sende anonyme installasjonsdata og/eller feil?",
+        "TOGGLE_LABEL": "Tillat telemetri"
       },
-      "TITLE": "WowUp Permissions Setup",
+      "TITLE": "Sett opp tillatelser for WowUp",
       "WAGO": {
-        "DESCRIPTION": "Enabled the Wago.io addon provider, this will display an ad required to use their service.\nThe ads directly benefit the authors of your favorite addons!",
-        "TOGGLE_LABEL": "Enable Wago.io Provider"
+        "DESCRIPTION": "Hvis utvidelsesleverandøren Wago.io er aktivert, vil du se en annonse som er nødvendig for å bruke tjenestene deres.\nAnnonsene er direkte til fordel for skaperene av favorittutvidelsene dine!",
+        "TOGGLE_LABEL": "Aktiver leverandøren Wago.io"
       }
     },
     "SELECT_INSTALLATION": {
-      "INVALID_INSTALLATION_PATH": "This does not appear to be a valid World of Warcraft application:\n{selectedPath}"
+      "INVALID_INSTALLATION_PATH": "Dette ser ikke ut til å være en gyldig World of Warcraft-applikasjon:\n{selectedPath}"
     },
     "TELEMETRY": {
-      "DESCRIPTION": "Hjelp meg med å forbedre WowUp ved å sende anyonyme data og feilmeldinger?",
-      "NEGATIVE_BUTTON": "Nei Takk!",
+      "DESCRIPTION": "Vil du bidra til å forbedre WowUp ved å sende anonyme installasjonsdata og/eller feil?",
+      "NEGATIVE_BUTTON": "Nei takk",
       "POSITIVE_BUTTON": "Selvfølgelig!",
-      "TITLE": "WowUp Telemetri"
+      "TITLE": "WowUp-telemetri"
     },
-    "TRUST_DOMAIN_CHECKBOX": "Trust this domain and do not ask me in the future"
+    "TRUST_DOMAIN_CHECKBOX": "Stol på dette domenet og ikke spør meg igjen i fremtiden"
   },
   "PAGES": {
     "ABOUT": {
