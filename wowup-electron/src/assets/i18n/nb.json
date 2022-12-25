@@ -27,7 +27,7 @@
     "INVALID_CLIENT_TYPE": "Importstrengen samsvarer ikke med den valgte klienttypen",
     "NO_CHANGE_BADGE_TOOLTIP": "Du har allerede denne utvidelsen installert",
     "PASTE_BUTTON": "Lim inn",
-    "PROVIDER_MISMATCH": "Leverandør av utvidelsen samsvarer ikke",
+    "PROVIDER_MISMATCH": "Utvidelsesleverandør samsvarer ikke",
     "RESET_BUTTON": "Tilbakestill",
     "VERSION_MISMATCH": "Versjonene samsvarer ikke"
   },
