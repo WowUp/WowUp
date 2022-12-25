@@ -32,10 +32,10 @@
     "VERSION_MISMATCH": "Versjonene samsvarer ikke"
   },
   "ADS": {
-    "AD_EXPLAINER_BUTTON": "Why am I seeing this ad?",
+    "AD_EXPLAINER_BUTTON": "Hvorfor ser jeg denne reklamen?",
     "AD_EXPLAINER_DIALOG": {
-      "MESSAGE": "In order to use <a appExternalLink href=\"https://addons.wago.io/\">wago.io</a> as an addon provider and support their authors for their hard work on your favorite addons we are required to show this advertisement.\n\nIf you do not want to see this ad, you can always disable wago.io as a provider in the options tab.",
-      "TITLE": "Why am I seeing this ad?"
+      "MESSAGE": "For å kunne bruke <a appExternalLink href=\"https://addons.wago.io/\">wago.io</a> som leverandør av utvidelser og støtte forfatterene deres for deres harde arbeid med favorittutvidelsene dine, er vi nødt til å vise denne reklamen.\n\nHvis du ikke vil se denne reklamen kan du alltids deaktivere wago.io som leverandør i fanen for alternativer.",
+      "TITLE": "Hvorfor ser jeg denne reklamen?"
     }
   },
   "APP": {
