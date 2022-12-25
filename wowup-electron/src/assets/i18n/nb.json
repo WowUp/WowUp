@@ -41,78 +41,78 @@
   "APP": {
     "APP_MENU": {
       "EDIT": {
-        "COPY": "Copy",
-        "CUT": "Cut",
-        "LABEL": "Edit",
-        "PASTE": "Paste",
-        "REDO": "Redo",
-        "SELECT_ALL": "SelectAll",
-        "UNDO": "Undo"
+        "COPY": "Kopier",
+        "CUT": "Klipp ut",
+        "LABEL": "Rediger",
+        "PASTE": "Lim inn",
+        "REDO": "Gjenta",
+        "SELECT_ALL": "Velg alt",
+        "UNDO": "Angre"
       },
-      "QUIT": "Quit",
+      "QUIT": "Avslutt",
       "VIEW": {
-        "FORCE_RELOAD": "Force Reload",
-        "LABEL": "View",
-        "RELOAD": "Reload",
-        "TOGGLE_DEV_TOOLS": "Toggle Dev Tools",
-        "TOGGLE_FULL_SCREEN": "Toggle Full Screen",
-        "ZOOM_IN": "Zoom In",
-        "ZOOM_OUT": "Zoom Out",
-        "ZOOM_RESET": "Reset Zoom"
+        "FORCE_RELOAD": "Tving omlasting",
+        "LABEL": "Vis",
+        "RELOAD": "Last på nytt",
+        "TOGGLE_DEV_TOOLS": "Slå på/av utviklerverktøy",
+        "TOGGLE_FULL_SCREEN": "Slå på/av fullskjerm",
+        "ZOOM_IN": "Zoom inn",
+        "ZOOM_OUT": "Zoom ut",
+        "ZOOM_RESET": "Tilbakestill zoom"
       },
       "WINDOW": {
-        "CLOSE": "Close",
-        "LABEL": "Window"
+        "CLOSE": "Lukk",
+        "LABEL": "Vindu"
       }
     },
-    "AUTO_UPDATE_FEW_NOTIFICATION_BODY": "Automatically updated\r\n{addonNames}",
-    "AUTO_UPDATE_NOTIFICATION_BODY": "{count} {count, plural, =1{utvidelse} other{utvidelse}} ble automatisk oppdatert.",
-    "AUTO_UPDATE_NOTIFICATION_TITLE": "Automatiske Oppdateringer",
-    "CLOSE_FULLSCREEN_BUTTON_TOOLTIP": "Leave full screen mode",
+    "AUTO_UPDATE_FEW_NOTIFICATION_BODY": "Automatisk oppdatert\r\n{addonNames}",
+    "AUTO_UPDATE_NOTIFICATION_BODY": "{count} {count, plural, =1{utvidelse} other{utvidelser}} ble automatisk oppdatert.",
+    "AUTO_UPDATE_NOTIFICATION_TITLE": "Automatiske oppdateringer",
+    "CLOSE_FULLSCREEN_BUTTON_TOOLTIP": "Forlat fullskjermmodus",
     "FULLSCREEN_SNACKBAR": {
-      "MAC": "Press ^⌘F to exit full screen",
-      "WINDOWS": "Press F11 to exit full screen"
+      "MAC": "Trykk ^⌘F for å forlate fullskjermmodus",
+      "WINDOWS": "Trykk F11 for å forlate fullskjermmodus"
     },
     "LINK_NAVIGATION": {
-      "MESSAGE": "{url}\n\nAre you sure you want to open this 3rd party page in your default browser?",
-      "TITLE": "You are about to leave WowUp"
+      "MESSAGE": "{url}\n\nEr du sikker på at du vil åpne denne tredjepartssiden i standardnettleseren din?",
+      "TITLE": "Du er i ferd med å forlate WowUp"
     },
     "PROVIDERS": {
-      "UNKNOWN": "Unknown"
+      "UNKNOWN": "Ukjent"
     },
     "STATUS_TEXT": {
-      "ADDON_SCAN_COMPLETED": "Addon scan completed...",
-      "ADDON_SCAN_STARTED": "Addon scan started...",
-      "ADDON_SCAN_UPDATE": "Scanning {count} folders..."
+      "ADDON_SCAN_COMPLETED": "Skanning av utvidelser er fullført...",
+      "ADDON_SCAN_STARTED": "Skanning av utvidelser er startet...",
+      "ADDON_SCAN_UPDATE": "Skanner {count} mapper..."
     },
     "SYSTEM_TRAY": {
-      "CHECK_UPDATE": "Check for Updates...",
-      "QUIT_ACTION": "Quit",
-      "SHOW_ACTION": "Show"
+      "CHECK_UPDATE": "Se etter oppdateringer...",
+      "QUIT_ACTION": "Avslutt",
+      "SHOW_ACTION": "Åpne"
     },
     "THEME": {
-      "ALLIANCE": "Alliance",
-      "DEFAULT": "Default",
-      "GROUP_DARK": "Dark",
-      "GROUP_LIGHT": "Light",
+      "ALLIANCE": "Alliansen",
+      "DEFAULT": "Standard",
+      "GROUP_DARK": "Mørk",
+      "GROUP_LIGHT": "Lys",
       "HORDE": "Horde"
     },
     "WINDOW_TITLE": "WowUp.io",
-    "WINDOW_TITLE_FULLSCREEN": "WowUp.io - Full Screen",
+    "WINDOW_TITLE_FULLSCREEN": "WowUp.io - Fullskjerm",
     "WOWUP_UPDATE": {
-      "CHECKING_FOR_UPDATE": "Checking for update",
+      "CHECKING_FOR_UPDATE": "Ser etter oppdateringer",
       "DOWNLOADED_TOOLTIP": "Installer oppdatering til WowUp",
-      "DOWNLOADING_UPDATE": "Downloading update",
+      "DOWNLOADING_UPDATE": "Laster ned oppdatering",
       "INSTALL_MESSAGE": "Vil du restarte WowUp for å installere oppdateringen?",
       "INSTALL_TITLE": "WowUp-oppdatering er klar",
-      "NOT_AVAILABLE": "Latest version of WowUp is already installed",
-      "PORTABLE_DOWNLOAD_MESSAGE": "Do you want to manually download the latest portable version?\n\nYou will need to close the app manually and copy over the new version.",
-      "PORTABLE_DOWNLOAD_TITLE": "Manual Download Required",
-      "SNACKBAR_ACTION": "Oppdater & Restart",
-      "SNACKBAR_TEXT": "en ny versjon av WowUp er tilgjengelig",
-      "TOOLTIP": "WowUp oppdatering tilgjengelig",
-      "UPDATE_AVAILABLE": "Starting download",
-      "UPDATE_ERROR": "Failed to get WowUp update"
+      "NOT_AVAILABLE": "Den nyeste versjonen av WowUp er allerede installert",
+      "PORTABLE_DOWNLOAD_MESSAGE": "Vil du laste ned den nyeste portable versjonen manuelt?\n\nDu må lukke programmet manuelt og kopiere den nye versjonen over den gamle.",
+      "PORTABLE_DOWNLOAD_TITLE": "Manuell nedlasting kreves",
+      "SNACKBAR_ACTION": "Oppdater og start på nytt",
+      "SNACKBAR_TEXT": "En ny versjon av WowUp er tilgjengelig",
+      "TOOLTIP": "WowUp-oppdatering tilgjengelig",
+      "UPDATE_AVAILABLE": "Nedlastingen starter",
+      "UPDATE_ERROR": "Kunne ikke hente WowUp-oppdatering"
     }
   },
   "COMMON": {
