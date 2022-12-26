@@ -170,8 +170,8 @@
     "ADDON_WARNING": {
       "GENERIC_DESCRIPTION": "Vi har støtt på et problem med denne utvidelsen. Vi kan ikke lenger oppdatere denne utvidelsen eller gi detaljer om den.",
       "GENERIC_TOOLTIP": "Vi har støtt på et problem med denne utvidelsen",
-      "MISSING_ON_PROVIDER_DESCRIPTION": "Denne utvidelsen ser ut til å ha blitt fjernet av enten forfatteren eller utvidelsesleverandøren.<br>Vi kan ikke lenger oppdatere denne utvidelsen eller gi detaljer om den.",
-      "MISSING_ON_PROVIDER_TOOLTIP": "Denne utvidelsen ser ut til å ha blitt fjernet av leverandøren",
+      "MISSING_ON_PROVIDER_DESCRIPTION": "{providerName} returnerte ikke utvidelsen da vi ba om den.<br>Vi kan ikke lenger oppdatere denne utvidelsen eller gi detaljer før {providerName} fikser det.",
+      "MISSING_ON_PROVIDER_TOOLTIP": "{providerName} returnerer ikke denne utvidelsen som forventet",
       "NO_PROVIDER_FILES_DESCRIPTION": "{providerName} returnerte denne utvidelsen på korrekt måte, men hadde ingen filer som samsvarte med den gjeldende spillversjonen.<br>Når det er en oppdatering som samsvarer med denne spillversjonen vil denne advarselen forsvinne.",
       "NO_PROVIDER_FILES_TOOLTIP": "{providerName} hadde ingen filer som samsvarer med denne spillversjonen",
       "TOC_NAME_MISMATCH_DESCRIPTION": "Mappenavnet til denne utvidelsen samsvarte ikke med navnet som er registrert i TOC-filen. Du kan oppleve problemer med denne utvidelsen i spillet.",
@@ -188,18 +188,18 @@
       "RETAILPTR": "Public Test Realm"
     },
     "DATES": {
-      "DAYS_AGO": "{count} {count, plural, one{dag} other{dager}} siden",
-      "HOURS_AGO": "{count} {count, plural, one{time} other{timer}} siden",
+      "DAYS_AGO": "{count} {count, plural, =1{dag} other{dager}} siden",
+      "HOURS_AGO": "{count} {count, plural, =1{time} other{timer}} siden",
       "JUST_NOW": "Akkurat nå",
-      "MONTHS_AGO": "{count} {count, plural, one{måned} other{måneder}} siden",
+      "MONTHS_AGO": "{count} {count, plural, =1{måned} other{måneder}} siden",
       "YEARS_AGO": "{count} år siden",
       "YESTERDAY": "I går"
     },
     "DEPENDENCY": {
-      "TOOLTIP": "{dependencyCount} {dependencyCount, plural, one{avhengighet} other{avhengigheter}} påkreves"
+      "TOOLTIP": "{dependencyCount} {dependencyCount, plural, =1{avhengighet} other{avhengigheter}} påkreves"
     },
     "DOWNLOAD_COUNT": {
-      "e+0": "{count}",
+      "e+0": "Få",
       "e+1": "{count}",
       "e+2": "{count}",
       "e+3": "{count} tusen",
@@ -243,7 +243,7 @@
       "CHANGELOG_TAB": "Endringslogg",
       "COPY_ADDON_ID_SNACKBAR": "Utvidelsens ID kopiert til utklippstavlen",
       "COPY_ADDON_ID_TOOLTIP": "Kopier utvidelsens ID til utklippstavlen",
-      "DEPENDENCY_TEXT": "Denne utvidelsen har {dependencyCount} {dependencyCount, plural, one{nødvendig} other{nødvendige}} {dependencyCount, plural, one{avhengighet} other{avhengigheter}}",
+      "DEPENDENCY_TEXT": "Denne utvidelsen har {dependencyCount} {dependencyCount, plural, =1{nødvendig} other{nødvendige}} {dependencyCount, plural, =1{avhengighet} other{avhengigheter}}",
       "DESCRIPTION_NOT_FOUND": "Ingen beskrivelse funnet",
       "DESCRIPTION_TAB": "Beskrivelse",
       "FUNDING_LINK_TITLE": "Støtt denne forfatteren",
@@ -286,7 +286,7 @@
       "ADDON_URL_INPUT_PLACEHOLDER": "F.eks. GitHub- eller WowInterface-URL",
       "CLOSE_BUTTON": "Lukk",
       "DESCRIPTION": "Hvis du vil installere en utvidelse direkte fra en URL kan du lime den inn i feltet nedenfor.",
-      "DOWNLOAD_COUNT": "{textCount} {count, plural, one{nedlasting} other{nedlastinger}} på {provider}",
+      "DOWNLOAD_COUNT": "{textCount} {count, plural, =1{nedlasting} other{nedlastinger}} på {provider}",
       "ERROR": {
         "ASSET_NOT_FOUND": "Ingen ressurs ble funnet for å laste ned {message}.\n\nEn gyldig Zip-fil må inkluderes med utgivelsen for at WowUp skal kunne laste den ned.",
         "BURNING_CRUSADE_ASSET_NOT_FOUND": "Ingen ressurs ble funnet for å laste ned fra {message}.\n\nEn gyldig Zip-fil som slutter på '-bc' må inkluderes i utgivelsen for at WowUp skal kunne laste den ned.",
@@ -365,7 +365,7 @@
       "SEARCH_LABEL": "Søk",
       "TABLE": {
         "ADDON_COLUMN_HEADER": "Utvidelse",
-        "AUTHOR_COLUMN_HEADER": "Skaper(e)",
+        "AUTHOR_COLUMN_HEADER": "Forfatter(e)",
         "DOWNLOAD_COUNT_COLUMN_HEADER": "Nedlastinger",
         "PROVIDER_COLUMN_HEADER": "Leverandør",
         "RELEASED_AT_COLUMN_HEADER": "Utgivelsesdato",
@@ -446,7 +446,7 @@
         "ADDON_COLUMN_HEADER": "Utvidelse",
         "ADDON_INSTALL_BUTTON": "Installer",
         "ADDON_UPDATE_BUTTON": "Oppdater",
-        "AUTHOR_COLUMN_HEADER": "Skaper",
+        "AUTHOR_COLUMN_HEADER": "Forfatter",
         "AUTO_UPDATE_ICON_TOOLTIP": "Automatisk oppdatering aktivert",
         "GAME_VERSION_COLUMN_HEADER": "Spillversjon",
         "LATEST_VERSION_COLUMN_HEADER": "Siste versjon",
@@ -461,7 +461,7 @@
         "CONFIRMATION_LESS_THAN_THREE": "Er du sikker på at du vil fjerne disse {count} utvidelsene?",
         "CONFIRMATION_MORE_THAN_THREE": "Er du sikker på at du vil fjerne de {count} valgte utvidelsene?",
         "CONFIRMATION_ONE": "Er du sikker på at du vil fjerne {addonName}?",
-        "DEPENDENCY_MESSAGE": "{addonName} har {dependencyCount} {dependencyCount, plural, one{avhengighet} other{avhengigheter}}. Vil du fjerne disse også?",
+        "DEPENDENCY_MESSAGE": "{addonName} har {dependencyCount} {dependencyCount, plural, =1{avhengighet} other{avhengigheter}}. Vil du fjerne disse også?",
         "DEPENDENCY_TITLE": "Fjern utvidelsesavhengigheter?",
         "TITLE": "Avinstaller {count, plural, =1{utvidelse} other{utvidelser}}?"
       },
@@ -577,7 +577,7 @@
         "AUTO_UPDATE_LABEL": "Oppdater automatisk",
         "CANCEL_WOW_DIRECTORY_SELECT_BUTTON": "Avbryt",
         "CLEAR_INSTALL_LOCATION_DIALOG": {
-          "MESSAGE": "Er du sikker på at du vil fjerne installasjonslokasjonen for \"{location}\"? Dette vil fjerne all lagret utvidelsesinformasjon for denne klienten.\n\nDine utvidelsesmapper vil ikke bli fjernet.",
+          "MESSAGE": "Er du sikker på at du vil fjerne installasjonen på \"{location}\"? Dette vil fjerne all lagret utvidelsesinformasjon for denne klienten.\n\nDine utvidelsesmapper vil ikke bli fjernet.",
           "TITLE": "Fjern World of Warcraft installasjonslokasjon"
         },
         "CLIENT_TYPE_INPUT_HINT": "Mappen som inneholder {clientTypeName} klientmappen \"{clientFolderName}\"",
