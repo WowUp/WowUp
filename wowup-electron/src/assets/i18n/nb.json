@@ -34,7 +34,7 @@
   "ADS": {
     "AD_EXPLAINER_BUTTON": "Hvorfor ser jeg denne annonsen?",
     "AD_EXPLAINER_DIALOG": {
-      "MESSAGE": "For å kunne bruke <a appExternalLink href=\"https://addons.wago.io/\">wago.io</a> som leverandør av utvidelser, og støtte skaperene deres for deres harde arbeid med favorittutvidelsene dine, er vi nødt til å vise denne annonsen.\n\nHvis du ikke vil se denne annonsen kan du alltids deaktivere Wago som leverandør i fanen for alternativer.",
+      "MESSAGE": "For å kunne bruke <a appExternalLink href=\"https://addons.wago.io/\">wago.io</a> som leverandør av utvidelser, og støtte forfatterene deres for deres harde arbeid med favorittutvidelsene dine, er vi nødt til å vise denne annonsen.\n\nHvis du ikke vil se denne annonsen kan du alltids deaktivere Wago som leverandør i fanen for alternativer.",
       "TITLE": "Hvorfor ser jeg denne annonsen?"
     }
   },
@@ -150,7 +150,7 @@
       "INSTALL": "Installer",
       "PENDING": "Venter",
       "UNAVAILABLE": "Utilgjengelig",
-      "UNAVAILABLE_TOOLTIP": "Denne skaperen eller leverandøren har gjort denne utvidelsen utilgjengelig",
+      "UNAVAILABLE_TOOLTIP": "Denne forfatteren eller leverandøren har gjort denne utvidelsen utilgjengelig",
       "UNINSTALL": "Avinstaller",
       "UNKNOWN": "Ukjent",
       "UPDATE": "Oppdater",
@@ -170,7 +170,7 @@
     "ADDON_WARNING": {
       "GENERIC_DESCRIPTION": "Vi har støtt på et problem med denne utvidelsen. Vi kan ikke lenger oppdatere denne utvidelsen eller gi detaljer om den.",
       "GENERIC_TOOLTIP": "Vi har støtt på et problem med denne utvidelsen",
-      "MISSING_ON_PROVIDER_DESCRIPTION": "Denne utvidelsen ser ut til å ha blitt fjernet av enten skaperen eller utvidelsesleverandøren.<br>Vi kan ikke lenger oppdatere denne utvidelsen eller gi detaljer om den.",
+      "MISSING_ON_PROVIDER_DESCRIPTION": "Denne utvidelsen ser ut til å ha blitt fjernet av enten forfatteren eller utvidelsesleverandøren.<br>Vi kan ikke lenger oppdatere denne utvidelsen eller gi detaljer om den.",
       "MISSING_ON_PROVIDER_TOOLTIP": "Denne utvidelsen ser ut til å ha blitt fjernet av leverandøren",
       "NO_PROVIDER_FILES_DESCRIPTION": "{providerName} returnerte denne utvidelsen på korrekt måte, men hadde ingen filer som samsvarte med den gjeldende spillversjonen.<br>Når det er en oppdatering som samsvarer med denne spillversjonen vil denne advarselen forsvinne.",
       "NO_PROVIDER_FILES_TOOLTIP": "{providerName} hadde ingen filer som samsvarer med denne spillversjonen",
@@ -246,7 +246,7 @@
       "DEPENDENCY_TEXT": "Denne utvidelsen har {dependencyCount} {dependencyCount, plural, one{nødvendig} other{nødvendige}} {dependencyCount, plural, one{avhengighet} other{avhengigheter}}",
       "DESCRIPTION_NOT_FOUND": "Ingen beskrivelse funnet",
       "DESCRIPTION_TAB": "Beskrivelse",
-      "FUNDING_LINK_TITLE": "Støtt denne skaperen",
+      "FUNDING_LINK_TITLE": "Støtt denne forfatteren",
       "IMAGES_TAB": "Forhåndsvisning",
       "MISSING_DEPENDENCIES": "Manglende avhengigheter",
       "NO_CHANGELOG_TEXT": "Endringslogg utilgjengelig",
@@ -320,7 +320,7 @@
       },
       "TITLE": "Sett opp tillatelser for WowUp",
       "WAGO": {
-        "DESCRIPTION": "Aktiver Wago.io som utvidelsesleverandør for å hjelpe til med å støtte skaperene av favorittutvidelsene dine! Dette vil vise et kampanjepanel som kreves for å bruke tjenesten deres.\nVed å registrere deg godtar du <a appExternalLink href=\"{termsUrl}\" >vilkårene for bruk</a> og <a appExternalLink href=\"{dataUrl}\" >Datasamtykke</a>.",
+        "DESCRIPTION": "Aktiver Wago.io som utvidelsesleverandør for å hjelpe til med å støtte forfatterene av favorittutvidelsene dine! Dette vil vise et kampanjepanel som kreves for å bruke tjenesten deres.\nVed å registrere deg godtar du <a appExternalLink href=\"{termsUrl}\" >vilkårene for bruk</a> og <a appExternalLink href=\"{dataUrl}\" >Datasamtykke</a>.",
         "TOGGLE_LABEL": "Aktiver leverandøren Wago.io"
       }
     },
@@ -416,11 +416,11 @@
       "ERROR_SNACKBAR": "Det har oppstått en feil",
       "FILTER_LABEL": "Filter",
       "FUNDING_TOOLTIP": {
-        "CUSTOM": "Støtt denne skaperen",
-        "GENERIC": "Støtt denne skaperen på {platform}",
-        "GITHUB": "Støtt denne skaperen på GitHub",
-        "PATREON": "Støtt denne skaperen på Patreon",
-        "PAYPAL": "Støtt denne skaperen på PayPal"
+        "CUSTOM": "Støtt denne forfatteren",
+        "GENERIC": "Støtt denne forfatteren på {platform}",
+        "GITHUB": "Støtt denne forfatteren på GitHub",
+        "PATREON": "Støtt denne forfatteren på Patreon",
+        "PAYPAL": "Støtt denne forfatteren på PayPal"
       },
       "IMPORT_EXPORT_ADDONS_BUTTON": "Importer/eksporter utvidelser",
       "MULTIPLE_PROVIDERS_TOOLTIP": "Denne utvidelsen har flere leverandører",
