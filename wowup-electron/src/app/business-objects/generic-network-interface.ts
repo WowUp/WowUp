@@ -15,7 +15,7 @@ export class GenericNetworkInterface implements NetworkInterface {
 
   public async postJson<T>(url: string | URL, config: PostConfig): Promise<T> {
     if (config.cache === true) {
-      const key = `${url}-${JSON.stringify(config.body).length}`;
+      const key = `${url.toString()}-${JSON.stringify(config.body).length.toString()}`;
       return await memcache.transaction(
         key,
         () => this._circuitBreaker.postJson<T>(url, config.body, config.headers, config.timeoutMs),

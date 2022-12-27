@@ -16,7 +16,6 @@ import { BehaviorSubject, combineLatest, from, fromEvent, Observable, of, Subjec
 import {
   catchError,
   debounceTime,
-  delay,
   distinctUntilChanged,
   filter,
   first,
@@ -458,10 +457,15 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
     });
 
     const elem = document.querySelector(".mat-tab-my-addons .mat-tab-body-content");
-    this._tabObserver.observe(elem!, {
-      attributes: true,
-      characterData: true,
-    });
+    if (elem === null) {
+      this._visibleSrc.next(true);
+      console.warn("visibility observer cannot start");
+    } else {
+      this._tabObserver.observe(elem, {
+        attributes: true,
+        characterData: true,
+      });
+    }
 
     this._sessionService.myAddonsCompactVersion = !this.getLatestVersionColumnVisible();
 
@@ -584,7 +588,7 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   public isForceIgnore(addon: Addon) {
-    return this._addonProviderService.isForceIgnore(addon.providerName);
+    return this._addonProviderService.isForceIgnore(addon.providerName ?? "");
   }
 
   public canReInstall(listItem: AddonViewModel): boolean {
@@ -593,12 +597,13 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
     }
 
     return (
-      listItem.addon.warningType === undefined && this._addonProviderService.canReinstall(listItem.addon.providerName)
+      listItem.addon.warningType === undefined &&
+      this._addonProviderService.canReinstall(listItem.addon.providerName ?? "")
     );
   }
 
   public canChangeChannel(addon: Addon) {
-    return this._addonProviderService.canChangeChannel(addon.providerName);
+    return this._addonProviderService.canChangeChannel(addon.providerName ?? "");
   }
 
   public filterAddons(rowData: AddonViewModel[], filterVal: string): AddonViewModel[] {

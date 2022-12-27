@@ -77,7 +77,7 @@ export class AddonProviderFactory {
       this.createRaiderIoAddonProvider(),
       this.createWowUpCompanionAddonProvider(),
       this.createWowUpAddonProvider(),
-      await this.createWagoAddonProvider(),
+      this.createWagoAddonProvider(),
       this.createTukUiAddonProvider(),
       this.createWowInterfaceAddonProvider(),
       this.createGitHubAddonProvider(),
@@ -117,8 +117,8 @@ export class AddonProviderFactory {
     this._addonProviderChangeSrc.next(provider);
   }
 
-  public async createWagoAddonProvider(): Promise<WagoAddonProvider> {
-    const wago = new WagoAddonProvider(
+  public createWagoAddonProvider(): WagoAddonProvider {
+    return new WagoAddonProvider(
       this._electronService,
       this._cachingService,
       this._warcraftService,
@@ -127,7 +127,6 @@ export class AddonProviderFactory {
       this._sensitiveStorageService,
       this._networkService
     );
-    return wago;
   }
 
   public createWowUpCompanionAddonProvider(): WowUpCompanionAddonProvider {
