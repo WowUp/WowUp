@@ -10,7 +10,6 @@ import {
   GitHubFetchReleasesError,
   GitHubFetchRepositoryError,
   GitHubLimitError,
-  SourceRemovedAddonError,
 } from "../errors";
 import { convertMarkdown } from "../utils/markdown.utlils";
 import { strictFilterBy } from "../utils/array.utils";
@@ -27,6 +26,7 @@ import {
   WowClientType,
 } from "wowup-lib-core";
 import { GitHubAsset, GitHubRelease, GitHubRepository, WowInstallation } from "wowup-lib-core/lib/models";
+import { SourceRemovedAddonError } from "wowup-lib-core/lib/errors";
 
 type MetadataFlavor = "bcc" | "classic" | "mainline" | "wrath";
 

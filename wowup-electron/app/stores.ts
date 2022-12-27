@@ -10,6 +10,7 @@ import {
   PREFERENCE_STORE_NAME,
   SENSITIVE_STORE_NAME,
 } from "../src/common/constants";
+import * as log from "electron-log";
 
 const addonStore = new Store({ name: ADDON_STORE_NAME });
 const preferenceStore = new Store({ name: PREFERENCE_STORE_NAME });
@@ -22,7 +23,7 @@ const stores: { [storeName: string]: Store } = {
 };
 
 export function getPreferenceStore(): Store {
-  return preferenceStore
+  return preferenceStore;
 }
 
 export function getAddonStore(): Store {
@@ -58,11 +59,14 @@ export function initializeStoreIpcHandlers(): void {
   ipcMain.handle(IPC_STORE_SET_OBJECT, (evt: IpcMainInvokeEvent, storeName: string, key: string, value: any): void => {
     const store = stores[storeName];
 
+    let storedVal = value.toString();
     if (typeof value === "object" || Array.isArray(value)) {
-      store?.set(key, value);
-    } else {
-      store?.set(key, value.toString());
+      storedVal = value;
     }
+
+    store?.set(key, storedVal);
+
+    return storedVal;
   });
 
   // Remove the store value for a specific key

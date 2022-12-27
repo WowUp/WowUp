@@ -4,7 +4,6 @@ import { AddonProvider, AddonProviderType } from "wowup-lib-core";
 import { GitHubAddonProvider } from "../../addon-providers/github-addon-provider";
 import { TukUiAddonProvider } from "../../addon-providers/tukui-addon-provider";
 import { WowInterfaceAddonProvider } from "../../addon-providers/wow-interface-addon-provider";
-import { WowUpAddonProvider } from "../../addon-providers/wowup-addon-provider";
 import { RaiderIoAddonProvider } from "../../addon-providers/raiderio-provider";
 import { ZipAddonProvider } from "../../addon-providers/zip-provider";
 import { WowUpCompanionAddonProvider } from "../../addon-providers/wowup-companion-addon-provider";
@@ -23,6 +22,9 @@ import { Subject } from "rxjs";
 import { PreferenceStorageService } from "../storage/preference-storage.service";
 import { SensitiveStorageService } from "../storage/sensitive-storage.service";
 import { UiMessageService } from "../ui-message/ui-message.service";
+import { WowUpAddonProvider } from "wowup-lib-core/lib/addon-providers";
+import { AppConfig } from "../../../environments/environment";
+import { GenericNetworkInterface } from "../../business-objects/generic-network-interface";
 
 @Injectable({
   providedIn: "root",
@@ -33,6 +35,8 @@ export class AddonProviderFactory {
   private _providerMap: Map<string, AddonProvider> = new Map();
 
   public readonly addonProviderChange$ = this._addonProviderChangeSrc.asObservable();
+
+  private _wowupNetworkInterface: GenericNetworkInterface;
 
   public constructor(
     private _cachingService: CachingService,
@@ -47,7 +51,15 @@ export class AddonProviderFactory {
     private _preferenceStorageService: PreferenceStorageService,
     private _sensitiveStorageService: SensitiveStorageService,
     private _uiMessageService: UiMessageService
-  ) {}
+  ) {
+    this._wowupNetworkInterface = new GenericNetworkInterface(
+      this._networkService.getCircuitBreaker(
+        "wowup_addon_provider",
+        AppConfig.defaultHttpResetTimeoutMs,
+        AppConfig.wowUpHubHttpTimeoutMs
+      )
+    );
+  }
 
   /** This is part of the APP_INITIALIZER and called before the app is bootstrapped */
   public async loadProviders(): Promise<void> {
@@ -109,10 +121,6 @@ export class AddonProviderFactory {
       this._sensitiveStorageService,
       this._networkService
     );
-
-    const storedWagoKey = await this._sensitiveStorageService.getAsync(PREF_WAGO_ACCESS_KEY);
-    wago.adRequired = storedWagoKey === undefined || storedWagoKey.length === 0;
-
     return wago;
   }
 
@@ -137,7 +145,7 @@ export class AddonProviderFactory {
   }
 
   public createWowUpAddonProvider(): WowUpAddonProvider {
-    return new WowUpAddonProvider(this._electronService, this._cachingService, this._networkService);
+    return new WowUpAddonProvider(AppConfig.wowUpHubUrl, AppConfig.wowUpWebsiteUrl, this._wowupNetworkInterface);
   }
 
   public createZipAddonProvider(): ZipAddonProvider {

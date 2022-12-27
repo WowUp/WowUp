@@ -27,7 +27,6 @@ import {
   USER_ACTION_BROWSE_CATEGORY,
 } from "../../../common/constants";
 
-import { WowUpAddonProvider } from "../../addon-providers/wowup-addon-provider";
 import { AddonScanError, AddonSyncError, GenericProviderError } from "../../errors";
 import { AddonInstallState } from "../../models/wowup/addon-install-state";
 import { AddonUpdateEvent } from "../../models/wowup/addon-update-event";
@@ -64,6 +63,7 @@ import {
   WowClientType,
 } from "wowup-lib-core";
 import { WowInstallation } from "wowup-lib-core/lib/models";
+import { WowUpAddonProvider } from "wowup-lib-core/lib/addon-providers";
 
 export enum ScanUpdateType {
   Start,

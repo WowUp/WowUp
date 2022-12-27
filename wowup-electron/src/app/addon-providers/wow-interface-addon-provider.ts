@@ -4,7 +4,6 @@ import { v4 as uuidv4 } from "uuid";
 import { HttpErrorResponse } from "@angular/common/http";
 
 import { ADDON_PROVIDER_WOWINTERFACE } from "../../common/constants";
-import { SourceRemovedAddonError } from "../errors";
 import { CachingService } from "../services/caching/caching-service";
 import { CircuitBreakerWrapper, NetworkService } from "../services/network/network.service";
 import { getGameVersion } from "../utils/addon.utils";
@@ -23,6 +22,7 @@ import {
   SearchByUrlResult,
 } from "wowup-lib-core";
 import { AddonDetailsResponse, WowInstallation } from "wowup-lib-core/lib/models";
+import { SourceRemovedAddonError } from "wowup-lib-core/lib/errors";
 
 const API_URL = "https://api.mmoui.com/v4/game/WOW";
 const ADDON_URL = "https://www.wowinterface.com/downloads/info";

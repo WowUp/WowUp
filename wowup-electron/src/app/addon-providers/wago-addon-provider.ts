@@ -13,7 +13,6 @@ import { WarcraftService } from "../services/warcraft/warcraft.service";
 import { getGameVersion } from "../utils/addon.utils";
 import { getEnumName } from "wowup-lib-core/lib/utils";
 import { convertMarkdown } from "../utils/markdown.utlils";
-import { SourceRemovedAddonError } from "../errors";
 import { getWowClientGroup } from "../../common/warcraft";
 import { HttpErrorResponse } from "@angular/common/http";
 import { UiMessageService } from "../services/ui-message/ui-message.service";
@@ -32,6 +31,7 @@ import {
   WowClientType,
 } from "wowup-lib-core";
 import { WowInstallation } from "wowup-lib-core/lib/models";
+import { SourceRemovedAddonError } from "wowup-lib-core/lib/errors";
 
 declare type WagoGameVersion = "retail" | "classic" | "bc" | "wotlk";
 declare type WagoStability = "stable" | "beta" | "alpha";
@@ -208,7 +208,7 @@ export class WagoAddonProvider extends AddonProvider {
     this._sensitiveStorageService.change$
       .pipe(filter((change) => change.key == PREF_WAGO_ACCESS_KEY))
       .subscribe((change) => {
-        console.log("[wago] wago secret set", change.value.length);
+        console.log("[wago] wago secret set", change);
         if (this.isValidToken(change.value as string)) {
           this._wagoSecret = change.value;
           this._circuitBreaker.close();
@@ -222,7 +222,9 @@ export class WagoAddonProvider extends AddonProvider {
       .pipe(
         first(),
         tap((accessKey) => {
-          if (this.isValidToken(accessKey)) {
+          const validToken = this.isValidToken(accessKey);
+          this.adRequired = !validToken;
+          if (validToken) {
             this._wagoSecret = accessKey;
             console.debug("[wago] secret key set");
           }

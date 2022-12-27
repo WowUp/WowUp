@@ -19,7 +19,6 @@ import { TranslateService } from "@ngx-translate/core";
 
 import {
   ADDON_PROVIDER_WAGO,
-  PREF_CF2_API_KEY,
   PREF_GITHUB_PERSONAL_ACCESS_TOKEN,
   PREF_WAGO_ACCESS_KEY,
 } from "../../../../common/constants";
@@ -51,7 +50,6 @@ export class OptionsAddonSectionComponent implements OnInit, OnDestroy {
   public addonProviderStates$ = new BehaviorSubject<AddonProviderStateModel[]>([]);
 
   public preferenceForm = new FormGroup({
-    cfV2ApiKey: new UntypedFormControl(""),
     ghPersonalAccessToken: new UntypedFormControl(""),
     wagoAccessToken: new UntypedFormControl(""),
   });
@@ -73,9 +71,6 @@ export class OptionsAddonSectionComponent implements OnInit, OnDestroy {
         debounceTime(300),
         switchMap((ch) => {
           const tasks: Observable<any>[] = [];
-          if (typeof ch?.cfV2ApiKey === "string") {
-            tasks.push(from(this._sensitiveStorageService.setAsync(PREF_CF2_API_KEY, ch.cfV2ApiKey)));
-          }
           if (typeof ch?.ghPersonalAccessToken === "string") {
             tasks.push(
               from(this._sensitiveStorageService.setAsync(PREF_GITHUB_PERSONAL_ACCESS_TOKEN, ch.ghPersonalAccessToken))
@@ -157,13 +152,11 @@ export class OptionsAddonSectionComponent implements OnInit, OnDestroy {
 
   private async loadSensitiveData() {
     try {
-      const cfV2ApiKey = await this._sensitiveStorageService.getAsync(PREF_CF2_API_KEY);
       const ghPersonalAccessToken = await this._sensitiveStorageService.getAsync(PREF_GITHUB_PERSONAL_ACCESS_TOKEN);
       const wagoAccessToken = await this._sensitiveStorageService.getAsync(PREF_WAGO_ACCESS_KEY);
 
-      this.preferenceForm.get("cfV2ApiKey").setValue(cfV2ApiKey);
-      this.preferenceForm.get("ghPersonalAccessToken").setValue(ghPersonalAccessToken);
-      this.preferenceForm.get("wagoAccessToken").setValue(wagoAccessToken);
+      this.preferenceForm.get("ghPersonalAccessToken")?.setValue(ghPersonalAccessToken);
+      this.preferenceForm.get("wagoAccessToken")?.setValue(wagoAccessToken);
     } catch (e) {
       console.error(e);
     }
