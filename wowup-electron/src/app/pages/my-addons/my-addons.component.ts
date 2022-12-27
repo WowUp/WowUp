@@ -16,6 +16,7 @@ import { BehaviorSubject, combineLatest, from, fromEvent, Observable, of, Subjec
 import {
   catchError,
   debounceTime,
+  delay,
   distinctUntilChanged,
   filter,
   first,
@@ -100,7 +101,9 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
   private readonly _spinnerMessageSrc = new BehaviorSubject<string>("");
   private readonly _totalAvailableUpdateSrc = new BehaviorSubject<number>(0);
   private readonly _destroy$ = new Subject<boolean>();
+  private readonly _visibleSrc = new BehaviorSubject<boolean>(false);
 
+  public readonly visible$ = this._visibleSrc.pipe(debounceTime(200));
   public readonly totalAvailableUpdateCt$ = this._totalAvailableUpdateSrc.asObservable();
   public readonly enableControls$ = this._sessionService.enableControls$;
   public readonly spinnerMessage$ = this._spinnerMessageSrc.asObservable();
@@ -247,6 +250,8 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
     },
   ];
 
+  private _tabObserver: MutationObserver;
+
   public constructor(
     private _addonService: AddonService,
     private _addonProviderService: AddonProviderFactory,
@@ -314,6 +319,14 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
       )
       .subscribe();
 
+    // When the tab becomes visible, auto size the columns. Column sizes could get weird if resized when not visible
+    this.visible$
+      .pipe(
+        takeUntil(this._destroy$),
+        filter((visible) => visible === true)
+      )
+      .subscribe(() => this.autoSizeColumns());
+
     this._subscriptions.push(
       this.isSelectedTab$
         .pipe(
@@ -368,6 +381,7 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   public ngOnDestroy(): void {
+    this._tabObserver.disconnect();
     this._destroy$.next(true);
     this._destroy$.complete();
     this._subscriptions.forEach((sub) => sub.unsubscribe());
@@ -438,6 +452,17 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   public ngAfterViewInit(): void {
+    this._tabObserver = new MutationObserver((mutations: MutationRecord[]) => {
+      const muts = mutations.filter((m) => m.attributeName === "style");
+      this._visibleSrc.next(muts.some((m) => (m.target as HTMLElement).style.transform === "none"));
+    });
+
+    const elem = document.querySelector(".mat-tab-my-addons .mat-tab-body-content");
+    this._tabObserver.observe(elem!, {
+      attributes: true,
+      characterData: true,
+    });
+
     this._sessionService.myAddonsCompactVersion = !this.getLatestVersionColumnVisible();
 
     if (this.addonFilter?.nativeElement !== undefined) {
@@ -1303,7 +1328,12 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
     }
   }
 
+  /** If we're auto sizing and not visible, skip it as to not attempt to resize with no bounds */
   private autoSizeColumns() {
+    if (!this._visibleSrc.value) {
+      return;
+    }
+
     this.gridColumnApi?.autoSizeColumns([
       "installedAt",
       "latestVersion",
