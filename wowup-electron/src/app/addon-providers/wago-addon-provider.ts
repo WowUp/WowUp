@@ -22,6 +22,7 @@ import {
   AddonChannelType,
   AddonFolder,
   AddonProvider,
+  AddonScanResult,
   AddonSearchResult,
   AddonSearchResultFile,
   AdPageOptions,
@@ -256,7 +257,9 @@ export class WagoAddonProvider extends AddonProvider {
     }
 
     const gameVersion = this.getGameVersion(installation.clientType);
-    const scanResults = addonFolders.map((af) => af.wowUpScanResults).filter((sr) => sr !== undefined);
+    const scanResults = addonFolders
+      .map((af) => af.wowUpScanResults)
+      .filter((sr): sr is AddonScanResult => sr !== undefined);
 
     const request: WagoFingerprintRequest = {
       game_version: gameVersion,
@@ -265,7 +268,16 @@ export class WagoAddonProvider extends AddonProvider {
 
     scanResults.forEach((res) => {
       const addonFolder = addonFolders.find((af) => af.name === res.folderName);
+      if (addonFolder === undefined) {
+        console.warn("[wago]: addon folder not found: " + res.folderName);
+        return;
+      }
+
       const toc = this._tocService.getTocForGameType2(addonFolder, installation.clientType);
+      if (toc === undefined) {
+        console.warn("[wago]: getTocForGameType2 returned undefined, " + addonFolder.name);
+        return;
+      }
 
       const waddon: WagoFingerprintAddon = {
         name: res.folderName,
@@ -295,7 +307,7 @@ export class WagoAddonProvider extends AddonProvider {
             return false;
           }
 
-          const mods = Object.values(addon.modules).filter((mod) => typeof mod.hash === "string");
+          const mods = Object.values(addon.modules ?? {}).filter((mod) => typeof mod.hash === "string");
           return mods.findIndex((mod) => mod.hash === scanResult.fingerprint) !== -1;
         });
 
@@ -406,13 +418,13 @@ export class WagoAddonProvider extends AddonProvider {
       const response = await this.getAddonById(externalId);
       console.debug("[wago] getChangelog", response);
 
-      let release: WagoRelease | undefined = response.recent_release.stable;
+      let release: WagoRelease | undefined = response.recent_release?.stable;
       switch (installation.defaultAddonChannelType) {
         case AddonChannelType.Alpha:
-          release = response.recent_release.alpha || release;
+          release = response.recent_release?.alpha || release;
           break;
         case AddonChannelType.Beta:
-          release = response.recent_release.beta || release;
+          release = response.recent_release?.beta || release;
           break;
         default:
           break;
@@ -531,13 +543,14 @@ export class WagoAddonProvider extends AddonProvider {
     const releaseTypes = Object.keys(releaseObj) as WagoStability[];
     const searchResultFiles: AddonSearchResultFile[] = [];
     for (const type of releaseTypes) {
-      if (releaseObj[type] !== null) {
-        searchResultFiles.push(this.toSearchResultFile(releaseObj[type], type));
+      const channel = releaseObj[type];
+      if (channel !== undefined) {
+        searchResultFiles.push(this.toSearchResultFile(channel, type));
       }
     }
 
     return {
-      author: item.authors.join(", "),
+      author: item.authors?.join(", ") ?? "",
       externalId: item.id,
       externalUrl: item.website_url,
       name: item.name,
@@ -555,8 +568,9 @@ export class WagoAddonProvider extends AddonProvider {
     const releaseTypes = Object.keys(releaseObj) as WagoStability[];
     const searchResultFiles: AddonSearchResultFile[] = [];
     for (const type of releaseTypes) {
-      if (releaseObj[type] !== null) {
-        searchResultFiles.push(this.toSearchResultFile(releaseObj[type], type));
+      const channel = releaseObj[type];
+      if (channel !== undefined) {
+        searchResultFiles.push(this.toSearchResultFile(channel, type));
       }
     }
 
@@ -578,7 +592,10 @@ export class WagoAddonProvider extends AddonProvider {
     const releaseTypes = Object.keys(item.releases);
     const searchResultFiles: AddonSearchResultFile[] = [];
     for (const type of releaseTypes) {
-      searchResultFiles.push(this.toSearchResultFile(item.releases[type], type as WagoStability));
+      const release = item.releases[type];
+      if (release !== undefined) {
+        searchResultFiles.push(this.toSearchResultFile(release, type as WagoStability));
+      }
     }
 
     return {
@@ -599,6 +616,10 @@ export class WagoAddonProvider extends AddonProvider {
     release: WagoSearchResponseRelease | WagoRelease | WagoScanRelease,
     stability: WagoStability
   ): AddonSearchResultFile {
+    if (release === undefined) {
+      throw new Error("toSearchResultFile failed, undefined release");
+    }
+
     return {
       channelType: this.getAddonChannelType(stability),
       downloadUrl: (release as any).download_link || (release as any).link,
@@ -634,7 +655,7 @@ export class WagoAddonProvider extends AddonProvider {
     const installedExternalReleaseId = wagoScanAddon?.matched_release?.id ?? "";
     const installedFolders: string[] = [];
 
-    for (const [key, val] of Object.entries(wagoScanAddon.modules)) {
+    for (const [key, val] of Object.entries(wagoScanAddon.modules ?? {})) {
       if (typeof val.hash !== "string") {
         continue;
       }
@@ -645,6 +666,10 @@ export class WagoAddonProvider extends AddonProvider {
     // Sort the releases by release date, then find the first one that has a valid channel type
     const releaseList: WagoScanReleaseSortable[] = this.getSortedReleaseList(wagoScanAddon);
     const validVersion = releaseList.find((rel) => rel.addonChannelType <= addonChannelType);
+    if (validVersion === undefined) {
+      throw new Error("toAddon failed valid version not found");
+    }
+    
     const latestVersion = validVersion.label;
     const externalLatestReleaseId = validVersion.id;
     const externalChannel = getEnumName(AddonChannelType, validVersion.addonChannelType);
@@ -704,7 +729,7 @@ export class WagoAddonProvider extends AddonProvider {
   }
 
   // Get the wago friendly name for our addon channel
-  private getStability(channelType: AddonChannelType): WagoStability {
+  private getStability(channelType: AddonChannelType | undefined): WagoStability {
     switch (channelType) {
       case AddonChannelType.Alpha:
         return "alpha";
