@@ -292,7 +292,7 @@
         "BURNING_CRUSADE_ASSET_NOT_FOUND": "Nie znaleziono zasobów aby pobrać z {message}.\n\nA prawidłowy plik zip z konćówką '-bc' jest potrzebny aby pobrać go dla WowUp.",
         "CLASSIC_ASSET_NOT_FOUND": "Nie znaleziono zasobów aby pobrać z {message}.\n\nA prawidłowy plik zip z konćówką '-classic'  jest potrzebny aby pobrać go dla WowUp.",
         "FAILED_TO_CONNECT": "Nie można połączyć się z API, proszę poczekać i spróbować ponownie.",
-        "INSTALL_FAILED": "Coś poszło nie tak z instalacją addona, proszę spróbować ponownie.\n\nJeżeli wiadomość nadal pojawia się, możesz otrzymać pomoc na Discordzie na kanale #wowup-support channel.",
+        "INSTALL_FAILED": "Coś poszło nie tak z instalacją addona, proszę spróbować ponownie.\n\nJeżeli wiadomość nadal pojawia się, możesz otrzymać pomoc na Discordzie na kanale #help-me channel.",
         "INVALID_URL": "Podana wartość nie jest poprawna dla adresu URL. Przykłady poprawnych adresów URL dla addonów są tutaj:\n\t- https://github.com/WowUp/WowUp.Addon\n\t- https://www.wowinterface.com/downloads/info25610-8.3-014.html\n\t- https://www.curseforge.com/wow/addons/altoholic",
         "NO_ADDON_FOUND": "Nie znaleziono addonu, upewnij się że twój adres URL wskazuje na właściwą stronę.\n\nKiedy instalujesz z githuba, upewnij się że repozytorium ma znacznik wydania z archiwum zip zawierające addon.",
         "NO_RELEASE_FOUND": "Nie znaleziono żadnych wydań dla {message}.\n\nPoprawnie wydanie z plikiem zasobów zip są potrzebne aby pobrać je dla WoWUP.",
