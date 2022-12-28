@@ -13,6 +13,10 @@ export class GenericNetworkInterface implements NetworkInterface {
     );
   }
 
+  public async getText(url: string | URL, config?: GetConfig | undefined): Promise<string> {
+    return await memcache.transaction(url.toString(), () => this._circuitBreaker.getText(url, config?.timeoutMs), 30);
+  }
+
   public async postJson<T>(url: string | URL, config: PostConfig): Promise<T> {
     if (config.cache === true) {
       const key = `${url.toString()}-${JSON.stringify(config.body).length.toString()}`;

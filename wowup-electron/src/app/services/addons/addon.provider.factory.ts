@@ -2,7 +2,6 @@ import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { AddonProvider, AddonProviderType } from "wowup-lib-core";
 import { GitHubAddonProvider } from "../../addon-providers/github-addon-provider";
-import { TukUiAddonProvider } from "../../addon-providers/tukui-addon-provider";
 import { RaiderIoAddonProvider } from "../../addon-providers/raiderio-provider";
 import { ZipAddonProvider } from "../../addon-providers/zip-provider";
 import { WowUpCompanionAddonProvider } from "../../addon-providers/wowup-companion-addon-provider";
@@ -20,7 +19,7 @@ import { Subject } from "rxjs";
 import { PreferenceStorageService } from "../storage/preference-storage.service";
 import { SensitiveStorageService } from "../storage/sensitive-storage.service";
 import { UiMessageService } from "../ui-message/ui-message.service";
-import { WowUpAddonProvider, WowInterfaceAddonProvider } from "wowup-lib-core/lib/addon-providers";
+import { WowUpAddonProvider, WowInterfaceAddonProvider, TukUiAddonProvider } from "wowup-lib-core/lib/addon-providers";
 import { AppConfig } from "../../../environments/environment";
 import { GenericNetworkInterface } from "../../business-objects/generic-network-interface";
 
@@ -36,6 +35,7 @@ export class AddonProviderFactory {
 
   private _wowupNetworkInterface: GenericNetworkInterface;
   private _wowInterfaceNetworkInterface: GenericNetworkInterface;
+  private _tukuiNetworkInterface: GenericNetworkInterface;
 
   public constructor(
     private _cachingService: CachingService,
@@ -61,6 +61,14 @@ export class AddonProviderFactory {
     this._wowInterfaceNetworkInterface = new GenericNetworkInterface(
       this._networkService.getCircuitBreaker(
         "wow_interface_provider",
+        AppConfig.defaultHttpResetTimeoutMs,
+        AppConfig.wowUpHubHttpTimeoutMs
+      )
+    );
+
+    this._tukuiNetworkInterface = new GenericNetworkInterface(
+      this._networkService.getCircuitBreaker(
+        "tukui_provider",
         AppConfig.defaultHttpResetTimeoutMs,
         AppConfig.wowUpHubHttpTimeoutMs
       )
@@ -138,7 +146,7 @@ export class AddonProviderFactory {
   }
 
   public createTukUiAddonProvider(): TukUiAddonProvider {
-    return new TukUiAddonProvider(this._cachingService, this._networkService, this._tocService);
+    return new TukUiAddonProvider(this._tukuiNetworkInterface);
   }
 
   public createWowInterfaceAddonProvider(): WowInterfaceAddonProvider {
