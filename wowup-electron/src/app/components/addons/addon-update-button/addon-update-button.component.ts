@@ -101,18 +101,18 @@ export class AddonUpdateButtonComponent implements OnInit, OnDestroy {
 
   public async onInstallUpdateClick(): Promise<void> {
     try {
-      if (!this.listItem?.addon?.id) {
+      if (this.listItem?.addon?.id === undefined) { 
         throw new Error("Invalid list item addon");
       }
 
       if (this.listItem.needsUpdate()) {
-        await this._addonService.updateAddon(this.listItem.addon.id);
+        await this._addonService.updateAddon(this.listItem.addon);
       } else {
-        await this._addonService.installAddon(this.listItem.addon.id);
+        await this._addonService.installAddon(this.listItem.addon);
       }
     } catch (e) {
       console.error(e);
-    }
+    } 
   }
 
   public getStatusText(): string {

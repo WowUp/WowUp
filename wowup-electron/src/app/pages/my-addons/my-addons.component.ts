@@ -630,7 +630,7 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
 
       const promises = _.map(filteredAddons, async (addon) => {
         try {
-          await this._addonService.updateAddon(addon.id ?? "");
+          await this._addonService.updateAddon(addon);
         } catch (e) {
           console.error("Failed to install", e);
         }
@@ -704,7 +704,8 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
   public async onReInstallAddons(listItems: AddonViewModel[]): Promise<void> {
     try {
       console.debug("onReInstallAddons", listItems);
-      const tasks = _.map(listItems, (listItem) => this._addonService.installAddon(listItem.addon?.id ?? ""));
+      const addons = _.map(listItems, (li) => li.addon).filter((li): li is Addon => li !== undefined);
+      const tasks = _.map(addons, (addon) => this._addonService.installAddon(addon));
       await Promise.all(tasks);
     } catch (e) {
       console.error(`Failed to re-install addons`, e);
@@ -1146,7 +1147,7 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
           }) as string
         );
 
-        await this._addonService.updateAddon(addon.id);
+        await this._addonService.updateAddon(addon);
       }
 
       await this.loadAddons();
@@ -1264,17 +1265,23 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
 
     let rowData = _.cloneDeep(this._baseRowDataSrc.value);
     const idx = rowData.findIndex((r) => r.addon?.id === evt.addon.id);
+    let change = idx !== -1 || evt.installState === AddonInstallState.Complete;
 
     // If we have a new addon, just put it at the end
     if (idx === -1) {
-      console.debug("Adding new addon to list");
-      rowData.push(new AddonViewModel(evt.addon));
-      rowData = _.orderBy(rowData, (row) => row.canonicalName);
+      // If this is an update of an addon that is not fully installed yet, ignore it
+      if (evt.installState === AddonInstallState.Complete) {
+        console.debug("Adding new addon to list");
+        rowData.push(new AddonViewModel(evt.addon));
+        rowData = _.orderBy(rowData, (row) => row.canonicalName);
+      }
     } else {
       rowData.splice(idx, 1, new AddonViewModel(evt.addon));
     }
 
-    this._baseRowDataSrc.next(rowData);
+    if (change) {
+      this._baseRowDataSrc.next(rowData);
+    }
     this._sessionService.setEnableControls(this.calculateControlState());
   };
 

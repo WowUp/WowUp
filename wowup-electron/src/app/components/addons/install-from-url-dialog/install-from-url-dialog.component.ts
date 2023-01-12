@@ -66,11 +66,18 @@ export class InstallFromUrlDialogComponent implements OnDestroy {
       return;
     }
 
+    const addonFile = Array.isArray(this.addon?.files) ? this.addon.files[0] : undefined;
+    if (addonFile === undefined) {
+      console.error("addon file was undefined, nothing to install");
+      this.showErrorMessage(this._translateService.instant("DIALOGS.INSTALL_FROM_URL.ERROR.INSTALL_FAILED") as string);
+      return;
+    }
+
     this.showInstallButton = false;
     this.showInstallSpinner = true;
 
     this._installSubscription = from(
-      this._addonService.installPotentialAddon(this.addon, selectedInstallation, undefined, this.addon.files[0])
+      this._addonService.installPotentialAddon(this.addon, selectedInstallation, undefined, addonFile)
     ).subscribe({
       next: () => {
         this.showInstallSpinner = false;
