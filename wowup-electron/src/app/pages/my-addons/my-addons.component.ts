@@ -1265,7 +1265,7 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
 
     let rowData = _.cloneDeep(this._baseRowDataSrc.value);
     const idx = rowData.findIndex((r) => r.addon?.id === evt.addon.id);
-    let change = idx !== -1 || evt.installState === AddonInstallState.Complete;
+    const change = idx !== -1 || evt.installState === AddonInstallState.Complete;
 
     // If we have a new addon, just put it at the end
     if (idx === -1) {

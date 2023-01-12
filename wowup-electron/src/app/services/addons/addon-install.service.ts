@@ -61,7 +61,7 @@ export class AddonInstallService {
   public readonly addonInstalled$ = this._addonInstalledSrc.asObservable();
   public readonly installError$ = this._installErrorSrc.asObservable();
 
-  constructor(
+  public constructor(
     private _warcraftInstallationService: WarcraftInstallationService,
     private _addonProviderService: AddonProviderFactory,
     private _wowUpService: WowUpService,
@@ -73,7 +73,7 @@ export class AddonInstallService {
     private _analyticsService: AnalyticsService
   ) {
     // Setup our install queue pump here
-    const queueSub = this._installQueue.pipe(mergeMap((item) => from(this.processInstallQueue(item)), 3)).subscribe({
+    this._installQueue.pipe(mergeMap((item) => from(this.processInstallQueue(item)), 3)).subscribe({
       next: (addonName) => {
         console.log("Install complete", addonName);
       },
@@ -500,8 +500,7 @@ export class AddonInstallService {
   }
 
   public async getAddons(installation: WowInstallation): Promise<Addon[]> {
-    let addons = await this._addonStorage.getAllForInstallationIdAsync(installation.id);
-
+    const addons = await this._addonStorage.getAllForInstallationIdAsync(installation.id);
     return addons;
   }
 
