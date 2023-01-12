@@ -35,6 +35,7 @@ const CHANGELOGS: ChangeLog[] = [
     <li>Rendering lists should no longer fail due to malformed game version</li>
     <li>Audio should now be muted just in case of an annoying ad</li>
     <li>Fix an issue with window not showing at startup on Mac</li>
+    <li>Improve some error handling when installing addons</li>
     </ul>
     `,
   },
