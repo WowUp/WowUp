@@ -195,7 +195,7 @@ app.on("child-process-gone", (e, details) => {
 // See https://www.electronjs.org/docs/api/app#event-open-url-macos
 if (platform.isMac) {
   app.on("open-url", (evt, url) => {
-    log.info(`Open url recieved ${url}`);
+    log.info(`Open url received ${url}`);
 
     // If we did get a custom protocol notify the app
     if (isProtocol(url)) {
