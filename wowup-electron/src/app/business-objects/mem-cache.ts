@@ -16,10 +16,10 @@ export async function transaction<T>(key: string, missingAction: () => Promise<T
     return cached;
   }
 
-  const result = await missingAction?.call(this);
+  const result = await missingAction?.call(null);
 
   if (result !== undefined && result !== null) {
-    this.set(key, result, ttlSec);
+    set(key, result, ttlSec);
   }
 
   return result;
