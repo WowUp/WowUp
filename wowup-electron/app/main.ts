@@ -544,7 +544,7 @@ function canStartHidden() {
 
   const loginItems = app.getLoginItemSettings();
   if (Array.isArray(loginItems?.launchItems)) {
-    loginItems.launchItems.forEach((li) => {
+    loginItems?.launchItems.forEach((li) => {
       console.log(`launchItem: ${li.name} args -> ${li.args.join(",")}`);
     });
   }

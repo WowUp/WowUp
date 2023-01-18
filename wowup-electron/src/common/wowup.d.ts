@@ -39,7 +39,6 @@ declare type RendererChannels =
   | "create-app-menu"
   | "create-directory"
   | "create-tray-menu"
-  | "curse-get-scan-results"
   | "decode-product-db"
   | "delete-directory"
   | "focus-window"
