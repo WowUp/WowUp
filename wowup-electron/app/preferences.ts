@@ -14,7 +14,7 @@ import {
   WOWUP_RELEASE_CHANNEL_PREFERENCE_KEY,
 } from "../src/common/constants";
 import { WowUpReleaseChannelType } from "../src/common/wowup/wowup-release-channel-type";
-import { preferenceStore } from "./stores";
+import { getPreferenceStore } from "./stores";
 import * as log from "electron-log";
 
 export function initializeDefaultPreferences() {
@@ -33,19 +33,20 @@ export function initializeDefaultPreferences() {
 }
 
 export function getWowUpReleaseChannelPreference(): WowUpReleaseChannelType {
-  const val = preferenceStore.get(WOWUP_RELEASE_CHANNEL_PREFERENCE_KEY) as string;
+  const val = getPreferenceStore().get(WOWUP_RELEASE_CHANNEL_PREFERENCE_KEY) as string;
   return parseInt(val, 10) as WowUpReleaseChannelType;
 }
 
 function setDefaultPreference(key: string, defaultValue: any) {
-  const pref = preferenceStore.get(key);
+  const prefStore = getPreferenceStore();
+  const pref = prefStore.get(key);
   if (pref === null || pref === undefined) {
     const valStr: string = defaultValue.toString();
     log.info(`Setting default preference: ${key} -> ${valStr}`);
     if (Array.isArray(defaultValue)) {
-      preferenceStore.set(key, defaultValue);
+      prefStore.set(key, defaultValue);
     } else {
-      preferenceStore.set(key, defaultValue.toString());
+      prefStore.set(key, defaultValue.toString());
     }
   }
 }

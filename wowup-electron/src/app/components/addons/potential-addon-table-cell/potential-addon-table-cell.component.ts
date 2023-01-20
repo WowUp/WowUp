@@ -3,14 +3,17 @@ import { ICellRendererParams } from "ag-grid-community";
 
 import { Component, EventEmitter, Input, OnChanges, Output, SimpleChanges } from "@angular/core";
 
-import { WowClientType } from "../../../../common/warcraft/wow-client-type";
-import { AddonChannelType, AddonDependencyType } from "../../../../common/wowup/models";
 import { GetAddonListItem } from "../../../business-objects/get-addon-list-item";
-import { AddonSearchResult } from "../../../models/wowup/addon-search-result";
-import { AddonSearchResultDependency } from "../../../models/wowup/addon-search-result-dependency";
 import { GetAddonListItemFilePropPipe } from "../../../pipes/get-addon-list-item-file-prop.pipe";
 import { DialogFactory } from "../../../services/dialog/dialog.factory";
 import * as SearchResults from "../../../utils/search-result.utils";
+import {
+  AddonChannelType,
+  AddonDependencyType,
+  AddonSearchResult,
+  AddonSearchResultDependency,
+  WowClientType,
+} from "wowup-lib-core";
 
 export interface PotentialAddonViewDetailsEvent {
   searchResult: AddonSearchResult;

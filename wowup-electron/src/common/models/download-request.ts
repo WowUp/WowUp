@@ -1,9 +1,5 @@
+import { DownloadAuth } from "wowup-lib-core";
 import { IpcRequest } from "./ipc-request";
-
-export interface DownloadAuth {
-  headers?: { [key: string]: string };
-  queryParams?: { [key: string]: string };
-}
 
 export interface DownloadRequest extends IpcRequest {
   url: string;

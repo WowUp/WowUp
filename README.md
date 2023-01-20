@@ -54,7 +54,7 @@ We have a couple companion projects that are related to WowUp
 - [App Updater](https://github.com/WowUp/WowUpUpdater) (Deprecated)
 
 ## Code of Conduct
-Please read and understand our [Code of Coduct](https://github.com/WowUp/WowUp/blob/master/CODE_OF_CONDUCT.md) when submitting a bug or feature request here or on Discord.
+Please read and understand our [Code of Conduct](https://github.com/WowUp/WowUp/blob/master/CODE_OF_CONDUCT.md) when submitting a bug or feature request here or on Discord.
 
 ## License
 Copyright (c) WowUp LLC. All rights reserved.

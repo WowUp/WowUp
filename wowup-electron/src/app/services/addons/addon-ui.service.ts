@@ -3,7 +3,7 @@ import { MatDialog, MatDialogRef } from "@angular/material/dialog";
 import { TranslateService } from "@ngx-translate/core";
 import { from, Observable, of } from "rxjs";
 import { first, map, switchMap } from "rxjs/operators";
-import { Addon } from "../../../common/entities/addon";
+import { Addon } from "wowup-lib-core";
 import { ConfirmDialogComponent } from "../../components/common/confirm-dialog/confirm-dialog.component";
 import { SnackbarService } from "../snackbar/snackbar.service";
 import { AddonService } from "./addon.service";

@@ -16,6 +16,30 @@ export class PatchNotesService {
 
 const CHANGELOGS: ChangeLog[] = [
   {
+    Version: "2.9.2",
+    html: `
+    <h4 style="margin-top: 1em;">Changes</h4>
+    <ul>
+    <li>Dynamic WoW client names (CyanoHao)</li>
+    <li>Spanish locale updates (SkollVargr)</li>
+    <li>Norwegian locale updates (espenja)</li>
+    <li>German locale updates (maestrohdude)</li>
+    <li>Improved WowInterface API usage for some addons</li>
+    <li>Improved private GitHub repo support</li>
+    <li>Disable the ability to shift + click columns</li>
+    <li>Update a bunch of dependencies</li>
+    </ul>
+    <h4 style="margin-top: 1em;">Fixes</h4>
+    <ul>
+    <li>Fix an issue with My Addon columns appearing squished</li>
+    <li>Rendering lists should no longer fail due to malformed game version</li>
+    <li>Audio should now be muted just in case of an annoying ad</li>
+    <li>Fix an issue with window not showing at startup on Mac</li>
+    <li>Improve some error handling when installing addons</li>
+    </ul>
+    `,
+  },
+  {
     Version: "2.9.1",
     html: `
     <h4 style="margin-top: 1em;">New Features</h4>

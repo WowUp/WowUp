@@ -43,8 +43,6 @@ import { MatMenuTrigger } from "@angular/material/menu";
 import { MatRadioChange } from "@angular/material/radio";
 import { TranslateService } from "@ngx-translate/core";
 
-import { Addon } from "../../../common/entities/addon";
-import { WowClientType } from "../../../common/warcraft/wow-client-type";
 import { AddonViewModel } from "../../business-objects/addon-view-model";
 import { CellWrapTextComponent } from "../../components/common/cell-wrap-text/cell-wrap-text.component";
 import { ConfirmDialogComponent } from "../../components/common/confirm-dialog/confirm-dialog.component";
@@ -55,7 +53,6 @@ import { TableContextHeaderCellComponent } from "../../components/addons/table-c
 import { AddonInstallState } from "../../models/wowup/addon-install-state";
 import { AddonUpdateEvent } from "../../models/wowup/addon-update-event";
 import { ColumnState } from "../../models/wowup/column-state";
-import { WowInstallation } from "../../../common/warcraft/wow-installation";
 import { RelativeDurationPipe } from "../../pipes/relative-duration-pipe";
 import { ElectronService } from "../../services";
 import { AddonService } from "../../services/addons/addon.service";
@@ -76,6 +73,8 @@ import { WtfBackupComponent } from "../../components/addons/wtf-backup/wtf-backu
 import { HasEventTargetAddRemove } from "rxjs/internal/observable/fromEvent";
 import { AddonProviderFactory } from "../../services/addons/addon.provider.factory";
 import { toInterfaceVersion } from "../../utils/addon.utils";
+import { Addon, WowClientType } from "wowup-lib-core";
+import { WowInstallation } from "wowup-lib-core/lib/models";
 
 @Component({
   selector: "app-my-addons",
@@ -101,7 +100,9 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
   private readonly _spinnerMessageSrc = new BehaviorSubject<string>("");
   private readonly _totalAvailableUpdateSrc = new BehaviorSubject<number>(0);
   private readonly _destroy$ = new Subject<boolean>();
+  private readonly _visibleSrc = new BehaviorSubject<boolean>(false);
 
+  public readonly visible$ = this._visibleSrc.pipe(debounceTime(200));
   public readonly totalAvailableUpdateCt$ = this._totalAvailableUpdateSrc.asObservable();
   public readonly enableControls$ = this._sessionService.enableControls$;
   public readonly spinnerMessage$ = this._spinnerMessageSrc.asObservable();
@@ -109,7 +110,7 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
   public readonly selectedWowInstallation$ = this._sessionService.selectedWowInstallation$;
 
   public readonly selectedWowInstallationLabel$ = this._sessionService.selectedWowInstallation$.pipe(
-    map((wowInstall) => wowInstall?.label ?? "")
+    map((wowInstall) => wowInstall?.displayName ?? "")
   );
 
   public readonly selectedWowInstallationId$ = this._sessionService.selectedWowInstallation$.pipe(
@@ -185,7 +186,6 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
   // Grid
   public rowDataG: any[] = [];
   public columnDefs$ = new BehaviorSubject<ColDef[]>([]);
-  public frameworkComponents = {};
   public gridApi!: GridApi;
   public gridColumnApi!: ColumnApi;
   public rowClassRules = {
@@ -249,9 +249,7 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
     },
   ];
 
-  public get displayedColumns(): string[] {
-    return this.columns.filter((col) => col.visible).map((col) => col.name);
-  }
+  private _tabObserver: MutationObserver;
 
   public constructor(
     private _addonService: AddonService,
@@ -320,6 +318,14 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
       )
       .subscribe();
 
+    // When the tab becomes visible, auto size the columns. Column sizes could get weird if resized when not visible
+    this.visible$
+      .pipe(
+        takeUntil(this._destroy$),
+        filter((visible) => visible === true)
+      )
+      .subscribe(() => this.autoSizeColumns());
+
     this._subscriptions.push(
       this.isSelectedTab$
         .pipe(
@@ -333,14 +339,6 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
       addonInstalledSub,
       addonRemovedSub
     );
-
-    this.frameworkComponents = {
-      myAddonRenderer: MyAddonsAddonCellComponent,
-      myAddonStatus: MyAddonStatusCellComponent,
-      contextHeader: TableContextHeaderCellComponent,
-      wrapTextCell: CellWrapTextComponent,
-      dateTooltipCell: DateTooltipCellComponent,
-    };
 
     this.columnDefs$.next(this.createColumns());
   }
@@ -382,6 +380,7 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   public ngOnDestroy(): void {
+    this._tabObserver.disconnect();
     this._destroy$.next(true);
     this._destroy$.complete();
     this._subscriptions.forEach((sub) => sub.unsubscribe());
@@ -442,12 +441,32 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
         tap((data) => {
           this.gridApi.setRowData(data);
           this.setPageContextText();
+        }),
+        debounceTime(200),
+        tap(() => {
+          this.autoSizeColumns();
         })
       )
       .subscribe();
   }
 
   public ngAfterViewInit(): void {
+    this._tabObserver = new MutationObserver((mutations: MutationRecord[]) => {
+      const muts = mutations.filter((m) => m.attributeName === "style");
+      this._visibleSrc.next(muts.some((m) => (m.target as HTMLElement).style.transform === "none"));
+    });
+
+    const elem = document.querySelector(".mat-tab-my-addons .mat-tab-body-content");
+    if (elem === null) {
+      this._visibleSrc.next(true);
+      console.warn("visibility observer cannot start");
+    } else {
+      this._tabObserver.observe(elem, {
+        attributes: true,
+        characterData: true,
+      });
+    }
+
     this._sessionService.myAddonsCompactVersion = !this.getLatestVersionColumnVisible();
 
     if (this.addonFilter?.nativeElement !== undefined) {
@@ -569,7 +588,7 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   public isForceIgnore(addon: Addon) {
-    return this._addonProviderService.isForceIgnore(addon.providerName);
+    return this._addonProviderService.isForceIgnore(addon.providerName ?? "");
   }
 
   public canReInstall(listItem: AddonViewModel): boolean {
@@ -578,12 +597,13 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
     }
 
     return (
-      listItem.addon.warningType === undefined && this._addonProviderService.canReinstall(listItem.addon.providerName)
+      listItem.addon.warningType === undefined &&
+      this._addonProviderService.canReinstall(listItem.addon.providerName ?? "")
     );
   }
 
   public canChangeChannel(addon: Addon) {
-    return this._addonProviderService.canChangeChannel(addon.providerName);
+    return this._addonProviderService.canChangeChannel(addon.providerName ?? "");
   }
 
   public filterAddons(rowData: AddonViewModel[], filterVal: string): AddonViewModel[] {
@@ -610,7 +630,7 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
 
       const promises = _.map(filteredAddons, async (addon) => {
         try {
-          await this._addonService.updateAddon(addon.id ?? "");
+          await this._addonService.updateAddon(addon);
         } catch (e) {
           console.error("Failed to install", e);
         }
@@ -684,7 +704,8 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
   public async onReInstallAddons(listItems: AddonViewModel[]): Promise<void> {
     try {
       console.debug("onReInstallAddons", listItems);
-      const tasks = _.map(listItems, (listItem) => this._addonService.installAddon(listItem.addon?.id ?? ""));
+      const addons = _.map(listItems, (li) => li.addon).filter((li): li is Addon => li !== undefined);
+      const tasks = _.map(addons, (addon) => this._addonService.installAddon(addon));
       await Promise.all(tasks);
     } catch (e) {
       console.error(`Failed to re-install addons`, e);
@@ -1126,7 +1147,7 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
           }) as string
         );
 
-        await this._addonService.updateAddon(addon.id);
+        await this._addonService.updateAddon(addon);
       }
 
       await this.loadAddons();
@@ -1244,17 +1265,23 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
 
     let rowData = _.cloneDeep(this._baseRowDataSrc.value);
     const idx = rowData.findIndex((r) => r.addon?.id === evt.addon.id);
+    const change = idx !== -1 || evt.installState === AddonInstallState.Complete;
 
     // If we have a new addon, just put it at the end
     if (idx === -1) {
-      console.debug("Adding new addon to list");
-      rowData.push(new AddonViewModel(evt.addon));
-      rowData = _.orderBy(rowData, (row) => row.canonicalName);
+      // If this is an update of an addon that is not fully installed yet, ignore it
+      if (evt.installState === AddonInstallState.Complete) {
+        console.debug("Adding new addon to list");
+        rowData.push(new AddonViewModel(evt.addon));
+        rowData = _.orderBy(rowData, (row) => row.canonicalName);
+      }
     } else {
       rowData.splice(idx, 1, new AddonViewModel(evt.addon));
     }
 
-    this._baseRowDataSrc.next(rowData);
+    if (change) {
+      this._baseRowDataSrc.next(rowData);
+    }
     this._sessionService.setEnableControls(this.calculateControlState());
   };
 
@@ -1313,7 +1340,12 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
     }
   }
 
+  /** If we're auto sizing and not visible, skip it as to not attempt to resize with no bounds */
   private autoSizeColumns() {
+    if (!this._visibleSrc.value) {
+      return;
+    }
+
     this.gridColumnApi?.autoSizeColumns([
       "installedAt",
       "latestVersion",
@@ -1329,10 +1361,15 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
     const v1 = (nodeA.data["gameVersion"] as string)?.trim();
     const v2 = (nodeB.data["gameVersion"] as string)?.trim();
 
-    const iv1 = +toInterfaceVersion(v1 || "0.0.0");
-    const iv2 = +toInterfaceVersion(v2 || "0.0.0");
+    try {
+      const iv1 = +toInterfaceVersion(v1 || "0.0.0");
+      const iv2 = +toInterfaceVersion(v2 || "0.0.0");
 
-    return iv1 > iv2 ? 1 : -1;
+      return iv1 > iv2 ? 1 : -1;
+    } catch (e) {
+      console.error(e);
+      return -1;
+    }
   }
 
   // If nodes have the same primary value, use the canonical name as a fallback
@@ -1349,7 +1386,7 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
 
   private createColumns(): ColDef[] {
     const baseColumn = {
-      headerComponent: "contextHeader",
+      headerComponent: TableContextHeaderCellComponent,
       headerComponentParams: {
         onHeaderContext: this.onHeaderContext,
       },
@@ -1363,7 +1400,7 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
 
     return [
       {
-        cellRenderer: "myAddonRenderer",
+        cellRenderer: MyAddonsAddonCellComponent,
         field: "hash",
         flex: 2,
         minWidth: 300,
@@ -1375,7 +1412,7 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
         ...baseColumn,
       },
       {
-        cellRenderer: "myAddonStatus",
+        cellRenderer: MyAddonStatusCellComponent,
         comparator: (va, vb, na, nb) => this.compareElement(na, nb, "sortOrder"),
         field: "sortOrder",
         headerName: this._translateService.instant("PAGES.MY_ADDONS.TABLE.STATUS_COLUMN_HEADER"),
@@ -1389,7 +1426,7 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
         headerName: this._translateService.instant("PAGES.MY_ADDONS.TABLE.UPDATED_AT_COLUMN_HEADER"),
         comparator: (va, vb, na, nb) => this.compareElement(na, nb, "installedAt"),
         ...baseColumn,
-        cellRenderer: "dateTooltipCell",
+        cellRenderer: DateTooltipCellComponent,
       },
       {
         field: "latestVersion",
@@ -1404,7 +1441,7 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
         headerName: this._translateService.instant("PAGES.MY_ADDONS.TABLE.RELEASED_AT_COLUMN_HEADER"),
         comparator: (va, vb, na, nb) => this.compareElement(na, nb, "releasedAt"),
         ...baseColumn,
-        cellRenderer: "dateTooltipCell",
+        cellRenderer: DateTooltipCellComponent,
       },
       {
         field: "gameVersion",
@@ -1438,7 +1475,7 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
         flex: 1,
         headerName: this._translateService.instant("PAGES.MY_ADDONS.TABLE.AUTHOR_COLUMN_HEADER"),
         comparator: (va, vb, na, nb) => this.compareElement(na, nb, "author"),
-        cellRenderer: "wrapTextCell",
+        cellRenderer: CellWrapTextComponent,
         ...baseColumn,
       },
     ];

@@ -10,7 +10,6 @@ import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 import { TranslateCompiler, TranslateLoader, TranslateModule } from "@ngx-translate/core";
 
 import { httpLoaderFactory } from "../../app.module";
-import { WowClientType } from "../../../common/warcraft/wow-client-type";
 import { ElectronService } from "../../services";
 import { AddonService } from "../../services/addons/addon.service";
 import { SessionService } from "../../services/session/session.service";
@@ -22,10 +21,10 @@ import { WarcraftInstallationService } from "../../services/warcraft/warcraft-in
 import { DownloadCountPipe } from "../../pipes/download-count.pipe";
 import { RelativeDurationPipe } from "../../pipes/relative-duration-pipe";
 import { MatModule } from "../../modules/mat-module";
-import { WowInstallation } from "../../../common/warcraft/wow-installation";
-import { AddonChannelType } from "../../../common/wowup/models";
 import { PipesModule } from "../../modules/pipes.module";
 import { AddonProviderFactory } from "../../services/addons/addon.provider.factory";
+import { AddonChannelType, WowClientType } from "wowup-lib-core";
+import { WowInstallation } from "wowup-lib-core/lib/models";
 
 describe("GetAddonsComponent", () => {
   let component: GetAddonsComponent;
@@ -53,6 +52,7 @@ describe("GetAddonsComponent", () => {
             clientType: WowClientType.Retail,
             location: "C:/fake_wow",
             label: "Wow Unit Test Client",
+            displayName: "Wow Unit Test Client",
             defaultAutoUpdate: false,
             selected: true,
           };

@@ -1,5 +1,5 @@
+import { WowClientGroup, WowClientType } from "wowup-lib-core";
 import * as constants from "../constants";
-import { WowClientGroup, WowClientType } from "./wow-client-type";
 
 export function getWowClientFolderName(clientType: WowClientType): string {
   switch (clientType) {

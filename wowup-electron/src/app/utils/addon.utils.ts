@@ -1,6 +1,5 @@
 import { orderBy, filter } from "lodash";
-import { Addon, AddonExternalId } from "../../common/entities/addon";
-import { AddonDependency, AddonDependencyType } from "../../common/wowup/models";
+import { Addon, AddonDependency, AddonDependencyType, AddonExternalId } from "wowup-lib-core";
 
 export function getAllProviders(addon: Addon): AddonExternalId[] {
   return orderBy(addon.externalIds, ["providerName"], ["asc"]);
@@ -60,6 +59,10 @@ export function getGameVersion(interfaceStr: string | undefined): string {
   return chunks.map((c) => parseInt(c, 10)).join(".");
 }
 
+/**
+ * Accepts n semver (10.0.0) and formats it as an interface version (100000)
+ * if the format is invalid or missing throw error
+ */
 export function toInterfaceVersion(version: string): string {
   if (!version) {
     throw new Error("interface version empty or undefined");
@@ -71,7 +74,11 @@ export function toInterfaceVersion(version: string): string {
 
   const parts = version.split(".");
   if (parts.length != 3) {
-    throw new Error(`Cannot convert ${version} to interface format`);
+    console.warn(`invalid part length: ${parts.length} - ${version}`);
+    while (parts.length < 3) {
+      parts.push("0");
+    }
+    console.warn(`guessing version: ${parts.join(".")}`);
   }
 
   const paddedParts = parts.map((part, idx) => padInterfacePart(part, idx));

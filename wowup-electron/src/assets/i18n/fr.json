@@ -178,14 +178,14 @@
       "TOC_NAME_MISMATCH_TOOLTIP": "This addon's folder does not match the toc"
     },
     "CLIENT_TYPES": {
-      "BETA": "Beta",
-      "CLASSIC": "Classic",
-      "CLASSICBETA": "Beta Classic",
-      "CLASSICERA": "Classic Era",
-      "CLASSICERAPTR": "Classic Era PTR",
-      "CLASSICPTR": "PTR Classic",
-      "RETAIL": "Retail",
-      "RETAILPTR": "PTR Retail"
+      "BETA": "Bêta de Dragonflight",
+      "CLASSIC": "Wrath of the Lich King Classic",
+      "CLASSICBETA": "Bêta de Wrath of the Lich King Classic",
+      "CLASSICERA": "World of Warcraft Classic",
+      "CLASSICERAPTR": "Classic Season of Mastery PTR",
+      "CLASSICPTR": "Royaume public de test (Wrath of the Lich King Classic)",
+      "RETAIL": "Dragonflight",
+      "RETAILPTR": "Royaume public de test"
     },
     "DATES": {
       "DAYS_AGO": "il y a {count} {count, plural, one{jour} other{jours}}",
@@ -292,7 +292,7 @@
         "BURNING_CRUSADE_ASSET_NOT_FOUND": "No asset was found to download from {message}.\n\nA valid zip file ending with '-bc' is required in order for WowUp to download it.",
         "CLASSIC_ASSET_NOT_FOUND": "No asset was found to download from {message}.\n\nA valid zip file ending with '-classic' is required in order for WowUp to download it.",
         "FAILED_TO_CONNECT": "Impossible de se connecter à l'API, veuillez patienter quelques instants et réessayer.",
-        "INSTALL_FAILED": "Une erreur s'est produite lors de la tentative d'installation de l'addon, veuillez réessayer.\n\nSi ce message persiste, vous pouvez obtenir de l'aide sur Discord dans le canal #wowup-support.",
+        "INSTALL_FAILED": "Une erreur s'est produite lors de la tentative d'installation de l'addon, veuillez réessayer.\n\nSi ce message persiste, vous pouvez obtenir de l'aide sur Discord dans le canal #help-me.",
         "INVALID_URL": "La valeure rentrée n'est pas une URL valide. Exemples d'URL valides:\n\t- https://github.com/WowUp/WowUp.Addon\n\t- https://www.wowinterface.com/downloads/info25610-8.3-014.html\n\t- https://www.curseforge.com/wow/addons/altoholic",
         "NO_ADDON_FOUND": "Aucun addon n'a été trouvé, assurez-vous que votre URL pointe vers la bonne page.\n\nLors de l'installation à partir de github, veuillez vous assurer que le référentiel a une balise de version avec une archive zip contenant l'addon.",
         "NO_RELEASE_FOUND": "No releases were found for {message}.\n\nValid release with zip file assets are required for WowUp to download it.",
@@ -498,7 +498,12 @@
           "PLACEHOLDER": "Personal Access Token",
           "TITLE": "GitHub Personal Access Token"
         },
-        "TITLE": "Addons"
+        "TITLE": "Addons",
+        "WAGO_ACCESS_KEY": {
+          "MESSAGE": "Use the Wago provider without seeing advertisements. <a href=\"https://addons.wago.io/patreon\">Learn More</a>",
+          "PLACEHOLDER": "Access Key",
+          "TITLE": "Wago Access Key"
+        }
       },
       "APPLICATION": {
         "APP_RELEASE_CHANNEL_CONFIRMATION_DESCRIPTION_BETA": "Switching to the Beta channel will allow you to receive experimental builds that contain bug fixes, as well as new and upcoming features. you may only go back to the current stable version by uninstalling your existing app and re-installing from wowup.io.\n\nWhile the Beta channel is functional, use at your own risk.",
@@ -509,8 +514,6 @@
         "APP_RELEASE_CHANNEL_DROPDOWN_LABEL": "Channel",
         "APP_RELEASE_CHANNEL_LABEL": "Application Release Channel",
         "CURRENT_LANGUAGE_LABEL": "Langue actuelle",
-        "CURSE_PROTOCOL_DESCRIPTION": "When downloading addons from the CurseForge website, WowUp will handle the install",
-        "CURSE_PROTOCOL_LABEL": "Handle CurseForge download links",
         "ENABLE_APP_BADGE_DESCRIPTION": "Show a badge on the app icon with the number of addons with available updates.",
         "ENABLE_APP_BADGE_LABEL": "Enable app badge notification",
         "ENABLE_SYSTEM_NOTIFICATIONS_DESCRIPTION": "Activer les fenêtres contextuelles système comme la mise à jour auto des addons.",

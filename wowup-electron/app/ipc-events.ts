@@ -77,16 +77,16 @@ import {
   IPC_PUSH_SUBSCRIBE,
   IPC_WINDOW_IS_FULLSCREEN,
   IPC_WINDOW_IS_MAXIMIZED,
+  ZOOM_FACTOR_KEY,
 } from "../src/common/constants";
-import { Addon } from "../src/common/entities/addon";
 import { CopyFileRequest } from "../src/common/models/copy-file-request";
 import { DownloadRequest } from "../src/common/models/download-request";
 import { DownloadStatus } from "../src/common/models/download-status";
 import { DownloadStatusType } from "../src/common/models/download-status-type";
-import { FsDirent, FsStats, TreeNode } from "../src/common/models/ipc-events";
+import { FsDirent, TreeNode } from "../src/common/models/ipc-events";
 import { UnzipRequest } from "../src/common/models/unzip-request";
 import { RendererChannels } from "../src/common/wowup";
-import { MenuConfig, SystemTrayConfig, WowUpScanResult } from "../src/common/wowup/models";
+import { MenuConfig, SystemTrayConfig } from "../src/common/wowup/models";
 import { createAppMenu } from "./app-menu";
 import * as fsp from "fs/promises";
 
@@ -102,7 +102,7 @@ import {
   remove,
   zipFile,
 } from "./file.utils";
-import { addonStore } from "./stores";
+import { getAddonStore, getPreferenceStore } from "./stores";
 import { createTray } from "./system-tray";
 import { WowUpFolderScanner } from "./wowup-folder-scanner";
 import * as push from "./push";
@@ -110,6 +110,7 @@ import { GetDirectoryTreeRequest } from "../src/common/models/ipc-request";
 import { ProductDb } from "../src/common/wowup/product-db";
 import { restoreWindow } from "./window-state";
 import { firstValueFrom, from, mergeMap, toArray } from "rxjs";
+import { Addon, AddonScanResult, FsStats } from "wowup-lib-core";
 
 let PENDING_OPEN_URLS: string[] = [];
 
@@ -180,12 +181,6 @@ export function initializeIpcHandlers(window: BrowserWindow): void {
     log.error("webview-error", err, msg);
   });
 
-  // Just forward the token event out to the window
-  // this is not a handler, just a passive listener
-  ipcMain.on("wago-token-received", (evt, token) => {
-    window?.webContents?.send("wago-token-received", token);
-  });
-
   // Remove the pending URLs once read so they are only able to be gotten once
   handle(IPC_GET_PENDING_OPEN_URLS, (): string[] => {
     const urls = PENDING_OPEN_URLS;
@@ -241,7 +236,10 @@ export function initializeIpcHandlers(window: BrowserWindow): void {
   handle(IPC_SET_ZOOM_FACTOR, (evt, zoomFactor: number) => {
     if (window?.webContents) {
       window.webContents.zoomFactor = zoomFactor;
+    } else {
+      log.warn("could not set zoom factor, no web contents");
     }
+    getPreferenceStore().set(ZOOM_FACTOR_KEY, zoomFactor);
   });
 
   handle(IPC_ADDONS_SAVE_ALL, (evt, addons: Addon[]) => {
@@ -249,8 +247,19 @@ export function initializeIpcHandlers(window: BrowserWindow): void {
       return;
     }
 
+    const addonStore = getAddonStore();
+    if (addonStore === undefined) {
+      log.warn("IPC_ADDONS_SAVE_ALL failed, addon store undefined");
+      return;
+    }
+
     for (const addon of addons) {
-      addonStore.set(addon.id, addon);
+      if (typeof addon.id !== "string") {
+        log.warn("malformed addon not saved", addon);
+        continue;
+      }
+
+      addonStore?.set(addon.id, addon);
     }
   });
 
@@ -271,6 +280,7 @@ export function initializeIpcHandlers(window: BrowserWindow): void {
   });
 
   handle(IPC_SET_LOGIN_ITEM_SETTINGS, (evt, settings: Settings) => {
+    console.log("IPC_SET_LOGIN_ITEM_SETTINGS", settings);
     return app.setLoginItemSettings(settings);
   });
 
@@ -366,7 +376,7 @@ export function initializeIpcHandlers(window: BrowserWindow): void {
     return true;
   });
 
-  handle(IPC_WOWUP_GET_SCAN_RESULTS, async (evt, filePaths: string[]): Promise<WowUpScanResult[]> => {
+  handle(IPC_WOWUP_GET_SCAN_RESULTS, async (evt, filePaths: string[]): Promise<AddonScanResult[]> => {
     const taskResults = await firstValueFrom(
       from(filePaths).pipe(
         mergeMap((folder) => from(new WowUpFolderScanner(folder).scanFolder()), 3),
@@ -581,7 +591,11 @@ export function initializeIpcHandlers(window: BrowserWindow): void {
 
       try {
         const action = _dlMap.get(key);
-        action.call(null, evt, item, wc);
+        if (typeof action === "function") {
+          action?.call(null, evt, item, wc);
+        } else {
+          log.warn("could not call will-download action, undefined");
+        }
       } catch (e) {
         log.error(e);
       } finally {
@@ -656,7 +670,7 @@ export function initializeIpcHandlers(window: BrowserWindow): void {
 
           if (typeof arg.auth?.headers === "object") {
             for (const [key, value] of Object.entries(arg.auth.headers)) {
-              log.info(`Setting header: ${key}=${value}`);
+              log.info(`Setting header: ${key}=${value.substring(0, 3)}***`);
               req.setHeader(key, value);
             }
           }
@@ -712,9 +726,9 @@ export function initializeIpcHandlers(window: BrowserWindow): void {
 }
 
 // Adapted from https://github.com/thejoshwolfe/yauzl/blob/96f0eb552c560632a754ae0e1701a7edacbda389/examples/unzip.js#L124
-function handleZipFile(err: Error, zipfile: yauzl.ZipFile, targetDir: string): Promise<boolean> {
+function handleZipFile(err: Error | null, zipfile: yauzl.ZipFile, targetDir: string): Promise<boolean> {
   return new Promise((resolve, reject) => {
-    if (err) {
+    if (err !== null) {
       return reject(err);
     }
 

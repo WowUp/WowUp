@@ -3,17 +3,16 @@ import _ from "lodash";
 import { Injectable } from "@angular/core";
 import { nanoid } from "nanoid";
 
-import { Addon } from "../../../common/entities/addon";
-import { WowClientType } from "../../../common/warcraft/wow-client-type";
 import { getWowClientGroup } from "../../../common/warcraft";
-import { WowInstallation } from "../../../common/warcraft/wow-installation";
-import { getEnumName } from "../../utils/enum.utils";
+import { getEnumName } from "wowup-lib-core/lib/utils";
 import { AddonStorageService } from "../storage/addon-storage.service";
 import { WarcraftService } from "../warcraft/warcraft.service";
 import { AddonService } from "./addon.service";
 import { Subject } from "rxjs";
 import { AddonInstallState } from "../../models/wowup/addon-install-state";
 import { ElectronService } from "..";
+import { Addon, WowClientType } from "wowup-lib-core";
+import { WowInstallation } from "wowup-lib-core/lib/models";
 
 export type ExportReleaseType = "stable" | "beta" | "alpha";
 export type ImportState = "no-change" | "added" | "conflict";
@@ -130,7 +129,10 @@ export class AddonBrokerService {
     return importJson;
   }
 
-  public async installImportSummary(importSummary: ImportSummary, installation: WowInstallation): Promise<void> {
+  public async installImportSummary(
+    importSummary: ImportSummary,
+    installation: WowInstallation
+  ): Promise<void> {
     const comps = importSummary.comparisons.filter((comp) => comp.state === "added");
 
     const tasks = comps.map((comp) => {
@@ -157,7 +159,10 @@ export class AddonBrokerService {
     await Promise.all(tasks);
   }
 
-  public async getImportSummary(exportPayload: ExportPayload, installation: WowInstallation): Promise<ImportSummary> {
+  public async getImportSummary(
+    exportPayload: ExportPayload,
+    installation: WowInstallation
+  ): Promise<ImportSummary> {
     const summary: ImportSummary = {
       addedCt: 0,
       conflictCt: 0,

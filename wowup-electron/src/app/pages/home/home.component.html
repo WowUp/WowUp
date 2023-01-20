@@ -13,7 +13,11 @@
       [disablePagination]="true"
       [selectedIndex]="sessionService.selectedHomeTab$ | async"
     >
-      <mat-tab class='h-100' [disabled]="hasWowClient !== true" [label]="'PAGES.HOME.MY_ADDONS_TAB_TITLE' | translate">
+      <mat-tab
+        bodyClass="mat-tab-my-addons"
+        [disabled]="hasWowClient !== true"
+        [label]="'PAGES.HOME.MY_ADDONS_TAB_TITLE' | translate"
+      >
         <app-my-addons [tabIndex]="TAB_INDEX_MY_ADDONS"></app-my-addons>
       </mat-tab>
       <mat-tab [disabled]="hasWowClient !== true" [label]="'PAGES.HOME.GET_ADDONS_TAB_TITLE' | translate">

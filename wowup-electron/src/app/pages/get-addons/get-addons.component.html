@@ -113,7 +113,7 @@
         [columnDefs]="columnDefs$ | async"
         [columnTypes]="columnTypes"
         [rowSelection]="'single'"
-        [frameworkComponents]="frameworkComponents"
+        [suppressMultiSort]="true"
         [overlayNoRowsTemplate]="overlayNoRowsTemplate"
         [rowHeight]="63"
         (rowDoubleClicked)="onRowDoubleClicked($event)"

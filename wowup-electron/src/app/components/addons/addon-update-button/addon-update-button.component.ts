@@ -4,13 +4,13 @@ import { filter } from "rxjs/operators";
 import { ChangeDetectorRef, Component, EventEmitter, Input, OnDestroy, OnInit, Output } from "@angular/core";
 import { TranslateService } from "@ngx-translate/core";
 
-import { WowClientType } from "../../../../common/warcraft/wow-client-type";
 import { AddonViewModel } from "../../../business-objects/addon-view-model";
 import { AddonInstallState } from "../../../models/wowup/addon-install-state";
 import { AddonUpdateEvent } from "../../../models/wowup/addon-update-event";
 import { AddonService } from "../../../services/addons/addon.service";
-import { getEnumName } from "../../../utils/enum.utils";
+import { getEnumName } from "wowup-lib-core/lib/utils";
 import { ADDON_PROVIDER_UNKNOWN } from "../../../../common/constants";
+import { WowClientType } from "wowup-lib-core";
 
 @Component({
   selector: "app-addon-update-button",
@@ -101,18 +101,18 @@ export class AddonUpdateButtonComponent implements OnInit, OnDestroy {
 
   public async onInstallUpdateClick(): Promise<void> {
     try {
-      if (!this.listItem?.addon?.id) {
+      if (this.listItem?.addon?.id === undefined) { 
         throw new Error("Invalid list item addon");
       }
 
       if (this.listItem.needsUpdate()) {
-        await this._addonService.updateAddon(this.listItem.addon.id);
+        await this._addonService.updateAddon(this.listItem.addon);
       } else {
-        await this._addonService.installAddon(this.listItem.addon.id);
+        await this._addonService.installAddon(this.listItem.addon);
       }
     } catch (e) {
       console.error(e);
-    }
+    } 
   }
 
   public getStatusText(): string {

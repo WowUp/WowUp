@@ -52,6 +52,14 @@ export class CircuitBreakerWrapper {
     return this._state === "open";
   }
 
+  public enable() {
+    this._cb.enable();
+  }
+
+  public close() {
+    this._cb.close();
+  }
+
   public async fire<TOUT>(action: () => Promise<TOUT>): Promise<TOUT> {
     return (await this._cb.fire(action)) as TOUT;
   }

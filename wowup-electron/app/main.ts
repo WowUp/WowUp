@@ -1,4 +1,4 @@
-import { app, BrowserWindow, BrowserWindowConstructorOptions, powerMonitor } from "electron";
+import { app, BrowserWindow, BrowserWindowConstructorOptions, dialog, powerMonitor } from "electron";
 import * as log from "electron-log";
 import { find } from "lodash";
 import * as minimist from "minimist";
@@ -25,6 +25,8 @@ import {
   IPC_WINDOW_MAXIMIZED,
   IPC_WINDOW_MINIMIZED,
   IPC_WINDOW_UNMAXIMIZED,
+  START_MINIMIZED_PREFERENCE_KEY,
+  START_WITH_SYSTEM_PREFERENCE_KEY,
   USE_HARDWARE_ACCELERATION_PREFERENCE_KEY,
   WINDOW_DEFAULT_HEIGHT,
   WINDOW_DEFAULT_WIDTH,
@@ -39,7 +41,8 @@ import { initializeIpcHandlers, setPendingOpenUrl } from "./ipc-events";
 import * as platform from "./platform";
 import { initializeDefaultPreferences } from "./preferences";
 import { PUSH_NOTIFICATION_EVENT, pushEvents } from "./push";
-import { initializeStoreIpcHandlers, preferenceStore } from "./stores";
+import { getPreferenceStore, initializeStoreIpcHandlers } from "./stores";
+import { wagoHandler } from "./wago-handler";
 import * as windowState from "./window-state";
 
 // LOGGING SETUP
@@ -47,7 +50,7 @@ import * as windowState from "./window-state";
 const LOG_PATH = join(app.getPath("userData"), "logs");
 app.setAppLogsPath(LOG_PATH);
 log.transports.file.resolvePath = (variables: log.PathVariables) => {
-  return join(LOG_PATH, variables.fileName);
+  return join(LOG_PATH, variables.fileName ?? "log-file.txt");
 };
 log.info("Main starting");
 log.info(`Electron: ${process.versions.electron}`);
@@ -81,7 +84,7 @@ const USER_AGENT = getUserAgent();
 log.info("USER_AGENT", USER_AGENT);
 
 let appIsQuitting = false;
-let win: BrowserWindow = null;
+let win: BrowserWindow | null = null;
 let loadFailCount = 0;
 
 initializeDefaultPreferences();
@@ -96,7 +99,7 @@ app.setAsDefaultProtocolClient(APP_PROTOCOL_NAME);
 app.setAppUserModelId(APP_USER_MODEL_ID);
 
 // HARDWARE ACCELERATION SETUP
-if (preferenceStore.get(USE_HARDWARE_ACCELERATION_PREFERENCE_KEY) === "false") {
+if (getPreferenceStore().get(USE_HARDWARE_ACCELERATION_PREFERENCE_KEY) === "false") {
   log.info("Hardware acceleration disabled");
   app.disableHardwareAcceleration();
 } else {
@@ -182,7 +185,9 @@ app.on("activate", () => {
 
 app.on("child-process-gone", (e, details) => {
   log.warn("child-process-gone", inspect(details));
-  if (details.reason === "killed") {
+  if (details.reason === "crashed") {
+    onChildProcessCrashed(details);
+  } else if (details.reason === "killed") {
     app.quit();
   }
 });
@@ -190,7 +195,7 @@ app.on("child-process-gone", (e, details) => {
 // See https://www.electronjs.org/docs/api/app#event-open-url-macos
 if (platform.isMac) {
   app.on("open-url", (evt, url) => {
-    log.info(`Open url recieved ${url}`);
+    log.info(`Open url received ${url}`);
 
     // If we did get a custom protocol notify the app
     if (isProtocol(url)) {
@@ -223,6 +228,30 @@ powerMonitor.on("unlock-screen", () => {
 });
 
 let lastCrash = 0;
+
+const crashMap = new Map<string, number>();
+const exitOnCrashServices = ["network.mojom.NetworkService"];
+/** If a particular child process crashes too many times, notify the user and exit the app to attempt preventing softlock of system */
+function onChildProcessCrashed(details: Electron.Details) {
+  if (typeof details.serviceName !== "string") {
+    return;
+  }
+  if (!exitOnCrashServices.includes(details.serviceName)) {
+    return;
+  }
+
+  let ct = crashMap.get(details.serviceName) ?? 0;
+  ct += 1;
+  crashMap.set(details.serviceName, ct);
+
+  if (ct >= 3) {
+    dialog.showErrorBox(
+      "Child Process Failure",
+      `Child process ${details.serviceName} has crashed too many times, app will now exit`
+    );
+    app.quit();
+  }
+}
 
 function createWindow(): BrowserWindow {
   if (win) {
@@ -282,20 +311,22 @@ function createWindow(): BrowserWindow {
 
   initializeIpcHandlers(win);
   initializeStoreIpcHandlers();
+  wagoHandler.initialize(win);
 
   pushEvents.on(PUSH_NOTIFICATION_EVENT, (data) => {
-    win.webContents.send(IPC_PUSH_NOTIFICATION, data);
+    win?.webContents.send(IPC_PUSH_NOTIFICATION, data);
   });
 
   win.on("blur", () => {
-    win.webContents.send("blur");
+    win?.webContents.send("blur");
   });
 
   win.on("focus", () => {
-    win.webContents.send("focus");
+    win?.webContents.send("focus");
   });
 
   win.webContents.userAgent = USER_AGENT;
+  win.webContents.setAudioMuted(true);
 
   win.webContents.on("will-attach-webview", (evt, webPreferences) => {
     log.debug("will-attach-webview");
@@ -309,16 +340,12 @@ function createWindow(): BrowserWindow {
   win.webContents.on("did-attach-webview", (evt, webContents) => {
     webContents.session.setUserAgent(webContents.userAgent);
 
-    webContents.on("preload-error", (evt) => {
-      log.error("[webview] preload-error", evt);
-    });
-
-    webContents.on("did-fail-provisional-load", (evt) => {
-      log.error("[webview] did-fail-provisional-load", evt);
+    webContents.on("preload-error", (evt, path, e) => {
+      log.error("[webview] preload-error", e.message);
     });
 
     webContents.session.setPermissionRequestHandler((contents, permission, callback) => {
-      log.warn("setPermissionRequestHandler", permission);
+      log.warn("[webview] setPermissionRequestHandler", permission);
       return callback(false);
     });
 
@@ -327,33 +354,15 @@ function createWindow(): BrowserWindow {
         return true;
       }
 
-      log.warn("setPermissionCheckHandler", permission, origin);
+      log.warn("[webview] setPermissionCheckHandler", permission, origin);
       return false;
     });
 
-    webContents.on("did-fail-load", (evt, code, desc, url) => {
-      log.error("[webview] did-fail-load", code, desc, url);
-      setTimeout(() => {
-        log.error("[webview] reload");
-        webContents.reload();
-      }, 2000);
-    });
-
-    webContents.on("will-navigate", (evt, url) => {
-      log.debug("[webview] will-navigate", url);
-      if (webContents.getURL() === url) {
-        log.debug(`[webview] reload detected`);
-      } else {
-        evt.preventDefault(); // block the webview from navigating at all
+    webContents.on("did-start-navigation", (evt, url) => {
+      if (url === "https://addons.wago.io/wowup_ad") {
+        log.debug("[webview] did-start-navigation", url);
+        wagoHandler.initializeWebContents(webContents);
       }
-    });
-
-    // webview allowpopups must be enabled for any link to work
-    // https://www.electronjs.org/docs/latest/api/webview-tag#allowpopups
-    webContents.setWindowOpenHandler((details) => {
-      log.debug("[webview] setWindowOpenHandler");
-      win.webContents.send("webview-new-window", details); // forward this new window to the app for processing
-      return { action: "deny" };
     });
   });
 
@@ -401,31 +410,27 @@ function createWindow(): BrowserWindow {
       return;
     }
 
-    // win.webContents.session.setPermissionRequestHandler((contents, permission, callback) => {
-    //   log.warn("win setPermissionRequestHandler", permission);
-    //   return callback(false);
-    // });
+    win?.webContents.session.setPermissionRequestHandler((contents, permission, callback) => {
+      log.warn("win setPermissionRequestHandler", permission);
+      return callback(false);
+    });
 
-    // win.webContents.session.setPermissionCheckHandler((contents, permission, origin) => {
-    //   log.warn("win setPermissionCheckHandler", permission, origin);
-    //   return false;
-    // });
+    win?.webContents.session.setPermissionCheckHandler((contents, permission, origin) => {
+      log.warn("win setPermissionCheckHandler", permission, origin);
+      return false;
+    });
 
-    win.show();
+    win?.show();
   });
 
   win.once("show", () => {
     // win.webContents.openDevTools();
 
     if (windowState.wasFullScreen()) {
-      win.setFullScreen(true);
+      win?.setFullScreen(true);
     }
 
     appUpdater.checkForUpdates().catch((e) => console.error(e));
-
-    win.on("show", () => {
-      // win?.webContents?.send(IPC_WINDOW_RESUME);
-    });
   });
 
   if (platform.isLinux || platform.isWin) {
@@ -439,13 +444,13 @@ function createWindow(): BrowserWindow {
   }
 
   win.on("close", (e) => {
-    if (appIsQuitting || preferenceStore.get(COLLAPSE_TO_TRAY_PREFERENCE_KEY) !== "true") {
+    if (appIsQuitting || getPreferenceStore().get(COLLAPSE_TO_TRAY_PREFERENCE_KEY) !== "true") {
       pushEvents.removeAllListeners(PUSH_NOTIFICATION_EVENT);
       return;
     }
     e.preventDefault();
-    win.hide();
-    win.setSkipTaskbar(true);
+    win?.hide();
+    win?.setSkipTaskbar(true);
 
     if (platform.isMac) {
       app.setBadgeCount(0);
@@ -502,9 +507,13 @@ function createWindow(): BrowserWindow {
   return win;
 }
 
-function loadMainUrl(window: BrowserWindow) {
+async function loadMainUrl(window: BrowserWindow | null): Promise<void> {
+  if (window === null) {
+    return;
+  }
+
   const url = pathToFileURL(join(__dirname, "..", "dist", "index.html"));
-  return window?.loadURL(url.toString());
+  return await window?.loadURL(url.toString());
 }
 
 async function onActivate() {
@@ -521,12 +530,25 @@ async function onActivate() {
 }
 
 function getBackgroundColor() {
-  const savedTheme = preferenceStore.get(CURRENT_THEME_KEY) as string;
+  const savedTheme = getPreferenceStore().get(CURRENT_THEME_KEY) as string | undefined;
   return savedTheme && savedTheme.indexOf("light") !== -1 ? DEFAULT_LIGHT_BG_COLOR : DEFAULT_BG_COLOR;
 }
 
 function canStartHidden() {
-  return argv.hidden || app.getLoginItemSettings().wasOpenedAsHidden;
+  const prefStore = getPreferenceStore();
+  const systemStart = prefStore?.get(START_WITH_SYSTEM_PREFERENCE_KEY) as string | undefined;
+  const startMin = prefStore?.get(START_MINIMIZED_PREFERENCE_KEY) as string | undefined;
+
+  console.log(`START_WITH_SYSTEM_PREFERENCE_KEY: ${systemStart}`);
+  console.log(`START_MINIMIZED_PREFERENCE_KEY: ${startMin}`);
+
+  const loginItems = app.getLoginItemSettings();
+  if (Array.isArray(loginItems?.launchItems)) {
+    loginItems?.launchItems.forEach((li) => {
+      console.log(`launchItem: ${li.name} args -> ${li.args.join(",")}`);
+    });
+  }
+  return argv.hidden || loginItems.wasOpenedAsHidden;
 }
 
 function getUserAgent() {

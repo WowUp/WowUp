@@ -178,14 +178,14 @@
       "TOC_NAME_MISMATCH_TOOLTIP": "Der Ordner dieses Addons stimmt nicht mit der TOC-Datei überein"
     },
     "CLIENT_TYPES": {
-      "BETA": "Beta",
-      "CLASSIC": "Classic",
-      "CLASSICBETA": "Classic Beta",
-      "CLASSICERA": "Classic Era",
-      "CLASSICERAPTR": "Classic Era PTR",
-      "CLASSICPTR": "Classic PTR",
-      "RETAIL": "Retail",
-      "RETAILPTR": "Retail PTR"
+      "BETA": "Beta von Dragonflight",
+      "CLASSIC": "Wrath of the Lich King Classic",
+      "CLASSICBETA": "Beta von Wrath of the Lich King Classic",
+      "CLASSICERA": "World of Warcraft Classic",
+      "CLASSICERAPTR": "Classic Season of Mastery PTR",
+      "CLASSICPTR": "Öffentlicher Testrealm (Wrath Classic)",
+      "RETAIL": "Dragonflight",
+      "RETAILPTR": "Öffentlicher Testrealm (PTR)"
     },
     "DATES": {
       "DAYS_AGO": "Vor {count} {count, plural, one{Tag} other{Tagen}}",
@@ -218,7 +218,7 @@
       }
     },
     "ERRORS": {
-      "ACCOUNT_PUSH_TOGGLE_FAILED_ERROR": "Sofortige Updates für deinen Account konnte nicht eingeschaltet werden. Bitte versuche es später erneut oder schreibe uns auf Discord.",
+      "ACCOUNT_PUSH_TOGGLE_FAILED_ERROR": "Sofortige Updates für deinen Account konnten nicht eingeschaltet werden. Bitte versuche es später erneut oder schreibe uns auf Discord.",
       "ADDON_INSTALL_ERROR": "Addon '{addonName}' konnte nicht installiert werden. Versuche es später erneut.",
       "ADDON_SCAN_ERROR": "Beim Abgleichen deiner Addon-Ordner mit {providerName} ist ein Fehler aufgetreten. Versuche es später erneut.",
       "ADDON_SYNC_ERROR": "Beim Überprüfen auf Aktualisierungen von '{providerName}' ist ein Fehler aufgetreten.",
@@ -292,7 +292,7 @@
         "BURNING_CRUSADE_ASSET_NOT_FOUND": "Es wurde kein Asset zum Herunterladen von {message} gefunden.\n\nEine gültige Zip-Datei mit der Endung '-bc' muss in dem Release enthalten sein, damit WowUp diese herunterladen kann.",
         "CLASSIC_ASSET_NOT_FOUND": "Es wurde kein Asset zum Herunterladen von {message} gefunden.\n\nEine gültige Zip-Datei mit der Endung '-classic' muss in dem Release enthalten sein, damit WowUp diese herunterladen kann.",
         "FAILED_TO_CONNECT": "Keine Verbindung mit der API möglich, warte ein wenig und versuche es erneut.",
-        "INSTALL_FAILED": "Beim Versuch das Addon zu installieren ist etwas schief gelaufen, bitte versuche es erneut.\n\nWenn diese Nachricht weiterhin erscheint, kannst Du auf unserem Discord im Kanal #wowup-support nach Hilfe fragen.",
+        "INSTALL_FAILED": "Beim Versuch das Addon zu installieren ist etwas schief gelaufen, bitte versuche es erneut.\n\nWenn diese Nachricht weiterhin erscheint, kannst Du auf unserem Discord im Kanal #help-me nach Hilfe fragen.",
         "INVALID_URL": "Die eingetragene URL ist ungültig. Beispiele für gültige URLs sind:\n\t- https://github.com/WowUp/WowUp.Addon\n\t- https://www.wowinterface.com/downloads/info25610-8.3-014.html\n\t- https://www.curseforge.com/wow/addons/altoholic",
         "NO_ADDON_FOUND": "Es wurde kein Addon gefunden. Stelle sicher, dass die URL zur richtigen Website führt.\n\nSolltest Du versuchen ein Addon von GitHub zu installieren, stelle sicher, dass das Repository Release-Tags mit einem ZIP-Archiv, welches das Addon enthält, besitzt.",
         "NO_RELEASE_FOUND": "Es wurde kein Release für {message} gefunden.\n\nEin gültiges Release mit Zip-Datei-Assets ist erforderlich, damit WowUp sie herunterladen kann.",
@@ -422,7 +422,7 @@
         "PATREON": "Unterstütze den Autor auf Patreon",
         "PAYPAL": "Unterstütze den Autor auf PayPal"
       },
-      "IMPORT_EXPORT_ADDONS_BUTTON": "Import/Export Addons",
+      "IMPORT_EXPORT_ADDONS_BUTTON": "Addons importieren/exportieren",
       "MULTIPLE_PROVIDERS_TOOLTIP": "Dieses Addon hat mehrere Anbieter",
       "PAGE_CONTEXT_FOOTER": {
         "ADDONS_INSTALLED": "{count} {count, plural, =1{Addon} other{Addons}}",
@@ -498,7 +498,12 @@
           "PLACEHOLDER": "Persönliches Zugriffstoken",
           "TITLE": "Persönliches GitHub-Zugriffstoken"
         },
-        "TITLE": "Addons"
+        "TITLE": "Addons",
+        "WAGO_ACCESS_KEY": {
+          "MESSAGE": "Use the Wago provider without seeing advertisements. <a href=\"https://addons.wago.io/patreon\">Learn More</a>",
+          "PLACEHOLDER": "Access Key",
+          "TITLE": "Wago Access Key"
+        }
       },
       "APPLICATION": {
         "APP_RELEASE_CHANNEL_CONFIRMATION_DESCRIPTION_BETA": "Wenn du zum Beta-Kanal wechseln, erhälst du experimentelle Builds, die Fehlerbehebungen sowie neue und kommende Funktionen enthalten. Du kannst nur zur aktuellen stabilen Version zurückkehren, indem du deine vorhandene Anwendung deinstallierst und von wowup.io neu installierst.\n\nSolange der Beta-Kanal funktionsfähig ist, verwende ihn auf eigene Gefahr.",
@@ -509,8 +514,6 @@
         "APP_RELEASE_CHANNEL_DROPDOWN_LABEL": "Kanal",
         "APP_RELEASE_CHANNEL_LABEL": "App-Release-Kanal",
         "CURRENT_LANGUAGE_LABEL": "Aktuelle Sprache",
-        "CURSE_PROTOCOL_DESCRIPTION": "Beim Herunterladen von Addons von der CurseForge-Website übernimmt WowUp die Installation",
-        "CURSE_PROTOCOL_LABEL": "CurseForge-Download-Links verarbeiten",
         "ENABLE_APP_BADGE_DESCRIPTION": "Zeigt auf dem App-Symbol einen Zähler, mit der Anzahl an verfügbaren Updates an.",
         "ENABLE_APP_BADGE_LABEL": "App-Badge-Benachrichtigung aktivieren",
         "ENABLE_SYSTEM_NOTIFICATIONS_DESCRIPTION": "Aktivieren/Deaktivieren verschiedener Systembenachrichtigungen",

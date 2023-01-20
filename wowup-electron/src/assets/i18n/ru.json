@@ -178,14 +178,14 @@
       "TOC_NAME_MISMATCH_TOOLTIP": "Папка этой модификации не соответствует названию"
     },
     "CLIENT_TYPES": {
-      "BETA": "Бета",
-      "CLASSIC": "Классический",
-      "CLASSICBETA": "Классический Бета",
-      "CLASSICERA": "Эпоха классики",
-      "CLASSICERAPTR": "Эпоха классики PTR",
-      "CLASSICPTR": "Классический PTR",
-      "RETAIL": "Актуальный",
-      "RETAILPTR": "Актуальный PTR"
+      "BETA": "Бета Dragonflight",
+      "CLASSIC": "Wrath of the Lich King Classic",
+      "CLASSICBETA": "Бета Wrath of the Lich King Classic",
+      "CLASSICERA": "World of Warcraft Classic",
+      "CLASSICERAPTR": "Classic Season of Mastery PTR",
+      "CLASSICPTR": "PTR (Wrath Classic)",
+      "RETAIL": "Dragonflight",
+      "RETAILPTR": "Тестовый игровой мир (PTR)"
     },
     "DATES": {
       "DAYS_AGO": "{count} {count, plural, one{день} few{дня} other{дней}} назад",
@@ -292,7 +292,7 @@
         "BURNING_CRUSADE_ASSET_NOT_FOUND": "Не найдено ресурсов для загрузки из {message}.\n\nНеобходим верный .zip файл с окончанием '-bc', чтобы WowUp мог загрузить его.",
         "CLASSIC_ASSET_NOT_FOUND": "Не найдено ресурсов для загрузки из {message}.\n\nНеобходим верный .zip файл с окончанием '-classic', чтобы WowUp мог загрузить его.",
         "FAILED_TO_CONNECT": "Не удается подключиться к API, подождите немного и повторите попытку.",
-        "INSTALL_FAILED": "Что-то пошло не так при попытке установить модификацию, попытайтесь снова.\n\nЕсли это сообщение продолжает появляться, Вы можете получить помощь в канале #wowup-support нашего Discord сообщества.",
+        "INSTALL_FAILED": "Что-то пошло не так при попытке установить модификацию, попытайтесь снова.\n\nЕсли это сообщение продолжает появляться, Вы можете получить помощь в канале #help-me нашего Discord сообщества.",
         "INVALID_URL": "Введённое значение не является правильной ссылкой. Примеры правильных ссылок для модификаций:\n\t- https://github.com/WowUp/WowUp.Addon\n\t- https://www.wowinterface.com/downloads/info25610-8.3-014.html\n\t- https://www.curseforge.com/wow/addons/altoholic",
         "NO_ADDON_FOUND": "Модификация не была найдена, убедитесь, что Ваша ссылка указывает на правильную страницу.\n\nПри установке с GitHub, убедитесь, что в репозитории есть тег выпуска с zip-архивом, содержащим модификацию.",
         "NO_RELEASE_FOUND": "Не найдено выпусков для {message}.\n\nНеобходим верный выпуск с ресурсами в .zip файле, чтобы WowUp мог загрузить его.",
@@ -498,7 +498,12 @@
           "PLACEHOLDER": "Токен личного доступа",
           "TITLE": "Токен личного доступа к GitHub"
         },
-        "TITLE": "Модификации"
+        "TITLE": "Модификации",
+        "WAGO_ACCESS_KEY": {
+          "MESSAGE": "Use the Wago provider without seeing advertisements. <a href=\"https://addons.wago.io/patreon\">Learn More</a>",
+          "PLACEHOLDER": "Access Key",
+          "TITLE": "Wago Access Key"
+        }
       },
       "APPLICATION": {
         "APP_RELEASE_CHANNEL_CONFIRMATION_DESCRIPTION_BETA": "Переключение на канал Бета позволит Вам получать экспериментальные сборки, которые содержат исправления неполадок, а также новые и грядущие возможности. Вы сможете вернуться к текущей стабильной версии лишь удалив Ваше существующее приложение и переустановив его с wowup.io.\n\nПоскольку канал Бета содержит версии, находящиеся в разработке, используйте его на свой страх и риск.",
@@ -509,8 +514,6 @@
         "APP_RELEASE_CHANNEL_DROPDOWN_LABEL": "Канал",
         "APP_RELEASE_CHANNEL_LABEL": "Канал выпуска приложения",
         "CURRENT_LANGUAGE_LABEL": "Текущий язык",
-        "CURSE_PROTOCOL_DESCRIPTION": "При загрузке модификаций с сайта CurseForge, WowUp будет брать установку на себя.",
-        "CURSE_PROTOCOL_LABEL": "Обрабатывать ссылки на установку с CurseForge",
         "ENABLE_APP_BADGE_DESCRIPTION": "Показывать количество доступных обновлений на значке приложения.",
         "ENABLE_APP_BADGE_LABEL": "Включить уведомления на значке приложения",
         "ENABLE_SYSTEM_NOTIFICATIONS_DESCRIPTION": "Включить различные окна системных уведомлений, такие как автоматически обновлённые модификации.",

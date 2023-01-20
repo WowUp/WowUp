@@ -18,7 +18,7 @@
   --secondary-color: rgb(108, 117, 125);
 }
 
-$md-wowup-pallette: (
+$md-wowup-palette: (
   50: #e8eaf6,
   100: #6b69d6,
   200: #504fa1,
@@ -54,8 +54,8 @@ $md-wowup-pallette: (
 // Define the palettes for your theme using the Material Design palettes available in palette.scss
 // (imported above). For each palette, you can optionally specify a default, lighter, and darker
 // hue. Available color palettes: https://material.io/design/color/
-$wowup-default-primary: mat.define-palette($md-wowup-pallette, 100, 50, 300);
-$wowup-default-accent: mat.define-palette($md-wowup-pallette, A200, A100, A400);
+$wowup-default-primary: mat.define-palette($md-wowup-palette, 100, 50, 300);
+$wowup-default-accent: mat.define-palette($md-wowup-palette, A200, A100, A400);
 
 // The warn palette is optional (defaults to red).
 $wowup-default-warn: mat.define-palette(mat.$red-palette);
@@ -92,7 +92,7 @@ $wowup-light-theme: mat.define-light-theme(
 }
 
 // Horde theme
-$horde-pallette: (
+$horde-palette: (
   50: #e8eaf6,
   100: $horde-red-1,
   200: #504fa1,
@@ -124,8 +124,8 @@ $horde-pallette: (
     A700: #ffffff,
   ),
 );
-$horde-primary: mat.define-palette($horde-pallette, 100, 50, 300);
-$horde-accent: mat.define-palette($horde-pallette, A200, A100, A400);
+$horde-primary: mat.define-palette($horde-palette, 100, 50, 300);
+$horde-accent: mat.define-palette($horde-palette, A200, A100, A400);
 $horde-warn: mat.define-palette(mat.$deep-orange-palette);
 $horde-theme: mat.define-dark-theme(
   (
@@ -156,7 +156,7 @@ $horde-theme-light: mat.define-light-theme(
 }
 
 // Alliance theme
-$alliance-pallette: (
+$alliance-palette: (
   50: #e8eaf6,
   100: $alliance-blue-1,
   200: $alliance-blue-2,
@@ -188,8 +188,8 @@ $alliance-pallette: (
     A700: #ffffff,
   ),
 );
-$alliance-primary: mat.define-palette($alliance-pallette, 100, 50, 300);
-$alliance-accent: mat.define-palette($alliance-pallette, A200, A100, A400);
+$alliance-primary: mat.define-palette($alliance-palette, 100, 50, 300);
+$alliance-accent: mat.define-palette($alliance-palette, A200, A100, A400);
 $alliance-warn: mat.define-palette(mat.$deep-orange-palette);
 $alliance-theme: mat.define-dark-theme(
   (

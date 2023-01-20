@@ -7,13 +7,12 @@ import { Component, NgZone, OnDestroy } from "@angular/core";
 import { MatDialog } from "@angular/material/dialog";
 import { TranslateService } from "@ngx-translate/core";
 
-import { Addon } from "../../../../common/entities/addon";
-import { AddonWarningType } from "../../../../common/wowup/models";
 import { AddonViewModel } from "../../../business-objects/addon-view-model";
 import { AddonInstallState } from "../../../models/wowup/addon-install-state";
 import { AddonService } from "../../../services/addons/addon.service";
 import * as AddonUtils from "../../../utils/addon.utils";
 import { AlertDialogComponent } from "../../common/alert-dialog/alert-dialog.component";
+import { Addon, AddonWarningType } from "wowup-lib-core";
 
 @Component({
   selector: "app-my-addon-status-cell",

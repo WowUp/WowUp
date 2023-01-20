@@ -178,14 +178,14 @@
       "TOC_NAME_MISMATCH_TOOLTIP": "This addon's folder does not match the toc"
     },
     "CLIENT_TYPES": {
-      "BETA": "Beta",
-      "CLASSIC": "Classic",
-      "CLASSICBETA": "Classic Beta",
-      "CLASSICERA": "Classic Era",
-      "CLASSICERAPTR": "Classic Era PTR",
-      "CLASSICPTR": "Classic PTR",
-      "RETAIL": "Retail",
-      "RETAILPTR": "Retail PTR"
+      "BETA": "Beta de Dragonflight",
+      "CLASSIC": "Wrath of the Lich King Classic",
+      "CLASSICBETA": "Beta de Wrath of the Lich King Classic",
+      "CLASSICERA": "World of Warcraft Classic",
+      "CLASSICERAPTR": "Classic Season of Mastery PTR",
+      "CLASSICPTR": "Reino de Teste Público (Wrath Classic)",
+      "RETAIL": "Dragonflight",
+      "RETAILPTR": "Reino de Teste Público"
     },
     "DATES": {
       "DAYS_AGO": "{count} {count, plural, one{dia} other{dias}} atrás",
@@ -292,7 +292,7 @@
         "BURNING_CRUSADE_ASSET_NOT_FOUND": "Nenhum recurso encontrado para download de {message}.\n\nUm arquivo zip válido terminando com '-bc' é necessário para que o WowUp possa fazer o download.",
         "CLASSIC_ASSET_NOT_FOUND": "Nenhum recurso encontrado para download de {message}.\n\nUm arquivo zip válido terminando com '-classic' é necessário para que o WowUp possa fazer o download.",
         "FAILED_TO_CONNECT": "Não foi possível conectar à API, por favor espere um pouco e tente novamente.",
-        "INSTALL_FAILED": "Algo deu errado ao tentar instalar o Addon, por favor tente novamente.\n\nSe esta mensagem continuar aparecendo, você pode conseguir ajuda no Discord no canal #wowup-support.",
+        "INSTALL_FAILED": "Algo deu errado ao tentar instalar o Addon, por favor tente novamente.\n\nSe esta mensagem continuar aparecendo, você pode conseguir ajuda no Discord no canal #help-me.",
         "INVALID_URL": "O valor fornecido não é uma URL válida. Exemplos de URLs de Addon válidos são:\n\t- https://github.com/WowUp/WowUp.Addon\n\t- https://www.wowinterface.com/downloads/info25610-8.3-014.html\n\t- https://www.curseforge.com/wow/addons/altoholic",
         "NO_ADDON_FOUND": "O Addon não foi encontrado, tenha certeza de que a URL está apontando para a página correta.\n\nQuanto estiver instalando do github, certifique-se de que o repositório possui uma tag release com um arquivo zip contendo o Addon.",
         "NO_RELEASE_FOUND": "Nenhum release foi encontrado para {message}.\n\nRelease válido com recursos em arquivo zip são necessários para que o WowUp possa fazer o download.",
@@ -498,7 +498,12 @@
           "PLACEHOLDER": "Personal Access Token",
           "TITLE": "GitHub Personal Access Token"
         },
-        "TITLE": "Addons"
+        "TITLE": "Addons",
+        "WAGO_ACCESS_KEY": {
+          "MESSAGE": "Use the Wago provider without seeing advertisements. <a href=\"https://addons.wago.io/patreon\">Learn More</a>",
+          "PLACEHOLDER": "Access Key",
+          "TITLE": "Wago Access Key"
+        }
       },
       "APPLICATION": {
         "APP_RELEASE_CHANNEL_CONFIRMATION_DESCRIPTION_BETA": "Mudar para o canal Beta irá permitir que você receba builds experimentais que podem conter correções de bug, assim como novos e os próximos recursos. Você só pode voltar para a atual versão estável desinstalando o seu app existence e reinstalando de wowup.io.\n\nEnquanto o canal beta estiver funcional, use por sua conta e risco.",
@@ -509,8 +514,6 @@
         "APP_RELEASE_CHANNEL_DROPDOWN_LABEL": "Canal",
         "APP_RELEASE_CHANNEL_LABEL": "Canal de release da aplicação",
         "CURRENT_LANGUAGE_LABEL": "Idioma Atual",
-        "CURSE_PROTOCOL_DESCRIPTION": "Quando baixando addons do site CurseForge, WowUp ira cuidar da instalação",
-        "CURSE_PROTOCOL_LABEL": "Gerenciar links de download CurseForge",
         "ENABLE_APP_BADGE_DESCRIPTION": "Mostrar um selo no icone da aplicação com o número de atualizações de addon disponíveis.",
         "ENABLE_APP_BADGE_LABEL": "Habilitar selo de notificação do app",
         "ENABLE_SYSTEM_NOTIFICATIONS_DESCRIPTION": "Habilitar várias notificações e popups do sistema, como os de aviso de Addons atualizados automaticamente.",

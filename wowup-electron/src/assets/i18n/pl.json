@@ -178,14 +178,14 @@
       "TOC_NAME_MISMATCH_TOOLTIP": "Folder tego addonu nie jest zgodny z toc"
     },
     "CLIENT_TYPES": {
-      "BETA": "Beta",
-      "CLASSIC": "Classic",
-      "CLASSICBETA": "Classic Beta",
-      "CLASSICERA": "Classic Era",
-      "CLASSICERAPTR": "Classic Era PTR",
-      "CLASSICPTR": "Classic PTR",
-      "RETAIL": "Retail",
-      "RETAILPTR": "Retail PTR"
+      "BETA": "Beta Dragonflight",
+      "CLASSIC": "Wrath of the Lich King Classic",
+      "CLASSICBETA": "Beta Wrath of the Lich King Classic",
+      "CLASSICERA": "World of Warcraft Classic",
+      "CLASSICERAPTR": "Classic Season of Mastery PTR",
+      "CLASSICPTR": "Publiczny Serwer Testowy (Wrath Classic)",
+      "RETAIL": "Dragonflight",
+      "RETAILPTR": "Publiczny Serwer Testowy"
     },
     "DATES": {
       "DAYS_AGO": "{count} {count, plural, =1{dzień} other{dni}} temu",
@@ -292,7 +292,7 @@
         "BURNING_CRUSADE_ASSET_NOT_FOUND": "Nie znaleziono zasobów aby pobrać z {message}.\n\nA prawidłowy plik zip z konćówką '-bc' jest potrzebny aby pobrać go dla WowUp.",
         "CLASSIC_ASSET_NOT_FOUND": "Nie znaleziono zasobów aby pobrać z {message}.\n\nA prawidłowy plik zip z konćówką '-classic'  jest potrzebny aby pobrać go dla WowUp.",
         "FAILED_TO_CONNECT": "Nie można połączyć się z API, proszę poczekać i spróbować ponownie.",
-        "INSTALL_FAILED": "Coś poszło nie tak z instalacją addona, proszę spróbować ponownie.\n\nJeżeli wiadomość nadal pojawia się, możesz otrzymać pomoc na Discordzie na kanale #wowup-support channel.",
+        "INSTALL_FAILED": "Coś poszło nie tak z instalacją addona, proszę spróbować ponownie.\n\nJeżeli wiadomość nadal pojawia się, możesz otrzymać pomoc na Discordzie na kanale #help-me channel.",
         "INVALID_URL": "Podana wartość nie jest poprawna dla adresu URL. Przykłady poprawnych adresów URL dla addonów są tutaj:\n\t- https://github.com/WowUp/WowUp.Addon\n\t- https://www.wowinterface.com/downloads/info25610-8.3-014.html\n\t- https://www.curseforge.com/wow/addons/altoholic",
         "NO_ADDON_FOUND": "Nie znaleziono addonu, upewnij się że twój adres URL wskazuje na właściwą stronę.\n\nKiedy instalujesz z githuba, upewnij się że repozytorium ma znacznik wydania z archiwum zip zawierające addon.",
         "NO_RELEASE_FOUND": "Nie znaleziono żadnych wydań dla {message}.\n\nPoprawnie wydanie z plikiem zasobów zip są potrzebne aby pobrać je dla WoWUP.",
@@ -498,7 +498,12 @@
           "PLACEHOLDER": "Osobisty token dostępu",
           "TITLE": "Osobisty token dostępu do GitHuba"
         },
-        "TITLE": "Addony"
+        "TITLE": "Addony",
+        "WAGO_ACCESS_KEY": {
+          "MESSAGE": "Use the Wago provider without seeing advertisements. <a href=\"https://addons.wago.io/patreon\">Learn More</a>",
+          "PLACEHOLDER": "Access Key",
+          "TITLE": "Wago Access Key"
+        }
       },
       "APPLICATION": {
         "APP_RELEASE_CHANNEL_CONFIRMATION_DESCRIPTION_BETA": "Przełączenie na kanał Beta pozwoli Ci otrzymywać eksperymentalne wersje, które zawierają poprawki błędów, jak również nowe i nadchodzące funkcje. Możesz powrócić do aktualnej stabilnej wersji tylko poprzez odinstalowanie istniejącej aplikacji i ponowną instalację z wowup.io.\n\nChociaż kanał Beta jest funkcjonalny, korzystasz z niego na własne ryzyko.",
@@ -509,8 +514,6 @@
         "APP_RELEASE_CHANNEL_DROPDOWN_LABEL": "Kanał",
         "APP_RELEASE_CHANNEL_LABEL": "Kanał udostępniania aplikacji",
         "CURRENT_LANGUAGE_LABEL": "Aktualny język",
-        "CURSE_PROTOCOL_DESCRIPTION": "Podczas pobierania dodatków ze strony CurseForge, WowUp zajmie się instalacją",
-        "CURSE_PROTOCOL_LABEL": "Obsługa pobranych linków CurseForge",
         "ENABLE_APP_BADGE_DESCRIPTION": "Pokaż plakietkę na ikonie aplikacji z liczbą dodatków z dostępnymi aktualizacjami.",
         "ENABLE_APP_BADGE_LABEL": "Włącz powiadamianie o odznakach aplikacji",
         "ENABLE_SYSTEM_NOTIFICATIONS_DESCRIPTION": "Włącz różne wyskakujące okienka powiadomień, np. o automatycznie aktualizowanych addonach.",

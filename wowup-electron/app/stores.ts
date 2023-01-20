@@ -11,9 +11,9 @@ import {
   SENSITIVE_STORE_NAME,
 } from "../src/common/constants";
 
-export const addonStore = new Store({ name: ADDON_STORE_NAME });
-export const preferenceStore = new Store({ name: PREFERENCE_STORE_NAME });
-export const sensitiveStore = new Store({ name: SENSITIVE_STORE_NAME });
+const addonStore = new Store({ name: ADDON_STORE_NAME });
+const preferenceStore = new Store({ name: PREFERENCE_STORE_NAME });
+const sensitiveStore = new Store({ name: SENSITIVE_STORE_NAME });
 
 const stores: { [storeName: string]: Store } = {
   [ADDON_STORE_NAME]: addonStore,
@@ -21,15 +21,23 @@ const stores: { [storeName: string]: Store } = {
   [SENSITIVE_STORE_NAME]: sensitiveStore,
 };
 
+export function getPreferenceStore(): Store {
+  return preferenceStore;
+}
+
+export function getAddonStore(): Store {
+  return addonStore;
+}
+
 export function initializeStoreIpcHandlers(): void {
   // Return the store value for a specific key
-  ipcMain.handle(IPC_STORE_GET_ALL, (evt: IpcMainInvokeEvent, storeName: string): any => {
+  ipcMain.handle(IPC_STORE_GET_ALL, (evt: IpcMainInvokeEvent, storeName: string): any[] => {
     const store = stores[storeName];
 
-    const items = [];
+    const items: any[] = [];
     for (const result of store) {
       const item = result[1];
-      items.push(item);
+      items.push(item as any);
     }
 
     return items;
@@ -50,11 +58,14 @@ export function initializeStoreIpcHandlers(): void {
   ipcMain.handle(IPC_STORE_SET_OBJECT, (evt: IpcMainInvokeEvent, storeName: string, key: string, value: any): void => {
     const store = stores[storeName];
 
+    let storedVal = value.toString();
     if (typeof value === "object" || Array.isArray(value)) {
-      store?.set(key, value);
-    } else {
-      store?.set(key, value.toString());
+      storedVal = value;
     }
+
+    store?.set(key, storedVal);
+
+    return storedVal;
   });
 
   // Remove the store value for a specific key

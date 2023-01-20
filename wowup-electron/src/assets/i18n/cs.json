@@ -178,14 +178,14 @@
       "TOC_NAME_MISMATCH_TOOLTIP": "This addon's folder does not match the toc"
     },
     "CLIENT_TYPES": {
-      "BETA": "Beta",
-      "CLASSIC": "Classic",
-      "CLASSICBETA": "Classic Beta",
-      "CLASSICERA": "Classic Era",
-      "CLASSICERAPTR": "Classic Era PTR",
-      "CLASSICPTR": "Classic PTR",
-      "RETAIL": "Retail",
-      "RETAILPTR": "Retail PTR"
+      "BETA": "Dragonflight Beta",
+      "CLASSIC": "Wrath of the Lich King Classic",
+      "CLASSICBETA": "Wrath of the Lich King Classic Beta",
+      "CLASSICERA": "World of Warcraft Classic",
+      "CLASSICERAPTR": "Classic Season of Mastery PTR",
+      "CLASSICPTR": "Public Test Realm (Wrath Classic)",
+      "RETAIL": "Dragonflight",
+      "RETAILPTR": "Public Test Realm"
     },
     "DATES": {
       "DAYS_AGO": "Před {count} {count, plural, =1{dnem} other{dny}}",
@@ -292,7 +292,7 @@
         "BURNING_CRUSADE_ASSET_NOT_FOUND": "No asset was found to download from {message}.\n\nA valid zip file ending with '-bc' is required in order for WowUp to download it.",
         "CLASSIC_ASSET_NOT_FOUND": "Nebyl nalezen žádný soubor ke stažení {message}.\n\nPlatný zip soubor s názvem končícím s '-classic' musí být k dispozici, aby ho WowUp mohl stáhnout.",
         "FAILED_TO_CONNECT": "Nemohu se připojit k API. Chvíli počkejte a pak to zkuste znovu.",
-        "INSTALL_FAILED": "Něco se nepovedlo při instalaci addonu, zkuste to prosím znovu.\n\nPokud se tato zpráva opakuje, kontaktujte nás na Discordu na kanále #wowup-support.",
+        "INSTALL_FAILED": "Něco se nepovedlo při instalaci addonu, zkuste to prosím znovu.\n\nPokud se tato zpráva opakuje, kontaktujte nás na Discordu na kanále #help-me.",
         "INVALID_URL": "Zadaná hodnota není platná URL adresa. Příklady platných URL adres jsou:\n\t- https://github.com/WowUp/WowUp.Addon\n\t- https://www.wowinterface.com/downloads/info25610-8.3-014.html\n\t- https://www.curseforge.com/wow/addons/altoholic",
         "NO_ADDON_FOUND": "Žádný addon na zadané URL adrese nebyl nalezen. Ujistěte se, že URL adresa odkazuje na správnou stránku.\n\nPři instalaci z GitHubu se ujistěte, že repozitář obsahuje release tag s zipem obsahujícím addon.",
         "NO_RELEASE_FOUND": "Nebyl nalezen žádný soubor ke stažení {message}.\n\nPlatný zip soubor musí být k dispozici, aby ho WowUp mohl stáhnout.",
@@ -498,7 +498,12 @@
           "PLACEHOLDER": "Personal Access Token",
           "TITLE": "GitHub Personal Access Token"
         },
-        "TITLE": "Addony"
+        "TITLE": "Addony",
+        "WAGO_ACCESS_KEY": {
+          "MESSAGE": "Use the Wago provider without seeing advertisements. <a href=\"https://addons.wago.io/patreon\">Learn More</a>",
+          "PLACEHOLDER": "Access Key",
+          "TITLE": "Wago Access Key"
+        }
       },
       "APPLICATION": {
         "APP_RELEASE_CHANNEL_CONFIRMATION_DESCRIPTION_BETA": "Switching to the Beta channel will allow you to receive experimental builds that contain bug fixes, as well as new and upcoming features. you may only go back to the current stable version by uninstalling your existing app and re-installing from wowup.io.\n\nWhile the Beta channel is functional, use at your own risk.",
@@ -509,8 +514,6 @@
         "APP_RELEASE_CHANNEL_DROPDOWN_LABEL": "Channel",
         "APP_RELEASE_CHANNEL_LABEL": "Application Release Channel",
         "CURRENT_LANGUAGE_LABEL": "Jazyk",
-        "CURSE_PROTOCOL_DESCRIPTION": "When downloading addons from the CurseForge website, WowUp will handle the install",
-        "CURSE_PROTOCOL_LABEL": "Handle CurseForge download links",
         "ENABLE_APP_BADGE_DESCRIPTION": "Show a badge on the app icon with the number of addons with available updates.",
         "ENABLE_APP_BADGE_LABEL": "Enable app badge notification",
         "ENABLE_SYSTEM_NOTIFICATIONS_DESCRIPTION": "Povolí různé systémové notifikace, např. po automatické aktualizaci addonů.",

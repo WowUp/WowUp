@@ -8,15 +8,14 @@ import {
   WOWUP_ASSET_FOLDER_NAME,
   WOWUP_DATA_ADDON_FOLDER_NAME,
 } from "../../../common/constants";
-import { Addon } from "../../../common/entities/addon";
-import { AddonChannelType } from "../../../common/wowup/models";
 import { AddonInstallState } from "../../models/wowup/addon-install-state";
-import { WowInstallation } from "../../../common/warcraft/wow-installation";
 import { toInterfaceVersion } from "../../utils/addon.utils";
 import { AddonProviderFactory } from "../addons/addon.provider.factory";
 import { AddonService } from "../addons/addon.service";
 import { FileService } from "../files/file.service";
 import { WarcraftInstallationService } from "../warcraft/warcraft-installation.service";
+import { Addon, AddonChannelType } from "wowup-lib-core";
+import { WowInstallation } from "wowup-lib-core/lib/models";
 import { WarcraftService } from "../warcraft/warcraft.service";
 
 enum WowUpAddonFileType {
@@ -117,6 +116,10 @@ export class WowUpAddonService {
 
     const addonFolderPath = this._warcraftService.getAddonFolderPath(installation);
     const addonFolder = await this._warcraftService.getAddonFolder(addonFolderPath, WOWUP_DATA_ADDON_FOLDER_NAME);
+    if (addonFolder === undefined) {
+      console.warn("Could not find addon folder", addonFolderPath);
+      return;
+    }
 
     const provider = this._addonProviderFactory.createWowUpCompanionAddonProvider();
     await provider.scan(installation, AddonChannelType.Stable, [addonFolder]);
@@ -138,10 +141,18 @@ export class WowUpAddonService {
     try {
       const availableUpdates = addons.filter(this.canUpdateAddon).map(this.getAddonVersion);
 
+      let interfaceVersion = "";
+
+      try {
+        interfaceVersion = toInterfaceVersion(wowUpAddon.gameVersion || "");
+      } catch (e) {
+        console.error(e);
+      }
+
       const wowUpAddonData: WowUpAddonData = {
         updatesAvailable: availableUpdates,
         generatedAt: new Date().toString(),
-        interfaceVersion: toInterfaceVersion(wowUpAddon.gameVersion ?? ""),
+        interfaceVersion,
         wowUpAddonName: wowUpAddon.installedFolders ?? "",
         wowUpAddonVersion: wowUpAddon.installedVersion ?? "",
       };

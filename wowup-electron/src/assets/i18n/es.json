@@ -178,14 +178,14 @@
       "TOC_NAME_MISMATCH_TOOLTIP": "La carpeta de este addon no se corresponde con el archivo toc"
     },
     "CLIENT_TYPES": {
-      "BETA": "Beta",
-      "CLASSIC": "Classic",
-      "CLASSICBETA": "Beta Classic",
-      "CLASSICERA": "Classic Era",
-      "CLASSICERAPTR": "RPP Classic Era",
-      "CLASSICPTR": "RPP Classic",
-      "RETAIL": "Retail",
-      "RETAILPTR": "RPP Retail"
+      "BETA": "Beta de Dragonflight",
+      "CLASSIC": "Wrath of the Lich King Classic",
+      "CLASSICBETA": "Beta de Wrath of the Lich King Classic",
+      "CLASSICERA": "World of Warcraft Classic",
+      "CLASSICERAPTR": "Classic Season of Mastery PTR",
+      "CLASSICPTR": "Reino público de pruebas (Wrath Classic)",
+      "RETAIL": "Dragonflight",
+      "RETAILPTR": "Reino público de pruebas"
     },
     "DATES": {
       "DAYS_AGO": "Hace {count} {count, plural, one{día} other{días}}",
@@ -292,7 +292,7 @@
         "BURNING_CRUSADE_ASSET_NOT_FOUND": "No se encontró el recurso a descargar desde {message}.\n\nEs necesario un archivo zip válido con el sufijo '-bc' para que WowUp pueda descargarlo.",
         "CLASSIC_ASSET_NOT_FOUND": "No se encontró el recurso a descargar desde {message}.\n\nEs necesario un archivo zip válido con el sufijo '-classic' para que WowUp pueda descargarlo.",
         "FAILED_TO_CONNECT": "No se pudo conectar con la API. Por favor, espere un momento y vuelva a intentarlo.",
-        "INSTALL_FAILED": "Ocurrió un error al intentar instalar el addon. Por favor, inténtelo de nuevo.\n\nSi se sigue mostrando este mensaje, puede obtener ayuda en Discord en el canal #wowup-support.",
+        "INSTALL_FAILED": "Ocurrió un error al intentar instalar el addon. Por favor, inténtelo de nuevo.\n\nSi se sigue mostrando este mensaje, puede obtener ayuda en Discord en el canal #help-me.",
         "INVALID_URL": "El valor introducido no es una URL válida. Ejemplos de URLs válidas:\n\t- https://github.com/WowUp/WowUp.Addon\n\t- https://www.wowinterface.com/downloads/info25610-8.3-014.html\n\t- https://www.curseforge.com/wow/addons/altoholic",
         "NO_ADDON_FOUND": "No se encontró el addon, asegúrese de que la URL apunta a la página correcta.\n\nSi está instalando desde GitHub, asegúrese de que el repositorio tiene una release tag con un archivo zip conteniendo el addon.",
         "NO_RELEASE_FOUND": "No se encontraron publicaciones para {message}.\n\nSe requiere una versión válida con los recursos contenidos en un archivo zip para que WowUp pueda descargarla.",
@@ -482,7 +482,7 @@
     },
     "OPTIONS": {
       "ADDON": {
-        "AD_REQUIRED_HINT": "Ad or access key required",
+        "AD_REQUIRED_HINT": "Publicidad o clave de acceso requeridos",
         "CURSE_FORGE_V2": {
           "API_KEY_DESCRIPTION": "Si ha solicitado una clave para la API de CurseForge, puede introducirla aquí para conectar con ella.",
           "API_KEY_TITLE": "Clave de API CurseForge",
@@ -498,7 +498,12 @@
           "PLACEHOLDER": "Token de acceso personal",
           "TITLE": "Token de acceso personal de GitHub"
         },
-        "TITLE": "Addons"
+        "TITLE": "Addons",
+        "WAGO_ACCESS_KEY": {
+          "MESSAGE": "Use the Wago provider without seeing advertisements. <a href=\"https://addons.wago.io/patreon\">Learn More</a>",
+          "PLACEHOLDER": "Access Key",
+          "TITLE": "Wago Access Key"
+        }
       },
       "APPLICATION": {
         "APP_RELEASE_CHANNEL_CONFIRMATION_DESCRIPTION_BETA": "Cambiar al canal Beta permitirá que reciba versiones experimentales que contienen correcciones de fallos, así como nuevas funciones en desarrollo. Solo podrá volver a la versión estable desinstalando la aplicación y volviéndola a instalar desde wowup.io\n\nAunque el canal Beta es funcional, su uso será bajo su propia responsabilidad.",
@@ -509,8 +514,6 @@
         "APP_RELEASE_CHANNEL_DROPDOWN_LABEL": "Canal",
         "APP_RELEASE_CHANNEL_LABEL": "Canal de publicación de la aplicación",
         "CURRENT_LANGUAGE_LABEL": "Idioma actual",
-        "CURSE_PROTOCOL_DESCRIPTION": "Al descargar addons desde la web de CurseForge, WowUp se hará cargo de la instalación",
-        "CURSE_PROTOCOL_LABEL": "Tramitar enlaces de descarga de CurseForge",
         "ENABLE_APP_BADGE_DESCRIPTION": "Muestra un contador en el icono de la aplicación en la barra de tareas con el número de addons con actualizaciones disponibles.",
         "ENABLE_APP_BADGE_LABEL": "Activar contador en el icono",
         "ENABLE_SYSTEM_NOTIFICATIONS_DESCRIPTION": "Activa varios mensajes de notificación del sistema, tales como cuando los addons son actualizados automáticamente.",

@@ -41,8 +41,12 @@ jobs:
       - name: Install Angular CLI
         run: npm install -g @angular/cli
 
+      - name: dmg-license
+        run: |
+          cd ./wowup-electron
+          npm i dmg-license
+
       - name: Build Mac App
-        if: matrix.os == 'macos-11'
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token
           CSC_LINK: ${{ secrets.MACOS_CERT }}

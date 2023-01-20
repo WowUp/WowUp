@@ -7,10 +7,7 @@ import { MatDialog, MatDialogModule } from "@angular/material/dialog";
 import { NoopAnimationsModule } from "@angular/platform-browser/animations";
 import { TranslateCompiler, TranslateLoader, TranslateModule } from "@ngx-translate/core";
 
-import { WowClientType } from "../../../../common/warcraft/wow-client-type";
-import { AddonChannelType } from "../../../../common/wowup/models";
 import { httpLoaderFactory } from "../../../app.module";
-import { InstalledProduct } from "../../../models/warcraft/installed-product";
 import { WarcraftService } from "../../../services/warcraft/warcraft.service";
 import { WowUpService } from "../../../services/wowup/wowup.service";
 import { WowClientOptionsComponent } from "../wow-client-options/wow-client-options.component";
@@ -18,6 +15,8 @@ import { OptionsWowSectionComponent } from "./options-wow-section.component";
 import { WarcraftInstallationService } from "../../../services/warcraft/warcraft-installation.service";
 import { MatModule } from "../../../modules/mat-module";
 import { WowUpReleaseChannelType } from "../../../../common/wowup/wowup-release-channel-type";
+import { AddonChannelType, WowClientType } from "wowup-lib-core";
+import { InstalledProduct } from "wowup-lib-core/lib/models";
 
 describe("OptionsWowSectionComponent", () => {
   let component: OptionsWowSectionComponent;

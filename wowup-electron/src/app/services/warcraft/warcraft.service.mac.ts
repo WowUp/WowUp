@@ -1,8 +1,8 @@
 import * as path from "path";
+import { WowClientType } from "wowup-lib-core";
+import { InstalledProduct } from "wowup-lib-core/lib/models";
 
 import { WOW_CLASSIC_ERA_FOLDER, WOW_CLASSIC_ERA_PTR_FOLDER } from "../../../common/constants";
-import { WowClientType } from "../../../common/warcraft/wow-client-type";
-import { InstalledProduct } from '../../models/warcraft/installed-product';
 import { FileService } from "../files/file.service";
 import { WarcraftServiceImpl } from "./warcraft.service.impl";
 
@@ -26,7 +26,7 @@ const BLIZZARD_AGENT_PATH = "/Users/Shared/Battle.net/Agent";
 const BLIZZARD_PRODUCT_DB_NAME = "product.db";
 
 export class WarcraftServiceMac implements WarcraftServiceImpl {
-  public constructor(private _fileService: FileService) { }
+  public constructor(private _fileService: FileService) {}
 
   public getExecutableExtension(): string {
     return "app";

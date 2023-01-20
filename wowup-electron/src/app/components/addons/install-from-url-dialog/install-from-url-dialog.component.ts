@@ -2,7 +2,6 @@ import { HttpErrorResponse } from "@angular/common/http";
 import { Component, OnDestroy } from "@angular/core";
 import { MatDialog, MatDialogRef } from "@angular/material/dialog";
 import { from, Subscription } from "rxjs";
-import { AddonSearchResult } from "../../../models/wowup/addon-search-result";
 import { AddonService } from "../../../services/addons/addon.service";
 import { SessionService } from "../../../services/session/session.service";
 import { AlertDialogComponent } from "../../common/alert-dialog/alert-dialog.component";
@@ -11,8 +10,7 @@ import { roundDownloadCount, shortenDownloadCount } from "../../../utils/number.
 import { DownloadCountPipe } from "../../../pipes/download-count.pipe";
 import { NO_SEARCH_RESULTS_ERROR } from "../../../../common/constants";
 import { AssetMissingError, GitHubLimitError, NoReleaseFoundError } from "../../../errors";
-import { SearchByUrlResult } from "../../../addon-providers/addon-provider";
-import { WowClientGroup } from "../../../../common/warcraft/wow-client-type";
+import { AddonSearchResult, SearchByUrlResult, WowClientGroup } from "wowup-lib-core";
 
 interface DownloadCounts {
   count: number;
@@ -68,11 +66,18 @@ export class InstallFromUrlDialogComponent implements OnDestroy {
       return;
     }
 
+    const addonFile = Array.isArray(this.addon?.files) ? this.addon.files[0] : undefined;
+    if (addonFile === undefined) {
+      console.error("addon file was undefined, nothing to install");
+      this.showErrorMessage(this._translateService.instant("DIALOGS.INSTALL_FROM_URL.ERROR.INSTALL_FAILED") as string);
+      return;
+    }
+
     this.showInstallButton = false;
     this.showInstallSpinner = true;
 
     this._installSubscription = from(
-      this._addonService.installPotentialAddon(this.addon, selectedInstallation, undefined, this.addon.files[0])
+      this._addonService.installPotentialAddon(this.addon, selectedInstallation, undefined, addonFile)
     ).subscribe({
       next: () => {
         this.showInstallSpinner = false;
