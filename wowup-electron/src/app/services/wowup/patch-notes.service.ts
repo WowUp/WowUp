@@ -16,11 +16,23 @@ export class PatchNotesService {
 
 const CHANGELOGS: ChangeLog[] = [
   {
+    Version: "2.9.3",
+    html: `
+    <h4 style="margin-top: 1em;">Fixes</h4>
+    <ul>
+    <li>Fix Wago key issue when downloading (KDederichs)</li>
+    </ul>
+    `,
+  },
+  {
     Version: "2.9.2",
     html: `
-    <h4 style="margin-top: 1em;">Changes</h4>
+    <h4>New Features</h4>
     <ul>
     <li>Dynamic WoW client names (CyanoHao)</li>
+    </ul>
+    <h4 style="margin-top: 1em;">Changes</h4>
+    <ul>
     <li>Spanish locale updates (SkollVargr)</li>
     <li>Norwegian locale updates (espenja)</li>
     <li>German locale updates (maestrohdude)</li>
