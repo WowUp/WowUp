@@ -498,9 +498,14 @@ export class WagoAddonProvider extends AddonProvider {
   public getDownloadAuth(): Promise<DownloadAuth | undefined> {
     return Promise.resolve({
       queryParams: {
-        token: this._apiTokenSrc.value,
+        token: this.getToken(),
       },
     });
+  }
+
+  private getToken(): string
+  {
+    return this.isValidToken(this._wagoSecret) ? this._wagoSecret : this._apiTokenSrc.value;
   }
 
   private async getAddonById(addonId: string): Promise<WagoAddon> {
@@ -669,7 +674,7 @@ export class WagoAddonProvider extends AddonProvider {
     if (validVersion === undefined) {
       throw new Error("toAddon failed valid version not found");
     }
-    
+
     const latestVersion = validVersion.label;
     const externalLatestReleaseId = validVersion.id;
     const externalChannel = getEnumName(AddonChannelType, validVersion.addonChannelType);
@@ -774,9 +779,8 @@ export class WagoAddonProvider extends AddonProvider {
   private getRequestHeaders(): {
     [header: string]: string;
   } {
-    const token = this.isValidToken(this._wagoSecret) ? this._wagoSecret : this._apiTokenSrc.value;
     return {
-      Authorization: `Bearer ${token}`,
+      Authorization: `Bearer ${this.getToken()}`,
     };
   }
 
