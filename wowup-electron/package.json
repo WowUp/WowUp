@@ -151,7 +151,7 @@
     "karma-electron": "7.3.0",
     "karma-jasmine": "5.1.0",
     "karma-jasmine-html-reporter": "2.0.0",
-    "markdown-it": "12.3.2",
+    "markdown-it": "13.0.1",
     "messageformat": "2.3.0",
     "mocha": "10.2.0",
     "ng-gallery": "7.1.2",
