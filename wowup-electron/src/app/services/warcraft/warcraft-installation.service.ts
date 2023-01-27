@@ -17,6 +17,8 @@ import { WarcraftService } from "./warcraft.service";
 import { AddonChannelType, WowClientGroup, WowClientType } from "wowup-lib-core";
 import { WowInstallation } from "wowup-lib-core/lib/models";
 
+const DEFAULT_NAME_TOKEN = "{defaultName}";
+
 @Injectable({
   providedIn: "root",
 })
@@ -89,9 +91,7 @@ export class WarcraftInstallationService {
   }
 
   public async getWowInstallationsAsync(): Promise<WowInstallation[]> {
-    const results = await this._preferenceStorageService.getObjectAsync<WowInstallation[]>(
-      WOW_INSTALLATIONS_KEY
-    );
+    const results = await this._preferenceStorageService.getObjectAsync<WowInstallation[]>(WOW_INSTALLATIONS_KEY);
     return results || [];
   }
 
@@ -134,6 +134,11 @@ export class WarcraftInstallationService {
     });
 
     await this.setWowInstallations(allInstallations);
+  }
+
+  public async getInstallationDisplayName(wowInstallation: WowInstallation): Promise<string> {
+    const typeName = getEnumName(WowClientType, wowInstallation.clientType);
+    return await this.getDisplayName(wowInstallation.label, typeName);
   }
 
   public async updateWowInstallation(wowInstallation: WowInstallation): Promise<void> {
@@ -216,7 +221,10 @@ export class WarcraftInstallationService {
     const typeName = getEnumName(WowClientType, clientType);
     const currentInstallations = await this.getWowInstallationsByClientType(clientType);
 
-    const label = currentInstallations.length ? `{defaultName} ${currentInstallations.length + 1}` : "{defaultName}";
+    const label = currentInstallations.length
+      ? `${DEFAULT_NAME_TOKEN} ${currentInstallations.length + 1}`
+      : DEFAULT_NAME_TOKEN;
+
     const displayName = await this.getDisplayName(label, typeName);
 
     const installation: WowInstallation = {
@@ -247,7 +255,7 @@ export class WarcraftInstallationService {
       const typeName = getEnumName(WowClientType, product.clientType);
       const currentInstallations = await this.getWowInstallationsByClientType(product.clientType);
 
-      const label = currentInstallations.length ? `{defaultName} ${currentInstallations.length + 1}` : "{defaultName}";
+      const label = currentInstallations.length ? `${DEFAULT_NAME_TOKEN} ${currentInstallations.length + 1}` : DEFAULT_NAME_TOKEN;
       const displayName = await this.getDisplayName(label, typeName);
 
       const fullProductPath = this.getFullProductPath(product.location, product.clientType);
@@ -282,7 +290,7 @@ export class WarcraftInstallationService {
     const defaultName: string = await firstValueFrom(
       this._translateService.get(`COMMON.CLIENT_TYPES.${typeName.toUpperCase()}`)
     );
-    return label.replace("{defaultName}", defaultName);
+    return label.replace(DEFAULT_NAME_TOKEN, defaultName);
   }
 
   private getFullProductPath(location: string, clientType: WowClientType): string {
