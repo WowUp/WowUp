@@ -157,6 +157,8 @@ export class InstallFromProtocolDialogComponent implements OnInit, AfterViewInit
           this.addon.providerName,
           installation
         );
+
+        installation.label = await this._warcraftInstallationService.getInstallationDisplayName(installation);
       }
 
       if (this.validWowInstallations.length === 0) {

@@ -13,6 +13,7 @@ import { SessionService } from "../../../services/session/session.service";
 import { SnackbarService } from "../../../services/snackbar/snackbar.service";
 import { ElectronService } from "../../../services";
 import { WowInstallation } from "wowup-lib-core/lib/models";
+import { WarcraftInstallationService } from "../../../services/warcraft/warcraft-installation.service";
 
 interface ImportComparisonViewModel extends ImportComparison {
   isInstalling?: boolean;
@@ -37,8 +38,8 @@ export class AddonManageDialogComponent implements OnInit, OnDestroy {
 
   public readonly TAB_IDX_EXPORT = 0;
   public readonly TAB_IDX_IMPORT = 1;
-  public readonly selectedInstallation: WowInstallation;
 
+  public selectedInstallation: WowInstallation;
   public exportSummary: ExportSummary | undefined;
   public exportPayload!: string;
   public importData = "";
@@ -65,10 +66,9 @@ export class AddonManageDialogComponent implements OnInit, OnDestroy {
     private _electronService: ElectronService,
     private _addonBrokerService: AddonBrokerService,
     private _sessionService: SessionService,
-    private _snackbarService: SnackbarService
-  ) {
-    this.selectedInstallation = this._sessionService.getSelectedWowInstallation();
-  }
+    private _snackbarService: SnackbarService,
+    private _warcraftInstallationService: WarcraftInstallationService
+  ) {}
 
   public ngOnInit(): void {
     this.initAsync().catch((e) => console.error(e));
@@ -144,6 +144,14 @@ export class AddonManageDialogComponent implements OnInit, OnDestroy {
 
   private async initAsync() {
     try {
+      const installation = this._sessionService.getSelectedWowInstallation();
+      if (installation !== undefined) {
+        this.selectedInstallation = { ...installation };
+        this.selectedInstallation.label = await this._warcraftInstallationService.getInstallationDisplayName(
+          this.selectedInstallation
+        );
+      }
+
       this.exportSummary = await this._addonBrokerService.getExportSummary(this.selectedInstallation);
 
       const payload = await this._addonBrokerService.getExportPayload(this.selectedInstallation);

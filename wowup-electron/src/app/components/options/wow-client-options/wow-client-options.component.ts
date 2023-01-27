@@ -220,7 +220,7 @@ export class WowClientOptionsComponent implements OnInit, OnDestroy {
       .afterClosed()
       .pipe(
         switchMap((result) => {
-          if (!result) {
+          if (result === undefined) {
             return of(undefined);
           }
 
