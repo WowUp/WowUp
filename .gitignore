@@ -1,6 +1,9 @@
+.*
+
+!.gitignore
+
 node_modules/
 bin/
 obj/
-.vs/
 Packages/
 wowup-electron/package_workspace/

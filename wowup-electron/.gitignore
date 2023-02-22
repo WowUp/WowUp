@@ -2,12 +2,12 @@
 .env
 
 # compiled output
-/dist
-/tmp
-/out-tsc
-/app-builds
-/release
-/build
+dist/
+tmp/
+out-tsc/
+app-builds/
+release/
+build/
 main.js
 ipc-events.js
 app-updater.js
@@ -19,10 +19,10 @@ app/*.js
 !electron-build/*.js
 
 # dependencies
-/node_modules
+node_modules/
 
 # IDEs and editors
-/.idea
+.idea/
 .project
 .classpath
 .c9/
@@ -38,19 +38,19 @@ app/*.js
 !.vscode/extensions.json
 
 # misc
-/.angular/cache
-/.sass-cache
-/connect.lock
-/coverage
-/libpeerconnection.log
+.angular/cache/
+.sass-cache/
+connect.lock/
+coverage/
+libpeerconnection.log/
 npm-debug.log
 testem.log
-/typings
+typings/
 
 # e2e
-/e2e/*.js
+e2e/*.js/
 !/e2e/protractor.conf.js
-/e2e/*.map
+e2e/*.map/
 
 # System Files
 .DS_Store
