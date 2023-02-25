@@ -45,7 +45,6 @@ import { AddonSyncError, GitHubFetchReleasesError, GitHubFetchRepositoryError, G
 import { AddonInstallState } from "./models/wowup/addon-install-state";
 import { ElectronService } from "./services";
 import { AddonService } from "./services/addons/addon.service";
-import { AnalyticsService } from "./services/analytics/analytics.service";
 import { FileService } from "./services/files/file.service";
 import { SessionService } from "./services/session/session.service";
 import { SnackbarService } from "./services/snackbar/snackbar.service";
@@ -95,7 +94,6 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
   public constructor(
     private _addonService: AddonService,
     private _addonProviderService: AddonProviderFactory,
-    private _analyticsService: AnalyticsService,
     private _cdRef: ChangeDetectorRef,
     private _dialog: MatDialog,
     private _fileService: FileService,
@@ -250,7 +248,6 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
   private async onNgAfterViewInit(): Promise<void> {
     await this.createAppMenu();
     await this.createSystemTray();
-    await this._analyticsService.trackStartup();
     await this.showRequiredDialogs();
   }
 
@@ -269,9 +266,8 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   private async shouldShowConsentDialog(): Promise<boolean> {
-    const shouldPromptTelemetry = await this._analyticsService.shouldPromptTelemetry();
     const shouldShowConsentDialog = await this._addonProviderService.shouldShowConsentDialog();
-    return shouldPromptTelemetry || shouldShowConsentDialog;
+    return shouldShowConsentDialog;
   }
 
   public ngOnDestroy(): void {
@@ -309,11 +305,6 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
         ),
         switchMap((result) => from(this._addonProviderService.updateWagoConsent()).pipe(map(() => result))),
         switchMap((result: ConsentDialogResult) => {
-          this._analyticsService.setTelemetryEnabled(result.telemetry).catch(console.error);
-          if (result.telemetry) {
-            return from(this._analyticsService.trackStartup());
-          }
-
           return of(undefined);
         })
       )

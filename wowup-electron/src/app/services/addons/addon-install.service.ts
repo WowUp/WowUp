@@ -28,7 +28,6 @@ import {
   USER_ACTION_ADDON_INSTALL,
 } from "../../../common/constants";
 import { AddonStorageService } from "../storage/addon-storage.service";
-import { AnalyticsService } from "../analytics/analytics.service";
 import { getEnumName } from "wowup-lib-core/lib/utils";
 
 export type InstallType = "install" | "update" | "remove";
@@ -69,8 +68,7 @@ export class AddonInstallService {
     private _downloadService: DownloadService,
     private _fileService: FileService,
     private _tocService: TocService,
-    private _addonStorage: AddonStorageService,
-    private _analyticsService: AnalyticsService
+    private _addonStorage: AddonStorageService
   ) {
     // Setup our install queue pump here
     this._installQueue.pipe(mergeMap((item) => from(this.processInstallQueue(item)), 3)).subscribe({
@@ -207,8 +205,6 @@ export class AddonInstallService {
       }
 
       await this._addonStorage.setAsync(addon.id, addon);
-
-      this.trackInstallAction(queueItem.installType, addon);
 
       //   await this.installDependencies(addon, onUpdate);
 
@@ -356,16 +352,6 @@ export class AddonInstallService {
   private getBestGuessAuthor(tocs: Toc[]) {
     const authors = tocs.map((toc) => toc.author).filter((author) => !!author);
     return _.maxBy(authors, (author) => author?.length ?? 0);
-  }
-
-  private trackInstallAction(installType: InstallType, addon: Addon) {
-    this._analyticsService.trackAction(USER_ACTION_ADDON_INSTALL, {
-      clientType: getEnumName(WowClientType, addon.clientType),
-      provider: addon.providerName,
-      addon: addon.name,
-      addonId: addon.externalId,
-      installType,
-    });
   }
 
   public async backfillAddon(addon: Addon): Promise<void> {
@@ -553,8 +539,6 @@ export class AddonInstallService {
     if (removeDependencies) {
       await this.removeDependencies(addon);
     }
-
-    this.trackInstallAction("remove", addon);
   }
 
   public insertExternalId(externalIds: AddonExternalId[], providerName: string, addonId?: string): void {

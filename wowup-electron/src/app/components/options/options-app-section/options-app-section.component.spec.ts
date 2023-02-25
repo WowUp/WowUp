@@ -8,7 +8,6 @@ import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 
 import { ElectronService } from "../../../services";
 import { AddonService } from "../../../services/addons/addon.service";
-import { AnalyticsService } from "../../../services/analytics/analytics.service";
 import { FileService } from "../../../services/files/file.service";
 import { SessionService } from "../../../services/session/session.service";
 import { WowUpService } from "../../../services/wowup/wowup.service";
@@ -32,11 +31,6 @@ describe("OptionsAppSectionComponent", () => {
     addonService = jasmine.createSpyObj("AddonService", [""], {});
 
     sessionServiceSpy = jasmine.createSpyObj("SessionService", [""], {});
-
-    analyticsServiceSpy = jasmine.createSpyObj("AnalyticsService", [""], {
-      telemetryEnabled$: new BehaviorSubject(false).asObservable(),
-      getTelemetryEnabled: () => Promise.resolve(false),
-    });
 
     zoomService = jasmine.createSpyObj("ZoomService", [""], {
       zoomFactor$: new BehaviorSubject(1.0).asObservable(),
@@ -88,7 +82,6 @@ describe("OptionsAppSectionComponent", () => {
             { provide: WowUpService, useValue: wowUpServiceSpy },
             { provide: SessionService, useValue: sessionServiceSpy },
             { provide: FileService, useValue: fileServiceSpy },
-            { provide: AnalyticsService, useValue: analyticsServiceSpy },
             { provide: ZoomService, useValue: zoomService },
             { provide: AddonService, useValue: addonService },
           ],

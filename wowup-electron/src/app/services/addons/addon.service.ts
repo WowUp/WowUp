@@ -30,7 +30,6 @@ import { AddonUpdateEvent } from "../../models/wowup/addon-update-event";
 import * as AddonUtils from "../../utils/addon.utils";
 import { getEnumName } from "wowup-lib-core/lib/utils";
 import * as SearchResults from "../../utils/search-result.utils";
-import { AnalyticsService } from "../analytics/analytics.service";
 import { FileService } from "../files/file.service";
 import { AddonStorageService } from "../storage/addon-storage.service";
 import { TocService } from "../toc/toc.service";
@@ -121,7 +120,6 @@ export class AddonService {
   public constructor(
     private _addonStorage: AddonStorageService,
     private _addonInstallService: AddonInstallService,
-    private _analyticsService: AnalyticsService,
     private _warcraftService: WarcraftService,
     private _wowUpService: WowUpService,
     private _fileService: FileService,
@@ -231,11 +229,6 @@ export class AddonService {
   public async getCategoryPage(category: AddonCategory, installation: WowInstallation): Promise<AddonSearchResult[]> {
     const providers = this._addonProviderService.getEnabledAddonProviders();
 
-    this._analyticsService.trackAction(USER_ACTION_BROWSE_CATEGORY, {
-      clientType: getEnumName(WowClientType, installation.clientType),
-      category: getEnumName(AddonCategory, category),
-    });
-
     const resultSet: AddonSearchResult[][] = [];
     for (const provider of providers) {
       try {
@@ -335,11 +328,6 @@ export class AddonService {
     });
 
     const searchResults = await Promise.all(searchTasks);
-
-    this._analyticsService.trackAction(USER_ACTION_ADDON_SEARCH, {
-      clientType: getEnumName(WowClientType, installation.clientType),
-      query,
-    });
 
     const flatResults = searchResults.flat(1);
 
@@ -746,8 +734,6 @@ export class AddonService {
     if (removeDependencies) {
       await this.removeDependencies(addon);
     }
-
-    this.trackInstallAction("remove", addon);
   }
 
   private async removeDependencies(addon: Addon) {
@@ -833,10 +819,6 @@ export class AddonService {
     if (!addonProvider) {
       throw new Error(`No addon provider found for protocol ${protocol}`);
     }
-
-    this._analyticsService.trackAction(USER_ACTION_ADDON_PROTOCOL_SEARCH, {
-      protocol,
-    });
 
     return await addonProvider.searchProtocol(protocol);
   }
@@ -1753,16 +1735,6 @@ export class AddonService {
       type: dependency.type,
     };
   };
-
-  private trackInstallAction(installType: InstallType, addon: Addon) {
-    this._analyticsService.trackAction(USER_ACTION_ADDON_INSTALL, {
-      clientType: getEnumName(WowClientType, addon.clientType),
-      provider: addon.providerName,
-      addon: addon.name,
-      addonId: addon.externalId,
-      installType,
-    });
-  }
 
   private async areAnyAddonsAvailableForUpdate(): Promise<boolean> {
     const addons = await this.getAllAddonsAvailableForUpdate();

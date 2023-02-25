@@ -18,7 +18,6 @@ import {
 } from "../../../../common/constants";
 import { ThemeGroup } from "../../../models/wowup/theme";
 import { ElectronService } from "../../../services";
-import { AnalyticsService } from "../../../services/analytics/analytics.service";
 import { DialogFactory } from "../../../services/dialog/dialog.factory";
 import { SessionService } from "../../../services/session/session.service";
 import { WowUpService } from "../../../services/wowup/wowup.service";
@@ -110,7 +109,6 @@ export class OptionsAppSectionComponent implements OnInit {
   public currentLanguage$ = new BehaviorSubject("");
   public useSymlinkMode$ = new BehaviorSubject(false);
   public useHardwareAcceleration$ = new BehaviorSubject(false);
-  public telemetryEnabled$ = new BehaviorSubject(false);
   public collapseToTray$ = new BehaviorSubject(false);
   public enableAppBadge$ = new BehaviorSubject(false);
   public startWithSystem$ = new BehaviorSubject(false);
@@ -119,7 +117,6 @@ export class OptionsAppSectionComponent implements OnInit {
   public keepAddonDetailTab$ = new BehaviorSubject(false);
 
   public constructor(
-    private _analyticsService: AnalyticsService,
     private _dialog: MatDialog,
     private _dialogFactory: DialogFactory,
     private _translateService: TranslateService,
@@ -141,10 +138,6 @@ export class OptionsAppSectionComponent implements OnInit {
       })
       .catch(console.error);
 
-    this._analyticsService.telemetryEnabled$.subscribe((enabled) => {
-      this.telemetryEnabled$.next(enabled);
-    });
-
     const minimizeOnCloseKey = this.electronService.isWin
       ? "PAGES.OPTIONS.APPLICATION.MINIMIZE_ON_CLOSE_DESCRIPTION_WINDOWS"
       : "PAGES.OPTIONS.APPLICATION.MINIMIZE_ON_CLOSE_DESCRIPTION_MAC";
@@ -152,13 +145,6 @@ export class OptionsAppSectionComponent implements OnInit {
     this._translateService.get(minimizeOnCloseKey).subscribe((translatedStr) => {
       this.minimizeOnCloseDescription = translatedStr;
     });
-
-    this._analyticsService
-      .getTelemetryEnabled()
-      .then((enabled) => {
-        this.telemetryEnabled$.next(enabled);
-      })
-      .catch(console.error);
 
     this.wowupService
       .getCollapseToTray()
@@ -266,10 +252,6 @@ export class OptionsAppSectionComponent implements OnInit {
     }
 
     await this.wowupService.updateAppBadgeCount(count);
-  };
-
-  public onTelemetryChange = async (evt: MatSlideToggleChange): Promise<void> => {
-    await this._analyticsService.setTelemetryEnabled(evt.checked);
   };
 
   public onCollapseChange = async (evt: MatSlideToggleChange): Promise<void> => {

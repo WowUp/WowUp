@@ -20,7 +20,6 @@ import { DefaultHeadersInterceptor } from "./interceptors/default-headers.interc
 import { ErrorHandlerInterceptor } from "./interceptors/error-handler-interceptor";
 import { MatModule } from "./modules/mat-module";
 import { HomeModule } from "./pages/home/home.module";
-import { AnalyticsService } from "./services/analytics/analytics.service";
 import { WowUpApiService } from "./services/wowup-api/wowup-api.service";
 import { WowUpService } from "./services/wowup/wowup.service";
 import { WarcraftInstallationService } from "./services/warcraft/warcraft-installation.service";
@@ -98,7 +97,7 @@ export function initializeApp(
     {
       provide: ErrorHandler,
       useClass: ErrorHandlerInterceptor,
-      deps: [AnalyticsService],
+      deps: [],
     },
   ],
   bootstrap: [AppComponent],

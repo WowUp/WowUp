@@ -6,7 +6,6 @@ import { LinkService } from "../../../services/links/link.service";
 import { formatDynamicLinks } from "../../../utils/dom.utils";
 
 export interface ConsentDialogResult {
-  telemetry: boolean;
   wagoProvider: boolean;
 }
 
@@ -25,7 +24,6 @@ export class ConsentDialogComponent implements AfterViewChecked {
 
   public constructor(public dialogRef: MatDialogRef<ConsentDialogComponent>, private _linkService: LinkService) {
     this.consentOptions = new UntypedFormGroup({
-      telemetry: new UntypedFormControl(true),
       wagoProvider: new UntypedFormControl(true),
     });
   }

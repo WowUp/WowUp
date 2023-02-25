@@ -13,7 +13,6 @@ import { ConsentDialogComponent } from "../components/common/consent-dialog/cons
 import { ExternalUrlConfirmationDialogComponent } from "../components/common/external-url-confirmation-dialog/external-url-confirmation-dialog.component";
 import { PatchNotesDialogComponent } from "../components/common/patch-notes-dialog/patch-notes-dialog.component";
 import { ProgressButtonComponent } from "../components/common/progress-button/progress-button.component";
-import { TelemetryDialogComponent } from "../components/common/telemetry-dialog/telemetry-dialog.component";
 import { WebViewComponent } from "../components/common/webview/webview.component";
 import { ProgressSpinnerComponent } from "../components/progress-spinner/progress-spinner.component";
 import { MatModule } from "./mat-module";
@@ -29,7 +28,6 @@ import { PipesModule } from "./pipes.module";
     ExternalUrlConfirmationDialogComponent,
     PatchNotesDialogComponent,
     ProgressButtonComponent,
-    TelemetryDialogComponent,
     ConsentDialogComponent,
     CellWrapTextComponent,
     CenteredSnackbarComponent,
@@ -46,7 +44,6 @@ import { PipesModule } from "./pipes.module";
     ExternalUrlConfirmationDialogComponent,
     PatchNotesDialogComponent,
     ProgressButtonComponent,
-    TelemetryDialogComponent,
     ConsentDialogComponent,
     CellWrapTextComponent,
     CenteredSnackbarComponent,

@@ -16,7 +16,6 @@ import { MatModule } from "./modules/mat-module";
 import { PreferenceChange } from "./models/wowup/preference-change";
 import { ElectronService } from "./services";
 import { AddonService } from "./services/addons/addon.service";
-import { AnalyticsService } from "./services/analytics/analytics.service";
 import { FileService } from "./services/files/file.service";
 import { SessionService } from "./services/session/session.service";
 import { PreferenceStorageService } from "./services/storage/preference-storage.service";
@@ -32,7 +31,6 @@ describe("AppComponent", () => {
   let wowUpServiceSpy: WowUpService;
   let sessionServiceSpy: SessionService;
   let fileServiceSpy: FileService;
-  let analyticsServiceSpy: AnalyticsService;
   let preferenceStorageSpy: PreferenceStorageService;
   let wowUpAddonServiceSpy: WowUpAddonService;
   let warcraftInstallationService: WarcraftInstallationService;
@@ -82,7 +80,6 @@ describe("AppComponent", () => {
       adSpace$: new BehaviorSubject(false),
     });
     fileServiceSpy = jasmine.createSpyObj("FileService", [""]);
-    analyticsServiceSpy = jasmine.createSpyObj("AnalyticsService", ["trackStartup"]);
     preferenceStorageSpy = jasmine.createSpyObj("PreferenceStorageService", ["get"], {});
 
     await TestBed.configureTestingModule({
@@ -117,7 +114,6 @@ describe("AppComponent", () => {
             { provide: WowUpService, useValue: wowUpServiceSpy },
             { provide: SessionService, useValue: sessionServiceSpy },
             { provide: FileService, useValue: fileServiceSpy },
-            { provide: AnalyticsService, useValue: analyticsServiceSpy },
             { provide: PreferenceStorageService, useValue: preferenceStorageSpy },
             { provide: WowUpAddonService, useValue: wowUpAddonServiceSpy },
             { provide: WarcraftInstallationService, useValue: warcraftInstallationService },

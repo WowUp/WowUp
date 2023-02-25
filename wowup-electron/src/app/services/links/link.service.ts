@@ -10,7 +10,6 @@ import {
   ExternalUrlConfirmationDialogComponent,
 } from "../../components/common/external-url-confirmation-dialog/external-url-confirmation-dialog.component";
 import { WowUpService } from "../wowup/wowup.service";
-import { AnalyticsService } from "../analytics/analytics.service";
 import { USER_ACTION_OPEN_LINK } from "../../../common/constants";
 import { ElectronService } from "../electron/electron.service";
 
@@ -20,16 +19,12 @@ import { ElectronService } from "../electron/electron.service";
 export class LinkService {
   public constructor(
     private _dialog: MatDialog,
-    private _analyticsService: AnalyticsService,
     private _electronService: ElectronService,
     private _wowUpService: WowUpService,
     private _translateService: TranslateService
   ) {}
 
   public async openExternalLink(url: string): Promise<void> {
-    this._analyticsService.trackAction(USER_ACTION_OPEN_LINK, {
-      link: url,
-    });
     await this._electronService.openExternal(url);
   }
 
