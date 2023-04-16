@@ -500,9 +500,9 @@
         },
         "TITLE": "Addons",
         "WAGO_ACCESS_KEY": {
-          "MESSAGE": "Use the Wago provider without seeing advertisements. <a href=\"https://addons.wago.io/patreon\">Learn More</a>",
-          "PLACEHOLDER": "Access Key",
-          "TITLE": "Wago Access Key"
+          "MESSAGE": "Utilice el proveedor Wago sin ver anuncios. <a href=\"https://addons.wago.io/patreon\">Saber más</a>",
+          "PLACEHOLDER": "Clave de acceso",
+          "TITLE": "Clave de acceso de Wago"
         }
       },
       "APPLICATION": {
