@@ -500,9 +500,9 @@
         },
         "TITLE": "插件",
         "WAGO_ACCESS_KEY": {
-          "MESSAGE": "Use the Wago provider without seeing advertisements. <a href=\"https://addons.wago.io/patreon\">Learn More</a>",
-          "PLACEHOLDER": "Access Key",
-          "TITLE": "Wago Access Key"
+          "MESSAGE": "啟用 Wago 安裝源而無需顯示廣告。<a href=\"https://addons.wago.io/patreon\">瞭解詳細資訊（英語）</a>",
+          "PLACEHOLDER": "訪問金鑰",
+          "TITLE": "Wago 訪問金鑰"
         }
       },
       "APPLICATION": {
