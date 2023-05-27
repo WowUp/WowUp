@@ -4,7 +4,7 @@ import { BehaviorSubject, Observable, Subject } from "rxjs";
 import { OverlayContainer, OverlayModule } from "@angular/cdk/overlay";
 import { HttpClient, HttpClientModule } from "@angular/common/http";
 import { TestBed } from "@angular/core/testing";
-import { MatDialog } from "@angular/material/dialog";
+import { MatLegacyDialog as MatDialog } from "@angular/material/legacy-dialog";
 import { NoopAnimationsModule } from "@angular/platform-browser/animations";
 import { RouterTestingModule } from "@angular/router/testing";
 import { TranslateCompiler, TranslateLoader, TranslateModule } from "@ngx-translate/core";

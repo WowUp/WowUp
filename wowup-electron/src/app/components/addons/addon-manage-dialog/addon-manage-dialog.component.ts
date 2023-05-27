@@ -171,7 +171,15 @@ export class AddonManageDialogComponent implements OnInit, OnDestroy {
         console.log("Install", evt);
 
         const viewModel = { ...this.importSummary$.value };
+        if (viewModel?.comparisons === undefined) {
+          return;
+        }
+
         const compVm = viewModel.comparisons.find((comp) => comp.id === evt.comparisonId);
+        if (compVm === undefined) {
+          return;
+        }
+
         compVm.isInstalling = true;
         compVm.isCompleted = evt.installState === AddonInstallState.Complete;
         compVm.didError = evt.installState === AddonInstallState.Error;

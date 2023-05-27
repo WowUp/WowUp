@@ -13,8 +13,8 @@ import {
 } from "rxjs";
 
 import { Component, ElementRef, OnDestroy, OnInit, ViewChild } from "@angular/core";
-import { UntypedFormControl } from "@angular/forms";
-import { MatListOption, MatSelectionListChange } from "@angular/material/list";
+import { FormGroup, UntypedFormControl } from "@angular/forms";
+import { MatLegacySelectionListChange as MatSelectionListChange, MatLegacyListOption as MatListOption } from "@angular/material/legacy-list";
 import { TranslateService } from "@ngx-translate/core";
 
 import {
@@ -29,7 +29,7 @@ import { DialogFactory } from "../../../services/dialog/dialog.factory";
 import { LinkService } from "../../../services/links/link.service";
 import { SensitiveStorageService } from "../../../services/storage/sensitive-storage.service";
 import { formatDynamicLinks } from "../../../utils/dom.utils";
-import { FormGroup } from "@angular/forms";
+
 import { AddonProviderType } from "wowup-lib-core";
 
 interface AddonProviderStateModel extends AddonProviderState {

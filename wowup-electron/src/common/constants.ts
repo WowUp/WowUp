@@ -185,16 +185,18 @@ export const DEFAULT_TRUSTED_DOMAINS = [
   "wago.io",
   "addons.wago.io",
 ];
-export const WOW_CLASSIC_FOLDER = "_classic_";
-export const WOW_CLASSIC_ERA_FOLDER = "_classic_era_";
-export const WOW_RETAIL_FOLDER = "_retail_";
-export const WOW_RETAIL_PTR_FOLDER = "_ptr_";
-export const WOW_CLASSIC_PTR_FOLDER = "_classic_ptr_";
 export const WOW_BETA_FOLDER = "_beta_";
+export const WOW_CLASSIC_FOLDER = "_classic_";
 export const WOW_CLASSIC_BETA_FOLDER = "_classic_beta_";
+export const WOW_CLASSIC_ERA_FOLDER = "_classic_era_";
+export const WOW_CLASSIC_ERA_PTR_FOLDER = "_classic_era_ptr_";
+export const WOW_CLASSIC_PTR_FOLDER = "_classic_ptr_";
+export const WOW_RETAIL_PTR_FOLDER = "_ptr_";
+export const WOW_RETAIL_FOLDER = "_retail_";
+
 export const WOW_ADDON_FOLDER_NAME = "AddOns";
 export const WOW_INTERFACE_FOLDER_NAME = "Interface";
-export const WOW_CLASSIC_ERA_PTR_FOLDER = "_classic_era_ptr_";
+
 
 export const YEAR_SECONDS = 31536000;
 export const MONTH_SECONDS = 2592000;

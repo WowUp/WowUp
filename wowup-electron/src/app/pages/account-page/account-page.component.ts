@@ -1,5 +1,5 @@
 import { Component } from "@angular/core";
-import { MatSlideToggleChange } from "@angular/material/slide-toggle";
+import { MatLegacySlideToggleChange as MatSlideToggleChange } from "@angular/material/legacy-slide-toggle";
 import { TranslateService } from "@ngx-translate/core";
 import { of } from "rxjs";
 import { catchError, map } from "rxjs/operators";

@@ -16,7 +16,8 @@
     "publisherName": "WowUp LLC"
   },
   "nsis": {
-    "deleteAppDataOnUninstall": true
+    "deleteAppDataOnUninstall": true,
+    "include": "./electron-build/uninstaller.nsh"
   },
   "mac": {
     "icon": "electron-build/icon.icns",

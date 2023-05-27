@@ -35,7 +35,7 @@ export class RaiderIoAddonProvider extends AddonProvider {
       return Promise.resolve(undefined);
     }
 
-    const targetToc = this._tocService.getTocForGameType2(raiderIo, installation.clientType);
+    const targetToc = this._tocService.getTocForGameType2(raiderIo.name, raiderIo.tocs, installation.clientType);
     const dependencies = _.filter(addonFolders, (addonFolder) => this.isRaiderIoDependant(addonFolder));
     console.debug("RAIDER IO CLIENT FOUND", dependencies);
 
@@ -44,7 +44,7 @@ export class RaiderIoAddonProvider extends AddonProvider {
     const installedFolders = installedFolderList.join(",");
 
     for (const rioAddonFolder of rioAddonFolders) {
-      const subTargetToc = this._tocService.getTocForGameType2(rioAddonFolder, installation.clientType);
+      const subTargetToc = this._tocService.getTocForGameType2(rioAddonFolder.name, rioAddonFolder.tocs, installation.clientType);
 
       rioAddonFolder.matchingAddon = {
         autoUpdateEnabled: false,

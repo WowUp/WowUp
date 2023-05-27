@@ -34,7 +34,7 @@ export class WowUpCompanionAddonProvider extends AddonProvider {
       return;
     }
 
-    const targetToc = this._tocService.getTocForGameType2(companion, installation.clientType);
+    const targetToc = this._tocService.getTocForGameType2(companion.name, companion.tocs, installation.clientType);
     if (targetToc === undefined) {
       throw new Error("target toc was not found");
     }

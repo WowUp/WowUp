@@ -17,10 +17,5 @@
     "**/*.spec.ts",
     "app/**/tests/*.ts",
     "app/**/utils/test.utils.ts",
-  ],
-  "angularCompilerOptions": {
-    "fullTemplateTypeCheck": true,
-    "strictInjectionParameters": true,
-    "preserveWhitespaces": true
-  }
+  ]
 }

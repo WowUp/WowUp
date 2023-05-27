@@ -2,15 +2,24 @@
 @import "./variables.scss";
 @import "@angular/material/theming";
 
-@import "~ag-grid-community/dist/styles/ag-grid.css";
-@import "~ag-grid-community/dist/styles/ag-theme-material/sass//ag-theme-material-mixin";
+@import "ag-grid-community/styles/ag-grid.css";
+@import "ag-grid-community/styles/ag-theme-material.css";
 
 // Plus imports for other components in your app.
 
 // Include the common styles for Angular Material. We include this here so that you only
 // have to load a single css file for Angular Material in your app.
 // Be sure that you only ever include this mixin once!
-@include mat.core();
+// TODO(v15): As of v15 mat.legacy-core no longer includes default typography styles.
+//  The following line adds:
+//    1. Default typography styles for all components
+//    2. Styles for typography hierarchy classes (e.g. .mat-headline-1)
+//  If you specify typography styles for the components you use elsewhere, you should delete this line.
+//  If you don't need the default component typographies but still want the hierarchy styles,
+//  you can delete this line and instead use:
+//    `@include mat.legacy-typography-hierarchy(mat.define-legacy-typography-config());`
+@include mat.all-legacy-component-typographies();
+@include mat.legacy-core();
 
 :root {
   --success-color: rgb(25, 135, 84);
@@ -85,10 +94,10 @@ $wowup-light-theme: mat.define-light-theme(
 // Include theme styles for core and each component used in your app.
 // Alternatively, you can import and @include the theme mixins for each component
 // that you are using.
-@include mat.all-component-themes($wowup-default-theme);
+@include mat.all-legacy-component-themes($wowup-default-theme);
 
 .default-theme-light-theme {
-  @include mat.all-component-colors($wowup-light-theme);
+  @include mat.all-legacy-component-colors($wowup-light-theme);
 }
 
 // Horde theme
@@ -148,11 +157,11 @@ $horde-theme-light: mat.define-light-theme(
 );
 
 .horde-theme-light-theme {
-  @include mat.all-component-colors($horde-theme-light);
+  @include mat.all-legacy-component-colors($horde-theme-light);
 }
 
 .horde-theme {
-  @include mat.all-component-colors($horde-theme);
+  @include mat.all-legacy-component-colors($horde-theme);
 }
 
 // Alliance theme
@@ -212,11 +221,11 @@ $alliance-theme-light: mat.define-light-theme(
 );
 
 .alliance-theme-light-theme {
-  @include mat.all-component-colors($alliance-theme-light);
+  @include mat.all-legacy-component-colors($alliance-theme-light);
 }
 
 .alliance-theme {
-  @include mat.all-component-colors($alliance-theme);
+  @include mat.all-legacy-component-colors($alliance-theme);
 }
 
 // VARS
@@ -795,21 +804,14 @@ div.tree > tree-node > div > .node-wrapper > tree-node-expander > .toggle-childr
 }
 // GRID STYLES
 .ag-theme-material {
-  @include ag-theme-material(
-    (
-      foreground-color: var(--text-1),
-      disabled-foreground-color: rgba(var(--text-1), 0.38),
-      secondary-foreground-color: rgba(var(--text-1), 0.54),
-      background-color: var(--background-secondary),
-      modal-overlay-background-color: rgba(var(--background-secondary-2), 0.66),
-      header-background-color: var(--background-secondary),
-      header-cell-hover-background-color: hsl(var(--background-secondary-2), 95%),
-      row-hover-color: var(--background-secondary-2),
-      row-border-color: var(--grid-border),
-      border-color: var(--grid-border),
-      secondary-border-color: var(--grid-border),
-      selected-row-background-color: var(--background-secondary-4),
-      range-selection-border-color: transparent,
-    )
-  );
+  --ag-foreground-color: var(--text-1);
+  --ag-disabled-foreground-color: rgba(var(--text-1), 0.38);
+  --ag-secondary-foreground-color: rgba(var(--text-1), 0.54);
+  --ag-background-color: var(--background-secondary);
+  --ag-header-background-color: var(--background-secondary);
+  --ag-header-cell-hover-background-color: hsl(var(--background-secondary-2), 95%);
+  --ag-row-hover-color: var(--background-secondary-2);
+  --ag-border-color: var(--grid-border);
+  --ag-selected-row-background-color: var(--background-secondary-4);
+  --ag-range-selection-border-color: transparent;
 }

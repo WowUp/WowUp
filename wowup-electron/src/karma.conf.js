@@ -32,9 +32,9 @@ module.exports = function (config) {
         browserWindowOptions: {
           webPreferences: {
             nodeIntegration: true,
-            contextIsolation: false,
             nodeIntegrationInSubFrames: true,
             allowRunningInsecureContent: true,
+            contextIsolation: false,
           },
         },
       },

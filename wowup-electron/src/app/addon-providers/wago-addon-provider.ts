@@ -273,7 +273,7 @@ export class WagoAddonProvider extends AddonProvider {
         return;
       }
 
-      const toc = this._tocService.getTocForGameType2(addonFolder, installation.clientType);
+      const toc = this._tocService.getTocForGameType2(addonFolder.name, addonFolder.tocs, installation.clientType);
       if (toc === undefined) {
         console.warn("[wago]: getTocForGameType2 returned undefined, " + addonFolder.name);
         return;

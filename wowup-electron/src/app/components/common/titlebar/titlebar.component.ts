@@ -1,7 +1,7 @@
 import { first, from, Subscription } from "rxjs";
 
 import { Component, NgZone, OnDestroy } from "@angular/core";
-import { MatSnackBar, MatSnackBarRef } from "@angular/material/snack-bar";
+import { MatLegacySnackBar as MatSnackBar, MatLegacySnackBarRef as MatSnackBarRef } from "@angular/material/legacy-snack-bar";
 import { TranslateService } from "@ngx-translate/core";
 
 import {
