@@ -25,6 +25,7 @@ import { ClipboardModule } from "@angular/cdk/clipboard";
 import { ScrollingModule } from "@angular/cdk/scrolling";
 import { MatGridListModule } from "@angular/material/grid-list";
 import { MatExpansionModule } from "@angular/material/expansion";
+import { ObserversModule } from "@angular/cdk/observers";
 
 @NgModule({
   exports: [
@@ -51,6 +52,7 @@ import { MatExpansionModule } from "@angular/material/expansion";
     MatListModule,
     MatBadgeModule,
     ClipboardModule,
+    ObserversModule,
     ScrollingModule,
     MatGridListModule,
     MatExpansionModule,
@@ -79,6 +81,7 @@ import { MatExpansionModule } from "@angular/material/expansion";
     MatListModule,
     MatBadgeModule,
     ClipboardModule,
+    ObserversModule,
     ScrollingModule,
     MatGridListModule,
     MatExpansionModule,

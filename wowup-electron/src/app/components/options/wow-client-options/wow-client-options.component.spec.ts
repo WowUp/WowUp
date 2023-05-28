@@ -34,6 +34,9 @@ describe("WowClientOptionsComponent", () => {
           clientType: WowClientType.Beta,
         };
       },
+      getInstallationDisplayName: () => {
+        return Promise.resolve("test display name");
+      },
     });
 
     warcraftService = jasmine.createSpyObj("WarcraftService", ["getExecutableName"], {});
