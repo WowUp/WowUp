@@ -159,5 +159,10 @@
     flex-shrink: 0;
     width: 300px;
     height: 250px;
+    background-color: var(--background-secondary-4);
+    background-image: var(--ad-placeholder);
+    background-position: top 32px center;
+    background-repeat: no-repeat;
+    background-size: 55%;
   }
 }
