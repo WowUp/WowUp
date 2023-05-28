@@ -1,4 +1,4 @@
-export function formatDynamicLinks(container: HTMLDivElement, onClick: (element: HTMLAnchorElement) => boolean): void {
+export function formatDynamicLinks(container: HTMLElement, onClick: (element: HTMLAnchorElement) => boolean): void {
   if (!container) {
     console.log("formatDynamicLinks no container");
     return;

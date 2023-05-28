@@ -1,6 +1,6 @@
 import { Injectable } from "@angular/core";
 import * as path from "path";
-import { AddonFolder, WowClientType } from "wowup-lib-core";
+import { WowClientType } from "wowup-lib-core";
 
 import * as tocModels from "wowup-lib-core";
 import { removeExtension } from "../../utils/string.utils";

@@ -1,5 +1,5 @@
-import { from, of, Subject, Subscription } from "rxjs";
-import { catchError, filter, first, map, switchMap, takeUntil, tap } from "rxjs/operators";
+import { from, Subscription } from "rxjs";
+import { filter, first, map, switchMap } from "rxjs/operators";
 
 import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy } from "@angular/core";
 import { MatLegacySnackBar as MatSnackBar } from "@angular/material/legacy-snack-bar";

@@ -213,7 +213,7 @@ export class AddonDetailComponent implements OnInit, OnDestroy, AfterViewInit {
       });
 
     this.changelogContainer.changes.pipe(takeUntil(this._destroy$)).subscribe(() => {
-      formatDynamicLinks(this.changelogContainer.first.nativeElement, this.onOpenLink);
+      formatDynamicLinks(this.changelogContainer.first.nativeElement as HTMLElement, this.onOpenLink);
     });
   }
 
@@ -224,7 +224,7 @@ export class AddonDetailComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   public projectContentChanged(muts: MutationRecord[]) {
-    for (let mut of muts) {
+    for (const mut of muts) {
       formatDynamicLinks(mut.target as HTMLDivElement, this.onOpenLink);
     }
   }
