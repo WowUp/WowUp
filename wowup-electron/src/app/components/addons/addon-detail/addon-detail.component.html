@@ -15,7 +15,7 @@
 
     <div class="flex-grow-1 mr-1">
       <h2 class="m-0 title">{{ title }}</h2>
-      <h3 class="m-0">{{ "DIALOGS.ADDON_DETAILS.BY_AUTHOR" | translate: { authorName: subtitle } }}</h3>
+      <h3 class="m-0">{{ "DIALOGS.ADDON_DETAILS.BY_AUTHOR" | translate : { authorName: subtitle } }}</h3>
       <h4 class="m-0 text-2">{{ version }}</h4>
     </div>
     <mat-icon
@@ -55,7 +55,7 @@
   <!-- TABS -->
   <mat-tab-group
     #tabs
-    *ngIf="selectedTabIndex!=undefined && isUnknownProvider === false"
+    *ngIf="selectedTabIndex != undefined && isUnknownProvider === false"
     class="scroller"
     [selectedIndex]="selectedTabIndex"
     (selectedTabChange)="onSelectedTabChange($event)"
@@ -66,6 +66,7 @@
       <div
         #descriptionContainer
         class="markdown-body addon-summary text-1 mt-3 selectable"
+        (cdkObserveContent)="projectContentChanged($event)"
         [innerHtml]="description$ | async"
       ></div>
     </mat-tab>
@@ -75,7 +76,12 @@
       <div *ngIf="fetchingChangelog === false && hasChangeLog === false" class="mt-3">
         {{ "DIALOGS.ADDON_DETAILS.NO_CHANGELOG_TEXT" | translate }}
       </div>
-      <div #changelogContainer class="markdown-body addon-changelog text-1 mt-3 selectable" [innerHTML]="changelog$ | async"></div>
+      <div
+        id="dtch"
+        #changelogContainer
+        class="markdown-body addon-changelog text-1 mt-3 selectable"
+        [innerHTML]="changelog$ | async"
+      ></div>
     </mat-tab>
     <!-- SCREENSHOTS -->
     <mat-tab *ngIf="previewItems.length > 0" [label]="'DIALOGS.ADDON_DETAILS.IMAGES_TAB' | translate">

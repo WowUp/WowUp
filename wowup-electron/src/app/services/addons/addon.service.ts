@@ -1334,6 +1334,7 @@ export class AddonService {
 
           await provider.scan(installation, defaultAddonChannel, validFolders);
         } catch (e) {
+          console.error('scan failed: ' + provider.name);
           console.error(e);
           this._scanErrorSrc.next(
             new AddonScanError({
@@ -1353,7 +1354,7 @@ export class AddonService {
           return;
         }
 
-        const targetToc = this._tocService.getTocForGameType2(maf, installation.clientType);
+        const targetToc = this._tocService.getTocForGameType2(maf.name, maf.tocs, installation.clientType);
         if (targetToc === undefined) {
           console.warn("toc file undefined", maf, installation.clientType);
           maf.matchingAddon.warningType = AddonWarningType.TocNameMismatch;
@@ -1449,7 +1450,7 @@ export class AddonService {
       return false;
     }
 
-    const targetToc = this._tocService.getTocForGameType2(addonFolder, installation.clientType);
+    const targetToc = this._tocService.getTocForGameType2(addonFolder.name, addonFolder.tocs, installation.clientType);
 
     // if the folder is load on demand, it 'should' be a sub folder
     const isLoadOnDemand = targetToc?.loadOnDemand === "1";
@@ -1712,7 +1713,7 @@ export class AddonService {
     installation: WowInstallation,
     matchedAddonFolderNames: string[]
   ): Promise<Addon> {
-    const targetToc = this._tocService.getTocForGameType2(addonFolder, installation.clientType);
+    const targetToc = this._tocService.getTocForGameType2(addonFolder.name, addonFolder.tocs, installation.clientType);
     const tocMissingDependencies = _.difference(targetToc?.dependencyList, matchedAddonFolderNames);
     const lastUpdatedAt = await this._fileService.getLatestDirUpdateTime(addonFolder.path);
 

@@ -2,7 +2,7 @@ import { TranslateMessageFormatCompiler } from "ngx-translate-messageformat-comp
 
 import { HttpClient, HttpClientModule } from "@angular/common/http";
 import { ComponentFixture, TestBed } from "@angular/core/testing";
-import { MatDialog } from "@angular/material/dialog";
+import { MatLegacyDialog as MatDialog } from "@angular/material/legacy-dialog";
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 import { TranslateCompiler, TranslateLoader, TranslateModule } from "@ngx-translate/core";
 
@@ -33,6 +33,9 @@ describe("WowClientOptionsComponent", () => {
         return {
           clientType: WowClientType.Beta,
         };
+      },
+      getInstallationDisplayName: () => {
+        return Promise.resolve("test display name");
       },
     });
 

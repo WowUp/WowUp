@@ -1,10 +1,16 @@
-export function formatDynamicLinks(container: HTMLDivElement, onClick: (element: HTMLAnchorElement) => boolean): void {
+export function formatDynamicLinks(container: HTMLElement, onClick: (element: HTMLAnchorElement) => boolean): void {
   if (!container) {
+    console.log("formatDynamicLinks no container");
     return;
   }
 
-  const aTags = container.getElementsByTagName("a");
-  for (const tag of Array.from(aTags)) {
+  const aTags = container.querySelectorAll("a");
+  const tagArr = Array.from(aTags);
+  if (tagArr.length === 0) {
+    console.warn("formatDynamicLinks no a tags found");
+  }
+
+  for (const tag of tagArr) {
     if (tag.getAttribute("clk")) {
       continue;
     }
@@ -17,7 +23,6 @@ export function formatDynamicLinks(container: HTMLDivElement, onClick: (element:
     tag.addEventListener(
       "click",
       (e: MouseEvent) => {
-        console.debug("CLICK");
         const anchor = onOpenLink(e);
         if (anchor === undefined) {
           return;
@@ -34,7 +39,7 @@ function onOpenLink(e: MouseEvent): HTMLAnchorElement | undefined {
   e.preventDefault();
 
   // Go up the call chain to find the tag
-  const path = (e as any).path as HTMLElement[];
+  const path = e.composedPath() as HTMLElement[];
   let anchor: HTMLAnchorElement | undefined = undefined;
   for (const element of path) {
     if (element.tagName !== "A") {

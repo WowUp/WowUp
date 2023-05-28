@@ -2,9 +2,9 @@ import { BehaviorSubject, firstValueFrom, from, of } from "rxjs";
 import { catchError, map, switchMap } from "rxjs/operators";
 
 import { ChangeDetectorRef, Component, OnInit } from "@angular/core";
-import { MatDialog } from "@angular/material/dialog";
-import { MatSelectChange } from "@angular/material/select";
-import { MatSlideToggleChange } from "@angular/material/slide-toggle";
+import { MatLegacyDialog as MatDialog } from "@angular/material/legacy-dialog";
+import { MatLegacySelectChange as MatSelectChange } from "@angular/material/legacy-select";
+import { MatLegacySlideToggleChange as MatSlideToggleChange } from "@angular/material/legacy-slide-toggle";
 import { TranslateService } from "@ngx-translate/core";
 
 import {

@@ -1,6 +1,6 @@
 import { Injectable } from "@angular/core";
 import * as path from "path";
-import { AddonFolder, WowClientType } from "wowup-lib-core";
+import { WowClientType } from "wowup-lib-core";
 
 import * as tocModels from "wowup-lib-core";
 import { removeExtension } from "../../utils/string.utils";
@@ -80,16 +80,16 @@ export class TocService {
       const dirPath = path.join(baseDir, dir);
 
       const tocFiles = await this._fileService.listFiles(dirPath, "*.toc");
-      const tocFile = this.getTocForGameType(tocFiles, clientType);
-      if (!tocFile) {
-        continue;
-      }
+      const allTocs = await Promise.all(
+        tocFiles.map((tf) => {
+          const tocPath = path.join(dirPath, tf);
+          return this.parse(tocPath);
+        })
+      );
 
-      const tocPath = path.join(dirPath, tocFile);
-
-      const toc = await this.parse(tocPath);
-      if (toc.interface) {
-        tocs.push(toc);
+      const tf = this.getTocForGameType2(dir, allTocs, clientType);
+      if (tf !== undefined) {
+        tocs.push(tf);
       }
     }
 
@@ -129,17 +129,20 @@ export class TocService {
     );
   }
 
-  public getTocForGameType2(addonFolder: AddonFolder, clientType: WowClientType): tocModels.Toc | undefined {
+  public getTocForGameType2(
+    folderName: string,
+    tocs: tocModels.Toc[],
+    clientType: WowClientType
+  ): tocModels.Toc | undefined {
     let matchedToc = "";
 
-    const tocs = addonFolder.tocs;
     const tocFileNames = tocs.map((toc) => toc.fileName);
     matchedToc = this.getTocForGameType(tocFileNames, clientType);
 
     // If we still have no match, we need to return the toc that matches the folder name if it exists
     // Example: All the things for TBC (ATT-Classic)
     if (matchedToc === "") {
-      return tocs.find((toc) => removeExtension(toc.fileName).toLowerCase() === addonFolder.name.toLowerCase());
+      return tocs.find((toc) => removeExtension(toc.fileName).toLowerCase() === folderName.toLowerCase());
     }
 
     return tocs.find((toc) => toc.fileName === matchedToc);

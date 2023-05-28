@@ -1,11 +1,11 @@
 import { dirname } from "path";
 import { BehaviorSubject, from, of, Subscription } from "rxjs";
-import { filter, first, map, switchMap } from "rxjs/operators";
+import { filter, map, switchMap } from "rxjs/operators";
 
 import { Component, Input, OnDestroy, OnInit } from "@angular/core";
-import { MatDialog } from "@angular/material/dialog";
-import { MatSelectChange } from "@angular/material/select";
-import { MatSlideToggleChange } from "@angular/material/slide-toggle";
+import { MatLegacyDialog as MatDialog } from "@angular/material/legacy-dialog";
+import { MatLegacySelectChange as MatSelectChange } from "@angular/material/legacy-select";
+import { MatLegacySlideToggleChange as MatSlideToggleChange } from "@angular/material/legacy-slide-toggle";
 import { TranslateService } from "@ngx-translate/core";
 
 import { ElectronService } from "../../../services";

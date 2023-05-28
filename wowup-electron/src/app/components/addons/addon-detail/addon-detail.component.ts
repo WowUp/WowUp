@@ -4,7 +4,6 @@ import { BehaviorSubject, from, Observable, of, Subject } from "rxjs";
 import { catchError, filter, first, map, takeUntil, tap } from "rxjs/operators";
 
 import {
-  AfterViewChecked,
   AfterViewInit,
   ChangeDetectionStrategy,
   ChangeDetectorRef,
@@ -14,9 +13,16 @@ import {
   OnDestroy,
   OnInit,
   ViewChild,
+  ViewChildren,
 } from "@angular/core";
-import { MAT_DIALOG_DATA, MatDialogRef } from "@angular/material/dialog";
-import { MatTabChangeEvent, MatTabGroup } from "@angular/material/tabs";
+import {
+  MAT_LEGACY_DIALOG_DATA as MAT_DIALOG_DATA,
+  MatLegacyDialogRef as MatDialogRef,
+} from "@angular/material/legacy-dialog";
+import {
+  MatLegacyTabChangeEvent as MatTabChangeEvent,
+  MatLegacyTabGroup as MatTabGroup,
+} from "@angular/material/legacy-tabs";
 import { TranslateService } from "@ngx-translate/core";
 
 import { ADDON_PROVIDER_GITHUB, ADDON_PROVIDER_UNKNOWN, TAB_INDEX_MY_ADDONS } from "../../../../common/constants";
@@ -40,6 +46,7 @@ import {
   AddonSearchResult,
   AddonSearchResultDependency,
 } from "wowup-lib-core";
+import { QueryList } from "@angular/core";
 
 export interface AddonDetailModel {
   listItem?: AddonViewModel;
@@ -53,9 +60,9 @@ export interface AddonDetailModel {
   styleUrls: ["./addon-detail.component.scss"],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class AddonDetailComponent implements OnInit, OnDestroy, AfterViewChecked, AfterViewInit {
-  @ViewChild("descriptionContainer", { read: ElementRef }) public descriptionContainer!: ElementRef;
-  @ViewChild("changelogContainer", { read: ElementRef }) public changelogContainer!: ElementRef;
+export class AddonDetailComponent implements OnInit, OnDestroy, AfterViewInit {
+  @ViewChildren("descriptionContainer", { read: ElementRef }) public descriptionContainer!: QueryList<ElementRef>;
+  @ViewChildren("changelogContainer", { read: ElementRef }) public changelogContainer!: QueryList<ElementRef>;
   @ViewChild("providerLink", { read: ElementRef }) public providerLink!: ElementRef;
   @ViewChild("tabs", { static: false }) public tabGroup!: MatTabGroup;
 
@@ -114,23 +121,6 @@ export class AddonDetailComponent implements OnInit, OnDestroy, AfterViewChecked
     this._addonService.addonInstalled$
       .pipe(takeUntil(this._destroy$), filter(this.isSameAddon))
       .subscribe(this.onAddonInstalledUpdate);
-
-    from(this.getChangelog())
-      .pipe(
-        takeUntil(this._destroy$),
-        tap(() => (this.fetchingChangelog = false))
-      )
-      .subscribe((changelog) => {
-        this.hasChangeLog = !!changelog;
-        this._changelogSrc.next(changelog);
-      });
-
-    from(this.getFullDescription())
-      .pipe(
-        takeUntil(this._destroy$),
-        tap(() => (this.fetchingFullDescription = false))
-      )
-      .subscribe((description) => this._descriptionSrc.next(description));
   }
 
   public ngOnInit(): void {
@@ -197,19 +187,46 @@ export class AddonDetailComponent implements OnInit, OnDestroy, AfterViewChecked
     this.selectInitialTab().subscribe();
   }
 
-  public ngAfterViewInit(): void {}
+  public ngAfterViewInit(): void {
+    from(this.getChangelog())
+      .pipe(
+        first(),
+        takeUntil(this._destroy$),
+        tap(() => {
+          this.fetchingChangelog = false;
+        })
+      )
+      .subscribe((changelog) => {
+        this.hasChangeLog = changelog.length > 0;
+        this._changelogSrc.next(changelog);
+      });
 
-  public ngAfterViewChecked(): void {
-    const descriptionContainer: HTMLDivElement = this.descriptionContainer?.nativeElement;
-    const changelogContainer: HTMLDivElement = this.changelogContainer?.nativeElement;
-    formatDynamicLinks(descriptionContainer, this.onOpenLink);
-    formatDynamicLinks(changelogContainer, this.onOpenLink);
+    from(this.getFullDescription())
+      .pipe(
+        takeUntil(this._destroy$),
+        tap(() => {
+          this.fetchingFullDescription = false;
+        })
+      )
+      .subscribe((description) => {
+        this._descriptionSrc.next(description);
+      });
+
+    this.changelogContainer.changes.pipe(takeUntil(this._destroy$)).subscribe(() => {
+      formatDynamicLinks(this.changelogContainer.first.nativeElement as HTMLElement, this.onOpenLink);
+    });
   }
 
   public ngOnDestroy(): void {
     this._destroy$.next(true);
     this._destroy$.complete();
     window.getSelection()?.empty();
+  }
+
+  public projectContentChanged(muts: MutationRecord[]) {
+    for (const mut of muts) {
+      formatDynamicLinks(mut.target as HTMLDivElement, this.onOpenLink);
+    }
   }
 
   public onInstallUpdated(): void {
@@ -227,11 +244,11 @@ export class AddonDetailComponent implements OnInit, OnDestroy, AfterViewChecked
   }
 
   public async onClickRemoveAddon(): Promise<void> {
-    let addon: Addon = null;
+    let addon: Addon | null = null;
 
     // Addon is expected to be available through the model when browsing My Addons tab
     if (this._sessionService.getSelectedHomeTab() === TAB_INDEX_MY_ADDONS) {
-      if (!this.model.listItem?.addon.name) {
+      if (typeof this.model.listItem?.addon?.name !== "string" || this.model.listItem.addon.name.length === 0) {
         console.warn("Invalid model list item addon");
         return;
       }

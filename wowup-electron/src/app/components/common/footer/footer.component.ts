@@ -2,7 +2,7 @@ import { combineLatest, from, Observable, of } from "rxjs";
 import { catchError, map, switchMap } from "rxjs/operators";
 
 import { Component, NgZone, OnInit } from "@angular/core";
-import { MatDialog } from "@angular/material/dialog";
+import { MatLegacyDialog as MatDialog } from "@angular/material/legacy-dialog";
 import { TranslateService } from "@ngx-translate/core";
 
 import { TAB_INDEX_ABOUT } from "../../../../common/constants";

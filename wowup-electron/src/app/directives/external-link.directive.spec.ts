@@ -3,7 +3,7 @@ import { ExternalLinkDirective } from "./external-link.directive";
 import { Component } from "@angular/core";
 import { getStandardImports, mockPreload } from "../tests/test-helpers";
 import { WowUpService } from "../services/wowup/wowup.service";
-import { MatDialog } from "@angular/material/dialog";
+import { MatLegacyDialog as MatDialog } from "@angular/material/legacy-dialog";
 import { LinkService } from "../services/links/link.service";
 
 @Component({

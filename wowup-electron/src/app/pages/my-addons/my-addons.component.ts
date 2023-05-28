@@ -4,10 +4,11 @@ import {
   ColumnApi,
   GridApi,
   GridReadyEvent,
+  IRowNode,
   RowClassParams,
   RowClickedEvent,
   RowDoubleClickedEvent,
-  RowNode,
+
   SortChangedEvent,
 } from "ag-grid-community";
 import * as _ from "lodash";
@@ -37,10 +38,10 @@ import {
   OnInit,
   ViewChild,
 } from "@angular/core";
-import { MatCheckboxChange } from "@angular/material/checkbox";
-import { MatDialog } from "@angular/material/dialog";
-import { MatMenuTrigger } from "@angular/material/menu";
-import { MatRadioChange } from "@angular/material/radio";
+import { MatLegacyCheckboxChange as MatCheckboxChange } from "@angular/material/legacy-checkbox";
+import { MatLegacyDialog as MatDialog } from "@angular/material/legacy-dialog";
+import { MatLegacyMenuTrigger as MatMenuTrigger } from "@angular/material/legacy-menu";
+import { MatLegacyRadioChange as MatRadioChange } from "@angular/material/legacy-radio";
 import { TranslateService } from "@ngx-translate/core";
 
 import { AddonViewModel } from "../../business-objects/addon-view-model";
@@ -173,7 +174,7 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
   private _subscriptions: Subscription[] = [];
   private _lazyLoaded = false;
   private _isRefreshing = false;
-  private _lastSelectionState: RowNode[] = [];
+  private _lastSelectionState: IRowNode[] = [];
 
   public updateAllContextMenu!: MatMenuTrigger;
   public contextMenuPosition = { x: "0px", y: "0px" };
@@ -1047,7 +1048,7 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   public onTableBlur(evt: MouseEvent): void {
-    const ePath = (evt as any).path as HTMLElement[];
+    const ePath = evt.composedPath() as HTMLElement[];
     const tableElem = ePath.find((tag) => tag.tagName === "AG-GRID-ANGULAR");
     if (tableElem) {
       return;
@@ -1357,7 +1358,7 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   // Sort the toc version column by converting from 'x.x.x' to interface version 'xxxxxx'
-  private compareTocVersion(nodeA: RowNode, nodeB: RowNode): number {
+  private compareTocVersion(nodeA: IRowNode, nodeB: IRowNode): number {
     const v1 = (nodeA.data["gameVersion"] as string)?.trim();
     const v2 = (nodeB.data["gameVersion"] as string)?.trim();
 
@@ -1373,7 +1374,7 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   // If nodes have the same primary value, use the canonical name as a fallback
-  private compareElement(nodeA: RowNode, nodeB: RowNode, prop: string): number {
+  private compareElement(nodeA: IRowNode, nodeB: IRowNode, prop: string): number {
     if (nodeA.data[prop] === nodeB.data[prop]) {
       if (nodeA.data.canonicalName === nodeB.data.canonicalName) {
         return 0;

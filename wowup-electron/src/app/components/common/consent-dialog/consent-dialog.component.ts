@@ -1,6 +1,6 @@
 import { AfterViewChecked, Component, ElementRef, ViewChild } from "@angular/core";
 import { UntypedFormControl, UntypedFormGroup } from "@angular/forms";
-import { MatDialogRef } from "@angular/material/dialog";
+import { MatLegacyDialogRef as MatDialogRef } from "@angular/material/legacy-dialog";
 import { AppConfig } from "../../../../environments/environment";
 import { LinkService } from "../../../services/links/link.service";
 import { formatDynamicLinks } from "../../../utils/dom.utils";

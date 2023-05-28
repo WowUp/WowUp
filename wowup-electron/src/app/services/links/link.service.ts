@@ -2,7 +2,7 @@ import { from, Observable, of } from "rxjs";
 import { catchError, first, map, switchMap } from "rxjs/operators";
 
 import { Injectable } from "@angular/core";
-import { MatDialog } from "@angular/material/dialog";
+import { MatLegacyDialog as MatDialog } from "@angular/material/legacy-dialog";
 import { TranslateService } from "@ngx-translate/core";
 
 import {
