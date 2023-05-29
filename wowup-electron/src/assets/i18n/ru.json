@@ -298,7 +298,7 @@
         "NO_RELEASE_FOUND": "Не найдено выпусков для {message}.\n\nНеобходим верный выпуск с ресурсами в .zip файле, чтобы WowUp мог загрузить его.",
         "NO_SEARCH_RESULTS": "Поиск не дал результатов.",
         "TITLE": "Установка модификации не удалась",
-        "WRATH_ASSET_NOT_FOUND": "No asset was found to download from {message}.\n\nA valid zip file ending with '-wrath' is required in order for WowUp to download it."
+        "WRATH_ASSET_NOT_FOUND": "Не найден ресурс для загрузки с {message}.\n\nДля того, чтобы WowUp загрузил его, требуется действительный zip-файл, оканчивающийся на «-wrath»."
       },
       "IMPORT_ASSET_WARNING": "Мы не смогли убедиться в совместимости последнего выпуска этой модификации с выбранным Вами клиентом.\n\nНо мы нашли zip файл \"{zipName}\".\n\nУстанавливайте его на свой страх и риск.",
       "IMPORT_BUTTON": "Импорт",
