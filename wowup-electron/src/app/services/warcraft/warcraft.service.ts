@@ -220,14 +220,25 @@ export class WarcraftService {
 
     try {
       const productDb = await this._electronService.invoke<ProductDb>("decode-product-db", productDbPath);
+      console.log("productDb", productDb);
 
-      const wowProducts: InstalledProduct[] = productDb.products
+      let wowProducts: InstalledProduct[] = productDb.products
         .filter((p) => p.family === "wow")
         .map((p) => ({
           location: p.client.location,
           name: p.client.name,
           clientType: this.getClientTypeForFolderName(p.client.name),
         }));
+
+      wowProducts = wowProducts.filter((wp) => {
+        const hasClientType = wp.clientType != WowClientType.None;
+        if (!hasClientType) {
+          console.warn("Invalid client type detected", wp);
+        }
+        return hasClientType;
+      });
+
+      console.log("wowProducts", wowProducts);
 
       return wowProducts;
     } catch (e) {
@@ -272,7 +283,7 @@ export class WarcraftService {
       case constants.WOW_CLASSIC_ERA_PTR_FOLDER:
         return WowClientType.ClassicEraPtr;
       default:
-        return WowClientType.Retail;
+        return WowClientType.None;
     }
   }
 }

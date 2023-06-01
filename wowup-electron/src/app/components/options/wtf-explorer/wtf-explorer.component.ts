@@ -1,6 +1,6 @@
 import * as _ from "lodash";
-import { BehaviorSubject, from } from "rxjs";
-import { first, switchMap } from "rxjs/operators";
+import { BehaviorSubject, from, of } from "rxjs";
+import { catchError, first, switchMap, tap } from "rxjs/operators";
 
 import { Component, Input, OnDestroy, OnInit } from "@angular/core";
 
@@ -12,6 +12,8 @@ import { WarcraftInstallationService } from "../../../services/warcraft/warcraft
 import { formatSize } from "../../../utils/number.utils";
 import { AddonFolder } from "wowup-lib-core";
 import { WowInstallation } from "wowup-lib-core/lib/models";
+import { FlatTreeControl } from "@angular/cdk/tree";
+import { MatTreeFlatDataSource, MatTreeFlattener } from "@angular/material/tree";
 
 interface SavedVariable {
   name: string;
@@ -49,6 +51,17 @@ interface NodeModel {
   children?: NodeModel[];
 }
 
+interface TreeNode {
+  name: string;
+  children?: TreeNode[];
+}
+
+interface FlatTreeNode {
+  expandable: boolean;
+  name: string;
+  level: number;
+}
+
 @Component({
   selector: "app-wtf-explorer",
   templateUrl: "./wtf-explorer.component.html",
@@ -78,8 +91,30 @@ export class WtfExplorerComponent implements OnInit, OnDestroy {
   public wtfPath = "";
 
   public get selectedInstallationLabel(): string {
-    return this.installations.find((inst) => inst.id === this.selectedInstallationId)?.label ?? "";
+    return this.installations.find((inst) => inst.id === this.selectedInstallationId)?.displayName ?? "";
   }
+
+  private _treeTransformer = (node: TreeNode, level: number): FlatTreeNode => {
+    return {
+      expandable: Array.isArray(node.children) && node.children.length > 0,
+      level,
+      name: node.name,
+    };
+  };
+
+  public treeControl = new FlatTreeControl<FlatTreeNode>(
+    (node) => node.level,
+    (node) => node.expandable
+  );
+
+  public treeFlattener = new MatTreeFlattener(
+    this._treeTransformer,
+    (node) => node.level,
+    (node) => node.expandable,
+    (node) => node.children
+  );
+
+  public treeDataSource = new MatTreeFlatDataSource(this.treeControl, this.treeFlattener);
 
   public constructor(
     public electronService: ElectronService,
@@ -91,6 +126,10 @@ export class WtfExplorerComponent implements OnInit, OnDestroy {
   public ngOnInit(): void {}
 
   public ngOnDestroy(): void {}
+
+  public getClientName(installation: WowInstallation): Promise<string> {
+    return this._warcraftInstallationService.getInstallationDisplayName(installation);
+  }
 
   public onClientChange(): void {
     const installation = this.installations.find((inst) => inst.id === this.selectedInstallationId);
@@ -116,7 +155,7 @@ export class WtfExplorerComponent implements OnInit, OnDestroy {
     from(this._warcraftInstallationService.getWowInstallationsAsync())
       .pipe(
         first(),
-        switchMap((installations) => {
+        tap((installations) => {
           this.installations = installations;
 
           const installation = this.installations[0];
@@ -125,6 +164,10 @@ export class WtfExplorerComponent implements OnInit, OnDestroy {
           this.wtfPath = this._wtfService.getWtfPath(installation);
 
           return from(this.loadWtfStructure(installation));
+        }),
+        catchError((e) => {
+          console.error(e);
+          return of(undefined);
         })
       )
       .subscribe();
@@ -138,17 +181,38 @@ export class WtfExplorerComponent implements OnInit, OnDestroy {
 
   private async loadWtfStructure(installation: WowInstallation) {
     this.loading$.next(true);
+    this.error$.next('');
 
     try {
       const addonFolders = await this._warcraftService.listAddons(installation);
       const wtfTree = await this._wtfService.getWtfContents(installation);
-      this.nodes$.next(wtfTree.children.map((tn) => this.getNode(tn, addonFolders)));
+
+      this.treeDataSource.data = this.createTreeNodes(wtfTree.children, addonFolders);
+      // this.nodes$.next(wtfTree.children.map((tn) => this.getNode(tn, addonFolders)));
     } catch (e) {
       console.error(e);
       this.error$.next(e.message as string);
     } finally {
       this.loading$.next(false);
     }
+  }
+
+  private createTreeNodes(wtfNodes: WtfNode[], addonFolders: AddonFolder[]): TreeNode[] {
+    const treeNodes: TreeNode[] = [];
+
+    wtfNodes.forEach((wtfNode) => {
+      let name = `${wtfNode.name} (${formatSize(wtfNode.size)})`;
+      if (wtfNode.isDirectory) {
+        name = `${wtfNode.name} (${wtfNode.children.length} files ${formatSize(wtfNode.size)})`;
+      }
+
+      treeNodes.push({
+        name,
+        children: [],
+      });
+    });
+
+    return treeNodes;
   }
 
   private getNode(treeNode: WtfNode, addonFolders: AddonFolder[]): NodeModel {

@@ -184,8 +184,9 @@
       "CLASSICERA": "World of Warcraft Classic",
       "CLASSICERAPTR": "Classic Season of Mastery PTR",
       "CLASSICPTR": "Public Test Realm (Wrath Classic)",
-      "RETAIL": "Dragonflight",
-      "RETAILPTR": "Public Test Realm"
+      "RETAIL": "World of Warcraft",
+      "RETAILPTR": "Public Test Realm (DF 10.1.0)",
+      "XPTR": "Public Test Realm (DF 10.1.5)"
     },
     "DATES": {
       "DAYS_AGO": "{count} {count, plural, =1{day} other{days}} ago",

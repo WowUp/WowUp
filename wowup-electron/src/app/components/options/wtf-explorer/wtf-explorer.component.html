@@ -5,7 +5,7 @@
         <mat-label>{{ "PAGES.GET_ADDONS.CLIENT_TYPE_SELECT_LABEL" | translate }}</mat-label>
         <mat-select [(value)]="selectedInstallationId" (selectionChange)="onClientChange()">
           <mat-option *ngFor="let installation of installations" [value]="installation.id">
-            {{installation.label}}
+            {{installation.displayName}}
           </mat-option>
         </mat-select>
       </mat-form-field>
@@ -28,7 +28,7 @@
     <div *ngIf="(loading$ | async) === false" class="tree-container">
       <p>{{wtfPath}}</p>
       <div class="tree">
-        <tree-root [nodes]="nodes$ | async">
+        <!-- <tree-root [nodes]="nodes$ | async">
           <ng-template #treeNodeTemplate let-node let-index="index" let-templates="templates">
             <div class="node-wrapper">
               <div class="text-2" (click)="node.toggleExpanded()" *ngIf="node?.data?.children?.length > 0">
@@ -45,7 +45,7 @@
   
   
           </ng-template>
-        </tree-root>
+        </tree-root> -->
       </div>
   
       <!-- <div *ngFor="let account of accountMap | async" class="account-container">
