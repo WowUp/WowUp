@@ -54,12 +54,16 @@ interface NodeModel {
 interface TreeNode {
   name: string;
   children?: TreeNode[];
+  warn: boolean;
+  ignore: boolean;
 }
 
 interface FlatTreeNode {
   expandable: boolean;
   name: string;
   level: number;
+  ignore: boolean;
+  warn: boolean;
 }
 
 @Component({
@@ -99,6 +103,8 @@ export class WtfExplorerComponent implements OnInit, OnDestroy {
       expandable: Array.isArray(node.children) && node.children.length > 0,
       level,
       name: node.name,
+      ignore: node.ignore,
+      warn: node.warn,
     };
   };
 
@@ -149,6 +155,8 @@ export class WtfExplorerComponent implements OnInit, OnDestroy {
     this.onClientChange();
   }
 
+  public hasChild = (_: number, node: FlatTreeNode) => node.expandable;
+
   private lazyLoad() {
     this.loading$.next(true);
     this.error$.next("");
@@ -181,13 +189,16 @@ export class WtfExplorerComponent implements OnInit, OnDestroy {
 
   private async loadWtfStructure(installation: WowInstallation) {
     this.loading$.next(true);
-    this.error$.next('');
+    this.error$.next("");
+    this.treeDataSource.data = [];
 
     try {
       const addonFolders = await this._warcraftService.listAddons(installation);
       const wtfTree = await this._wtfService.getWtfContents(installation);
 
       this.treeDataSource.data = this.createTreeNodes(wtfTree.children, addonFolders);
+      console.log("treeNodes", this.treeDataSource.data);
+
       // this.nodes$.next(wtfTree.children.map((tn) => this.getNode(tn, addonFolders)));
     } catch (e) {
       console.error(e);
@@ -206,10 +217,18 @@ export class WtfExplorerComponent implements OnInit, OnDestroy {
         name = `${wtfNode.name} (${wtfNode.children.length} files ${formatSize(wtfNode.size)})`;
       }
 
-      treeNodes.push({
+      const treeNode: TreeNode = {
         name,
-        children: [],
-      });
+        children: this.createTreeNodes(wtfNode.children, addonFolders),
+        warn: false,
+        ignore: wtfNode.ignore,
+      };
+
+      if (!wtfNode.ignore && wtfNode.isLua) {
+        treeNode.warn = !this.addonFolderExists(treeNode.name, addonFolders);
+      }
+
+      treeNodes.push(treeNode);
     });
 
     return treeNodes;

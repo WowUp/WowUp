@@ -570,7 +570,13 @@
         "ADDONS": "Addons",
         "APPLICATION": "Application",
         "CLIENTS": "Clients",
-        "DEBUG": "Debug"
+        "DEBUG": "Debug",
+        "WTF_EXPLORER": "WTF Explorer"
+      },
+      "WTF_EXPLORER": {
+        "TITLE": "WTF Explorer",
+        "PAGE_EXPLANATION": "The WTF Explorer allows you to inspect all the data your addons have saved.\nFiles in grey are typically things you can ignore such as backup files.\nFiles in red should belong to addons that you no longer have installed.",
+        "FOLDER_PATH_LABEL": "Folder: "
       },
       "WOW": {
         "ADD_CLIENT_BUTTON": "Add New",
