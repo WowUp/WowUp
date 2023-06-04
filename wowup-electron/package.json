@@ -1,6 +1,6 @@
 {
   "name": "wowup",
-  "version": "2.9.4",
+  "version": "2.10.0-beta.1",
   "private": true,
   "description": "World of Warcraft addon updater",
   "keywords": [
@@ -56,7 +56,7 @@
   ],
   "dependencies": {
     "adm-zip": "0.5.10",
-    "auto-launch": "5.0.5",
+    "auto-launch": "5.0.6",
     "electron-log": "4.4.8",
     "electron-store": "8.1.0",
     "electron-updater": "5.3.0",
@@ -102,7 +102,7 @@
     "@fortawesome/free-regular-svg-icons": "6.3.0",
     "@fortawesome/free-solid-svg-icons": "6.3.0",
     "@messageformat/core": "3.1.0",
-    "@microsoft/applicationinsights-web": "2.8.10",
+    "@microsoft/applicationinsights-web": "3.0.2",
     "@ngx-translate/core": "14.0.0",
     "@ngx-translate/http-loader": "7.0.0",
     "@types/adm-zip": "0.5.0",
@@ -155,7 +155,7 @@
     "mocha": "10.2.0",
     "ng-gallery": "8.0.3",
     "ngx-translate-messageformat-compiler": "6.4.0",
-    "node-addon-api": "6.0.0",
+    "node-addon-api": "6.1.0",
     "node-cache": "5.1.2",
     "node-gyp": "9.3.1",
     "npm-run-all": "4.1.5",
