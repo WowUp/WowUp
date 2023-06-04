@@ -32,7 +32,7 @@ export class ConsentDialogComponent implements AfterViewChecked {
 
   public ngAfterViewChecked(): void {
     const descriptionContainer: HTMLDivElement = this.dialogContent?.nativeElement;
-    formatDynamicLinks(descriptionContainer, this.onOpenLink);
+    // formatDynamicLinks(descriptionContainer, this.onOpenLink);
   }
 
   public onNoClick(): void {
@@ -47,9 +47,9 @@ export class ConsentDialogComponent implements AfterViewChecked {
     this.dialogRef.close(this.consentOptions.value);
   }
 
-  private onOpenLink = (element: HTMLAnchorElement): boolean => {
-    this._linkService.confirmLinkNavigation(element.href).subscribe();
+  // private onOpenLink = (element: HTMLAnchorElement): boolean => {
+  //   this._linkService.confirmLinkNavigation(element.href).subscribe();
 
-    return false;
-  };
+  //   return false;
+  // };
 }

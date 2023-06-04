@@ -32,12 +32,12 @@ export class ConfirmDialogComponent {
 
   public ngAfterViewChecked(): void {
     const descriptionContainer: HTMLDivElement = this.dialogContent?.nativeElement;
-    formatDynamicLinks(descriptionContainer, this.onOpenLink);
+    // formatDynamicLinks(descriptionContainer, this.onOpenLink);
   }
 
-  private onOpenLink = (element: HTMLAnchorElement): boolean => {
-    this._linkService.confirmLinkNavigation(element.href).subscribe();
+  // private onOpenLink = (element: HTMLAnchorElement): boolean => {
+  //   this._linkService.confirmLinkNavigation(element.href).subscribe();
 
-    return false;
-  };
+  //   return false;
+  // };
 }

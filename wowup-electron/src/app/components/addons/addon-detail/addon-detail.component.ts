@@ -212,21 +212,12 @@ export class AddonDetailComponent implements OnInit, OnDestroy, AfterViewInit {
         this._descriptionSrc.next(description);
       });
 
-    this.changelogContainer.changes.pipe(takeUntil(this._destroy$)).subscribe(() => {
-      formatDynamicLinks(this.changelogContainer.first.nativeElement as HTMLElement, this.onOpenLink);
-    });
   }
 
   public ngOnDestroy(): void {
     this._destroy$.next(true);
     this._destroy$.complete();
     window.getSelection()?.empty();
-  }
-
-  public projectContentChanged(muts: MutationRecord[]) {
-    for (const mut of muts) {
-      formatDynamicLinks(mut.target as HTMLDivElement, this.onOpenLink);
-    }
   }
 
   public onInstallUpdated(): void {
@@ -338,16 +329,6 @@ export class AddonDetailComponent implements OnInit, OnDestroy, AfterViewInit {
       evt.addon.id === this.model.listItem?.addon?.id || evt.addon.externalId === this.model.searchResult?.externalId
     );
   };
-
-  private onOpenLink = (element: HTMLAnchorElement): boolean => {
-    this.confirmLinkNavigation(element.href);
-
-    return false;
-  };
-
-  private confirmLinkNavigation(href: string) {
-    this._linkService.confirmLinkNavigation(href).subscribe();
-  }
 
   private getChangelog = (): Promise<string> => {
     if (this.model.listItem) {

@@ -96,7 +96,7 @@ export class OptionsAddonSectionComponent implements OnInit, OnDestroy {
 
   public ngAfterViewChecked(): void {
     const descriptionContainer: HTMLDivElement = this.prefForm?.nativeElement;
-    formatDynamicLinks(descriptionContainer, this.onOpenLink);
+    // formatDynamicLinks(descriptionContainer, this.onOpenLink);
   }
 
   public ngOnDestroy(): void {
@@ -145,7 +145,7 @@ export class OptionsAddonSectionComponent implements OnInit, OnDestroy {
   }
 
   public onOpenLink = (element: HTMLAnchorElement): boolean => {
-    this._linkService.confirmLinkNavigation(element.href).subscribe();
+    // this._linkService.confirmLinkNavigation(element.href).subscribe();
 
     return false;
   };

@@ -64,11 +64,11 @@ export class AboutComponent implements OnDestroy, AfterViewChecked {
 
   public ngAfterViewChecked(): void {
     const descriptionContainer: HTMLDivElement = this.changelogContainer?.nativeElement;
-    formatDynamicLinks(descriptionContainer, this.onOpenLink);
+    // formatDynamicLinks(descriptionContainer, this.onOpenLink);
   }
 
   private onOpenLink = (element: HTMLAnchorElement): boolean => {
-    this._linkService.confirmLinkNavigation(element.href).subscribe();
+    // this._linkService.confirmLinkNavigation(element.href).subscribe();
 
     return false;
   };

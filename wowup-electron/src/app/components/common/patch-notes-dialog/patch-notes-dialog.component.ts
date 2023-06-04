@@ -39,12 +39,12 @@ export class PatchNotesDialogComponent implements OnInit, AfterViewChecked {
 
   public ngAfterViewChecked(): void {
     const descriptionContainer: HTMLDivElement = this.descriptionContainer?.nativeElement;
-    formatDynamicLinks(descriptionContainer, this.onOpenLink);
+    // formatDynamicLinks(descriptionContainer, this.onOpenLink);
   }
 
-  private onOpenLink = (element: HTMLAnchorElement): boolean => {
-    this._linkService.confirmLinkNavigation(element.href).subscribe();
+  // private onOpenLink = (element: HTMLAnchorElement): boolean => {
+  //   this._linkService.confirmLinkNavigation(element.href).subscribe();
 
-    return false;
-  };
+  //   return false;
+  // };
 }
