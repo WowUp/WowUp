@@ -16,6 +16,21 @@ export class PatchNotesService {
 
 const CHANGELOGS: ChangeLog[] = [
   {
+    Version: "2.10.0",
+    html: `
+    <h4>Changes</h4>
+    <ul>
+    <li>Support new TukUI API</li>
+    </ul>
+    <h4>Fixes</h4>
+    <ul>
+    <li>Fix XPTR client breaking Retail install</li>
+    <li>Fix WTF explorer</li>
+    <li>Fix External link handling</li>
+    </ul>
+    `,
+  },
+  {
     Version: "2.9.4",
     html: `
     <h4>New Features</h4>
