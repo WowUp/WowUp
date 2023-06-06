@@ -185,7 +185,8 @@
       "CLASSICERAPTR": "Classic Season of Mastery PTR",
       "CLASSICPTR": "Publiczny Serwer Testowy (Wrath Classic)",
       "RETAIL": "Dragonflight",
-      "RETAILPTR": "Publiczny Serwer Testowy"
+      "RETAILPTR": "Publiczny Serwer Testowy",
+      "XPTR": "Public Test Realm (DF 10.1.5)"
     },
     "DATES": {
       "DAYS_AGO": "{count} {count, plural, =1{dzień} other{dni}} temu",
@@ -569,7 +570,8 @@
         "ADDONS": "Addony",
         "APPLICATION": "Aplikacja",
         "CLIENTS": "Klienty",
-        "DEBUG": "Debugowanie"
+        "DEBUG": "Debugowanie",
+        "WTF_EXPLORER": "WTF Explorer"
       },
       "WOW": {
         "ADD_CLIENT_BUTTON": "Dodaj nowy",
@@ -595,6 +597,11 @@
         "RESCAN_CLIENTS_LABEL": "Ponowne skanowanie zainstalowanych klientów World of Warcraft",
         "SAVE_WOW_DIRECTORY_SELECT_BUTTON": "Zapisz",
         "TITLE": "World of Warcraft"
+      },
+      "WTF_EXPLORER": {
+        "FOLDER_PATH_LABEL": "Folder: ",
+        "PAGE_EXPLANATION": "The WTF Explorer allows you to inspect all the data your addons have saved.\nFiles in grey are typically things you can ignore such as backup files.\nFiles in red should belong to addons that you no longer have installed.",
+        "TITLE": "WTF Explorer"
       }
     }
   },
