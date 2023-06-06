@@ -17,8 +17,6 @@ import { ElectronService } from "../../../services";
 import { SessionService } from "../../../services/session/session.service";
 import { WowUpService } from "../../../services/wowup/wowup.service";
 import { PatchNotesService } from "../../../services/wowup/patch-notes.service";
-import { formatDynamicLinks } from "../../../utils/dom.utils";
-import { LinkService } from "../../../services/links/link.service";
 
 @Component({
   selector: "app-about",
@@ -41,8 +39,7 @@ export class AboutComponent implements OnDestroy, AfterViewChecked {
     public electronService: ElectronService,
     private _sessionService: SessionService,
     private _patchNotesService: PatchNotesService,
-    private _sanitizer: DomSanitizer,
-    private _linkService: LinkService
+    private _sanitizer: DomSanitizer
   ) {
     this.changeLogs = this._patchNotesService.changeLogs;
     const tabIndexSub = this._sessionService.selectedHomeTab$
@@ -63,15 +60,8 @@ export class AboutComponent implements OnDestroy, AfterViewChecked {
   }
 
   public ngAfterViewChecked(): void {
-    const descriptionContainer: HTMLDivElement = this.changelogContainer?.nativeElement;
     // formatDynamicLinks(descriptionContainer, this.onOpenLink);
   }
-
-  private onOpenLink = (element: HTMLAnchorElement): boolean => {
-    // this._linkService.confirmLinkNavigation(element.href).subscribe();
-
-    return false;
-  };
 
   public formatChanges(changeLog: ChangeLog): string {
     return (changeLog.changes ?? []).join("\n");
