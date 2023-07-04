@@ -21,12 +21,14 @@ const CHANGELOGS: ChangeLog[] = [
     <h4>Changes</h4>
     <ul>
     <li>Support new TukUI API</li>
+    <li>New retry logic when downloading an addon update</li>
     </ul>
     <h4>Fixes</h4>
     <ul>
     <li>Fix XPTR client breaking Retail install</li>
     <li>Fix WTF explorer</li>
     <li>Fix External link handling</li>
+    <li>If downloading an update fails button should no longer stay in error state forever</li>
     </ul>
     `,
   },
