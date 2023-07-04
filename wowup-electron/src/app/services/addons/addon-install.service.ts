@@ -35,7 +35,7 @@ export type InstallType = "install" | "update" | "remove";
 
 export interface InstallQueueItem {
   addon: Addon;
-  onUpdate: (installState: AddonInstallState, progress: number) => void | undefined;
+  onUpdate: (installState: AddonInstallState, progress: number) => void | undefined | Promise<void>;
   completion: any;
   originalAddon?: Addon;
   installType: InstallType;
@@ -124,14 +124,32 @@ export class AddonInstallService {
     try {
       const downloadAuth = await addonProvider.getDownloadAuth();
 
-      const downloadOptions: DownloadOptions = {
-        fileName: downloadFileName,
-        outputFolder: this._wowUpService.applicationDownloadsFolderPath,
-        url: addon.downloadUrl ?? "",
-        auth: downloadAuth,
-      };
+      let retryCt = 0;
+      while (downloadedFilePath.length === 0) {
+        const downloadOptions: DownloadOptions = {
+          fileName: downloadFileName,
+          outputFolder: this._wowUpService.applicationDownloadsFolderPath,
+          url: addon.downloadUrl ?? "",
+          auth: downloadAuth,
+        };
 
-      downloadedFilePath = await this._downloadService.downloadZipFile(downloadOptions);
+        try {
+          downloadedFilePath = await this._downloadService.downloadZipFile(downloadOptions);
+        } catch (e) {
+          if (retryCt === 3) {
+            throw e;
+          }
+          retryCt += 1;
+          console.log(`install download failed, retry ${retryCt}`);
+
+          this._addonInstalledSrc.next({
+            addon,
+            installState: AddonInstallState.Retry,
+            progress: 0,
+          });
+          await onUpdate?.call(this, AddonInstallState.Retry, 0);
+        }
+      }
 
       onUpdate?.call(this, AddonInstallState.BackingUp, 50);
       this._addonInstalledSrc.next({

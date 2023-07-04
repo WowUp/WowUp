@@ -165,7 +165,8 @@
       "INSTALLING": "Installing",
       "PENDING": "Pending",
       "UNINSTALLING": "Uninstalling",
-      "UPDATING": "Updating..."
+      "UPDATING": "Updating...",
+      "RETRY": "Retrying..."
     },
     "ADDON_WARNING": {
       "GENERIC_DESCRIPTION": "We have detected an issue with this addon. We are no longer able to update this addon or provide details.",

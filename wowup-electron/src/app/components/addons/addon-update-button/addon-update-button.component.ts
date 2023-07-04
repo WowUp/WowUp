@@ -25,6 +25,7 @@ export class AddonUpdateButtonComponent implements OnInit, OnDestroy {
   @Output() public onViewUpdated: EventEmitter<boolean> = new EventEmitter();
 
   private _subscriptions: Subscription[] = [];
+  private _resetTimeout = -1;
 
   public installState = AddonInstallState.Unknown;
   public installProgress = 0;
@@ -101,7 +102,7 @@ export class AddonUpdateButtonComponent implements OnInit, OnDestroy {
 
   public async onInstallUpdateClick(): Promise<void> {
     try {
-      if (this.listItem?.addon?.id === undefined) { 
+      if (this.listItem?.addon?.id === undefined) {
         throw new Error("Invalid list item addon");
       }
 
@@ -112,7 +113,7 @@ export class AddonUpdateButtonComponent implements OnInit, OnDestroy {
       }
     } catch (e) {
       console.error(e);
-    } 
+    }
   }
 
   public getStatusText(): string {
@@ -134,6 +135,17 @@ export class AddonUpdateButtonComponent implements OnInit, OnDestroy {
   private onAddonInstalledUpdate = (evt: AddonUpdateEvent) => {
     this.installState = evt.installState;
     this.installProgress = evt.progress;
+
+    if (this.installState === AddonInstallState.Error) {
+      window.clearTimeout(this._resetTimeout);
+      this._resetTimeout = window.setTimeout(() => {
+        if (this.installState === AddonInstallState.Error) {
+          this.installState = AddonInstallState.Unknown;
+          this.installProgress = 0;
+        }
+        this._cdRef.detectChanges();
+      }, 2000);
+    }
     this._cdRef.detectChanges();
   };
 
@@ -155,6 +167,8 @@ export class AddonUpdateButtonComponent implements OnInit, OnDestroy {
         return this._translateService.instant("COMMON.ADDON_STATUS.PENDING");
       case AddonInstallState.Error:
         return this._translateService.instant("COMMON.ADDON_STATUS.ERROR");
+      case AddonInstallState.Retry:
+        return this._translateService.instant("COMMON.ADDON_STATUS.RETRY");
       default:
         return "";
     }
