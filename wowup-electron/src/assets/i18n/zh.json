@@ -164,6 +164,7 @@
       "ERROR": "错误",
       "INSTALLING": "正在安装",
       "PENDING": "等待中",
+      "RETRY": "Retrying...",
       "UNINSTALLING": "正在卸载",
       "UPDATING": "正在更新..."
     },

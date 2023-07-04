@@ -164,6 +164,7 @@
       "ERROR": "에러",
       "INSTALLING": "설치 중",
       "PENDING": "일시정지됨",
+      "RETRY": "Retrying...",
       "UNINSTALLING": "삭제 중",
       "UPDATING": "업데이트 중..."
     },

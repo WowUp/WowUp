@@ -164,6 +164,7 @@
       "ERROR": "Chyba",
       "INSTALLING": "Instaluji",
       "PENDING": "Čekající",
+      "RETRY": "Retrying...",
       "UNINSTALLING": "Odinstalovávaný",
       "UPDATING": "Aktualizuji..."
     },

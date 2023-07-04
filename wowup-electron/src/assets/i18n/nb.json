@@ -164,6 +164,7 @@
       "ERROR": "Feil",
       "INSTALLING": "Installerer",
       "PENDING": "Venter",
+      "RETRY": "Retrying...",
       "UNINSTALLING": "Avinstallerer",
       "UPDATING": "Oppdaterer..."
     },

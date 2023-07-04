@@ -164,6 +164,7 @@
       "ERROR": "Ошибка",
       "INSTALLING": "Установка",
       "PENDING": "В ожидании",
+      "RETRY": "Retrying...",
       "UNINSTALLING": "Удаление",
       "UPDATING": "Обновление..."
     },

@@ -164,6 +164,7 @@
       "ERROR": "Erreur",
       "INSTALLING": "Installation",
       "PENDING": "En attente",
+      "RETRY": "Retrying...",
       "UNINSTALLING": "Désinstallation",
       "UPDATING": "En cours de mise à jour"
     },
