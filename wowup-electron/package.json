@@ -1,6 +1,6 @@
 {
   "name": "wowup",
-  "version": "2.10.0-beta.5",
+  "version": "2.10.0",
   "private": true,
   "description": "World of Warcraft addon updater",
   "keywords": [
