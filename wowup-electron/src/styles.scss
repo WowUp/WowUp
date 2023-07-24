@@ -218,6 +218,10 @@ img {
   }
 }
 
+.no-pointer-events {
+  pointer-events: none;
+}
+
 .option-icon {
   width: 17px !important;
   height: 17px !important;
