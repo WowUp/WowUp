@@ -75,15 +75,21 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
 
   @HostListener("document:click", ["$event"])
   public onDocumentClick(event: MouseEvent) {
-    const elem = event.target as HTMLElement;
-    if (elem.tagName === "A") {
-      const link = elem as HTMLAnchorElement;
-      if (typeof link.href === "string" && link.href.length > 0) {
-        console.log("LINK CLICKED", link.href);
+    let currentElem: HTMLElement | null = event.target as HTMLElement;
+    while (currentElem !== null) {
+      if (currentElem?.tagName === "A") {
+        const link = currentElem as HTMLAnchorElement;
+        if (link.href === undefined || link.href === "") {
+          break;
+        }
+
+        console.log("link clicked", link.href);
         event.preventDefault();
         event.stopPropagation();
         this._linkService.confirmLinkNavigation(link.href).subscribe();
+        break;
       }
+      currentElem = currentElem.parentElement;
     }
   }
 
