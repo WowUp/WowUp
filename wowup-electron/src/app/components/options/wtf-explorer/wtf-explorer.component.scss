@@ -1,25 +1,9 @@
-.account-container {
+.container {
   padding: 1em;
 
-  .variable-list {
-    padding-left: 1em;
-    li {
-      list-style: none;
-    }
+  .divider {
+    margin-top: 20px;
+    height: 1px;
+    border-top: thin solid var(--divider-color);
   }
-
-  .variable-accordion .mat-expansion-panel-header-title,
-  .variable-accordion .mat-expansion-panel-header-description {
-    flex-basis: 0;
-  }
-
-  .variable-accordion .mat-expansion-panel-header-description {
-    justify-content: space-between;
-    align-items: center;
-  }
-}
-
-.tree-container {
-  padding: 1em;
-  position: relative;
 }

@@ -1,6 +1,10 @@
 import { createHash } from "crypto";
 import { DAY_SECONDS, HOUR_SECONDS, MONTH_SECONDS, YEAR_SECONDS } from "../../common/constants";
 
+export function strIsNotNullOrEmpty(value?: string): boolean{
+  return typeof value === 'string' && value.length > 0;
+}
+
 export function stringIncludes(value: string | undefined, search: string): boolean {
   if (!value) {
     return false;

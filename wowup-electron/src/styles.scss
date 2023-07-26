@@ -1,4 +1,3 @@
-@import "@circlon/angular-tree-component/css/angular-tree-component.css";
 @import "./markdown.scss";
 @import "./custom-theme.scss";
 
@@ -96,6 +95,14 @@ img {
 
 .pr-1 {
   padding-right: 0.25em;
+}
+
+.pr-2 {
+  padding-right: 0.5em;
+}
+
+.pr-3 {
+  padding-right: 1em;
 }
 
 .px-1 {
@@ -209,6 +216,10 @@ img {
   &:hover {
     cursor: pointer !important;
   }
+}
+
+.no-pointer-events {
+  pointer-events: none;
 }
 
 .option-icon {

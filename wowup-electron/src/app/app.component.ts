@@ -62,6 +62,7 @@ import {
 } from "./components/common/consent-dialog/consent-dialog.component";
 import { WowUpProtocolService } from "./services/wowup/wowup-protocol.service";
 import { Addon } from "wowup-lib-core";
+import { LinkService } from "./services/links/link.service";
 
 @Component({
   selector: "app-root",
@@ -71,6 +72,26 @@ import { Addon } from "wowup-lib-core";
 })
 export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
   private _autoUpdateInterval?: number;
+
+  @HostListener("document:click", ["$event"])
+  public onDocumentClick(event: MouseEvent) {
+    let currentElem: HTMLElement | null = event.target as HTMLElement;
+    while (currentElem !== null) {
+      if (currentElem?.tagName === "A") {
+        const link = currentElem as HTMLAnchorElement;
+        if (link.href === undefined || link.href === "") {
+          break;
+        }
+
+        console.log("link clicked", link.href);
+        event.preventDefault();
+        event.stopPropagation();
+        this._linkService.confirmLinkNavigation(link.href).subscribe();
+        break;
+      }
+      currentElem = currentElem.parentElement;
+    }
+  }
 
   @HostListener("mousewheel", ["$event"])
   public async handleMouseWheelEvent(event: WheelEvent): Promise<void> {
@@ -106,6 +127,7 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
     private _wowupAddonService: WowUpAddonService,
     private _zoomService: ZoomService,
     private _wowUpProtocolService: WowUpProtocolService,
+    private _linkService: LinkService,
     public electronService: ElectronService,
     public overlayContainer: OverlayContainer,
     public sessionService: SessionService,
@@ -236,7 +258,7 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
 
   private async loadZoom() {
     const zoomPref = await this._preferenceStore.getAsync(ZOOM_FACTOR_KEY);
-    console.log('zoomPref', zoomPref)
+    console.log("zoomPref", zoomPref);
     const zoomFactor = parseFloat(zoomPref);
     if (!isNaN(zoomFactor) && isFinite(zoomFactor)) {
       this._zoomService.setZoomFactor(zoomFactor).catch((e) => console.error(e));

@@ -164,6 +164,7 @@
       "ERROR": "错误",
       "INSTALLING": "正在安裝",
       "PENDING": "等待中",
+      "RETRY": "Retrying...",
       "UNINSTALLING": "正在解除安裝",
       "UPDATING": "正在更新..."
     },
@@ -185,7 +186,8 @@
       "CLASSICERAPTR": "經典舊世大師賽季 PTR",
       "CLASSICPTR": "巫妖王之怒 PTR",
       "RETAIL": "巨龍崛起",
-      "RETAILPTR": "巨龍崛起 PTR"
+      "RETAILPTR": "巨龍崛起 PTR",
+      "XPTR": "Public Test Realm (DF 10.1.5)"
     },
     "DATES": {
       "DAYS_AGO": "{count} 天前",
@@ -500,9 +502,9 @@
         },
         "TITLE": "插件",
         "WAGO_ACCESS_KEY": {
-          "MESSAGE": "Use the Wago provider without seeing advertisements. <a href=\"https://addons.wago.io/patreon\">Learn More</a>",
-          "PLACEHOLDER": "Access Key",
-          "TITLE": "Wago Access Key"
+          "MESSAGE": "啟用 Wago 安裝源而無需顯示廣告。<a href=\"https://addons.wago.io/patreon\">瞭解詳細資訊（英語）</a>",
+          "PLACEHOLDER": "訪問金鑰",
+          "TITLE": "Wago 訪問金鑰"
         }
       },
       "APPLICATION": {
@@ -569,7 +571,8 @@
         "ADDONS": "插件",
         "APPLICATION": "應用程式",
         "CLIENTS": "客戶端",
-        "DEBUG": "除錯"
+        "DEBUG": "除錯",
+        "WTF_EXPLORER": "WTF Explorer"
       },
       "WOW": {
         "ADD_CLIENT_BUTTON": "新增",
@@ -595,6 +598,11 @@
         "RESCAN_CLIENTS_LABEL": "重新掃描已安裝的《魔獸世界》客戶端",
         "SAVE_WOW_DIRECTORY_SELECT_BUTTON": "儲存",
         "TITLE": "魔獸世界"
+      },
+      "WTF_EXPLORER": {
+        "FOLDER_PATH_LABEL": "Folder: ",
+        "PAGE_EXPLANATION": "The WTF Explorer allows you to inspect all the data your addons have saved.\nFiles in grey are typically things you can ignore such as backup files.\nFiles in red should belong to addons that you no longer have installed.",
+        "TITLE": "WTF Explorer"
       }
     }
   },

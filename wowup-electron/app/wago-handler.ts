@@ -99,7 +99,7 @@ class WagoHandler {
     webContents.off("did-fail-provisional-load", this.onDidFailProvisionalLoad);
     webContents.off("did-fail-load", this.onDidFail);
     webContents.off("will-navigate", this.onWillNavigate);
-    webContents.setWindowOpenHandler((details: Electron.HandlerDetails) => ({ action: "allow" }));
+    webContents.setWindowOpenHandler(() => ({ action: "allow" }));
   }
 
   private setReloadTime(webContents: WebContents) {

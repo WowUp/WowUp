@@ -8,8 +8,6 @@ import { TranslateService } from "@ngx-translate/core";
 import { ChangeLog } from "../../../models/wowup/change-log";
 import { ElectronService } from "../../../services/electron/electron.service";
 import { PatchNotesService } from "../../../services/wowup/patch-notes.service";
-import { formatDynamicLinks } from "../../../utils/dom.utils";
-import { LinkService } from "../../../services/links/link.service";
 
 @Component({
   selector: "app-patch-notes-dialog",
@@ -29,8 +27,7 @@ export class PatchNotesDialogComponent implements OnInit, AfterViewChecked {
   public constructor(
     private _translateService: TranslateService,
     private _electronService: ElectronService,
-    private _patchNotesService: PatchNotesService,
-    private _linkService: LinkService
+    private _patchNotesService: PatchNotesService
   ) {
     this.changeLog = _.first(this._patchNotesService.changeLogs) ?? { Version: "" };
   }
@@ -38,13 +35,12 @@ export class PatchNotesDialogComponent implements OnInit, AfterViewChecked {
   public ngOnInit(): void {}
 
   public ngAfterViewChecked(): void {
-    const descriptionContainer: HTMLDivElement = this.descriptionContainer?.nativeElement;
-    formatDynamicLinks(descriptionContainer, this.onOpenLink);
+    // formatDynamicLinks(descriptionContainer, this.onOpenLink);
   }
 
-  private onOpenLink = (element: HTMLAnchorElement): boolean => {
-    this._linkService.confirmLinkNavigation(element.href).subscribe();
+  // private onOpenLink = (element: HTMLAnchorElement): boolean => {
+  //   this._linkService.confirmLinkNavigation(element.href).subscribe();
 
-    return false;
-  };
+  //   return false;
+  // };
 }

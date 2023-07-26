@@ -26,6 +26,7 @@ import { ScrollingModule } from "@angular/cdk/scrolling";
 import { MatGridListModule } from "@angular/material/grid-list";
 import { MatExpansionModule } from "@angular/material/expansion";
 import { ObserversModule } from "@angular/cdk/observers";
+import { MatTreeModule } from "@angular/material/tree";
 
 @NgModule({
   exports: [
@@ -56,6 +57,7 @@ import { ObserversModule } from "@angular/cdk/observers";
     ScrollingModule,
     MatGridListModule,
     MatExpansionModule,
+    MatTreeModule,
   ],
   imports: [
     MatSliderModule,
@@ -85,6 +87,7 @@ import { ObserversModule } from "@angular/cdk/observers";
     ScrollingModule,
     MatGridListModule,
     MatExpansionModule,
+    MatTreeModule,
   ],
 })
 export class MatModule {}

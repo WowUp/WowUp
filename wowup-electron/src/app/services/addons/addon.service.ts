@@ -60,6 +60,8 @@ import {
 import { WowInstallation } from "wowup-lib-core/lib/models";
 import { WowUpAddonProvider } from "wowup-lib-core/lib/addon-providers";
 import { AddonInstallService, InstallQueueItem, InstallType } from "./addon-install.service";
+import { strIsNotNullOrEmpty } from "../../utils/string.utils";
+import { delayMs } from "../../utils/time.utils";
 
 export enum ScanUpdateType {
   Start,
@@ -543,6 +545,19 @@ export class AddonService {
       throw new Error(`Addon not found or invalid: ${addon?.id ?? "unknown"}`);
     }
 
+    const wowInstallation = this.getWowInstallation(addon);
+    const addonProvider = this.getAddonProvider(addon);
+
+    const _onUpdate = async (installState: AddonInstallState, progress: number) => {
+      if (installState === AddonInstallState.Retry) {
+        await this.syncProviderAddons(wowInstallation, [addon], addonProvider);
+        await delayMs(1000);
+        return;
+      }
+
+      onUpdate?.call(this, installState, progress);
+    };
+
     onUpdate?.call(this, AddonInstallState.Pending, 0);
     // const updateEvent: AddonUpdateEvent = {
     //   addon,
@@ -559,7 +574,7 @@ export class AddonService {
 
     const installQueueItem: InstallQueueItem = {
       addon,
-      onUpdate,
+      onUpdate: _onUpdate,
       completion,
       installType,
       originalAddon: originalAddon ? { ...originalAddon } : undefined,
@@ -683,10 +698,7 @@ export class AddonService {
   }
 
   public getInstallBasePath(addon: Addon): string {
-    const installation = this._warcraftInstallationService.getWowInstallation(addon.installationId);
-    if (!installation) {
-      throw new Error(`installation not found: ${addon.installationId ?? ""}`);
-    }
+    const installation = this.getWowInstallation(addon);
     return this._warcraftService.getAddonFolderPath(installation);
   }
 
@@ -1041,7 +1053,7 @@ export class AddonService {
         addon.screenshotUrls = result.screenshotUrls;
 
         // Check for a new download URL
-        if (latestFile?.downloadUrl && latestFile.downloadUrl !== addon.downloadUrl) {
+        if (strIsNotNullOrEmpty(latestFile?.downloadUrl) && latestFile.downloadUrl !== addon.downloadUrl) {
           addon.downloadUrl = latestFile.downloadUrl || addon.downloadUrl;
         }
 
@@ -1334,7 +1346,7 @@ export class AddonService {
 
           await provider.scan(installation, defaultAddonChannel, validFolders);
         } catch (e) {
-          console.error('scan failed: ' + provider.name);
+          console.error("scan failed: " + provider.name);
           console.error(e);
           this._scanErrorSrc.next(
             new AddonScanError({
@@ -1768,5 +1780,22 @@ export class AddonService {
   private async areAnyAddonsAvailableForUpdate(): Promise<boolean> {
     const addons = await this.getAllAddonsAvailableForUpdate();
     return addons.length > 0;
+  }
+
+  private getWowInstallation(addon: Addon): WowInstallation {
+    const installation = this._warcraftInstallationService.getWowInstallation(addon.installationId);
+    if (installation === undefined) {
+      throw new Error(`installation not found: ${addon.installationId ?? ""}`);
+    }
+    return installation;
+  }
+
+  private getAddonProvider(addon: Addon): AddonProvider {
+    const addonProvider = this._addonProviderService.getProvider(addon.providerName ?? "");
+    if (addonProvider === undefined) {
+      throw new Error(`Provider not found: ${addon.providerName ?? ""}`);
+    }
+
+    return addonProvider;
   }
 }

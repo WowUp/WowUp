@@ -16,6 +16,23 @@ export class PatchNotesService {
 
 const CHANGELOGS: ChangeLog[] = [
   {
+    Version: "2.10.0",
+    html: `
+    <h4>Changes</h4>
+    <ul>
+    <li>Support new TukUI API</li>
+    <li>New retry logic when downloading an addon update</li>
+    </ul>
+    <h4>Fixes</h4>
+    <ul>
+    <li>Fix XPTR client breaking Retail install</li>
+    <li>Fix WTF explorer</li>
+    <li>Fix External link handling</li>
+    <li>If downloading an update fails button should no longer stay in error state forever</li>
+    </ul>
+    `,
+  },
+  {
     Version: "2.9.4",
     html: `
     <h4>New Features</h4>

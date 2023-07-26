@@ -1,34 +1,69 @@
 <div class="container">
-
-    <div class="account-container row align-items-center">
-      <mat-form-field class="mr-3">
+  <h2 class="mb-1">
+    {{ "PAGES.OPTIONS.WTF_EXPLORER.TITLE" | translate }}
+  </h2>
+  <div class="text-2 mb-3 pre-wrap">{{ "PAGES.OPTIONS.WTF_EXPLORER.PAGE_EXPLANATION" | translate }}</div>
+  <div class="divider mb-3"></div>
+  <div class="row align-items-center">
+    <div class="flex-grow-1 pr-3">
+      <mat-form-field class="w-100">
         <mat-label>{{ "PAGES.GET_ADDONS.CLIENT_TYPE_SELECT_LABEL" | translate }}</mat-label>
         <mat-select [(value)]="selectedInstallationId" (selectionChange)="onClientChange()">
           <mat-option *ngFor="let installation of installations" [value]="installation.id">
-            {{installation.label}}
+            {{ installation.displayName }}
           </mat-option>
         </mat-select>
       </mat-form-field>
-      <div>
-        <button mat-raised-button color="primary" [disabled]="(loading$ | async) === true" (click)="onClickRefresh()">
-          Refresh
-        </button>
-      </div>
     </div>
-  
-    <div *ngIf="(loading$ | async) === true" class="account-container">
-      <h4><i>Loading {{selectedInstallationLabel}}...</i></h4>
+    <div class="flex-shrink-0">
+      <button mat-raised-button color="primary" [disabled]="(loading$ | async) === true" (click)="onClickRefresh()">
+        Refresh
+      </button>
     </div>
-  
-    <div *ngIf="(error$ | async) !== ''" class="account-container text-warning">
-      <h4>Error {{selectedInstallationLabel}}</h4>
-      <p>{{error$ | async}}</p>
-    </div>
-  
-    <div *ngIf="(loading$ | async) === false" class="tree-container">
-      <p>{{wtfPath}}</p>
-      <div class="tree">
-        <tree-root [nodes]="nodes$ | async">
+  </div>
+
+  <div *ngIf="(loading$ | async) === true" class="account-container">
+    <h4>
+      <i>Loading {{ selectedInstallationLabel }}...</i>
+    </h4>
+  </div>
+
+  <div *ngIf="(error$ | async) !== ''" class="account-container text-warning">
+    <h4>Error {{ selectedInstallationLabel }}</h4>
+    <p>{{ error$ | async }}</p>
+  </div>
+
+  <div *ngIf="(loading$ | async) === false" class="tree-container">
+    <p>
+      <span>{{ "PAGES.OPTIONS.WTF_EXPLORER.FOLDER_PATH_LABEL" | translate }}</span>
+      <span>{{ wtfPath }}</span>
+    </p>
+    <div class="tree">
+      <mat-tree [dataSource]="treeDataSource" [treeControl]="treeControl">
+        <!-- This is the tree node template for leaf nodes -->
+        <mat-tree-node *matTreeNodeDef="let node" matTreeNodePadding>
+          <!-- use a disabled button to provide padding for tree leaf -->
+          <button mat-icon-button disabled></button>
+          <span [ngClass]="{ 'text-warning': node.warn, 'text-4': node.ignore }">
+            {{ node.name }}
+          </span>
+        </mat-tree-node>
+        <!-- This is the tree node template for expandable nodes -->
+        <mat-tree-node *matTreeNodeDef="let node; when: hasChild" matTreeNodePadding>
+          <button mat-icon-button matTreeNodeToggle [attr.aria-label]="'Toggle ' + node.name">
+            <mat-icon
+              class="mat-icon-rtl-mirror"
+              [svgIcon]="treeControl.isExpanded(node) ? 'fas:chevron-down' : 'fas:chevron-right'"
+            >
+            </mat-icon>
+          </button>
+          <span [ngClass]="{ 'text-warning': node.warn, 'text-3': node.ignore }">
+            {{ node.name }}
+          </span>
+        </mat-tree-node>
+      </mat-tree>
+
+      <!-- <tree-root [nodes]="nodes$ | async">
           <ng-template #treeNodeTemplate let-node let-index="index" let-templates="templates">
             <div class="node-wrapper">
               <div class="text-2" (click)="node.toggleExpanded()" *ngIf="node?.data?.children?.length > 0">
@@ -45,10 +80,10 @@
   
   
           </ng-template>
-        </tree-root>
-      </div>
-  
-      <!-- <div *ngFor="let account of accountMap | async" class="account-container">
+        </tree-root> -->
+    </div>
+
+    <!-- <div *ngFor="let account of accountMap | async" class="account-container">
         <h2>Account: {{account.name}}</h2>
         <mat-accordion class="variable-accordion" multi>
           <mat-expansion-panel>
@@ -100,5 +135,5 @@
           </mat-expansion-panel>
         </mat-accordion>
       </div> -->
-    </div>
   </div>
+</div>

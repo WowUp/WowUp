@@ -188,7 +188,7 @@
       [href]="listItem.addon.externalUrl"
       (click)="closeContextMenu()"
     >
-      <div class="row align-items-center">
+      <div class="row align-items-center no-pointer-events">
         <div class="flex-grow-1 mr-3">
           {{ "DIALOGS.ADDON_DETAILS.VIEW_ON_PROVIDER_PREFIX" | translate }} {{ listItem.addon.providerName }}
         </div>

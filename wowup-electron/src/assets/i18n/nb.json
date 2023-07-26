@@ -164,6 +164,7 @@
       "ERROR": "Feil",
       "INSTALLING": "Installerer",
       "PENDING": "Venter",
+      "RETRY": "Retrying...",
       "UNINSTALLING": "Avinstallerer",
       "UPDATING": "Oppdaterer..."
     },
@@ -185,7 +186,8 @@
       "CLASSICERAPTR": "Classic Season of Mastery PTR",
       "CLASSICPTR": "Public Test Realm (Wrath Classic)",
       "RETAIL": "Dragonflight",
-      "RETAILPTR": "Public Test Realm"
+      "RETAILPTR": "Public Test Realm",
+      "XPTR": "Public Test Realm (DF 10.1.5)"
     },
     "DATES": {
       "DAYS_AGO": "{count} {count, plural, =1{dag} other{dager}} siden",
@@ -569,7 +571,8 @@
         "ADDONS": "Utvidelser",
         "APPLICATION": "Applikasjon",
         "CLIENTS": "Klienter",
-        "DEBUG": "Debug"
+        "DEBUG": "Debug",
+        "WTF_EXPLORER": "WTF Explorer"
       },
       "WOW": {
         "ADD_CLIENT_BUTTON": "Legg til ny",
@@ -595,6 +598,11 @@
         "RESCAN_CLIENTS_LABEL": "Skann installerte World of Warcraft-produkter på nytt",
         "SAVE_WOW_DIRECTORY_SELECT_BUTTON": "Lagre",
         "TITLE": "World of Warcraft"
+      },
+      "WTF_EXPLORER": {
+        "FOLDER_PATH_LABEL": "Folder: ",
+        "PAGE_EXPLANATION": "The WTF Explorer allows you to inspect all the data your addons have saved.\nFiles in grey are typically things you can ignore such as backup files.\nFiles in red should belong to addons that you no longer have installed.",
+        "TITLE": "WTF Explorer"
       }
     }
   },

@@ -28,6 +28,7 @@ import {
   faCog,
   faAngleUp,
   faAngleDown,
+  faChevronDown,
   faChevronRight,
   faUserCircle,
   faEllipsisV,
@@ -81,6 +82,7 @@ export class IconService {
     this.addSvg(faCog);
     this.addSvg(faAngleUp);
     this.addSvg(faAngleDown);
+    this.addSvg(faChevronDown);
     this.addSvg(faChevronRight);
     this.addSvg(faUserCircle);
     this.addSvg(faEllipsisV);

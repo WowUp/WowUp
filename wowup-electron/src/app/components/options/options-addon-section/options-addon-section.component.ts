@@ -14,7 +14,10 @@ import {
 
 import { Component, ElementRef, OnDestroy, OnInit, ViewChild } from "@angular/core";
 import { FormGroup, UntypedFormControl } from "@angular/forms";
-import { MatLegacySelectionListChange as MatSelectionListChange, MatLegacyListOption as MatListOption } from "@angular/material/legacy-list";
+import {
+  MatLegacySelectionListChange as MatSelectionListChange,
+  MatLegacyListOption as MatListOption,
+} from "@angular/material/legacy-list";
 import { TranslateService } from "@ngx-translate/core";
 
 import {
@@ -26,9 +29,7 @@ import { AppConfig } from "../../../../environments/environment";
 import { AddonProviderState } from "../../../models/wowup/addon-provider-state";
 import { AddonProviderFactory } from "../../../services/addons/addon.provider.factory";
 import { DialogFactory } from "../../../services/dialog/dialog.factory";
-import { LinkService } from "../../../services/links/link.service";
 import { SensitiveStorageService } from "../../../services/storage/sensitive-storage.service";
-import { formatDynamicLinks } from "../../../utils/dom.utils";
 
 import { AddonProviderType } from "wowup-lib-core";
 
@@ -58,8 +59,7 @@ export class OptionsAddonSectionComponent implements OnInit, OnDestroy {
     private _addonProviderService: AddonProviderFactory,
     private _sensitiveStorageService: SensitiveStorageService,
     private _translateService: TranslateService,
-    private _dialogFactory: DialogFactory,
-    private _linkService: LinkService
+    private _dialogFactory: DialogFactory
   ) {
     this._addonProviderService.addonProviderChange$.subscribe(() => {
       this.loadProviderStates();
@@ -95,8 +95,7 @@ export class OptionsAddonSectionComponent implements OnInit, OnDestroy {
   }
 
   public ngAfterViewChecked(): void {
-    const descriptionContainer: HTMLDivElement = this.prefForm?.nativeElement;
-    formatDynamicLinks(descriptionContainer, this.onOpenLink);
+    // formatDynamicLinks(descriptionContainer, this.onOpenLink);
   }
 
   public ngOnDestroy(): void {
@@ -143,12 +142,6 @@ export class OptionsAddonSectionComponent implements OnInit, OnDestroy {
       )
       .subscribe();
   }
-
-  public onOpenLink = (element: HTMLAnchorElement): boolean => {
-    this._linkService.confirmLinkNavigation(element.href).subscribe();
-
-    return false;
-  };
 
   private async loadSensitiveData() {
     try {

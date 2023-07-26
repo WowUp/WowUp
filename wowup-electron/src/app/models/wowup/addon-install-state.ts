@@ -4,6 +4,7 @@ export enum AddonInstallState {
   BackingUp,
   Installing,
   Complete,
+  Retry,
   Error,
   Unknown,
 }

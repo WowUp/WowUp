@@ -1,7 +1,8 @@
 import { AfterViewChecked, Component, ElementRef, Inject, ViewChild } from "@angular/core";
-import { MatLegacyDialogRef as MatDialogRef, MAT_LEGACY_DIALOG_DATA as MAT_DIALOG_DATA } from "@angular/material/legacy-dialog";
-import { LinkService } from "../../../services/links/link.service";
-import { formatDynamicLinks } from "../../../utils/dom.utils";
+import {
+  MatLegacyDialogRef as MatDialogRef,
+  MAT_LEGACY_DIALOG_DATA as MAT_DIALOG_DATA,
+} from "@angular/material/legacy-dialog";
 
 export interface AlertDialogData {
   title: string;
@@ -21,19 +22,17 @@ export class AlertDialogComponent implements AfterViewChecked {
 
   public constructor(
     public dialogRef: MatDialogRef<AlertDialogComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: AlertDialogData,
-    private _linkService: LinkService
+    @Inject(MAT_DIALOG_DATA) public data: AlertDialogData
   ) {}
 
   public ngAfterViewChecked(): void {
-    const descriptionContainer: HTMLDivElement = this.dialogContent?.nativeElement;
-    formatDynamicLinks(descriptionContainer, this.onOpenLink);
+    // formatDynamicLinks(descriptionContainer, this.onOpenLink);
   }
 
-  private onOpenLink = (element: HTMLAnchorElement): boolean => {
-    
-    this._linkService.confirmLinkNavigation(element.href).subscribe();
+  // private onOpenLink = (element: HTMLAnchorElement): boolean => {
 
-    return false;
-  };
+  //   this._linkService.confirmLinkNavigation(element.href).subscribe();
+
+  //   return false;
+  // };
 }

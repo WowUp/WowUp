@@ -55,8 +55,8 @@ export class WowUpService {
   private _availableVersion = "";
 
   public readonly updaterName = "WowUpUpdater.exe";
-  public readonly applicationFolderPath: string = window.userDataPath;
-  public readonly applicationLogsFolderPath: string = window.logPath;
+  public readonly applicationFolderPath: string = window.userDataPath ?? "";
+  public readonly applicationLogsFolderPath: string = window.logPath ?? "";
   public readonly applicationDownloadsFolderPath: string = join(this.applicationFolderPath, "downloads");
   public readonly applicationUpdaterPath: string = join(this.applicationFolderPath, this.updaterName);
   public readonly wtfBackupFolder: string = join(this.applicationFolderPath, "wtf_backups");
