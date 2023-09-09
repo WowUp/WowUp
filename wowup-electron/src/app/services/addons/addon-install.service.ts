@@ -14,7 +14,7 @@ import { WowUpService } from "../wowup/wowup.service";
 import { AddonProviderFactory } from "./addon.provider.factory";
 import { nanoid } from "nanoid";
 import { FileService } from "../files/file.service";
-import { WowInstallation } from "wowup-lib-core/lib/models";
+import { WowInstallation } from "wowup-lib-core";
 import { TocService } from "../toc/toc.service";
 import * as AddonUtils from "../../utils/addon.utils";
 import {
@@ -29,7 +29,7 @@ import {
 } from "../../../common/constants";
 import { AddonStorageService } from "../storage/addon-storage.service";
 import { AnalyticsService } from "../analytics/analytics.service";
-import { getEnumName } from "wowup-lib-core/lib/utils";
+import { getEnumName } from "wowup-lib-core";
 
 export type InstallType = "install" | "update" | "remove";
 

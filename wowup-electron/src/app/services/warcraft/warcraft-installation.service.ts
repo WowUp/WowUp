@@ -9,13 +9,13 @@ import { TranslateService } from "@ngx-translate/core";
 
 import { WOW_INSTALLATIONS_KEY } from "../../../common/constants";
 import { getWowClientFolderName, getWowClientGroup } from "../../../common/warcraft";
-import { getEnumName } from "wowup-lib-core/lib/utils";
+import { getEnumName } from "wowup-lib-core";
 import { ElectronService } from "../electron/electron.service";
 import { FileService } from "../files/file.service";
 import { PreferenceStorageService } from "../storage/preference-storage.service";
 import { WarcraftService } from "./warcraft.service";
 import { AddonChannelType, WowClientGroup, WowClientType } from "wowup-lib-core";
-import { WowInstallation } from "wowup-lib-core/lib/models";
+import { WowInstallation } from "wowup-lib-core";
 
 const DEFAULT_NAME_TOKEN = "{defaultName}";
 

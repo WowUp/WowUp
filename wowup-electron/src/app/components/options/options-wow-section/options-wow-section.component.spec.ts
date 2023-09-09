@@ -16,7 +16,7 @@ import { WarcraftInstallationService } from "../../../services/warcraft/warcraft
 import { MatModule } from "../../../modules/mat-module";
 import { WowUpReleaseChannelType } from "../../../../common/wowup/wowup-release-channel-type";
 import { AddonChannelType, WowClientType } from "wowup-lib-core";
-import { InstalledProduct } from "wowup-lib-core/lib/models";
+import { InstalledProduct } from "wowup-lib-core";
 
 describe("OptionsWowSectionComponent", () => {
   let component: OptionsWowSectionComponent;

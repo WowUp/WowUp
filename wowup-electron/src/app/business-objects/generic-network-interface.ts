@@ -1,4 +1,4 @@
-import { GetConfig, NetworkInterface, PostConfig } from "wowup-lib-core/lib/utils";
+import { GetConfig, NetworkInterface, PostConfig } from "wowup-lib-core";
 import { CircuitBreakerWrapper } from "../services/network/network.service";
 import * as memcache from "../business-objects/mem-cache";
 

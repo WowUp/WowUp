@@ -8,7 +8,7 @@ import { AddonViewModel } from "../../../business-objects/addon-view-model";
 import { AddonInstallState } from "../../../models/wowup/addon-install-state";
 import { AddonUpdateEvent } from "../../../models/wowup/addon-update-event";
 import { AddonService } from "../../../services/addons/addon.service";
-import { getEnumName } from "wowup-lib-core/lib/utils";
+import { getEnumName } from "wowup-lib-core";
 import { ADDON_PROVIDER_UNKNOWN } from "../../../../common/constants";
 import { WowClientType } from "wowup-lib-core";
 

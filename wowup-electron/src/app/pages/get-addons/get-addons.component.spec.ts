@@ -24,7 +24,7 @@ import { MatModule } from "../../modules/mat-module";
 import { PipesModule } from "../../modules/pipes.module";
 import { AddonProviderFactory } from "../../services/addons/addon.provider.factory";
 import { AddonChannelType, WowClientType } from "wowup-lib-core";
-import { WowInstallation } from "wowup-lib-core/lib/models";
+import { WowInstallation } from "wowup-lib-core";
 
 describe("GetAddonsComponent", () => {
   let component: GetAddonsComponent;

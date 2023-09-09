@@ -10,7 +10,7 @@ import { AddonService } from "../../../services/addons/addon.service";
 import { SessionService } from "../../../services/session/session.service";
 import { WarcraftInstallationService } from "../../../services/warcraft/warcraft-installation.service";
 import { ProtocolSearchResult } from "wowup-lib-core";
-import { WowInstallation } from "wowup-lib-core/lib/models";
+import { WowInstallation } from "wowup-lib-core";
 
 export interface InstallFromProtocolDialogComponentData {
   protocol: string;

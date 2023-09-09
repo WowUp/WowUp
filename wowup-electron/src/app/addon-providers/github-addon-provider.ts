@@ -11,7 +11,7 @@ import {
   GitHubFetchRepositoryError,
   GitHubLimitError,
 } from "../errors";
-import { convertMarkdown } from "../utils/markdown.utlils";
+import { convertMarkdown } from "wowup-lib-core";
 import { strictFilterBy } from "../utils/array.utils";
 import { getWowClientGroup } from "../../common/warcraft";
 import { SensitiveStorageService } from "../services/storage/sensitive-storage.service";
@@ -25,8 +25,8 @@ import {
   SearchByUrlResult,
   WowClientType,
 } from "wowup-lib-core";
-import { GitHubAsset, GitHubRelease, GitHubRepository, WowInstallation } from "wowup-lib-core/lib/models";
-import { SourceRemovedAddonError } from "wowup-lib-core/lib/errors";
+import { GitHubAsset, GitHubRelease, GitHubRepository, WowInstallation } from "wowup-lib-core";
+import { SourceRemovedAddonError } from "wowup-lib-core";
 
 type MetadataFlavor = "bcc" | "classic" | "mainline" | "wrath";
 

@@ -75,7 +75,7 @@ import { HasEventTargetAddRemove } from "rxjs/internal/observable/fromEvent";
 import { AddonProviderFactory } from "../../services/addons/addon.provider.factory";
 import { toInterfaceVersion } from "../../utils/addon.utils";
 import { Addon, WowClientType } from "wowup-lib-core";
-import { WowInstallation } from "wowup-lib-core/lib/models";
+import { WowInstallation } from "wowup-lib-core";
 
 @Component({
   selector: "app-my-addons",

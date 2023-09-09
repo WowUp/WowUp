@@ -9,7 +9,7 @@ import {
   WOW_RETAIL_XPTR_FOLDER,
 } from "../../../common/constants";
 import { WowClientType } from "wowup-lib-core";
-import { InstalledProduct } from "wowup-lib-core/lib/models";
+import { InstalledProduct } from "wowup-lib-core";
 
 const WOW_RETAIL_NAME = "Wow.exe";
 const WOW_RETAIL_PTR_NAME = "WowT.exe";

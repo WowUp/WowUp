@@ -21,7 +21,7 @@ import { LinkService } from "../links/link.service";
 import { PreferenceStorageService } from "../storage/preference-storage.service";
 import { WowUpApiService } from "../wowup-api/wowup-api.service";
 import { HttpErrorResponse } from "@angular/common/http";
-import { WowUpGetAccountResponse } from "wowup-lib-core/lib/models";
+import { WowUpGetAccountResponse } from "wowup-lib-core";
 
 @Injectable({
   providedIn: "root",

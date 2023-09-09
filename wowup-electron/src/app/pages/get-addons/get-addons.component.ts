@@ -45,11 +45,11 @@ import { SnackbarService } from "../../services/snackbar/snackbar.service";
 import { WarcraftInstallationService } from "../../services/warcraft/warcraft-installation.service";
 import { WarcraftService } from "../../services/warcraft/warcraft.service";
 import { WowUpService } from "../../services/wowup/wowup.service";
-import { getEnumKeys } from "wowup-lib-core/lib/utils";
+import { getEnumKeys } from "wowup-lib-core";
 import { camelToSnakeCase } from "../../utils/string.utils";
 import { AddonProviderFactory } from "../../services/addons/addon.provider.factory";
 import { AddonCategory, AddonChannelType, AddonSearchResult, WowClientType } from "wowup-lib-core";
-import { WowInstallation } from "wowup-lib-core/lib/models";
+import { WowInstallation } from "wowup-lib-core";
 
 interface CategoryItem {
   category: AddonCategory;

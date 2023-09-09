@@ -11,8 +11,8 @@ import { CircuitBreakerWrapper, NetworkService } from "../services/network/netwo
 import { TocService } from "../services/toc/toc.service";
 import { WarcraftService } from "../services/warcraft/warcraft.service";
 import { getGameVersion } from "../utils/addon.utils";
-import { getEnumName } from "wowup-lib-core/lib/utils";
-import { convertMarkdown } from "../utils/markdown.utlils";
+import { getEnumName } from "wowup-lib-core";
+import { convertMarkdown } from "wowup-lib-core";
 import { getWowClientGroup } from "../../common/warcraft";
 import { HttpErrorResponse } from "@angular/common/http";
 import { UiMessageService } from "../services/ui-message/ui-message.service";
@@ -31,8 +31,8 @@ import {
   WowClientGroup,
   WowClientType,
 } from "wowup-lib-core";
-import { WowInstallation } from "wowup-lib-core/lib/models";
-import { SourceRemovedAddonError } from "wowup-lib-core/lib/errors";
+import { WowInstallation } from "wowup-lib-core";
+import { SourceRemovedAddonError } from "wowup-lib-core";
 
 declare type WagoGameVersion = "retail" | "classic" | "bc" | "wotlk";
 declare type WagoStability = "stable" | "beta" | "alpha";
