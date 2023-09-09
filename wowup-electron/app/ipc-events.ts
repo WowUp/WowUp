@@ -148,7 +148,7 @@ async function getSymlinkDirs(basePath: string, files: fs.Dirent[]): Promise<Sym
 
 function handle(
   channel: RendererChannels,
-  listener: (event: IpcMainInvokeEvent, ...args: any[]) => Promise<void> | any
+  listener: (event: IpcMainInvokeEvent, ...args: any[]) => Promise<void>
 ) {
   ipcMain.handle(channel, listener);
 }
@@ -458,9 +458,9 @@ export function initializeIpcHandlers(window: BrowserWindow): void {
   handle("decode-product-db", async (evt, filePath: string) => {
     const productDbData = await fsp.readFile(filePath);
     const productDb = ProductDb.decode(productDbData);
-    setImmediate(() => {
+    setTimeout(() => {
       console.log("productDb", JSON.stringify(productDb));
-    });
+    },1);
 
     return productDb;
   });
