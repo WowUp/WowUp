@@ -192,6 +192,7 @@ export const WOW_CLASSIC_ERA_FOLDER = "_classic_era_";
 export const WOW_CLASSIC_ERA_PTR_FOLDER = "_classic_era_ptr_";
 export const WOW_CLASSIC_PTR_FOLDER = "_classic_ptr_";
 export const WOW_RETAIL_PTR_FOLDER = "_ptr_";
+export const WOW_RETAIL_XPTR_FOLDER = "_xptr_";
 export const WOW_RETAIL_FOLDER = "_retail_";
 
 export const WOW_ADDON_FOLDER_NAME = "AddOns";

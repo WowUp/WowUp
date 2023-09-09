@@ -384,6 +384,7 @@ export class GitHubAddonProvider extends AddonProvider {
       case WowClientType.Beta:
       case WowClientType.Retail:
       case WowClientType.RetailPtr:
+      case WowClientType.RetailXPtr:
         return "mainline";
       default:
         throw new Error("Unknown client type for metadata");
@@ -436,6 +437,7 @@ export class GitHubAddonProvider extends AddonProvider {
     switch (clientType) {
       case WowClientType.Retail:
       case WowClientType.RetailPtr:
+      case WowClientType.RetailXPtr:
       case WowClientType.Beta:
         return !isClassic && !isBurningCrusade && !isWotlk;
       case WowClientType.ClassicEra:

@@ -183,11 +183,11 @@
       "CLASSIC": "리치 왕의 분노 클래식",
       "CLASSICBETA": "리치 왕의 분노 클래식 베타",
       "CLASSICERA": "월드 오브 워크래프트 클래식",
-      "CLASSICERAPTR": "Classic Season of Mastery PTR",
+      "CLASSICERAPTR": "WoW Classic Era PTR",
       "CLASSICPTR": "공개 테스트 서버 (리치 왕의 분노 클래식)",
       "RETAIL": "용군단",
-      "RETAILPTR": "공개 테스트 서버",
-      "XPTR": "Public Test Realm (DF 10.1.5)"
+      "RETAILPTR": "Public Test Realm (DF 10.1.7)",
+      "RETAILXPTR": "Public Test Realm (DF 10.2.0)"
     },
     "DATES": {
       "DAYS_AGO": "{count}일 전",

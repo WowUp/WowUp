@@ -270,6 +270,8 @@ export class WarcraftService {
         return WowClientType.Retail;
       case constants.WOW_RETAIL_PTR_FOLDER:
         return WowClientType.RetailPtr;
+      case constants.WOW_RETAIL_XPTR_FOLDER:
+        return WowClientType.RetailXPtr;
       case constants.WOW_CLASSIC_ERA_FOLDER:
         return WowClientType.ClassicEra;
       case constants.WOW_CLASSIC_FOLDER:

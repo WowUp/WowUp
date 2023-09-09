@@ -183,11 +183,11 @@
       "CLASSIC": "Wrath of the Lich King Classic",
       "CLASSICBETA": "Beta di Wrath of the Lich King Classic",
       "CLASSICERA": "World of Warcraft Classic",
-      "CLASSICERAPTR": "Classic Season of Mastery PTR",
+      "CLASSICERAPTR": "WoW Classic Era PTR",
       "CLASSICPTR": "Reame Pubblico di Prova - PTR (Wrath Classic)",
       "RETAIL": "Dragonflight",
-      "RETAILPTR": "Reame pubblico di prova",
-      "XPTR": "Public Test Realm (DF 10.1.5)"
+      "RETAILPTR": "Public Test Realm (DF 10.1.7)",
+      "RETAILXPTR": "Public Test Realm (DF 10.2.0)"
     },
     "DATES": {
       "DAYS_AGO": "{count, plural, one{Un giorno} other{{count} giorni}} fa",

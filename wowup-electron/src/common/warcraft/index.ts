@@ -11,6 +11,8 @@ export function getWowClientFolderName(clientType: WowClientType): string {
       return constants.WOW_CLASSIC_FOLDER;
     case WowClientType.RetailPtr:
       return constants.WOW_RETAIL_PTR_FOLDER;
+    case WowClientType.RetailXPtr:
+      return constants.WOW_RETAIL_XPTR_FOLDER;
     case WowClientType.ClassicPtr:
       return constants.WOW_CLASSIC_PTR_FOLDER;
     case WowClientType.Beta:
@@ -30,6 +32,7 @@ export function getWowClientGroup(clientType: string | WowClientType): WowClient
     case WowClientType.Beta:
     case WowClientType.Retail:
     case WowClientType.RetailPtr:
+    case WowClientType.RetailXPtr:
       return WowClientGroup.Retail;
     case WowClientType.ClassicEra:
     case WowClientType.ClassicEraPtr:
