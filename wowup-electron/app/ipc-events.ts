@@ -146,9 +146,10 @@ async function getSymlinkDirs(basePath: string, files: fs.Dirent[]): Promise<Sym
   return _.filter(symlinkDirs, (symDir) => symDir.isDir);
 }
 
+/* eslint-disable @typescript-eslint/no-redundant-type-constituents */
 function handle(
   channel: RendererChannels,
-  listener: (event: IpcMainInvokeEvent, ...args: any[]) => Promise<void>
+  listener: (event: IpcMainInvokeEvent, ...args: any[]) => Promise<void> | any
 ) {
   ipcMain.handle(channel, listener);
 }
