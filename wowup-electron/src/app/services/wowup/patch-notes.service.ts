@@ -21,7 +21,6 @@ const CHANGELOGS: ChangeLog[] = [
     <h4>Changes</h4>
     <ul>
     <li>Support new WoW Dragonflight 10.2 PTR</li>
-    <li>Update to latest OW framework</li>
     <li>Update to latest UI framework</li>
     </ul>
     `,
