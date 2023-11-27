@@ -1,5 +1,5 @@
 import { Injectable } from "@angular/core";
-import { MatLegacySnackBar as MatSnackBar, MatLegacySnackBarRef as MatSnackBarRef } from "@angular/material/legacy-snack-bar";
+import { MatSnackBar, MatSnackBarRef } from "@angular/material/snack-bar";
 import { TranslateService } from "@ngx-translate/core";
 import {
   CenteredSnackbarComponent,

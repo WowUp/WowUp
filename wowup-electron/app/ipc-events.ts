@@ -11,7 +11,7 @@ import {
   shell,
   systemPreferences,
 } from "electron";
-import * as log from "electron-log";
+import * as log from "electron-log/main";
 import * as globrex from "globrex";
 import * as _ from "lodash";
 import { nanoid } from "nanoid";

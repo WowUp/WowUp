@@ -1,5 +1,5 @@
 import { app, BrowserWindow, BrowserWindowConstructorOptions, Display, Rectangle, screen } from "electron";
-import * as log from "electron-log";
+import * as log from "electron-log/main";
 
 import { IPC_WINDOW_RESUME, MIN_VISIBLE_ON_SCREEN, WINDOW_MIN_HEIGHT, WINDOW_MIN_WIDTH } from "../src/common/constants";
 import * as platform from "./platform";

@@ -1,5 +1,5 @@
 import { Injectable } from "@angular/core";
-import { MatLegacyDialog as MatDialog, MatLegacyDialogRef as MatDialogRef } from "@angular/material/legacy-dialog";
+import { MatDialog, MatDialogRef } from "@angular/material/dialog";
 import { TranslateService } from "@ngx-translate/core";
 import { from, Observable, of } from "rxjs";
 import { first, map, switchMap } from "rxjs/operators";

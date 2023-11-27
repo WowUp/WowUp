@@ -1,5 +1,5 @@
 import { IpcRendererEvent, OpenExternalOptions } from "electron";
-import { ElectronLog } from "electron-log";
+
 
 // Events that can be sent from main to renderer
 declare type MainChannels =
@@ -99,7 +99,7 @@ declare type RendererChannels =
 
 declare global {
   interface Window {
-    log: ElectronLog;
+    log;
     libs: {
       handlebars: any;
       autoLaunch: any;

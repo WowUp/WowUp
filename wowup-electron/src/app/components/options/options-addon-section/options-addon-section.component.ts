@@ -15,9 +15,9 @@ import {
 import { Component, ElementRef, OnDestroy, OnInit, ViewChild } from "@angular/core";
 import { FormGroup, UntypedFormControl } from "@angular/forms";
 import {
-  MatLegacySelectionListChange as MatSelectionListChange,
-  MatLegacyListOption as MatListOption,
-} from "@angular/material/legacy-list";
+  MatSelectionListChange,
+  MatListOption,
+} from "@angular/material/list";
 import { TranslateService } from "@ngx-translate/core";
 
 import {

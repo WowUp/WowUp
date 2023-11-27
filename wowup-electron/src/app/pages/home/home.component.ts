@@ -2,7 +2,7 @@ import { from, Subscription } from "rxjs";
 import { filter, first, map, switchMap } from "rxjs/operators";
 
 import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy } from "@angular/core";
-import { MatLegacySnackBar as MatSnackBar } from "@angular/material/legacy-snack-bar";
+import { MatSnackBar } from "@angular/material/snack-bar";
 import { TranslateService } from "@ngx-translate/core";
 
 import {
@@ -61,7 +61,7 @@ export class HomeComponent implements AfterViewInit, OnDestroy {
     private _cdRef: ChangeDetectorRef,
     private _warcraftInstallationService: WarcraftInstallationService,
     private _dialogFactory: DialogFactory,
-    private _wowUpProtocolService: WowUpProtocolService
+    private _wowUpProtocolService: WowUpProtocolService,
   ) {
     const wowInstalledSub = this._warcraftInstallationService.wowInstallations$.subscribe((installations) => {
       this.hasWowClient = installations.length > 0;
@@ -104,7 +104,7 @@ export class HomeComponent implements AfterViewInit, OnDestroy {
         switchMap((installations) => {
           return from(this.migrateAddons(installations)).pipe(map(() => installations));
         }),
-        map(() => this.showNewVersionNotesPopup())
+        map(() => this.showNewVersionNotesPopup()),
       )
       .subscribe(() => {
         this.appReady = true;

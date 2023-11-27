@@ -1,8 +1,5 @@
 import { AfterViewChecked, Component, ElementRef, Inject, ViewChild } from "@angular/core";
-import {
-  MatLegacyDialogRef as MatDialogRef,
-  MAT_LEGACY_DIALOG_DATA as MAT_DIALOG_DATA,
-} from "@angular/material/legacy-dialog";
+import { MatDialogRef, MAT_DIALOG_DATA } from "@angular/material/dialog";
 
 export interface AlertDialogData {
   title: string;
@@ -22,7 +19,7 @@ export class AlertDialogComponent implements AfterViewChecked {
 
   public constructor(
     public dialogRef: MatDialogRef<AlertDialogComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: AlertDialogData
+    @Inject(MAT_DIALOG_DATA) public data: AlertDialogData,
   ) {}
 
   public ngAfterViewChecked(): void {

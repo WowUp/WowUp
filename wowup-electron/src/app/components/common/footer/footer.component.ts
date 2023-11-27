@@ -2,7 +2,7 @@ import { combineLatest, from, Observable, of } from "rxjs";
 import { catchError, map, switchMap } from "rxjs/operators";
 
 import { Component, NgZone, OnInit } from "@angular/core";
-import { MatLegacyDialog as MatDialog } from "@angular/material/legacy-dialog";
+import { MatDialog } from "@angular/material/dialog";
 import { TranslateService } from "@ngx-translate/core";
 
 import { TAB_INDEX_ABOUT } from "../../../../common/constants";
@@ -31,7 +31,7 @@ export class FooterComponent implements OnInit {
 
   public appUpdateState$: Observable<AppUpdateState> = this.electronService.appUpdate$.pipe(map((evt) => evt.state));
   public accountDisplayName$: Observable<string> = this.sessionService.wowUpAccount$.pipe(
-    map((account) => account?.displayName ?? "")
+    map((account) => account?.displayName ?? ""),
   );
 
   public appUpdateProgress$: Observable<number> = combineLatest([
@@ -47,7 +47,7 @@ export class FooterComponent implements OnInit {
     public sessionService: SessionService,
     private electronService: ElectronService,
     private _wowupService: WowUpService,
-    private _linkService: LinkService
+    private _linkService: LinkService,
   ) {}
 
   public ngOnInit(): void {
@@ -87,14 +87,14 @@ export class FooterComponent implements OnInit {
 
           return from(
             this._linkService.openExternalLink(
-              `${AppConfig.wowupRepositoryUrl}/releases/tag/v${this.wowUpService.availableVersion}`
-            )
+              `${AppConfig.wowupRepositoryUrl}/releases/tag/v${this.wowUpService.availableVersion}`,
+            ),
           );
         }),
         catchError((e) => {
           console.error(e);
           return of(undefined);
-        })
+        }),
       )
       .subscribe();
 

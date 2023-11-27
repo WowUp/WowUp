@@ -4,7 +4,7 @@ import { catchError, delay, first, switchMap } from "rxjs/operators";
 
 import { AfterViewInit, Component, Inject, OnInit } from "@angular/core";
 import { UntypedFormControl } from "@angular/forms";
-import { MAT_LEGACY_DIALOG_DATA as MAT_DIALOG_DATA, MatLegacyDialogRef as MatDialogRef } from "@angular/material/legacy-dialog";
+import { MAT_DIALOG_DATA, MatDialogRef } from "@angular/material/dialog";
 
 import { AddonService } from "../../../services/addons/addon.service";
 import { SessionService } from "../../../services/session/session.service";
@@ -44,7 +44,7 @@ export class InstallFromProtocolDialogComponent implements OnInit, AfterViewInit
     private _sessionService: SessionService,
     private _warcraftInstallationService: WarcraftInstallationService,
     @Inject(MAT_DIALOG_DATA) public data: InstallFromProtocolDialogComponentData,
-    public dialogRef: MatDialogRef<InstallFromProtocolDialogComponent>
+    public dialogRef: MatDialogRef<InstallFromProtocolDialogComponent>,
   ) {}
 
   public ngOnInit(): void {}
@@ -58,7 +58,7 @@ export class InstallFromProtocolDialogComponent implements OnInit, AfterViewInit
         catchError((e) => {
           console.error(e);
           return of(undefined);
-        })
+        }),
       )
       .subscribe();
   }
@@ -91,7 +91,7 @@ export class InstallFromProtocolDialogComponent implements OnInit, AfterViewInit
     console.debug("selectedInstallationId", this.installations.value);
     const selectedInstallationIds: string[] = this.installations.value;
     const selectedInstallations = this.validWowInstallations.filter((installation) =>
-      selectedInstallationIds.includes(installation.id)
+      selectedInstallationIds.includes(installation.id),
     );
     const targetFile = _.first(this.addon.files);
 
@@ -108,7 +108,7 @@ export class InstallFromProtocolDialogComponent implements OnInit, AfterViewInit
             console.debug("Install Progress", progress);
             this.installProgress = (installIdx * 100 + progress) / totalInstalls;
           },
-          targetFile
+          targetFile,
         );
         installIdx += 1;
         this._sessionService.notifyTargetFileInstallComplete();
@@ -136,11 +136,11 @@ export class InstallFromProtocolDialogComponent implements OnInit, AfterViewInit
 
       if (Array.isArray(searchResult.validClientGroups)) {
         this.validWowInstallations = await this._warcraftInstallationService.getWowInstallationsByClientGroups(
-          searchResult.validClientGroups
+          searchResult.validClientGroups,
         );
       } else if (Array.isArray(searchResult.validClientTypes)) {
         this.validWowInstallations = await this._warcraftInstallationService.getWowInstallationsByClientTypes(
-          searchResult.validClientTypes
+          searchResult.validClientTypes,
         );
       } else {
         throw new Error("No valid clients found");
@@ -155,7 +155,7 @@ export class InstallFromProtocolDialogComponent implements OnInit, AfterViewInit
         installation.isInstalled = await this._addonService.isInstalled(
           this.addon.externalId,
           this.addon.providerName,
-          installation
+          installation,
         );
 
         installation.label = await this._warcraftInstallationService.getInstallationDisplayName(installation);

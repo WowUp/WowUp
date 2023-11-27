@@ -1,6 +1,6 @@
 import { HttpErrorResponse } from "@angular/common/http";
 import { Component, OnDestroy } from "@angular/core";
-import { MatLegacyDialog as MatDialog, MatLegacyDialogRef as MatDialogRef } from "@angular/material/legacy-dialog";
+import { MatDialog, MatDialogRef } from "@angular/material/dialog";
 import { from, Subscription } from "rxjs";
 import { AddonService } from "../../../services/addons/addon.service";
 import { SessionService } from "../../../services/session/session.service";
@@ -44,7 +44,7 @@ export class InstallFromUrlDialogComponent implements OnDestroy {
     private _sessionService: SessionService,
     private _translateService: TranslateService,
     private _downloadCountPipe: DownloadCountPipe,
-    public dialogRef: MatDialogRef<InstallFromUrlDialogComponent>
+    public dialogRef: MatDialogRef<InstallFromUrlDialogComponent>,
   ) {}
 
   public ngOnDestroy(): void {
@@ -77,7 +77,7 @@ export class InstallFromUrlDialogComponent implements OnDestroy {
     this.showInstallSpinner = true;
 
     this._installSubscription = from(
-      this._addonService.installPotentialAddon(this.addon, selectedInstallation, undefined, addonFile)
+      this._addonService.installPotentialAddon(this.addon, selectedInstallation, undefined, addonFile),
     ).subscribe({
       next: () => {
         this.showInstallSpinner = false;
@@ -88,7 +88,7 @@ export class InstallFromUrlDialogComponent implements OnDestroy {
         this.showInstallSpinner = false;
         this.showInstallButton = true;
         this.showErrorMessage(
-          this._translateService.instant("DIALOGS.INSTALL_FROM_URL.ERROR.INSTALL_FAILED") as string
+          this._translateService.instant("DIALOGS.INSTALL_FROM_URL.ERROR.INSTALL_FAILED") as string,
         );
       },
     });
@@ -140,7 +140,7 @@ export class InstallFromUrlDialogComponent implements OnDestroy {
       const addonInstalled = await this._addonService.isInstalled(
         this.addon.externalId,
         this.addon.providerName,
-        selectedInstallation
+        selectedInstallation,
       );
 
       this.handleImportErrors(searchByUrlResult);

@@ -1,6 +1,6 @@
 @use "@angular/material" as mat;
 @import "./variables.scss";
-@import "@angular/material/theming";
+
 
 @import "ag-grid-community/styles/ag-grid.css";
 @import "ag-grid-community/styles/ag-theme-material.css";
@@ -18,13 +18,17 @@
 //  If you don't need the default component typographies but still want the hierarchy styles,
 //  you can delete this line and instead use:
 //    `@include mat.legacy-typography-hierarchy(mat.define-legacy-typography-config());`
-@include mat.all-legacy-component-typographies();
-@include mat.legacy-core();
+@include mat.all-component-typographies();
+@include mat.core();
 
 :root {
   --success-color: rgb(25, 135, 84);
   --warning-color: rgb(255, 193, 7);
   --secondary-color: rgb(108, 117, 125);
+  --mdc-filled-text-field-label-text-size: 14px;
+  --mat-select-trigger-text-size: 14px;
+  --mat-option-label-text-size: 14px;
+  --mdc-typography-button-letter-spacing: normal;
 }
 
 $md-wowup-palette: (
@@ -94,10 +98,10 @@ $wowup-light-theme: mat.define-light-theme(
 // Include theme styles for core and each component used in your app.
 // Alternatively, you can import and @include the theme mixins for each component
 // that you are using.
-@include mat.all-legacy-component-themes($wowup-default-theme);
+@include mat.all-component-themes($wowup-default-theme);
 
 .default-theme-light-theme {
-  @include mat.all-legacy-component-colors($wowup-light-theme);
+  @include mat.all-component-colors($wowup-light-theme);
 }
 
 // Horde theme
@@ -157,11 +161,11 @@ $horde-theme-light: mat.define-light-theme(
 );
 
 .horde-theme-light-theme {
-  @include mat.all-legacy-component-colors($horde-theme-light);
+  @include mat.all-component-colors($horde-theme-light);
 }
 
 .horde-theme {
-  @include mat.all-legacy-component-colors($horde-theme);
+  @include mat.all-component-colors($horde-theme);
 }
 
 // Alliance theme
@@ -221,11 +225,11 @@ $alliance-theme-light: mat.define-light-theme(
 );
 
 .alliance-theme-light-theme {
-  @include mat.all-legacy-component-colors($alliance-theme-light);
+  @include mat.all-component-colors($alliance-theme-light);
 }
 
 .alliance-theme {
-  @include mat.all-legacy-component-colors($alliance-theme);
+  @include mat.all-component-colors($alliance-theme);
 }
 
 // VARS
@@ -264,6 +268,10 @@ body {
   --title-logo: url("assets/images/wowup-white-1.png");
   --theme-logo: url("assets/images/wowup-white-1.png");
   --ad-placeholder: url("assets/images/wowup-placeholder.png");
+  --mdc-filled-text-field-disabled-container-color: transparent;
+  --mdc-filled-text-field-container-color: var(--background-secondary-2);
+  --mdc-filled-text-field-focus-label-text-color: #fff;
+  --mdc-filled-text-field-caret-color: #fff;
 }
 
 .default-theme-light-theme {

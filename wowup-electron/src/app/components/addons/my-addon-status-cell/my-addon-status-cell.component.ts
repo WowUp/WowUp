@@ -4,7 +4,7 @@ import { Subject } from "rxjs";
 import { filter, takeUntil } from "rxjs/operators";
 
 import { Component, NgZone, OnDestroy } from "@angular/core";
-import { MatLegacyDialog as MatDialog } from "@angular/material/legacy-dialog";
+import { MatDialog } from "@angular/material/dialog";
 import { TranslateService } from "@ngx-translate/core";
 
 import { AddonViewModel } from "../../../business-objects/addon-view-model";
@@ -35,7 +35,7 @@ export class MyAddonStatusCellComponent implements AgRendererComponent, OnDestro
     private _dialog: MatDialog,
     private _addonService: AddonService,
     private _translateService: TranslateService,
-    private _ngZone: NgZone
+    private _ngZone: NgZone,
   ) {
     this._addonService.addonInstalled$
       .pipe(
@@ -43,8 +43,8 @@ export class MyAddonStatusCellComponent implements AgRendererComponent, OnDestro
         filter(
           (evt) =>
             evt.addon.externalId === this.listItem.addon?.externalId &&
-            evt.addon.providerName === this.listItem.addon?.providerName
-        )
+            evt.addon.providerName === this.listItem.addon?.providerName,
+        ),
       )
       .subscribe((evt) => {
         this._ngZone.run(() => {

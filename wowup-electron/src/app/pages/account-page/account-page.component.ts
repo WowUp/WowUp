@@ -1,5 +1,5 @@
 import { Component } from "@angular/core";
-import { MatLegacySlideToggleChange as MatSlideToggleChange } from "@angular/material/legacy-slide-toggle";
+import { MatSlideToggleChange } from "@angular/material/slide-toggle";
 import { TranslateService } from "@ngx-translate/core";
 import { of } from "rxjs";
 import { catchError, map } from "rxjs/operators";
@@ -24,7 +24,7 @@ export class AccountPageComponent {
     private _dialogFactory: DialogFactory,
     private _translateService: TranslateService,
     private _snackbarService: SnackbarService,
-    private _linkService: LinkService
+    private _linkService: LinkService,
   ) {}
 
   public onClickLogin(): void {
@@ -58,7 +58,7 @@ export class AccountPageComponent {
         catchError((error) => {
           console.error(error);
           return of(undefined);
-        })
+        }),
       )
       .subscribe();
   }

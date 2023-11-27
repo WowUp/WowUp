@@ -1,5 +1,5 @@
 import { app, BrowserWindow, BrowserWindowConstructorOptions, dialog, powerMonitor } from "electron";
-import * as log from "electron-log";
+import * as log from "electron-log/main";
 import { find } from "lodash";
 import * as minimist from "minimist";
 import { arch as osArch, release as osRelease, type as osType } from "os";
@@ -49,7 +49,8 @@ import * as windowState from "./window-state";
 // Override the default log path so they aren't a pain to find on Mac
 const LOG_PATH = join(app.getPath("userData"), "logs");
 app.setAppLogsPath(LOG_PATH);
-log.transports.file.resolvePath = (variables: log.PathVariables) => {
+log.initialize();
+log.transports.file.resolvePathFn = (variables) => {
   return join(LOG_PATH, variables.fileName ?? "log-file.txt");
 };
 log.info("Main starting");

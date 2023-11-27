@@ -2,8 +2,7 @@
 /// <reference path="../src/common/wowup.d.ts" />
 
 import { ipcRenderer, IpcRendererEvent, shell, OpenExternalOptions } from "electron";
-import * as log from "electron-log";
-import { join } from "path";
+import * as log from "electron-log/renderer";
 import * as platform from "./platform";
 
 if (!process.isMainFrame) {
@@ -38,9 +37,7 @@ const LOG_PATH = getArg("log-path");
 const USER_DATA_PATH = getArg("user-data-path");
 const BASE_BG_COLOR = getArg("base-bg-color");
 
-log.transports.file.resolvePath = (variables: log.PathVariables) => {
-  return join(LOG_PATH, variables.fileName);
-};
+
 
 function onRendererEvent(channel: string, listener: (event: IpcRendererEvent, ...args: any[]) => void) {
   ipcRenderer.on(channel, listener);

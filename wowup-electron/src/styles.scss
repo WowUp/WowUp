@@ -232,7 +232,7 @@ mat-icon.success-icon {
 }
 
 .grow-tab-content {
-  .mat-tab-body-wrapper {
+  .mat-mdc-tab-body-wrapper {
     flex-grow: 1;
   }
 }
@@ -650,7 +650,7 @@ th.mat-header-cell .mat-sort-header-container.mat-sort-header-sorted .mat-sort-h
   }
 }
 
-.header-less-tabs .mat-tab-group .mat-tab-header {
+.header-less-tabs mat-tab-group mat-tab-header {
   display: none;
 }
 
