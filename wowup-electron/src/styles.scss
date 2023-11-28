@@ -314,6 +314,11 @@ mat-icon.success-icon {
 
 .d-flex {
   display: flex;
+  flex-direction: row;
+
+  &.align-items-center {
+    align-items: center;
+  }
 }
 
 .flex-col {

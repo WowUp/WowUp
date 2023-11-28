@@ -240,6 +240,17 @@ body {
   --text-white: #ffffff;
 }
 
+.app {
+  --mdc-filled-text-field-disabled-container-color: transparent;
+  --mdc-filled-text-field-container-color: var(--background-secondary-2);
+  --mdc-filled-text-field-focus-label-text-color: #fff;
+  --mdc-filled-text-field-caret-color: #fff;
+}
+
+.mat-mdc-option.mdc-list-item--selected:not(.mdc-list-item--disabled) .mdc-list-item__primary-text {
+  color: var(--text-3) !important;
+}
+
 .default-theme {
   --background-primary: #6b69d6;
   --background-primary-2: #504fa1;
@@ -268,10 +279,7 @@ body {
   --title-logo: url("assets/images/wowup-white-1.png");
   --theme-logo: url("assets/images/wowup-white-1.png");
   --ad-placeholder: url("assets/images/wowup-placeholder.png");
-  --mdc-filled-text-field-disabled-container-color: transparent;
-  --mdc-filled-text-field-container-color: var(--background-secondary-2);
-  --mdc-filled-text-field-focus-label-text-color: #fff;
-  --mdc-filled-text-field-caret-color: #fff;
+
 }
 
 .default-theme-light-theme {
