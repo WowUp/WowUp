@@ -253,6 +253,8 @@ export function initializeIpcHandlers(window: BrowserWindow): void {
       return;
     }
 
+    addonStore.clear();
+
     for (const addon of addons) {
       if (typeof addon.id !== "string") {
         log.warn("malformed addon not saved", addon);
