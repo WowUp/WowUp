@@ -5,7 +5,7 @@ import { OverlayModule } from "@angular/cdk/overlay";
 import { HttpClient, HttpClientModule } from "@angular/common/http";
 import { CUSTOM_ELEMENTS_SCHEMA, ElementRef } from "@angular/core";
 import { ComponentFixture, TestBed } from "@angular/core/testing";
-import { MatLegacyDialog as MatDialog } from "@angular/material/legacy-dialog";
+import { MatDialog } from "@angular/material/dialog";
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 import { TranslateCompiler, TranslateLoader, TranslateModule } from "@ngx-translate/core";
 
@@ -68,7 +68,7 @@ describe("MyAddonsComponent", () => {
       {
         addonInstalled$: new Subject<AddonUpdateEvent>().asObservable(),
         addonRemoved$: new Subject<string>().asObservable(),
-      }
+      },
     );
 
     pushService = jasmine.createSpyObj("PushService", [""], {
@@ -91,7 +91,7 @@ describe("MyAddonsComponent", () => {
       addonsChanged$: new BehaviorSubject([]),
       selectedWowInstallation$: new BehaviorSubject({}),
       rescanComplete$: new BehaviorSubject(0).asObservable(),
-      setEnableControls: () => {}
+      setEnableControls: () => {},
     });
     warcraftServiceSpy = jasmine.createSpyObj("WarcraftService", [""], {
       installedClientTypesSelectItems$: new BehaviorSubject<WowClientType[] | undefined>(undefined).asObservable(),

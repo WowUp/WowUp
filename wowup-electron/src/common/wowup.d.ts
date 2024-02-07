@@ -114,7 +114,7 @@ declare global {
       rendererSend: (channel: string, ...args: any[]) => void;
       rendererSendSync: (channel: string, ...args: any[]) => any;
       rendererInvoke: (channel: string, ...args: any[]) => Promise<any>;
-      rendererOff: (event: string | symbol, listener: (...args: any[]) => void) => void;
+      rendererOff: (channel: string, listener: (...args: any[]) => void) => void;
       rendererOn: (channel: string, listener: (event: IpcRendererEvent, ...args: any[]) => void) => void;
       openExternal: (url: string, options?: OpenExternalOptions) => Promise<void>;
       openPath: (path: string) => Promise<string>;

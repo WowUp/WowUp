@@ -3,7 +3,7 @@ import { BehaviorSubject } from "rxjs";
 
 import { HttpClient, HttpClientModule } from "@angular/common/http";
 import { ComponentFixture, TestBed } from "@angular/core/testing";
-import { MatLegacyDialog as MatDialog, MatLegacyDialogModule as MatDialogModule } from "@angular/material/legacy-dialog";
+import { MatDialog, MatDialogModule } from "@angular/material/dialog";
 import { NoopAnimationsModule } from "@angular/platform-browser/animations";
 import { TranslateCompiler, TranslateLoader, TranslateModule } from "@ngx-translate/core";
 
@@ -34,7 +34,7 @@ describe("OptionsWowSectionComponent", () => {
       },
       {
         products$: new BehaviorSubject<InstalledProduct[]>([]).asObservable(),
-      }
+      },
     );
 
     wowUpServiceSpy = jasmine.createSpyObj(
@@ -45,7 +45,7 @@ describe("OptionsWowSectionComponent", () => {
       },
       {
         wowUpReleaseChannel: WowUpReleaseChannelType.Stable,
-      }
+      },
     );
 
     warcraftInstallationService = jasmine.createSpyObj("WarcraftInstallationService", [""], {

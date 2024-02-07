@@ -37,8 +37,6 @@ const LOG_PATH = getArg("log-path");
 const USER_DATA_PATH = getArg("user-data-path");
 const BASE_BG_COLOR = getArg("base-bg-color");
 
-
-
 function onRendererEvent(channel: string, listener: (event: IpcRendererEvent, ...args: any[]) => void) {
   ipcRenderer.on(channel, listener);
 }
@@ -65,8 +63,8 @@ function rendererInvoke(channel: string, ...args: any[]): Promise<any> {
   /* eslint-enable @typescript-eslint/no-unsafe-argument */
 }
 
-function rendererOff(event: string | symbol, listener: (...args: any[]) => void) {
-  ipcRenderer.off(event, listener);
+function rendererOff(channel: string, listener: (...args: any[]) => void) {
+  ipcRenderer.off(channel, listener);
 }
 
 function rendererOn(channel: string, listener: (event: IpcRendererEvent, ...args: any[]) => void) {

@@ -4,7 +4,7 @@ import { Subject } from "rxjs";
 import { HttpClient, HttpClientModule } from "@angular/common/http";
 import { CUSTOM_ELEMENTS_SCHEMA } from "@angular/core";
 import { TestBed } from "@angular/core/testing";
-import { MatLegacyDialogRef as MatDialogRef, MAT_LEGACY_DIALOG_DATA as MAT_DIALOG_DATA } from "@angular/material/legacy-dialog";
+import { MatDialogRef, MAT_DIALOG_DATA } from "@angular/material/dialog";
 import { NoopAnimationsModule } from "@angular/platform-browser/animations";
 import { TranslateCompiler, TranslateLoader, TranslateModule } from "@ngx-translate/core";
 
@@ -43,7 +43,7 @@ describe("AddonDetailComponent", () => {
       {
         addonInstalled$: new Subject<AddonUpdateEvent>().asObservable(),
         getChangelog: () => "",
-      }
+      },
     );
 
     addonUiService = jasmine.createSpyObj("AddonUiService", [""], {});

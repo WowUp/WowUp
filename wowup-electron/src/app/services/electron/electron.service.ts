@@ -290,7 +290,7 @@ export class ElectronService {
 
   public async getUserDefaultSystemPreference<T = any>(
     key: string,
-    type: "string" | "boolean" | "integer" | "float" | "double" | "url" | "array" | "dictionary"
+    type: "string" | "boolean" | "integer" | "float" | "double" | "url" | "array" | "dictionary",
   ): Promise<T> {
     return await this.invoke(IPC_SYSTEM_PREFERENCES_GET_USER_DEFAULT, key, type);
   }
@@ -312,7 +312,7 @@ export class ElectronService {
 
   public sendIPCMessage<TIN extends IpcRequest, TOUT extends IpcResponse>(
     channel: string,
-    request: TIN
+    request: TIN,
   ): Promise<TOUT> {
     return new Promise((resolve, reject) => {
       window.wowup.onceRendererEvent(request.responseKey, (_evt: any, arg: TOUT) => {
@@ -346,8 +346,8 @@ export class ElectronService {
     window.wowup.rendererOn(channel, listener);
   }
 
-  public off(event: string | symbol, listener: (...args: any[]) => void): void {
-    window.wowup.rendererOff(event, listener);
+  public off(channel: string, listener: (...args: any[]) => void): void {
+    window.wowup.rendererOff(channel, listener);
   }
 
   public send(channel: string, ...args: any[]): void {
