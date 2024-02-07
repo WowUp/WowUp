@@ -16,6 +16,7 @@ src/**/*.js
 !src/karma.conf.js
 *.js.map
 app/*.js
+app/utils/*.js
 !electron-build/*.js
 
 # dependencies
