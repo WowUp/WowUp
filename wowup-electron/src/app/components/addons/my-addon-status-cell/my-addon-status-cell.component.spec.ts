@@ -27,7 +27,7 @@ describe("MyAddonStatusCellComponent", () => {
       {
         addonInstalled$: new Subject<AddonUpdateEvent>().asObservable(),
         addonRemoved$: new Subject<string>().asObservable(),
-      }
+      },
     );
 
     await TestBed.configureTestingModule({

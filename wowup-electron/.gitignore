@@ -8,6 +8,7 @@
 /app-builds
 /release
 /build
+/app/utils/*.js
 main.js
 ipc-events.js
 app-updater.js
@@ -16,7 +17,6 @@ src/**/*.js
 !src/karma.conf.js
 *.js.map
 app/*.js
-app/utils/*.js
 !electron-build/*.js
 
 # dependencies

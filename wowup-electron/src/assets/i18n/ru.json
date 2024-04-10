@@ -169,6 +169,8 @@
       "UPDATING": "Обновление..."
     },
     "ADDON_WARNING": {
+      "GAME_VERSION_TOC_MISSING_DESCRIPTION": "This addon or its children have one or more missing toc files for this game version",
+      "GAME_VERSION_TOC_MISSING_TOOLTIP": "One or more missing toc files for this game version",
       "GENERIC_DESCRIPTION": "Мы обнаружили неполадку с этой модификацией. Мы больше неспособны обновлять эту модификацию или показывать её детали.",
       "GENERIC_TOOLTIP": "Мы обнаружили неполадку с этой модификацией",
       "MISSING_ON_PROVIDER_DESCRIPTION": "Эта модификация, вероятно, была удалена автором или источником модификаций.<br>Мы больше неспособны обновлять эту модификацию или показывать её детали.",

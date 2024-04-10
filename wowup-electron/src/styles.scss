@@ -266,19 +266,6 @@ mat-icon.success-icon {
   }
 }
 
-.mat-slide-toggle-thumb,
-.mat-slide-toggle-bar {
-  &:hover {
-    cursor: pointer !important;
-  }
-}
-
-.mat-slide-toggle-thumb,
-.mat-slide-toggle-bar,
-.mat-button-wrapper {
-  -webkit-app-region: no-drag;
-}
-
 .window-appicon {
   background-size: 30px !important;
   padding-left: 12px !important;
@@ -481,24 +468,6 @@ mat-icon.success-icon {
   }
 }
 
-.wide-slide-toggle {
-  width: 100%;
-
-  &:hover {
-    cursor: pointer !important;
-  }
-
-  .mat-slide-toggle-label {
-    &:hover {
-      cursor: pointer !important;
-    }
-  }
-
-  .mat-slide-toggle-content {
-    flex-grow: 1;
-  }
-}
-
 .light-select {
   .mat-form-field-label {
     color: var(--text-2) !important;
@@ -544,11 +513,12 @@ mat-icon.success-icon {
   min-width: 120px !important;
 
   .progress-bar {
-    border-top-right-radius: 4px;
-    border-top-left-radius: 4px;
+    height: 1rem;
+    // border-top-right-radius: 4px;
+    // border-top-left-radius: 4px;
     width: 100%;
-    left: 0;
-    position: absolute;
+    // left: 0;
+    // position: absolute;
   }
 
   .mat-progress-bar-buffer {
@@ -586,7 +556,10 @@ mat-icon.success-icon {
   color: #fff;
   font-size: 16px;
   font-weight: 500;
-  transition: background-color 0.2s, border-color 0.2s, color 0.2s;
+  transition:
+    background-color 0.2s,
+    border-color 0.2s,
+    color 0.2s;
   border-radius: 4px;
   border-top-right-radius: 0;
   border-bottom-right-radius: 0;

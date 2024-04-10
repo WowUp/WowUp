@@ -30,7 +30,7 @@ export class MyAddonsAddonCellComponent implements AgRendererComponent {
   public readonly hasWarning$ = this.listItem$.pipe(map((item) => this.hasWarning(item)));
 
   public readonly hasFundingLinks$ = this.listItem$.pipe(
-    map((item) => Array.isArray(item.addon?.fundingLinks) && item.addon.fundingLinks.length > 0)
+    map((item) => Array.isArray(item.addon?.fundingLinks) && item.addon.fundingLinks.length > 0),
   );
 
   public readonly fundingLinks$ = this.listItem$.pipe(map((item) => item.addon?.fundingLinks ?? []));
@@ -46,7 +46,7 @@ export class MyAddonsAddonCellComponent implements AgRendererComponent {
         return "alpha";
       }
       return "";
-    })
+    }),
   );
 
   public readonly channelTranslationKey$ = this.listItem$.pipe(
@@ -55,11 +55,11 @@ export class MyAddonsAddonCellComponent implements AgRendererComponent {
       return channelType === AddonChannelType.Alpha
         ? "COMMON.ENUM.ADDON_CHANNEL_TYPE.ALPHA"
         : "COMMON.ENUM.ADDON_CHANNEL_TYPE.BETA";
-    })
+    }),
   );
 
   public readonly hasMultipleProviders$ = this.listItem$.pipe(
-    map((item) => (item.addon === undefined ? false : AddonUtils.hasMultipleProviders(item.addon)))
+    map((item) => (item.addon === undefined ? false : AddonUtils.hasMultipleProviders(item.addon))),
   );
 
   public readonly autoUpdateEnabled$ = this.listItem$.pipe(map((item) => item.addon?.autoUpdateEnabled ?? false));
@@ -67,7 +67,7 @@ export class MyAddonsAddonCellComponent implements AgRendererComponent {
   public readonly hasIgnoreReason$ = this.listItem$.pipe(map((item) => this.hasIgnoreReason(item)));
 
   public readonly hasRequiredDependencies$ = this.listItem$.pipe(
-    map((item) => this.getRequireDependencyCount(item) > 0)
+    map((item) => this.getRequireDependencyCount(item) > 0),
   );
 
   public readonly dependencyTooltip$ = this.listItem$.pipe(
@@ -75,7 +75,7 @@ export class MyAddonsAddonCellComponent implements AgRendererComponent {
       return {
         dependencyCount: this.getRequireDependencyCount(item),
       };
-    })
+    }),
   );
 
   public readonly isLoadOnDemand$ = this.listItem$.pipe(map((item) => item.isLoadOnDemand));
@@ -86,7 +86,7 @@ export class MyAddonsAddonCellComponent implements AgRendererComponent {
 
   public readonly warningText$ = this.listItem$.pipe(
     filter((item) => this.hasWarning(item)),
-    map((item) => this.getWarningText(item))
+    map((item) => this.getWarningText(item)),
   );
 
   public readonly isUnknownAddon$ = this.listItem$.pipe(
@@ -97,7 +97,7 @@ export class MyAddonsAddonCellComponent implements AgRendererComponent {
         !this.hasWarning(item) &&
         item.addon.providerName === ADDON_PROVIDER_UNKNOWN
       );
-    })
+    }),
   );
 
   public readonly installedVersion$ = this.listItem$.pipe(map((item) => item.addon.installedVersion));
@@ -112,7 +112,7 @@ export class MyAddonsAddonCellComponent implements AgRendererComponent {
   ]).pipe(
     map(([item, compactVersion]) => {
       return compactVersion && item.needsUpdate();
-    })
+    }),
   );
 
   public set listItem(item: AddonViewModel) {
@@ -122,7 +122,7 @@ export class MyAddonsAddonCellComponent implements AgRendererComponent {
   public constructor(
     private _translateService: TranslateService,
     private _dialogFactory: DialogFactory,
-    public sessionService: SessionService
+    public sessionService: SessionService,
   ) {}
 
   public agInit(params: ICellRendererParams): void {
@@ -190,6 +190,8 @@ export class MyAddonsAddonCellComponent implements AgRendererComponent {
         return this._translateService.instant("COMMON.ADDON_WARNING.NO_PROVIDER_FILES_TOOLTIP", toolTipParams);
       case AddonWarningType.TocNameMismatch:
         return this._translateService.instant("COMMON.ADDON_WARNING.TOC_NAME_MISMATCH_TOOLTIP", toolTipParams);
+      case AddonWarningType.GameVersionTocMissing:
+        return this._translateService.instant("COMMON.ADDON_WARNING.GAME_VERSION_TOC_MISSING_TOOLTIP", toolTipParams);
       default:
         return this._translateService.instant("COMMON.ADDON_WARNING.GENERIC_TOOLTIP", toolTipParams);
     }

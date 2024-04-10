@@ -169,6 +169,8 @@
       "UPDATING": "Updating..."
     },
     "ADDON_WARNING": {
+      "GAME_VERSION_TOC_MISSING_DESCRIPTION": "This addon or its children have one or more missing toc files for this game version",
+      "GAME_VERSION_TOC_MISSING_TOOLTIP": "One or more missing toc files for this game version",
       "GENERIC_DESCRIPTION": "We have detected an issue with this addon. We are no longer able to update this addon or provide details.",
       "GENERIC_TOOLTIP": "We have detected an issue with this addon",
       "MISSING_ON_PROVIDER_DESCRIPTION": "{providerName} did not return the addon when we requested it.<br>We are no longer able to update this addon or provide details until {providerName} fixes it.",

@@ -65,7 +65,7 @@ export class MyAddonStatusCellComponent implements AgRendererComponent, OnDestro
     this.listItem = params.data;
 
     this.warningType = this.listItem?.addon?.warningType;
-    this.hasWarning = this.warningType !== undefined;
+    this.hasWarning = this.warningType !== undefined && this.warningType !== AddonWarningType.GameVersionTocMissing;
     this.showStatusText = this.listItem?.isUpToDate() || (this.listItem?.addon?.isIgnored ?? true);
     this.statusText = this.getStatusText(this.listItem?.addon);
     this.isIgnored = this.listItem.addon?.isIgnored ?? true;
@@ -114,6 +114,8 @@ export class MyAddonStatusCellComponent implements AgRendererComponent, OnDestro
         return "COMMON.ADDON_WARNING.NO_PROVIDER_FILES_DESCRIPTION";
       case AddonWarningType.TocNameMismatch:
         return "COMMON.ADDON_WARNING.TOC_NAME_MISMATCH_DESCRIPTION";
+      case AddonWarningType.GameVersionTocMissing:
+        return "COMMON.ADDON_WARNING.GAME_VERSION_TOC_MISSING_DESCRIPTION";
       default:
         return "COMMON.ADDON_WARNING.GENERIC_DESCRIPTION";
     }

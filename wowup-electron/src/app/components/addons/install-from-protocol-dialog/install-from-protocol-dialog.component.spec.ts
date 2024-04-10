@@ -31,7 +31,7 @@ describe("InstallFromProtocolDialogComponent", () => {
       {
         getAddonForProtocol: () => Promise.resolve(undefined),
       },
-      {}
+      {},
     );
 
     sessionService = jasmine.createSpyObj("SessionService", [""], {});

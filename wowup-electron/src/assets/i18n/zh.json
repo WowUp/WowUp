@@ -169,6 +169,8 @@
       "UPDATING": "正在更新..."
     },
     "ADDON_WARNING": {
+      "GAME_VERSION_TOC_MISSING_DESCRIPTION": "This addon or its children have one or more missing toc files for this game version",
+      "GAME_VERSION_TOC_MISSING_TOOLTIP": "One or more missing toc files for this game version",
       "GENERIC_DESCRIPTION": "WowUp 检测到此插件存在问题，无法更新此插件或提供详细信息。",
       "GENERIC_TOOLTIP": "检测到此插件存在问题",
       "MISSING_ON_PROVIDER_DESCRIPTION": "此插件可能已被作者或安装源移除。<br>WowUp 无法更新此插件或提供详细信息。",

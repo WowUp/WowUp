@@ -2,12 +2,14 @@
   <div class="wow-install-logo-container">
     <img [src]="wowLogoImage" />
   </div>
-  <mat-card-title class="row">
-    <div *ngIf="(editMode$ | async) === false" class="flex-grow-1">{{ installationModel.displayName }}</div>
-    <mat-form-field *ngIf="(editMode$ | async) === true" class="no-input-border w-100">
-      <input matInput [(ngModel)]="installationModel.label" />
-    </mat-form-field>
-  </mat-card-title>
+  <mat-card-header>
+    <mat-card-title class="row">
+      <div *ngIf="(editMode$ | async) === false" class="flex-grow-1">{{ installationModel.displayName }}</div>
+      <mat-form-field *ngIf="(editMode$ | async) === true" class="no-input-border w-100">
+        <input matInput [(ngModel)]="installationModel.label" />
+      </mat-form-field>
+    </mat-card-title>
+  </mat-card-header>
   <mat-card-content>
     <div class="row">
       <mat-form-field class="grow folder-input">

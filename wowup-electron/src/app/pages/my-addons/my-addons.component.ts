@@ -8,7 +8,6 @@ import {
   RowClassParams,
   RowClickedEvent,
   RowDoubleClickedEvent,
-
   SortChangedEvent,
 } from "ag-grid-community";
 import * as _ from "lodash";
@@ -457,7 +456,7 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
       this._visibleSrc.next(muts.some((m) => (m.target as HTMLElement).style.transform === "none"));
     });
 
-    const elem = document.querySelector(".mat-tab-my-addons .mat-tab-body-content");
+    const elem = document.querySelector(".mat-tab-my-addons .mat-mdc-tab-body-content");
     if (elem === null) {
       this._visibleSrc.next(true);
       console.warn("visibility observer cannot start");

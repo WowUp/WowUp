@@ -169,6 +169,8 @@
       "UPDATING": "Oppdaterer..."
     },
     "ADDON_WARNING": {
+      "GAME_VERSION_TOC_MISSING_DESCRIPTION": "This addon or its children have one or more missing toc files for this game version",
+      "GAME_VERSION_TOC_MISSING_TOOLTIP": "One or more missing toc files for this game version",
       "GENERIC_DESCRIPTION": "Vi har støtt på et problem med denne utvidelsen. Vi kan ikke lenger oppdatere denne utvidelsen eller gi detaljer om den.",
       "GENERIC_TOOLTIP": "Vi har støtt på et problem med denne utvidelsen",
       "MISSING_ON_PROVIDER_DESCRIPTION": "{providerName} returnerte ikke utvidelsen da vi ba om den.<br>Vi kan ikke lenger oppdatere denne utvidelsen eller gi detaljer før {providerName} fikser det.",

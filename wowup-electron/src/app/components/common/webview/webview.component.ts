@@ -30,7 +30,7 @@ export class WebViewComponent implements OnDestroy, AfterViewInit {
     private _linkService: LinkService,
     private _sessionService: SessionService,
     private _uiMessageService: UiMessageService,
-    private _ngZone: NgZone
+    private _ngZone: NgZone,
   ) {}
 
   public ngAfterViewInit(): void {
@@ -39,7 +39,7 @@ export class WebViewComponent implements OnDestroy, AfterViewInit {
     this._uiMessageService.message$
       .pipe(
         takeUntil(this.destroy$),
-        filter((msg) => msg.action === "ad-frame-reload")
+        filter((msg) => msg.action === "ad-frame-reload"),
       )
       .subscribe(() => {
         if (this._webviewReady) {

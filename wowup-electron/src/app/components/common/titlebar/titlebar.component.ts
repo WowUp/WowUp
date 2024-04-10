@@ -88,7 +88,7 @@ export class TitlebarComponent implements OnDestroy {
     if (this.electronService.isMac) {
       const action = await this.electronService.getUserDefaultSystemPreference<string>(
         "AppleActionOnDoubleClick",
-        "string"
+        "string",
       );
 
       if (action === "Maximize") {

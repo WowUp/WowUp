@@ -245,10 +245,23 @@ body {
   --mdc-filled-text-field-container-color: var(--background-secondary-2);
   --mdc-filled-text-field-focus-label-text-color: #fff;
   --mdc-filled-text-field-caret-color: #fff;
+  --mat-tab-header-active-label-text-color: var(--text-1);
 }
 
 .mat-mdc-option.mdc-list-item--selected:not(.mdc-list-item--disabled) .mdc-list-item__primary-text {
   color: var(--text-3) !important;
+}
+
+.mat-mdc-tab.mdc-tab--active .mdc-tab__text-label {
+  color: var(--text-1) !important;
+}
+
+.mat-mdc-card {
+  background-color: var(--background-secondary-3) !important;
+}
+
+.mat-mdc-slide-toggle-checked .mdc-switch .mdc-switch__handle::before {
+  background-color: transparent !important;
 }
 
 .default-theme {
@@ -537,8 +550,10 @@ body {
 }
 
 .wowup-snackbar {
-  background-color: var(--background-secondary-4) !important;
-
+  .mdc-snackbar__surface {
+    background-color: var(--background-secondary-4) !important;
+  }
+  
   &.text-1 {
     * {
       color: var(--text-1) !important;
@@ -674,8 +689,8 @@ div[class*="light-theme"] {
   }
 }
 
-.mat-icon-button {
-  &.mat-accent {
+.mat-mdc-icon-button {
+  &:not([disabled]).mat-accent {
     svg {
       fill: var(--text-1);
     }

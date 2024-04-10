@@ -45,7 +45,7 @@ describe("AppComponent", () => {
       ["updateForClientType", "updateForAllClientTypes"],
       {
         persistUpdateInformationToWowUpAddon: () => {},
-      }
+      },
     );
 
     addonServiceSpy = jasmine.createSpyObj("AddonService", ["processAutoUpdates", "syncAllClients"], {
@@ -57,7 +57,7 @@ describe("AppComponent", () => {
       {
         getAdRequiredProviders: () => [],
       },
-      {}
+      {},
     );
 
     warcraftInstallationService = jasmine.createSpyObj("WarcraftInstallationService", [""], {
