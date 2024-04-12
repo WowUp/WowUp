@@ -1,0 +1,15 @@
+.wu-btn {
+  font-family: Roboto, sans-serif;
+  border-radius: 4px;
+  border: none;
+  padding: 0.5rem;
+
+  &:hover {
+    cursor: pointer;
+  }
+
+  &.wu-btn-primary {
+    background-color: var(--background-primary);
+    color: var(--text-1);
+  }
+}
