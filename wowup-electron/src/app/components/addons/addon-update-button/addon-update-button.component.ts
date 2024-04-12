@@ -135,7 +135,6 @@ export class AddonUpdateButtonComponent implements OnInit, OnDestroy {
   private onAddonInstalledUpdate = (evt: AddonUpdateEvent) => {
     this.installState = evt.installState;
     this.installProgress = evt.progress;
-
     if (this.installState === AddonInstallState.Error) {
       window.clearTimeout(this._resetTimeout);
       this._resetTimeout = window.setTimeout(() => {

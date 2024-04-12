@@ -175,6 +175,9 @@ export class InstallFromUrlDialogComponent implements OnDestroy {
           case WowClientGroup.WOTLK:
             key = "DIALOGS.INSTALL_FROM_URL.ERROR.WRATH_ASSET_NOT_FOUND";
             break;
+          case WowClientGroup.Cata:
+            key = "DIALOGS.INSTALL_FROM_URL.ERROR.CATACLYSM_ASSET_NOT_FOUND";
+            break;
           case WowClientGroup.Retail:
           default:
         }

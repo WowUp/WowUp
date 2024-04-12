@@ -183,7 +183,7 @@
     "CLIENT_TYPES": {
       "BETA": "Бета Dragonflight",
       "CLASSIC": "Wrath of the Lich King Classic",
-      "CLASSICBETA": "Бета Wrath of the Lich King Classic",
+      "CLASSICBETA": "Cataclysm Classic Beta",
       "CLASSICERA": "World of Warcraft Classic",
       "CLASSICERAPTR": "WoW Classic Era PTR",
       "CLASSICPTR": "PTR (Wrath Classic)",

@@ -1,8 +1,11 @@
-<div class="about-container" [ngClass]="{
+<div
+  class="about-container"
+  [ngClass]="{
     mac: electronService.isMac,
     windows: electronService.isWin,
     linux: electronService.isLinux
-  }">
+  }"
+>
   <!-- <div class="theme-logo">
     <div class="logo-img"></div>
   </div> -->
@@ -21,12 +24,13 @@
         </a>
       </div>
     </div>
-    <div class="changelog-container  header-2 text-1">
+    <div class="changelog-container header-2 text-1">
       <h2>{{ "PAGES.ABOUT.ATTRIBUTIONS_TITLE" | translate }}</h2>
       <ul class="change-log-list">
         <li class="changelog bg-secondary-4 border-primary mat-elevation-z8">
           <p><a appExternalLink href="https://vectorified.com/wow-alliance-icon">Wow Alliance Icon</a></p>
           <p><a appExternalLink href="https://vectorified.com/horde-logo-vector">Horde Logo Vector</a></p>
+          <p><a appExternalLink href="https://blizzard.gamespress.com/world-of-warcraft">Other WoW Art</a></p>
         </li>
       </ul>
     </div>
@@ -36,7 +40,7 @@
       </h2>
       <ul #changelogContainer class="change-log-list">
         <li class="changelog bg-secondary-4 border-primary mat-elevation-z8" *ngFor="let cl of changeLogs">
-          <div class="version selectable  mat-subheading-2">{{ cl.Version }}</div>
+          <div class="version selectable mat-subheading-2">{{ cl.Version }}</div>
           <pre *ngIf="cl.Description" class="description selectable">{{ cl.Description }}</pre>
           <pre *ngIf="cl.changes" class="description selectable">{{ formatChanges(cl) }}</pre>
           <div *ngIf="cl.html" class="selectable" [innerHTML]="cl.html | trustHtml"></div>

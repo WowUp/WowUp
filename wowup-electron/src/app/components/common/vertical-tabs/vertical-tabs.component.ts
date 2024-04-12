@@ -121,7 +121,7 @@ export class VerticalTabsComponent implements OnInit, OnDestroy {
     },
   };
 
-  public tabsTop: Tab[] = [this.myAddonsTab, this.getAddonsTab, this.newsTab];
+  public tabsTop: Tab[] = [this.myAddonsTab, this.getAddonsTab];
 
   public tabsBottom: Tab[] = [this.settingsTab];
 

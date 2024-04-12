@@ -34,7 +34,7 @@ import {
 import { WowInstallation } from "wowup-lib-core";
 import { SourceRemovedAddonError } from "wowup-lib-core";
 
-declare type WagoGameVersion = "retail" | "classic" | "bc" | "wotlk";
+declare type WagoGameVersion = "retail" | "classic" | "bc" | "wotlk" | "cata";
 declare type WagoStability = "stable" | "beta" | "alpha";
 
 interface WagoFingerprintAddon {
@@ -193,14 +193,14 @@ export class WagoAddonProvider extends AddonProvider {
     private _tocService: TocService,
     private _uiMessageService: UiMessageService,
     private _sensitiveStorageService: SensitiveStorageService,
-    _networkService: NetworkService
+    _networkService: NetworkService,
   ) {
     super();
 
     this._circuitBreaker = _networkService.getCircuitBreaker(
       `${this.name}_main`,
       AppConfig.defaultHttpResetTimeoutMs,
-      AppConfig.wagoHttpTimeoutMs
+      AppConfig.wagoHttpTimeoutMs,
     );
 
     this._electronService.on("wago-token-received", this.onWagoTokenReceived);
@@ -233,7 +233,7 @@ export class WagoAddonProvider extends AddonProvider {
         catchError((e) => {
           console.error("[wago] failed to load secret key", e);
           return of(undefined);
-        })
+        }),
       )
       .subscribe();
 
@@ -250,7 +250,7 @@ export class WagoAddonProvider extends AddonProvider {
   public override async scan(
     installation: WowInstallation,
     addonChannelType: AddonChannelType,
-    addonFolders: AddonFolder[]
+    addonFolders: AddonFolder[],
   ): Promise<void> {
     if (!_.some(addonFolders)) {
       return;
@@ -355,8 +355,8 @@ export class WagoAddonProvider extends AddonProvider {
       this._cachingService.transaction(
         `${installation.id}|${url.toString()}`,
         () => this._circuitBreaker.getJson<WagoPopularAddonsResponse>(url, this.getRequestHeaders()),
-        WAGO_FEATURED_ADDONS_CACHE_TIME_SEC
-      )
+        WAGO_FEATURED_ADDONS_CACHE_TIME_SEC,
+      ),
     );
 
     console.debug(`[wago] getFeaturedAddons`, response);
@@ -368,7 +368,7 @@ export class WagoAddonProvider extends AddonProvider {
   public async searchByQuery(
     query: string,
     installation: WowInstallation,
-    channelType?: AddonChannelType
+    channelType?: AddonChannelType,
   ): Promise<AddonSearchResult[]> {
     try {
       await firstValueFrom(this.ensureToken());
@@ -386,8 +386,8 @@ export class WagoAddonProvider extends AddonProvider {
       this._cachingService.transaction(
         `${installation.id}|${query}|${url.toString()}`,
         () => this._circuitBreaker.getJson<WagoSearchResponse>(url, this.getRequestHeaders()),
-        WAGO_SEARCH_CACHE_TIME_SEC
-      )
+        WAGO_SEARCH_CACHE_TIME_SEC,
+      ),
     );
 
     const searchResults = response.data?.map((item) => this.toSearchResult(item)) ?? [];
@@ -473,8 +473,8 @@ export class WagoAddonProvider extends AddonProvider {
       this._cachingService.transaction(
         `${installation.id}|${url.toString()}`,
         () => this._circuitBreaker.postJson<WagoRecentsResponse>(url, request, this.getRequestHeaders()),
-        WAGO_DETAILS_CACHE_TIME_SEC
-      )
+        WAGO_DETAILS_CACHE_TIME_SEC,
+      ),
     );
 
     const searchResults: AddonSearchResult[] = [];
@@ -484,7 +484,7 @@ export class WagoAddonProvider extends AddonProvider {
 
     const missingAddonIds = _.filter(
       addonIds,
-      (addonId) => _.find(searchResults, (sr) => sr.externalId === addonId) === undefined
+      (addonId) => _.find(searchResults, (sr) => sr.externalId === addonId) === undefined,
     );
 
     const deletedErrors = _.map(missingAddonIds, (addonId) => new SourceRemovedAddonError(addonId, undefined));
@@ -503,8 +503,7 @@ export class WagoAddonProvider extends AddonProvider {
     });
   }
 
-  private getToken(): string
-  {
+  private getToken(): string {
     return this.isValidToken(this._wagoSecret) ? this._wagoSecret : this._apiTokenSrc.value;
   }
 
@@ -522,11 +521,11 @@ export class WagoAddonProvider extends AddonProvider {
         .transaction(
           url,
           () => this._circuitBreaker.getJson<WagoAddon>(url, this.getRequestHeaders()),
-          WAGO_DETAILS_CACHE_TIME_SEC
+          WAGO_DETAILS_CACHE_TIME_SEC,
         )
         .finally(() => {
           this._requestQueue.delete(url);
-        })
+        }),
     );
 
     this._requestQueue.set(url, prom);
@@ -539,7 +538,7 @@ export class WagoAddonProvider extends AddonProvider {
     await firstValueFrom(this.ensureToken());
 
     return await this.sendRequest(() =>
-      this._circuitBreaker.postJson<WagoScanResponse>(url, request, this.getRequestHeaders())
+      this._circuitBreaker.postJson<WagoScanResponse>(url, request, this.getRequestHeaders()),
     );
   }
 
@@ -619,7 +618,7 @@ export class WagoAddonProvider extends AddonProvider {
 
   private toSearchResultFile(
     release: WagoSearchResponseRelease | WagoRelease | WagoScanRelease,
-    stability: WagoStability
+    stability: WagoStability,
   ): AddonSearchResultFile {
     if (release === undefined) {
       throw new Error("toSearchResultFile failed, undefined release");
@@ -639,7 +638,7 @@ export class WagoAddonProvider extends AddonProvider {
   private toAddon(
     installation: WowInstallation,
     addonChannelType: AddonChannelType,
-    wagoScanAddon: WagoScanAddon
+    wagoScanAddon: WagoScanAddon,
   ): Addon {
     // Grab a ref to the recent release matching the id of the matched release, the objects do not appear to match.
     // const recentRelease = Object.values(wagoScanAddon.recent_releases).find(
@@ -758,6 +757,8 @@ export class WagoAddonProvider extends AddonProvider {
         return "retail";
       case WowClientGroup.WOTLK:
         return "wotlk";
+      case WowClientGroup.Cata:
+        return "cata";
       default:
         throw new Error(`[wago] Un-handled client type: ${clientType}`);
     }
@@ -808,7 +809,7 @@ export class WagoAddonProvider extends AddonProvider {
       catchError(() => {
         console.error("[wago] no token received after timeout");
         return of("");
-      })
+      }),
     );
   }
 }

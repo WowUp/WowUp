@@ -72,7 +72,7 @@ export class TocService {
   public async getAllTocs(
     baseDir: string,
     installedFolders: string[],
-    clientType: WowClientType
+    clientType: WowClientType,
   ): Promise<tocModels.Toc[]> {
     const tocs: tocModels.Toc[] = [];
 
@@ -84,7 +84,7 @@ export class TocService {
         tocFiles.map((tf) => {
           const tocPath = path.join(dirPath, tf);
           return this.parse(tocPath);
-        })
+        }),
       );
 
       const tf = this.getTocForGameType2(dir, allTocs, clientType);
@@ -116,8 +116,10 @@ export class TocService {
         break;
       case WowClientType.Classic:
       case WowClientType.ClassicPtr:
-      case WowClientType.ClassicBeta:
         matchedToc = tocFileNames.find((tfn) => /.*[-_](wrath|wotlkc)\.toc$/gi.test(tfn)) || "";
+        break;
+      case WowClientType.ClassicBeta:
+        matchedToc = tocFileNames.find((tfn) => /.*[-_](cata)\.toc$/gi.test(tfn)) || "";
         break;
       default:
         break;
@@ -125,7 +127,7 @@ export class TocService {
 
     return (
       matchedToc ||
-      tocFileNames.find((tfn) => /.*(?<![-_](classic|vanilla|bcc|tbc|mainline|wrath|wotlkc))\.toc$/gi.test(tfn)) ||
+      tocFileNames.find((tfn) => /.*(?<![-_](classic|vanilla|bcc|tbc|mainline|wrath|wotlkc|cata))\.toc$/gi.test(tfn)) ||
       ""
     );
   }
@@ -133,7 +135,7 @@ export class TocService {
   public getTocForGameType2(
     folderName: string,
     tocs: tocModels.Toc[],
-    clientType: WowClientType
+    clientType: WowClientType,
   ): tocModels.Toc | undefined {
     let matchedToc = "";
 

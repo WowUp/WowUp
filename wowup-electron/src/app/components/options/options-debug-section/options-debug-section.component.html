@@ -2,74 +2,59 @@
   <h2>
     {{ "PAGES.OPTIONS.DEBUG.TITLE" | translate }}
   </h2>
-  <!-- SHOW LOG FILES -->
-  <div class="section">
-    <div class="row align-items-center">
-      <div class="flex-grow-1">
-        <div>{{ "PAGES.OPTIONS.DEBUG.LOG_FILES_LABEL" | translate }}</div>
-        <small class="text-2">{{ "PAGES.OPTIONS.DEBUG.LOG_FILES_DESCRIPTION" | translate }}</small>
-      </div>
-      <div>
-        <button id="show-log-btn" mat-flat-button color="primary" (click)="onShowLogs()">
-          {{ "PAGES.OPTIONS.DEBUG.LOG_FILES_BUTTON" | translate }}
-        </button>
-      </div>
+  <div class="actions">
+    <!-- SHOW LOG FILES -->
+    <div>
+      <div>{{ "PAGES.OPTIONS.DEBUG.LOG_FILES_LABEL" | translate }}</div>
+      <small class="text-2">{{ "PAGES.OPTIONS.DEBUG.LOG_FILES_DESCRIPTION" | translate }}</small>
     </div>
-  </div>
-  <!-- SHOW CONFIG FILES -->
-  <div class="section">
-    <div class="row align-items-center">
-      <div class="flex-grow-1">
-        <div>{{ "PAGES.OPTIONS.DEBUG.CONFIG_FILES_LABEL" | translate }}</div>
-        <small class="text-2">{{ "PAGES.OPTIONS.DEBUG.CONFIG_FILES_DESCRIPTION" | translate }}</small>
-      </div>
-      <div>
-        <button id="show-config-btn" mat-flat-button color="primary" (click)="onShowConfig()">
-          {{ "PAGES.OPTIONS.DEBUG.CONFIG_FILES_BUTTON" | translate }}
-        </button>
-      </div>
+    <div>
+      <button id="show-log-btn" class="wu-btn wu-btn-primary w-100" (click)="onShowLogs()">
+        {{ "PAGES.OPTIONS.DEBUG.LOG_FILES_BUTTON" | translate }}
+      </button>
     </div>
-  </div>
-  <!-- DUMP DEBUG DATA -->
-  <div class="section">
-    <div class="row align-items-center">
-      <div class="flex-grow-1">
-        <div>{{ "PAGES.OPTIONS.DEBUG.DEBUG_DATA_LABEL" | translate }}</div>
-        <small class="text-2">{{ "PAGES.OPTIONS.DEBUG.DEBUG_DATA_DESCRIPTION" | translate }}</small>
-      </div>
-      <div>
-        <button
-          id="dump-debug-btn"
-          mat-flat-button
-          color="primary"
-          (click)="onLogDebugData()"
-          [disabled]="dumpingDebugData === true"
+    <!-- SHOW CONFIG FILES -->
+    <div>
+      <div>{{ "PAGES.OPTIONS.DEBUG.CONFIG_FILES_LABEL" | translate }}</div>
+      <small class="text-2">{{ "PAGES.OPTIONS.DEBUG.CONFIG_FILES_DESCRIPTION" | translate }}</small>
+    </div>
+    <div>
+      <button id="show-config-btn" class="wu-btn wu-btn-primary w-100" (click)="onShowConfig()">
+        {{ "PAGES.OPTIONS.DEBUG.CONFIG_FILES_BUTTON" | translate }}
+      </button>
+    </div>
+    <!-- DUMP DEBUG DATA -->
+    <div>
+      <div>{{ "PAGES.OPTIONS.DEBUG.DEBUG_DATA_LABEL" | translate }}</div>
+      <small class="text-2">{{ "PAGES.OPTIONS.DEBUG.DEBUG_DATA_DESCRIPTION" | translate }}</small>
+    </div>
+    <div>
+      <button
+        id="dump-debug-btn"
+        class="wu-btn wu-btn-primary w-100"
+        (click)="onLogDebugData()"
+        [disabled]="dumpingDebugData === true"
+      >
+        <span *ngIf="dumpingDebugData === false">{{ "PAGES.OPTIONS.DEBUG.DEBUG_DATA_BUTTON" | translate }}</span>
+        <div
+          *ngIf="dumpingDebugData === true"
+          [style.height]="'37px'"
+          [style.width]="'100px'"
+          class="row align-items-center justify-content-center"
         >
-          <span *ngIf="dumpingDebugData === false">{{ "PAGES.OPTIONS.DEBUG.DEBUG_DATA_BUTTON" | translate }}</span>
-          <div
-            *ngIf="dumpingDebugData === true"
-            [style.height]="'37px'"
-            [style.width]="'100px'"
-            class="row align-items-center justify-content-center"
-          >
-            <mat-spinner [diameter]="30" color="warn" mode="indeterminate"> </mat-spinner>
-          </div>
-        </button>
-      </div>
+          <mat-spinner [diameter]="30" color="warn" mode="indeterminate"> </mat-spinner>
+        </div>
+      </button>
     </div>
-  </div>
-
-  <div class="section">
-    <div class="row align-items-center">
-      <div class="flex-grow-1">
-        <div>{{ "Debug ad frame" | translate }}</div>
-        <small class="text-2">{{ "Show the dev tools for the ad frame" | translate }}</small>
-      </div>
-      <div>
-        <button mat-flat-button color="primary" (click)="onDebugAdFrame()">
-          {{ "Open Dev Tools" | translate }}
-        </button>
-      </div>
+    <!-- DEV TOOLS -->
+    <div>
+      <div>{{ "Debug ad frame" | translate }}</div>
+      <small class="text-2">{{ "Show the dev tools for the ad frame" | translate }}</small>
+    </div>
+    <div>
+      <button class="wu-btn wu-btn-primary w-100" (click)="onDebugAdFrame()">
+        {{ "Open Dev Tools" | translate }}
+      </button>
     </div>
   </div>
 </div>

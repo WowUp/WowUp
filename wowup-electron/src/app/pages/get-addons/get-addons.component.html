@@ -55,8 +55,7 @@
       </div>
       <div class="button-container">
         <button
-          mat-flat-button
-          color="primary"
+          class="wu-btn wu-btn-primary"
           [matTooltip]="'PAGES.GET_ADDONS.REFRESH_TOOLTIP' | translate"
           [disabled]="enableControls$ | async | invertBool"
           (click)="onRefresh()"
@@ -64,8 +63,7 @@
           {{ (query ? "PAGES.GET_ADDONS.SEARCH_LABEL" : "PAGES.GET_ADDONS.REFRESH_BUTTON") | translate }}
         </button>
         <button
-          mat-flat-button
-          color="primary"
+          class="wu-btn wu-btn-primary"
           [matTooltip]="'PAGES.GET_ADDONS.INSTALL_FROM_URL_TOOLTIP' | translate"
           [disabled]="enableControls$ | async | invertBool"
           (click)="onInstallFromUrl()"
@@ -73,8 +71,7 @@
           {{ "PAGES.GET_ADDONS.INSTALL_FROM_URL_BUTTON" | translate }}
         </button>
         <button
-          mat-flat-button
-          color="primary"
+          class="wu-btn wu-btn-primary"
           [matTooltip]="'PAGES.GET_ADDONS.ADDON_CATEGORIES_TOOLTIP' | translate"
           [disabled]="enableControls$ | async | invertBool"
           (click)="drawer.toggle()"
@@ -100,7 +97,7 @@
         </button>
       </mat-action-list>
     </mat-drawer>
-    <mat-drawer-content class="bg-secondary">
+    <mat-drawer-content>
       <div class="spinner-container flex-grow-1" style="height: 100%" *ngIf="(showTable$ | async) === false">
         <app-progress-spinner> </app-progress-spinner>
       </div>

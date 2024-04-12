@@ -39,8 +39,9 @@ export function getWowClientGroup(clientType: string | WowClientType): WowClient
       return WowClientGroup.Classic;
     case WowClientType.Classic:
     case WowClientType.ClassicPtr:
-    case WowClientType.ClassicBeta:
       return WowClientGroup.WOTLK;
+    case WowClientType.ClassicBeta:
+      return WowClientGroup.Cata;
     default:
       throw new Error(`unsupported client type: ${clientType}`);
   }

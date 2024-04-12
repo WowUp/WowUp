@@ -28,7 +28,7 @@ import {
 import { GitHubAsset, GitHubRelease, GitHubRepository, WowInstallation } from "wowup-lib-core";
 import { SourceRemovedAddonError } from "wowup-lib-core";
 
-type MetadataFlavor = "bcc" | "classic" | "mainline" | "wrath";
+type MetadataFlavor = "bcc" | "classic" | "mainline" | "wrath" | "cata";
 
 interface LatestValidAsset {
   matchedAsset: GitHubAsset | undefined;
@@ -76,7 +76,10 @@ export class GitHubAddonProvider extends AddonProvider {
   public readonly allowReScan = false;
   public enabled = true;
 
-  public constructor(private _httpClient: HttpClient, private _sensitiveStorageService: SensitiveStorageService) {
+  public constructor(
+    private _httpClient: HttpClient,
+    private _sensitiveStorageService: SensitiveStorageService,
+  ) {
     super();
   }
 
@@ -98,14 +101,14 @@ export class GitHubAddonProvider extends AddonProvider {
     const taskResults = await firstValueFrom(
       from(addonIds).pipe(
         mergeMap((addonId) => from(this.handleGetAllItem(addonId, installation)), 3),
-        toArray()
-      )
+        toArray(),
+      ),
     );
 
     const result: GetAllResult = {
       errors: _.concat(taskResults.map((tr) => tr.error).filter((e): e is Error => e !== undefined)),
       searchResults: _.concat(
-        taskResults.map((tr) => tr.searchResult).filter((sr): sr is AddonSearchResult => sr !== undefined)
+        taskResults.map((tr) => tr.searchResult).filter((sr): sr is AddonSearchResult => sr !== undefined),
       ),
     };
 
@@ -114,7 +117,7 @@ export class GitHubAddonProvider extends AddonProvider {
 
   private async handleGetAllItem(
     addonId: string,
-    installation: WowInstallation
+    installation: WowInstallation,
   ): Promise<{ searchResult: AddonSearchResult | undefined; error: Error | undefined }> {
     const result: { searchResult: AddonSearchResult | undefined; error: Error | undefined } = {
       searchResult: undefined,
@@ -215,7 +218,7 @@ export class GitHubAddonProvider extends AddonProvider {
 
   public override async getById(
     addonId: string,
-    installation: WowInstallation
+    installation: WowInstallation,
   ): Promise<AddonSearchResult | undefined> {
     return await this.getByIdAsync(addonId, installation);
   }
@@ -350,7 +353,7 @@ export class GitHubAddonProvider extends AddonProvider {
   private getValidAssetFromMetadata(
     release: GitHubRelease,
     clientType: WowClientType,
-    releaseMeta: ReleaseMeta
+    releaseMeta: ReleaseMeta,
   ): GitHubAsset | undefined {
     // map the client type to the flavor we want
     const targetFlavor = this.getMetadataTargetFlavor(clientType);
@@ -358,7 +361,7 @@ export class GitHubAddonProvider extends AddonProvider {
 
     // see if we can find that flavor in the metadata
     const targetMetaRelease = releaseMeta.releases.find(
-      (release) => release.nolib === false && release.metadata.findIndex((m) => m.flavor === targetFlavor) !== -1
+      (release) => release.nolib === false && release.metadata.findIndex((m) => m.flavor === targetFlavor) !== -1,
     );
     if (!targetMetaRelease) {
       console.log(`No matching metadata file found for target`);
@@ -374,9 +377,10 @@ export class GitHubAddonProvider extends AddonProvider {
   /** Return the BigWigs metadata flavor for a given client type */
   private getMetadataTargetFlavor(clientType: WowClientType): MetadataFlavor {
     switch (clientType) {
+      case WowClientType.ClassicBeta:
+        return "cata";
       case WowClientType.Classic:
       case WowClientType.ClassicPtr:
-      case WowClientType.ClassicBeta:
         return "wrath";
       case WowClientType.ClassicEra:
       case WowClientType.ClassicEraPtr:
@@ -394,7 +398,7 @@ export class GitHubAddonProvider extends AddonProvider {
   private getValidAsset(release: GitHubRelease, clientType: WowClientType): GitHubAsset | undefined {
     const sortedAssets = _.filter(
       release.assets,
-      (asset) => this.isNotNoLib(asset) && this.isValidContentType(asset) && this.isValidClientType(clientType, asset)
+      (asset) => this.isNotNoLib(asset) && this.isValidContentType(asset) && this.isValidClientType(clientType, asset),
     );
 
     return _.first(sortedAssets);
@@ -433,6 +437,7 @@ export class GitHubAddonProvider extends AddonProvider {
     const isClassic = this.isClassicAsset(asset);
     const isBurningCrusade = this.isBurningCrusadeAsset(asset);
     const isWotlk = this.isWotlk(asset);
+    const isCataclysm = this.isCataclysm(asset);
 
     switch (clientType) {
       case WowClientType.Retail:
@@ -445,8 +450,9 @@ export class GitHubAddonProvider extends AddonProvider {
         return isClassic;
       case WowClientType.Classic:
       case WowClientType.ClassicPtr:
-      case WowClientType.ClassicBeta:
         return isWotlk;
+      case WowClientType.ClassicBeta:
+        return isCataclysm;
       default:
         return false;
     }
@@ -462,6 +468,10 @@ export class GitHubAddonProvider extends AddonProvider {
 
   private isWotlk(asset: GitHubAsset): boolean {
     return /[-_](wrath|wotlkc)\.zip$/i.test(asset.name);
+  }
+
+  private isCataclysm(asset: GitHubAsset): boolean {
+    return /[-_](cata)\.zip$/i.test(asset.name);
   }
 
   private getAddonName(addonId: string): string {

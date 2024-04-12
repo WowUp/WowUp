@@ -45,7 +45,6 @@
   margin-right: 0 !important;
   border-top-right-radius: 0;
   border-bottom-right-radius: 0;
-  padding: 0 16px;
 }
 .menu-button-divider {
   width: 1px;
@@ -55,13 +54,13 @@
   margin-right: 0.5em;
   border-top-left-radius: 0;
   border-bottom-left-radius: 0;
-  padding: 0 10px;
   width: auto;
   min-width: auto;
 
   .mat-icon {
     width: 12px;
-    padding-bottom: 3px;
+    height: 1rem;
+    // padding-bottom: 3px;
   }
 }
 
