@@ -130,6 +130,7 @@
     "electron-notarize": "1.2.2",
     "electron-reload": "2.0.0-alpha.1",
     "eslint": "^8.57.0",
+    "eslint-config-prettier": "9.1.0",
     "eslint-plugin-prefer-arrow": "1.2.3",
     "flat": "5.0.2",
     "gulp": "4.0.2",
