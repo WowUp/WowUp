@@ -17,10 +17,9 @@
           <mat-label>{{ "PAGES.MY_ADDONS.FILTER_LABEL" | translate }}</mat-label>
           <input #addonFilter matInput />
           <button
-            color="accent"
+            class="wu-btn wu-btn-icon"
             *ngIf="filterInput$ | async"
             matSuffix
-            mat-icon-button
             aria-label="Clear"
             (click)="onClickClearFilter()"
           >
@@ -71,8 +70,7 @@
         </button>
         <!-- MORE ACTIONS -->
         <button
-          mat-icon-button
-          color="accent"
+          class="wu-btn wu-btn-flat wu-btn-icon"
           [matMenuTriggerFor]="pageActionMenu"
           [disabled]="enableControls$ | async | invertBool"
         >

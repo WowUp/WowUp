@@ -19,9 +19,7 @@
         }}
       </h4>
       <button
-        mat-button
-        color="accent"
-        mat-icon-button
+        class="wu-btn wu-btn-icon"
         aria-label="Clear Category"
         [matTooltip]="'PAGES.GET_ADDONS.RESET_CATEGORY_TOOLTIP' | translate"
         (click)="resetCategory()"
@@ -41,11 +39,9 @@
             (keyup.enter)="onSearch()"
           />
           <button
-            mat-button
-            color="accent"
+            class="wu-btn wu-btn-flat wu-btn-icon"
             *ngIf="query"
             matSuffix
-            mat-icon-button
             aria-label="Clear"
             (click)="onClearSearch()"
           >

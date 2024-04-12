@@ -258,26 +258,6 @@ mat-icon.success-icon {
   }
 }
 
-.mat-button,
-.mat-stroked-button,
-.mat-raised-button,
-.mat-flat-button {
-  &:hover {
-    cursor: default !important;
-  }
-
-  &:not(.mat-button-disabled) {
-    &:hover {
-      cursor: pointer !important;
-    }
-  }
-
-  // Prevent clicking thru the button via the text
-  .mat-button-wrapper {
-    pointer-events: none;
-  }
-}
-
 .window-appicon {
   background-size: 30px !important;
   padding-left: 12px !important;

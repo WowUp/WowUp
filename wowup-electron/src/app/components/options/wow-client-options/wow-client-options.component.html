@@ -62,8 +62,7 @@
   <mat-card-actions class="row">
     <button
       *ngIf="(editMode$ | async) === true"
-      mat-button
-      color="warn"
+      class="wu-btn wu-btn-flat wu-btn-warning"
       [disabled]="(isBusy$ | async) === true"
       (click)="onClickRemove()"
     >
@@ -71,7 +70,7 @@
     </button>
     <!-- OPEN FOLDER BUTTON -->
     <div *ngIf="(editMode$ | async) === false">
-      <button mat-button color="primary" (click)="onClickOpenFolder()">
+      <button class="wu-btn wu-btn-flat" (click)="onClickOpenFolder()">
         {{ "PAGES.OPTIONS.WOW.OPEN_FOLDER_BUTTON" | translate }}
       </button>
     </div>
@@ -80,7 +79,7 @@
     <!-- NOT EDIT MODE -->
     <div *ngIf="(editMode$ | async) === false">
       <button
-        mat-button
+        class="wu-btn wu-btn-flat wu-btn-icon mr-2"
         *ngIf="installationIndex > 0"
         [disabled]="(isBusy$ | async) === true"
         [matTooltip]="'PAGES.OPTIONS.WOW.MOVE_UP_BUTTON' | translate"
@@ -89,7 +88,7 @@
         <mat-icon svgIcon="fas:angle-up"> </mat-icon>
       </button>
       <button
-        mat-button
+        class="wu-btn wu-btn-flat wu-btn-icon mr-2"
         *ngIf="installationIndex < (installationCount$ | async) - 1"
         [disabled]="(isBusy$ | async) === true"
         [matTooltip]="'PAGES.OPTIONS.WOW.MOVE_DOWN_BUTTON' | translate"
@@ -100,17 +99,17 @@
     </div>
     <!-- EDIT MODE -->
     <div *ngIf="(editMode$ | async) === true">
-      <button mat-button [disabled]="(isBusy$ | async) === true" (click)="onClickCancel()">
+      <button class="wu-btn wu-btn-flat mr-2" [disabled]="(isBusy$ | async) === true" (click)="onClickCancel()">
         {{ "PAGES.OPTIONS.WOW.CANCEL_WOW_DIRECTORY_SELECT_BUTTON" | translate }}
       </button>
-      <button mat-button color="primary" [disabled]="(isBusy$ | async) === true" (click)="onClickSave()">
+      <button class="wu-btn wu-btn-primary" [disabled]="(isBusy$ | async) === true" (click)="onClickSave()">
         {{ "PAGES.OPTIONS.WOW.SAVE_WOW_DIRECTORY_SELECT_BUTTON" | translate }}
       </button>
     </div>
 
     <!-- EDIT BUTTON -->
     <div *ngIf="(editMode$ | async) === false">
-      <button mat-button color="primary" (click)="onClickEdit()">
+      <button class="wu-btn wu-btn-primary" color="primary" (click)="onClickEdit()">
         {{ "PAGES.OPTIONS.WOW.EDIT_WOW_DIRECTORY_SELECT_BUTTON" | translate }}
       </button>
     </div>

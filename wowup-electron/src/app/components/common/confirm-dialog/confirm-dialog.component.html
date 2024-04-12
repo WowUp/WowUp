@@ -4,10 +4,10 @@
 </div>
 <div mat-dialog-actions class="dialog-buttons">
   <div class="btn-wrapper">
-    <button mat-button [mat-dialog-close]="false">
+    <button class="wu-btn wu-btn-flat" [mat-dialog-close]="false">
       {{ negativeKey | translate }}
     </button>
-    <button mat-raised-button [mat-dialog-close]="true" cdkFocusInitial color="primary">
+    <button class="wu-btn wu-btn-primary" [mat-dialog-close]="true" cdkFocusInitial>
       {{ positiveKey | translate }}
     </button>
   </div>

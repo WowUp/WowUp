@@ -1,15 +1,62 @@
 .wu-btn {
   font-family: Roboto, sans-serif;
+  font-size: 0.85rem;
   border-radius: 4px;
   border: none;
   padding: 0.5rem;
+  font-weight: 400;
+  text-decoration: none;
+  color: var(--text-1);
+  // display: flex;
+  // align-items: center;
+  // justify-content: center;
 
   &:hover {
     cursor: pointer;
   }
 
+  > .mat-icon {
+    height: 16px;
+  }
+
+  &.wu-btn-icon {
+    height: 32px;
+    padding: 4px 0.3rem 0 0.3rem;
+  }
+
   &.wu-btn-primary {
     background-color: var(--background-primary);
     color: var(--text-1);
+
+    &:hover {
+      background-color: var(--background-primary-2);
+    }
+
+    &[disabled] {
+      background-color: grey;
+      cursor: not-allowed;
+    }
+
+    &.wu-btn-flat {
+      color: var(--background-primary);
+    }
+  }
+
+  &.wu-btn-warning {
+    color: #f44336;
+
+    &[disabled] {
+      background-color: grey;
+      cursor: not-allowed;
+    }
+  }
+
+  &.wu-btn-flat {
+    background-color: transparent;
+    border: 1px solid grey;
+
+    &:hover {
+      background-color: rgba(0, 0, 0, 0.2);
+    }
   }
 }

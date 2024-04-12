@@ -1,13 +1,21 @@
 <div class="row">
-  <app-addon-update-button [hidden]="hasWarning === true || showStatusText === true" [listItem]="listItem"
-    [extInstallState]="installState" [value]="installProgress">
+  <app-addon-update-button
+    [hidden]="hasWarning === true || showStatusText === true"
+    [listItem]="listItem"
+    [extInstallState]="installState"
+    [value]="installProgress"
+  >
   </app-addon-update-button>
-  <div *ngIf="hasWarning === false && showStatusText === true" class="status-text"
-    [ngClass]="{ ignored: listItem.addon?.isIgnored }">
+  <div
+    *ngIf="hasWarning === false && showStatusText === true"
+    class="status-text"
+    [ngClass]="{ ignored: listItem.addon?.isIgnored }"
+  >
     {{ statusText | translate }}
   </div>
   <div *ngIf="hasWarning">
-    <button mat-stroked-button color="warn" (click)="onWarningButton()">{{ 'COMMON.ADDON_STATE.WARNING' | translate
-      }}</button>
+    <button class="wu-btn wu-btn-flat wu-btn-warning" (click)="onWarningButton()">
+      {{ "COMMON.ADDON_STATE.WARNING" | translate }}
+    </button>
   </div>
 </div>

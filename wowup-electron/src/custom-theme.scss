@@ -559,7 +559,7 @@ body {
   .mdc-snackbar__surface {
     background-color: var(--background-secondary-4) !important;
   }
-  
+
   &.text-1 {
     * {
       color: var(--text-1) !important;
@@ -671,23 +671,6 @@ div[class*="light-theme"] {
 .mat-card {
   background-color: var(--background-secondary-3);
 }
-
-// .mat-button {
-//   color: var(--control-color);
-//   background: transparent;
-// }
-
-// .mat-stroked-button {
-//   background-color: transparent;
-//   color: var(--text-1);
-// }
-
-// .mat-flat-button {
-//   &.mat-primary {
-//     background-color: var(--background-primary) !important;
-//     color: var(--text-1) !important;
-//   }
-// }
 
 .mat-button {
   &.mat-primary {

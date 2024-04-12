@@ -1,4 +1,4 @@
-<a *ngIf="size === 'large'" mat-raised-button color="primary" class="funding-button large" appExternalLink
+<a *ngIf="size === 'large'" class="wu-btn wu-btn-primary" class="funding-button large" appExternalLink
   [matTooltip]="tooltipKey | translate:{platform:fundingName}" [href]="funding.url">
   <mat-icon *ngIf="isFontIcon === true" [svgIcon]="iconSrc"></mat-icon>
   <img *ngIf="isFontIcon === false" class="funding-icon" [src]="iconSrc" />
