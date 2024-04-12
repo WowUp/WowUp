@@ -1,5 +1,5 @@
 import { Component, Inject, OnInit } from "@angular/core";
-import { MAT_LEGACY_DIALOG_DATA as MAT_DIALOG_DATA, MatLegacyDialogRef as MatDialogRef } from "@angular/material/legacy-dialog";
+import { MAT_DIALOG_DATA, MatDialogRef } from "@angular/material/dialog";
 import { from } from "rxjs";
 import { first, map } from "rxjs/operators";
 
@@ -31,7 +31,7 @@ export class ExternalUrlConfirmationDialogComponent implements OnInit {
   public constructor(
     public dialogRef: MatDialogRef<ExternalUrlConfirmationDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public data: DialogData,
-    private _wowupService: WowUpService
+    private _wowupService: WowUpService,
   ) {
     const url = new URL(data.url);
     this.domain = url.hostname;
@@ -49,7 +49,7 @@ export class ExternalUrlConfirmationDialogComponent implements OnInit {
             this._trustedDomains = trustedDomains;
 
             this.trustDomain = this._trustedDomains.includes(this.domain);
-          })
+          }),
         )
         .subscribe();
     }

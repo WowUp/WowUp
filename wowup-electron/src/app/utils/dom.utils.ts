@@ -1,13 +1,10 @@
 export function formatDynamicLinks(container: HTMLElement, onClick: (element: HTMLAnchorElement) => boolean): void {
   if (!container) {
-
     return;
   }
 
   const aTags = container.querySelectorAll("a");
   const tagArr = Array.from(aTags);
-
-
   for (const tag of tagArr) {
     if (tag.getAttribute("clk")) {
       continue;

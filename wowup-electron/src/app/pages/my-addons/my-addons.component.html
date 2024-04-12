@@ -17,7 +17,6 @@
           <mat-label>{{ "PAGES.MY_ADDONS.FILTER_LABEL" | translate }}</mat-label>
           <input #addonFilter matInput />
           <button
-            mat-button
             color="accent"
             *ngIf="filterInput$ | async"
             matSuffix
@@ -50,7 +49,7 @@
             [matMenuTriggerFor]="updateAllMenu"
             [disabled]="enableUpdateExtra$ | async | invertBool"
           >
-            <mat-icon svgIcon="fas:caret-down"></mat-icon>
+            <mat-icon class="m-0" svgIcon="fas:caret-down"></mat-icon>
           </button>
         </div>
         <mat-menu #updateAllMenu="matMenu" xPosition="before">
@@ -188,14 +187,8 @@
       [href]="listItem.addon.externalUrl"
       (click)="closeContextMenu()"
     >
-      <div class="row align-items-center no-pointer-events">
-        <div class="flex-grow-1 mr-3">
-          {{ "DIALOGS.ADDON_DETAILS.VIEW_ON_PROVIDER_PREFIX" | translate }} {{ listItem.addon.providerName }}
-        </div>
-        <div>
-          <mat-icon class="open-in-browser-icon" svgIcon="fas:up-right-from-square"></mat-icon>
-        </div>
-      </div>
+      <mat-icon class="open-in-browser-icon" svgIcon="fas:up-right-from-square"></mat-icon>
+      <span> {{ "DIALOGS.ADDON_DETAILS.VIEW_ON_PROVIDER_PREFIX" | translate }} {{ listItem.addon.providerName }} </span>
     </a>
     <!-- REINSTALL -->
     <button *ngIf="canReInstall(listItem)" mat-menu-item (click)="onReInstallAddon(listItem)">

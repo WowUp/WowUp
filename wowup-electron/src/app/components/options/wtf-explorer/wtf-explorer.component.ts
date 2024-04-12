@@ -11,7 +11,7 @@ import { removeExtension } from "../../../utils/string.utils";
 import { WarcraftInstallationService } from "../../../services/warcraft/warcraft-installation.service";
 import { formatSize } from "../../../utils/number.utils";
 import { AddonFolder } from "wowup-lib-core";
-import { WowInstallation } from "wowup-lib-core/lib/models";
+import { WowInstallation } from "wowup-lib-core";
 import { FlatTreeControl } from "@angular/cdk/tree";
 import { MatTreeFlatDataSource, MatTreeFlattener } from "@angular/material/tree";
 

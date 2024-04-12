@@ -346,8 +346,8 @@ export class ElectronService {
     window.wowup.rendererOn(channel, listener);
   }
 
-  public off(event: string | symbol, listener: (...args: any[]) => void): void {
-    window.wowup.rendererOff(event, listener);
+  public off(channel: string, listener: (...args: any[]) => void): void {
+    window.wowup.rendererOff(channel, listener);
   }
 
   public send(channel: string, ...args: any[]): void {

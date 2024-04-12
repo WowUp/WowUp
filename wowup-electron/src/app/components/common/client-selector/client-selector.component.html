@@ -1,7 +1,7 @@
 <div>
   <mat-form-field>
     <mat-label>
-      <div class="d-flex align-items-center">
+      <div class="d-flex align-items-center w-100">
         <div class="flex-grow-1" translate>PAGES.MY_ADDONS.CLIENT_TYPE_SELECT_LABEL</div>
         <div
           *ngIf="updates && (totalAvailableUpdateCt$ | async) > 0"
@@ -15,6 +15,7 @@
     </mat-label>
     <mat-select
       class="select pointer"
+      [panelWidth]="''"
       [value]="selectedWowInstallationId$ | async"
       (selectionChange)="onClientChange($event)"
       [disabled]="enableControls$ | async | invertBool"

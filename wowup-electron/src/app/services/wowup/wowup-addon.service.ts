@@ -15,7 +15,7 @@ import { AddonService } from "../addons/addon.service";
 import { FileService } from "../files/file.service";
 import { WarcraftInstallationService } from "../warcraft/warcraft-installation.service";
 import { Addon, AddonChannelType } from "wowup-lib-core";
-import { WowInstallation } from "wowup-lib-core/lib/models";
+import { WowInstallation } from "wowup-lib-core";
 import { WarcraftService } from "../warcraft/warcraft.service";
 
 enum WowUpAddonFileType {

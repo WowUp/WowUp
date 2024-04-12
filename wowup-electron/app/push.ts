@@ -1,4 +1,4 @@
-import * as log from "electron-log";
+import * as log from "electron-log/main";
 import { EventEmitter } from "events";
 
 export const PUSH_NOTIFICATION_EVENT = "push-notification";

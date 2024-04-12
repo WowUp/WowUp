@@ -1,7 +1,7 @@
 import * as path from "path";
 import { WowClientType } from "wowup-lib-core";
-import { InstalledProduct } from "wowup-lib-core/lib/models";
-import { WOW_CLASSIC_ERA_FOLDER, WOW_CLASSIC_ERA_PTR_FOLDER } from "../../../common/constants";
+import { InstalledProduct } from "wowup-lib-core";
+import { WOW_CLASSIC_ERA_FOLDER, WOW_CLASSIC_ERA_PTR_FOLDER, WOW_RETAIL_XPTR_FOLDER } from "../../../common/constants";
 import { ElectronService } from "../electron/electron.service";
 import { FileService } from "../files/file.service";
 import { WarcraftServiceImpl } from "./warcraft.service.impl";
@@ -129,6 +129,7 @@ export class WarcraftServiceLinux implements WarcraftServiceImpl {
       case WowClientType.Classic:
         return WOW_CLASSIC_NAME;
       case WowClientType.RetailPtr:
+      case WowClientType.RetailXPtr:
         return WOW_RETAIL_PTR_NAME;
       case WowClientType.ClassicPtr:
       case WowClientType.ClassicEraPtr:
@@ -154,7 +155,11 @@ export class WarcraftServiceLinux implements WarcraftServiceImpl {
           return WowClientType.Classic;
         }
       case WOW_RETAIL_PTR_NAME:
-        return WowClientType.RetailPtr;
+        if (binaryPath.toLowerCase().includes(WOW_RETAIL_XPTR_FOLDER)) {
+          return WowClientType.RetailXPtr;
+        } else {
+          return WowClientType.RetailPtr;
+        }
       case WOW_CLASSIC_PTR_NAME:
         if (binaryPath.toLowerCase().includes(WOW_CLASSIC_ERA_PTR_FOLDER)) {
           return WowClientType.ClassicEraPtr;

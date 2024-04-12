@@ -1,5 +1,5 @@
 import { exec } from "child_process";
-import * as log from "electron-log";
+import * as log from "electron-log/main";
 import * as fsp from "fs/promises";
 import { max, sumBy } from "lodash";
 import * as path from "path";

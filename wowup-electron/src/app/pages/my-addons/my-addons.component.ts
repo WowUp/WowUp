@@ -8,7 +8,6 @@ import {
   RowClassParams,
   RowClickedEvent,
   RowDoubleClickedEvent,
-
   SortChangedEvent,
 } from "ag-grid-community";
 import * as _ from "lodash";
@@ -38,10 +37,10 @@ import {
   OnInit,
   ViewChild,
 } from "@angular/core";
-import { MatLegacyCheckboxChange as MatCheckboxChange } from "@angular/material/legacy-checkbox";
-import { MatLegacyDialog as MatDialog } from "@angular/material/legacy-dialog";
-import { MatLegacyMenuTrigger as MatMenuTrigger } from "@angular/material/legacy-menu";
-import { MatLegacyRadioChange as MatRadioChange } from "@angular/material/legacy-radio";
+import { MatCheckboxChange } from "@angular/material/checkbox";
+import { MatDialog } from "@angular/material/dialog";
+import { MatMenuTrigger } from "@angular/material/menu";
+import { MatRadioChange } from "@angular/material/radio";
 import { TranslateService } from "@ngx-translate/core";
 
 import { AddonViewModel } from "../../business-objects/addon-view-model";
@@ -75,7 +74,7 @@ import { HasEventTargetAddRemove } from "rxjs/internal/observable/fromEvent";
 import { AddonProviderFactory } from "../../services/addons/addon.provider.factory";
 import { toInterfaceVersion } from "../../utils/addon.utils";
 import { Addon, WowClientType } from "wowup-lib-core";
-import { WowInstallation } from "wowup-lib-core/lib/models";
+import { WowInstallation } from "wowup-lib-core";
 
 @Component({
   selector: "app-my-addons",
@@ -111,19 +110,19 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
   public readonly selectedWowInstallation$ = this._sessionService.selectedWowInstallation$;
 
   public readonly selectedWowInstallationLabel$ = this._sessionService.selectedWowInstallation$.pipe(
-    map((wowInstall) => wowInstall?.displayName ?? "")
+    map((wowInstall) => wowInstall?.displayName ?? ""),
   );
 
   public readonly selectedWowInstallationId$ = this._sessionService.selectedWowInstallation$.pipe(
-    map((wowInstall) => wowInstall?.id)
+    map((wowInstall) => wowInstall?.id),
   );
 
   public readonly hasSelectedWowInstallationId$ = this._sessionService.selectedWowInstallation$.pipe(
-    map((wowInstall) => wowInstall !== undefined)
+    map((wowInstall) => wowInstall !== undefined),
   );
 
   public readonly isBusy$ = combineLatest([this._isBusySrc, this._addonService.syncing$]).pipe(
-    map((vals) => _.some(vals))
+    map((vals) => _.some(vals)),
   );
 
   public readonly filterInput$ = this._filterInputSrc.asObservable();
@@ -132,14 +131,14 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
     debounceTime(0),
     map(([rowData, filterVal]) => {
       return this.filterAddons(rowData, filterVal);
-    })
+    }),
   );
 
   public readonly hasData$ = this.rowData$.pipe(map((data) => data.length > 0));
   public readonly enableUpdateAll$ = combineLatest([this.enableControls$, this.rowData$]).pipe(
     map(([enableControls, rowData]) => {
       return enableControls && rowData.some((row) => AddonUtils.needsUpdate(row.addon));
-    })
+    }),
   );
 
   public readonly enableUpdateExtra$ = combineLatest([
@@ -148,25 +147,25 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
   ]).pipe(
     map(([enableControls, updatesAvailable]) => {
       return enableControls && updatesAvailable;
-    })
+    }),
   );
 
   public readonly hideGrid$ = combineLatest([this.isBusy$, this.hasData$]).pipe(
     map(([isBusy, hasData]) => {
       return isBusy || !hasData;
-    })
+    }),
   );
 
   public readonly showNoAddons$ = combineLatest([this.isBusy$, this.hasData$]).pipe(
     map(([isBusy, hasData]) => {
       return !isBusy && !hasData;
-    })
+    }),
   );
 
   public readonly isSelectedTab$ = combineLatest([this._sessionService.selectedHomeTab$, this._tabIndexSrc]).pipe(
     map(([selectedTab, ownTab]) => {
       return selectedTab !== undefined && ownTab !== undefined && selectedTab === ownTab;
-    })
+    }),
   );
 
   public readonly operationError$ = this._operationErrorSrc.asObservable();
@@ -270,7 +269,7 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
     public warcraftService: WarcraftService,
     public wowUpService: WowUpService,
     public warcraftInstallationService: WarcraftInstallationService,
-    public relativeDurationPipe: RelativeDurationPipe
+    public relativeDurationPipe: RelativeDurationPipe,
   ) {
     this.overlayNoRowsTemplate = `<span class="text-1 mat-h1">${
       _translateService.instant("COMMON.SEARCH.NO_ADDONS") as string
@@ -288,21 +287,21 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
         catchError((err) => {
           console.error(err);
           return of(undefined);
-        })
+        }),
       )
       .subscribe();
 
     const addonInstalledSub = this._addonService.addonInstalled$
       .pipe(
         map((evt) => this.onAddonInstalledEvent(evt)),
-        map(() => this.setPageContextText())
+        map(() => this.setPageContextText()),
       )
       .subscribe();
 
     const addonRemovedSub = this._addonService.addonRemoved$
       .pipe(
         map((evt) => this.onAddonRemoved(evt)),
-        map(() => this.setPageContextText())
+        map(() => this.setPageContextText()),
       )
       .subscribe();
 
@@ -315,7 +314,7 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
           return from(this._addonService.hasAnyWithExternalAddonIds(addonIds));
         }),
         filter((hasAny) => hasAny),
-        switchMap(() => from(this.onRefresh()))
+        switchMap(() => from(this.onRefresh())),
       )
       .subscribe();
 
@@ -323,7 +322,7 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
     this.visible$
       .pipe(
         takeUntil(this._destroy$),
-        filter((visible) => visible === true)
+        filter((visible) => visible === true),
       )
       .subscribe(() => this.autoSizeColumns());
 
@@ -331,14 +330,14 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
       this.isSelectedTab$
         .pipe(
           filter((isSelected) => isSelected === true),
-          switchMap(this.onSelectedTabChange)
+          switchMap(this.onSelectedTabChange),
         )
         .subscribe(),
       this._sessionService.addonsChanged$.pipe(switchMap(() => from(this.onRefresh()))).subscribe(),
       this._sessionService.targetFileInstallComplete$.pipe(switchMap(() => from(this.onRefresh()))).subscribe(),
       pushUpdateSub,
       addonInstalledSub,
-      addonRemovedSub
+      addonRemovedSub,
     );
 
     this.columnDefs$.next(this.createColumns());
@@ -350,7 +349,7 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
         next: () => {
           this._snackbarService.showErrorSnackbar("PAGES.MY_ADDONS.ERROR_SNACKBAR");
         },
-      })
+      }),
     );
 
     this.wowUpService
@@ -446,7 +445,7 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
         debounceTime(200),
         tap(() => {
           this.autoSizeColumns();
-        })
+        }),
       )
       .subscribe();
   }
@@ -457,7 +456,7 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
       this._visibleSrc.next(muts.some((m) => (m.target as HTMLElement).style.transform === "none"));
     });
 
-    const elem = document.querySelector(".mat-tab-my-addons .mat-tab-body-content");
+    const elem = document.querySelector(".mat-tab-my-addons .mat-mdc-tab-body-content");
     if (elem === null) {
       this._visibleSrc.next(true);
       console.warn("visibility observer cannot start");
@@ -480,7 +479,7 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
             const val: string = this.addonFilter.nativeElement.value.toString();
             console.debug(val);
             this._filterInputSrc.next(val);
-          })
+          }),
         )
         .subscribe();
 
@@ -490,7 +489,7 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
     this._sessionService.autoUpdateComplete$
       .pipe(
         tap(() => console.log("Checking for addon updates...")),
-        switchMap(() => from(this.loadAddons()))
+        switchMap(() => from(this.loadAddons())),
       )
       .subscribe(() => {
         this._cdRef.markForCheck();
@@ -505,7 +504,7 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
       catchError((e) => {
         console.error(e);
         return of(undefined);
-      })
+      }),
     );
   };
 
@@ -650,7 +649,7 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
     let installations = await this.warcraftInstallationService.getWowInstallationsAsync();
     installations = installations.filter(
       (installation) =>
-        installation.clientType === WowClientType.Retail || installation.clientType === WowClientType.ClassicEra
+        installation.clientType === WowClientType.Retail || installation.clientType === WowClientType.ClassicEra,
     );
     this.updateAllWithSpinner(...installations).catch((e) => console.error(e));
   }
@@ -780,7 +779,7 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
 
           console.log("Performing re-scan");
           return from(this.loadAddons(true)).pipe(switchMap(() => from(this.onRefresh())));
-        })
+        }),
       )
       .subscribe();
   }
@@ -797,7 +796,7 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
         first(),
         switchMap((result) => {
           return result.dependenciesRemoved ? this.loadAddons() : of(undefined);
-        })
+        }),
       )
       .subscribe();
   }
@@ -835,7 +834,7 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
           }
 
           return zip(listItems.map((listItem) => from(this._addonService.removeAddon(listItem.addon))));
-        })
+        }),
       )
       .subscribe();
   }
@@ -934,7 +933,7 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
   public async onClickAutoUpdateAddonsNotifications(listItems: AddonViewModel[]): Promise<void> {
     const isAutoUpdateNofications = _.every(
       listItems,
-      (listItem) => listItem.addon?.autoUpdateNotificationsEnabled === false
+      (listItem) => listItem.addon?.autoUpdateNotificationsEnabled === false,
     );
     const rows = _.cloneDeep(this._baseRowDataSrc.value);
     try {
@@ -968,7 +967,7 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
         title: this._translateService.instant("PAGES.MY_ADDONS.CHANGE_ADDON_PROVIDER_CONFIRMATION.TITLE"),
         message: this._translateService.instant(
           "PAGES.MY_ADDONS.CHANGE_ADDON_PROVIDER_CONFIRMATION.MESSAGE",
-          messageData
+          messageData,
         ),
       },
     });
@@ -989,7 +988,7 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
           }
 
           return from(
-            this._addonService.setProvider(listItem.addon, externalId.id, externalId.providerName, selectedWowInstall)
+            this._addonService.setProvider(listItem.addon, externalId.id, externalId.providerName, selectedWowInstall),
           );
         }),
         catchError((e) => {
@@ -997,11 +996,11 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
           const errorTitle: string = this._translateService.instant("DIALOGS.ALERT.ERROR_TITLE");
           const errorMessage: string = this._translateService.instant(
             "COMMON.ERRORS.CHANGE_PROVIDER_ERROR",
-            messageData
+            messageData,
           );
           this.showErrorMessage(errorTitle, errorMessage);
           return of(undefined);
-        })
+        }),
       )
       .subscribe();
   }
@@ -1087,7 +1086,7 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
         catchError((e) => {
           console.error(`selectedInstallationSub failed`, e);
           return of(undefined);
-        })
+        }),
       )
       .subscribe();
 
@@ -1110,7 +1109,7 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
 
       // Only care about the ones that need to be updated/installed
       addons = addons.filter(
-        (addon) => !addon.isIgnored && (AddonUtils.needsUpdate(addon) || AddonUtils.needsInstall(addon))
+        (addon) => !addon.isIgnored && (AddonUtils.needsUpdate(addon) || AddonUtils.needsInstall(addon)),
       );
 
       if (addons.length === 0) {
@@ -1122,7 +1121,7 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
         this._translateService.instant("PAGES.MY_ADDONS.SPINNER.UPDATING", {
           updateCount: updatedCt,
           addonCount: addons.length,
-        }) as string
+        }) as string,
       );
 
       for (const addon of addons) {
@@ -1145,7 +1144,7 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
             addonCount: addons.length,
             clientType: installation.label,
             addonName: addon.name,
-          }) as string
+          }) as string,
         );
 
         await this._addonService.updateAddon(addon);
@@ -1247,9 +1246,9 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
             this._tabIndexSrc.value,
             this._translateService.instant("PAGES.MY_ADDONS.PAGE_CONTEXT_FOOTER.ADDONS_INSTALLED", {
               count: data.length,
-            }) as string
+            }) as string,
           );
-        })
+        }),
       )
       .subscribe();
   }

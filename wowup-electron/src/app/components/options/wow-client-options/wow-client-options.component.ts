@@ -3,19 +3,19 @@ import { BehaviorSubject, from, of, Subscription } from "rxjs";
 import { filter, map, switchMap } from "rxjs/operators";
 
 import { Component, Input, OnDestroy, OnInit } from "@angular/core";
-import { MatLegacyDialog as MatDialog } from "@angular/material/legacy-dialog";
-import { MatLegacySelectChange as MatSelectChange } from "@angular/material/legacy-select";
-import { MatLegacySlideToggleChange as MatSlideToggleChange } from "@angular/material/legacy-slide-toggle";
+import { MatDialog } from "@angular/material/dialog";
+import { MatSelectChange } from "@angular/material/select";
+import { MatSlideToggleChange } from "@angular/material/slide-toggle";
 import { TranslateService } from "@ngx-translate/core";
 
 import { ElectronService } from "../../../services";
 import { SessionService } from "../../../services/session/session.service";
 import { WarcraftInstallationService } from "../../../services/warcraft/warcraft-installation.service";
 import { WarcraftService } from "../../../services/warcraft/warcraft.service";
-import { getEnumList, getEnumName } from "wowup-lib-core/lib/utils";
+import { getEnumList, getEnumName } from "wowup-lib-core";
 import { ConfirmDialogComponent } from "../../common/confirm-dialog/confirm-dialog.component";
 import { AddonChannelType, WowClientType } from "wowup-lib-core";
-import { WowInstallation } from "wowup-lib-core/lib/models";
+import { WowInstallation } from "wowup-lib-core";
 
 @Component({
   selector: "app-wow-client-options",
@@ -44,7 +44,7 @@ export class WowClientOptionsComponent implements OnInit, OnDestroy {
   public editMode$ = this._editModeSrc.asObservable();
   public isBusy$ = this._isBusySrc.asObservable();
   public installationCount$ = this._warcraftInstallationService.wowInstallations$.pipe(
-    map((installations) => installations.length)
+    map((installations) => installations.length),
   );
 
   public clientAutoUpdate = false;
@@ -99,7 +99,7 @@ export class WowClientOptionsComponent implements OnInit, OnDestroy {
     private _warcraftInstallationService: WarcraftInstallationService,
     private _warcraftService: WarcraftService,
     private _sessionService: SessionService,
-    private _electronService: ElectronService
+    private _electronService: ElectronService,
   ) {
     this.addonChannelInfos = this.getAddonChannelInfos();
 
@@ -124,7 +124,7 @@ export class WowClientOptionsComponent implements OnInit, OnDestroy {
     this.clientAutoUpdate = this.installation.defaultAutoUpdate;
     this.clientTypeName = `COMMON.CLIENT_TYPES.${getEnumName(
       WowClientType,
-      this.installation.clientType
+      this.installation.clientType,
     ).toUpperCase()}`;
 
     // `COMMON.CLIENT_TYPES.${getEnumName(
@@ -227,7 +227,7 @@ export class WowClientOptionsComponent implements OnInit, OnDestroy {
           if (this.installation) {
             return from(this._warcraftInstallationService.removeWowInstallation(this.installation));
           }
-        })
+        }),
       )
       .subscribe();
   }

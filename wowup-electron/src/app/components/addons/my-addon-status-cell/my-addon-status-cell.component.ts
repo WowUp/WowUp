@@ -4,7 +4,7 @@ import { Subject } from "rxjs";
 import { filter, takeUntil } from "rxjs/operators";
 
 import { Component, NgZone, OnDestroy } from "@angular/core";
-import { MatLegacyDialog as MatDialog } from "@angular/material/legacy-dialog";
+import { MatDialog } from "@angular/material/dialog";
 import { TranslateService } from "@ngx-translate/core";
 
 import { AddonViewModel } from "../../../business-objects/addon-view-model";
@@ -35,7 +35,7 @@ export class MyAddonStatusCellComponent implements AgRendererComponent, OnDestro
     private _dialog: MatDialog,
     private _addonService: AddonService,
     private _translateService: TranslateService,
-    private _ngZone: NgZone
+    private _ngZone: NgZone,
   ) {
     this._addonService.addonInstalled$
       .pipe(
@@ -43,8 +43,8 @@ export class MyAddonStatusCellComponent implements AgRendererComponent, OnDestro
         filter(
           (evt) =>
             evt.addon.externalId === this.listItem.addon?.externalId &&
-            evt.addon.providerName === this.listItem.addon?.providerName
-        )
+            evt.addon.providerName === this.listItem.addon?.providerName,
+        ),
       )
       .subscribe((evt) => {
         this._ngZone.run(() => {
@@ -65,7 +65,7 @@ export class MyAddonStatusCellComponent implements AgRendererComponent, OnDestro
     this.listItem = params.data;
 
     this.warningType = this.listItem?.addon?.warningType;
-    this.hasWarning = this.warningType !== undefined;
+    this.hasWarning = this.warningType !== undefined && this.warningType !== AddonWarningType.GameVersionTocMissing;
     this.showStatusText = this.listItem?.isUpToDate() || (this.listItem?.addon?.isIgnored ?? true);
     this.statusText = this.getStatusText(this.listItem?.addon);
     this.isIgnored = this.listItem.addon?.isIgnored ?? true;
@@ -114,6 +114,8 @@ export class MyAddonStatusCellComponent implements AgRendererComponent, OnDestro
         return "COMMON.ADDON_WARNING.NO_PROVIDER_FILES_DESCRIPTION";
       case AddonWarningType.TocNameMismatch:
         return "COMMON.ADDON_WARNING.TOC_NAME_MISMATCH_DESCRIPTION";
+      case AddonWarningType.GameVersionTocMissing:
+        return "COMMON.ADDON_WARNING.GAME_VERSION_TOC_MISSING_DESCRIPTION";
       default:
         return "COMMON.ADDON_WARNING.GENERIC_DESCRIPTION";
     }

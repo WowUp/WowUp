@@ -5,7 +5,7 @@ import { OverlayModule } from "@angular/cdk/overlay";
 import { HttpClient, HttpClientModule } from "@angular/common/http";
 import { CUSTOM_ELEMENTS_SCHEMA } from "@angular/core";
 import { ComponentFixture, TestBed } from "@angular/core/testing";
-import { MatLegacyDialog as MatDialog } from "@angular/material/legacy-dialog";
+import { MatDialog } from "@angular/material/dialog";
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 import { TranslateCompiler, TranslateLoader, TranslateModule } from "@ngx-translate/core";
 
@@ -24,7 +24,7 @@ import { MatModule } from "../../modules/mat-module";
 import { PipesModule } from "../../modules/pipes.module";
 import { AddonProviderFactory } from "../../services/addons/addon.provider.factory";
 import { AddonChannelType, WowClientType } from "wowup-lib-core";
-import { WowInstallation } from "wowup-lib-core/lib/models";
+import { WowInstallation } from "wowup-lib-core";
 
 describe("GetAddonsComponent", () => {
   let component: GetAddonsComponent;

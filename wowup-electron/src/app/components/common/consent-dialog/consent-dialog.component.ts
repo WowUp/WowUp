@@ -1,6 +1,7 @@
 import { AfterViewChecked, Component, ElementRef, ViewChild } from "@angular/core";
 import { UntypedFormControl, UntypedFormGroup } from "@angular/forms";
-import { MatLegacyDialogRef as MatDialogRef } from "@angular/material/legacy-dialog";
+
+import { MatDialogRef } from "@angular/material/dialog";
 import { AppConfig } from "../../../../environments/environment";
 
 export interface ConsentDialogResult {

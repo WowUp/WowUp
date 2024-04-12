@@ -1,7 +1,7 @@
 import { first, from, Subscription } from "rxjs";
 
 import { Component, NgZone, OnDestroy } from "@angular/core";
-import { MatLegacySnackBar as MatSnackBar, MatLegacySnackBarRef as MatSnackBarRef } from "@angular/material/legacy-snack-bar";
+import { MatSnackBar, MatSnackBarRef } from "@angular/material/snack-bar";
 import { TranslateService } from "@ngx-translate/core";
 
 import {
@@ -35,7 +35,7 @@ export class TitlebarComponent implements OnDestroy {
     private _wowUpService: WowUpService,
     private _ngZone: NgZone,
     private _snackBar: MatSnackBar,
-    private _translateService: TranslateService
+    private _translateService: TranslateService,
   ) {
     const windowMaximizedSubscription = this.electronService.windowMaximized$.subscribe((maximized) => {
       this._ngZone.run(() => (this.isMaximized = maximized));
@@ -88,7 +88,7 @@ export class TitlebarComponent implements OnDestroy {
     if (this.electronService.isMac) {
       const action = await this.electronService.getUserDefaultSystemPreference<string>(
         "AppleActionOnDoubleClick",
-        "string"
+        "string",
       );
 
       if (action === "Maximize") {

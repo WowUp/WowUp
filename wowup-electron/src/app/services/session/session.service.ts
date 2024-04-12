@@ -12,7 +12,7 @@ import { WowUpAccountService } from "../wowup/wowup-account.service";
 import { AddonService } from "../addons/addon.service";
 import { AddonProviderFactory } from "../addons/addon.provider.factory";
 import { WowUpService } from "../wowup/wowup.service";
-import { WowInstallation } from "wowup-lib-core/lib/models";
+import { WowInstallation } from "wowup-lib-core";
 
 @Injectable({
   providedIn: "root",

@@ -1,4 +1,12 @@
-<button mat-flat-button color="primary" class="progress-button" (click)="onClickButton($event)" [disabled]="disable">
-  <mat-progress-bar class="progress-bar" color="secondary" [value]="value" *ngIf="showProgress"></mat-progress-bar>
+<button
+  class="progress-button"
+  [ngClass]="{ 'show-progress': showProgress }"
+  (click)="onClickButton($event)"
+  [disabled]="disable"
+>
+  <div>
+    <app-progress-bar *ngIf="showProgress" [value]="value"></app-progress-bar>
+    <!-- <progress *ngIf="showProgress" max="100" [value]="value"></progress> -->
+  </div>
   <ng-content></ng-content>
 </button>

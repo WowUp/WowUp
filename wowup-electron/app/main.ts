@@ -1,5 +1,5 @@
 import { app, BrowserWindow, BrowserWindowConstructorOptions, dialog, powerMonitor } from "electron";
-import * as log from "electron-log";
+import * as log from "electron-log/main";
 import { find } from "lodash";
 import * as minimist from "minimist";
 import { arch as osArch, release as osRelease, type as osType } from "os";
@@ -44,12 +44,14 @@ import { PUSH_NOTIFICATION_EVENT, pushEvents } from "./push";
 import { getPreferenceStore, initializeStoreIpcHandlers } from "./stores";
 import { wagoHandler } from "./wago-handler";
 import * as windowState from "./window-state";
+import { validateGpuCache } from "./utils/gpu-cache-buster";
 
 // LOGGING SETUP
 // Override the default log path so they aren't a pain to find on Mac
 const LOG_PATH = join(app.getPath("userData"), "logs");
 app.setAppLogsPath(LOG_PATH);
-log.transports.file.resolvePath = (variables: log.PathVariables) => {
+log.initialize();
+log.transports.file.resolvePathFn = (variables) => {
   return join(LOG_PATH, variables.fileName ?? "log-file.txt");
 };
 log.info("Main starting");
@@ -72,6 +74,8 @@ process.on("unhandledRejection", (error) => {
 if (platform.isWin) {
   require("win-ca");
 }
+
+validateGpuCache(app)
 
 // VARIABLES
 const startedAt = Date.now();
@@ -247,7 +251,7 @@ function onChildProcessCrashed(details: Electron.Details) {
   if (ct >= 3) {
     dialog.showErrorBox(
       "Child Process Failure",
-      `Child process ${details.serviceName} has crashed too many times, app will now exit`
+      `Child process ${details.serviceName} has crashed too many times, app will now exit`,
     );
     app.quit();
   }

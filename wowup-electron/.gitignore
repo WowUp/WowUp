@@ -8,6 +8,7 @@
 /app-builds
 /release
 /build
+/app/utils/*.js
 main.js
 ipc-events.js
 app-updater.js

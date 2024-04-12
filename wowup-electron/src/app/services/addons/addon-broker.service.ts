@@ -4,7 +4,7 @@ import { Injectable } from "@angular/core";
 import { nanoid } from "nanoid";
 
 import { getWowClientGroup } from "../../../common/warcraft";
-import { getEnumName } from "wowup-lib-core/lib/utils";
+import { getEnumName } from "wowup-lib-core";
 import { AddonStorageService } from "../storage/addon-storage.service";
 import { WarcraftService } from "../warcraft/warcraft.service";
 import { AddonService } from "./addon.service";
@@ -12,7 +12,7 @@ import { Subject } from "rxjs";
 import { AddonInstallState } from "../../models/wowup/addon-install-state";
 import { ElectronService } from "..";
 import { Addon, WowClientType } from "wowup-lib-core";
-import { WowInstallation } from "wowup-lib-core/lib/models";
+import { WowInstallation } from "wowup-lib-core";
 
 export type ExportReleaseType = "stable" | "beta" | "alpha";
 export type ImportState = "no-change" | "added" | "conflict";

@@ -13,9 +13,9 @@ import { BehaviorSubject, combineLatest, from, Observable, of, Subject } from "r
 import { catchError, filter, first, map, switchMap, takeUntil } from "rxjs/operators";
 
 import { ChangeDetectorRef, Component, Input, OnDestroy, OnInit, ViewChild } from "@angular/core";
-import { MatLegacyCheckboxChange as MatCheckboxChange } from "@angular/material/legacy-checkbox";
-import { MatLegacyDialog as MatDialog } from "@angular/material/legacy-dialog";
-import { MatLegacyMenuTrigger as MatMenuTrigger } from "@angular/material/legacy-menu";
+import { MatCheckboxChange } from "@angular/material/checkbox";
+import { MatDialog } from "@angular/material/dialog";
+import { MatMenuTrigger } from "@angular/material/menu";
 import { MatDrawer } from "@angular/material/sidenav";
 import { TranslateService } from "@ngx-translate/core";
 
@@ -45,11 +45,11 @@ import { SnackbarService } from "../../services/snackbar/snackbar.service";
 import { WarcraftInstallationService } from "../../services/warcraft/warcraft-installation.service";
 import { WarcraftService } from "../../services/warcraft/warcraft.service";
 import { WowUpService } from "../../services/wowup/wowup.service";
-import { getEnumKeys } from "wowup-lib-core/lib/utils";
+import { getEnumKeys } from "wowup-lib-core";
 import { camelToSnakeCase } from "../../utils/string.utils";
 import { AddonProviderFactory } from "../../services/addons/addon.provider.factory";
 import { AddonCategory, AddonChannelType, AddonSearchResult, WowClientType } from "wowup-lib-core";
-import { WowInstallation } from "wowup-lib-core/lib/models";
+import { WowInstallation } from "wowup-lib-core";
 
 interface CategoryItem {
   category: AddonCategory;
@@ -126,7 +126,7 @@ export class GetAddonsComponent implements OnInit, OnDestroy {
   public readonly showTable$ = combineLatest([this._showTableSrc, this.hasData$]).pipe(
     map(([enabled]) => {
       return enabled === true;
-    })
+    }),
   );
 
   public gridApi!: GridApi;
@@ -175,7 +175,7 @@ export class GetAddonsComponent implements OnInit, OnDestroy {
           this._showTableSrc.next(true);
           this._sessionService.setEnableControls(true);
           return of(undefined);
-        })
+        }),
       )
       .subscribe();
   }
@@ -194,7 +194,7 @@ export class GetAddonsComponent implements OnInit, OnDestroy {
     public warcraftService: WarcraftService,
     public warcraftInstallationService: WarcraftInstallationService,
     public relativeDurationPipe: RelativeDurationPipe,
-    public downloadCountPipe: DownloadCountPipe
+    public downloadCountPipe: DownloadCountPipe,
   ) {
     this.overlayNoRowsTemplate = `<span class="text-1 mat-h1">${
       _translateService.instant("COMMON.SEARCH.NO_ADDONS") as string
@@ -215,7 +215,7 @@ export class GetAddonsComponent implements OnInit, OnDestroy {
     this.rowData$
       .pipe(
         takeUntil(this._destroy$),
-        map((rowData) => this.setPageContextText(rowData.length))
+        map((rowData) => this.setPageContextText(rowData.length)),
       )
       .subscribe();
 
@@ -474,7 +474,7 @@ export class GetAddonsComponent implements OnInit, OnDestroy {
     this._wowUpService.preferenceChange$
       .pipe(
         takeUntil(this._destroy$),
-        filter((change) => change.key.indexOf(DEFAULT_CHANNEL_PREFERENCE_KEY_SUFFIX) !== -1)
+        filter((change) => change.key.indexOf(DEFAULT_CHANNEL_PREFERENCE_KEY_SUFFIX) !== -1),
       )
       .subscribe(() => {
         this.onSearch();
@@ -539,7 +539,7 @@ export class GetAddonsComponent implements OnInit, OnDestroy {
           this._showTableSrc.next(true);
           this._sessionService.setEnableControls(true);
           return of(undefined);
-        })
+        }),
       )
       .subscribe();
   }
@@ -577,7 +577,7 @@ export class GetAddonsComponent implements OnInit, OnDestroy {
         catchError((error) => {
           console.error(`getFeaturedAddons failed`, error);
           return of([]);
-        })
+        }),
       )
       .subscribe((addons) => {
         const listItems = this.formatAddons(addons);

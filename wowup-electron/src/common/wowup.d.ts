@@ -1,5 +1,5 @@
 import { IpcRendererEvent, OpenExternalOptions } from "electron";
-import { ElectronLog } from "electron-log";
+
 
 // Events that can be sent from main to renderer
 declare type MainChannels =
@@ -99,7 +99,7 @@ declare type RendererChannels =
 
 declare global {
   interface Window {
-    log: ElectronLog;
+    log;
     libs: {
       handlebars: any;
       autoLaunch: any;
@@ -114,7 +114,7 @@ declare global {
       rendererSend: (channel: string, ...args: any[]) => void;
       rendererSendSync: (channel: string, ...args: any[]) => any;
       rendererInvoke: (channel: string, ...args: any[]) => Promise<any>;
-      rendererOff: (event: string | symbol, listener: (...args: any[]) => void) => void;
+      rendererOff: (channel: string, listener: (...args: any[]) => void) => void;
       rendererOn: (channel: string, listener: (event: IpcRendererEvent, ...args: any[]) => void) => void;
       openExternal: (url: string, options?: OpenExternalOptions) => Promise<void>;
       openPath: (path: string) => Promise<string>;

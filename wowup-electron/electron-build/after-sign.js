@@ -1,7 +1,7 @@
 // Inspired by https://medium.com/@TwitterArchiveEraser/notarize-electron-apps-7a5f988406db
 const fs = require('fs');
 const path = require('path');
-const electron_notarize = require('electron-notarize');
+const electron_notarize = require('@electron/notarize');
 
 // Pull in signing env vars
 require('dotenv').config({
@@ -30,6 +30,7 @@ module.exports = async function (params) {
       appPath: appPath,
       appleId: process.env.NOTARIZE_APPLE_ID,
       appleIdPassword: process.env.NOTARIZE_APPLE_PASSWORD,
+      teamId: process.env.NOTARIZE_APPLE_TEAM_ID,
       ascProvider: process.env.NOTARIZE_APPLE_TEAM_ID
     });
   } catch (error) {

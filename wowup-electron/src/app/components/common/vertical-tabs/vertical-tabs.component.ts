@@ -18,7 +18,7 @@ import { ElectronService } from "../../../services";
 import { SessionService } from "../../../services/session/session.service";
 import { WarcraftInstallationService } from "../../../services/warcraft/warcraft-installation.service";
 import { AddonProviderFactory } from "../../../services/addons/addon.provider.factory";
-import { MatLegacyDialog as MatDialog } from "@angular/material/legacy-dialog";
+import { MatDialog } from "@angular/material/dialog";
 import { AlertDialogComponent } from "../alert-dialog/alert-dialog.component";
 import { TranslateService } from "@ngx-translate/core";
 import { PreferenceStorageService } from "../../../services/storage/preference-storage.service";
@@ -54,7 +54,7 @@ export class VerticalTabsComponent implements OnInit, OnDestroy {
         return false;
       }
       return isCollapsed;
-    })
+    }),
   );
 
   public isAccountSelected$ = this.sessionService.selectedHomeTab$.pipe(map((result) => result === TAB_INDEX_ABOUT));
@@ -132,7 +132,7 @@ export class VerticalTabsComponent implements OnInit, OnDestroy {
     private _translateService: TranslateService,
     private _addonProviderService: AddonProviderFactory,
     private _warcraftInstallationService: WarcraftInstallationService,
-    private _preferences: PreferenceStorageService
+    private _preferences: PreferenceStorageService,
   ) {
     this.sessionService.adSpace$.pipe(takeUntil(this.destroy$)).subscribe((enabled) => {
       if (enabled) {

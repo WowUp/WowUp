@@ -169,6 +169,8 @@
       "UPDATING": "Aggiornamento in corso..."
     },
     "ADDON_WARNING": {
+      "GAME_VERSION_TOC_MISSING_DESCRIPTION": "This addon or its children have one or more missing toc files for this game version",
+      "GAME_VERSION_TOC_MISSING_TOOLTIP": "One or more missing toc files for this game version",
       "GENERIC_DESCRIPTION": "Abbiamo trovato un problema con questo addon. Non siamo più in grado di aggiornare questo addon o di fornire dettagli.",
       "GENERIC_TOOLTIP": "Abbiamo trovato un problema con questo addon",
       "MISSING_ON_PROVIDER_DESCRIPTION": "Questo addon sembra essere stato rimosso dal suo autore o dal provider.<br>Non siamo più in grado di aggiornare questo addon o di fornire dettagli.",
@@ -183,11 +185,11 @@
       "CLASSIC": "Wrath of the Lich King Classic",
       "CLASSICBETA": "Beta di Wrath of the Lich King Classic",
       "CLASSICERA": "World of Warcraft Classic",
-      "CLASSICERAPTR": "Classic Season of Mastery PTR",
+      "CLASSICERAPTR": "WoW Classic Era PTR",
       "CLASSICPTR": "Reame Pubblico di Prova - PTR (Wrath Classic)",
       "RETAIL": "Dragonflight",
-      "RETAILPTR": "Reame pubblico di prova",
-      "XPTR": "Public Test Realm (DF 10.1.5)"
+      "RETAILPTR": "Public Test Realm (DF 10.2.5)",
+      "RETAILXPTR": "Public Test Realm (DF 10.2.0)"
     },
     "DATES": {
       "DAYS_AGO": "{count, plural, one{Un giorno} other{{count} giorni}} fa",

@@ -1,5 +1,5 @@
 import { app, BrowserWindow, ipcMain } from "electron";
-import * as log from "electron-log";
+import * as log from "electron-log/main";
 import { autoUpdater } from "electron-updater";
 import { IPC_APP_CHECK_UPDATE, IPC_APP_INSTALL_UPDATE, IPC_APP_UPDATE_STATE } from "../src/common/constants";
 import { AppUpdateDownloadProgress, AppUpdateEvent, AppUpdateState } from "../src/common/wowup/models";

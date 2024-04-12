@@ -7,7 +7,7 @@ import { Injectable } from "@angular/core";
 import { ElectronService } from "../electron/electron.service";
 import * as constants from "../../../common/constants";
 import { SelectItem } from "../../models/wowup/select-item";
-import { getEnumName, getEnumList } from "wowup-lib-core/lib/utils";
+import { getEnumName, getEnumList } from "wowup-lib-core";
 import { FileService } from "../files/file.service";
 import { PreferenceStorageService } from "../storage/preference-storage.service";
 import { TocService } from "../toc/toc.service";
@@ -17,7 +17,7 @@ import { WarcraftServiceMac } from "./warcraft.service.mac";
 import { WarcraftServiceWin } from "./warcraft.service.win";
 import { ProductDb } from "../../../common/wowup/product-db";
 import { AddonFolder, Toc, WowClientType } from "wowup-lib-core";
-import { InstalledProduct, WowInstallation } from "wowup-lib-core/lib/models";
+import { InstalledProduct, WowInstallation } from "wowup-lib-core";
 
 @Injectable({
   providedIn: "root",
@@ -270,6 +270,8 @@ export class WarcraftService {
         return WowClientType.Retail;
       case constants.WOW_RETAIL_PTR_FOLDER:
         return WowClientType.RetailPtr;
+      case constants.WOW_RETAIL_XPTR_FOLDER:
+        return WowClientType.RetailXPtr;
       case constants.WOW_CLASSIC_ERA_FOLDER:
         return WowClientType.ClassicEra;
       case constants.WOW_CLASSIC_FOLDER:

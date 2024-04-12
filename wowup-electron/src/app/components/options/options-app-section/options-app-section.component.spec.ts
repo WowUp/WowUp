@@ -3,7 +3,7 @@ import { BehaviorSubject } from "rxjs";
 import { HttpClientModule } from "@angular/common/http";
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { FormsModule } from "@angular/forms";
-import { MatLegacyDialog as MatDialog } from "@angular/material/legacy-dialog";
+import { MatDialog } from "@angular/material/dialog";
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 
 import { ElectronService } from "../../../services";
@@ -53,7 +53,7 @@ describe("OptionsAppSectionComponent", () => {
         isWin: false,
         isLinux: true,
         isMac: false,
-      }
+      },
     );
 
     wowUpServiceSpy = jasmine.createSpyObj("WowUpService", ["getStartWithSystem"], {

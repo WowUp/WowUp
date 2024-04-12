@@ -15,7 +15,7 @@ import {
 } from "../src/common/constants";
 import { WowUpReleaseChannelType } from "../src/common/wowup/wowup-release-channel-type";
 import { getPreferenceStore } from "./stores";
-import * as log from "electron-log";
+import * as log from "electron-log/main";
 
 export function initializeDefaultPreferences() {
   const isBetaBuild = app.getVersion().toLowerCase().indexOf("beta") != -1;

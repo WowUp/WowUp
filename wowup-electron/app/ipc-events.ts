@@ -11,7 +11,7 @@ import {
   shell,
   systemPreferences,
 } from "electron";
-import * as log from "electron-log";
+import * as log from "electron-log/main";
 import * as globrex from "globrex";
 import * as _ from "lodash";
 import { nanoid } from "nanoid";
@@ -146,6 +146,7 @@ async function getSymlinkDirs(basePath: string, files: fs.Dirent[]): Promise<Sym
   return _.filter(symlinkDirs, (symDir) => symDir.isDir);
 }
 
+/* eslint-disable @typescript-eslint/no-redundant-type-constituents */
 function handle(
   channel: RendererChannels,
   listener: (event: IpcMainInvokeEvent, ...args: any[]) => Promise<void> | any
@@ -458,9 +459,9 @@ export function initializeIpcHandlers(window: BrowserWindow): void {
   handle("decode-product-db", async (evt, filePath: string) => {
     const productDbData = await fsp.readFile(filePath);
     const productDb = ProductDb.decode(productDbData);
-    setImmediate(() => {
+    setTimeout(() => {
       console.log("productDb", JSON.stringify(productDb));
-    });
+    },1);
 
     return productDb;
   });

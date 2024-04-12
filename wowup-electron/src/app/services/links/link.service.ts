@@ -2,7 +2,7 @@ import { from, Observable, of } from "rxjs";
 import { catchError, first, map, switchMap } from "rxjs/operators";
 
 import { Injectable } from "@angular/core";
-import { MatLegacyDialog as MatDialog } from "@angular/material/legacy-dialog";
+import { MatDialog } from "@angular/material/dialog";
 import { TranslateService } from "@ngx-translate/core";
 
 import {
@@ -66,7 +66,7 @@ export class LinkService {
     return dialogRef.afterClosed().pipe(
       first(),
       switchMap((result: DialogResult) => {
-        if (!result.success) {
+        if (result === undefined || !result.success) {
           return of(undefined);
         }
 

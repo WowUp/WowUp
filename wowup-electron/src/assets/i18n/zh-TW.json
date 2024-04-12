@@ -169,6 +169,8 @@
       "UPDATING": "正在更新..."
     },
     "ADDON_WARNING": {
+      "GAME_VERSION_TOC_MISSING_DESCRIPTION": "This addon or its children have one or more missing toc files for this game version",
+      "GAME_VERSION_TOC_MISSING_TOOLTIP": "One or more missing toc files for this game version",
       "GENERIC_DESCRIPTION": "WowUp 檢測到此插件存在問題，無法更新此插件或提供詳細資訊。",
       "GENERIC_TOOLTIP": "檢測到此插件存在問題",
       "MISSING_ON_PROVIDER_DESCRIPTION": "此插件可能已被作者或安裝源移除。<br>WowUp 無法更新此插件或提供詳細資訊。",
@@ -183,11 +185,11 @@
       "CLASSIC": "巫妖王之怒",
       "CLASSICBETA": "巫妖王之怒 Beta",
       "CLASSICERA": "經典舊世",
-      "CLASSICERAPTR": "經典舊世大師賽季 PTR",
+      "CLASSICERAPTR": "WoW Classic Era PTR",
       "CLASSICPTR": "巫妖王之怒 PTR",
       "RETAIL": "巨龍崛起",
-      "RETAILPTR": "巨龍崛起 PTR",
-      "XPTR": "Public Test Realm (DF 10.1.5)"
+      "RETAILPTR": "Public Test Realm (DF 10.2.5)",
+      "RETAILXPTR": "Public Test Realm (DF 10.2.0)"
     },
     "DATES": {
       "DAYS_AGO": "{count} 天前",

@@ -18,11 +18,13 @@ import { WebViewComponent } from "../components/common/webview/webview.component
 import { ProgressSpinnerComponent } from "../components/progress-spinner/progress-spinner.component";
 import { MatModule } from "./mat-module";
 import { PipesModule } from "./pipes.module";
+import { ProgressBarComponent } from "../components/common/progress-bar/progress-bar.component";
 
 @NgModule({
   declarations: [
     ProgressSpinnerComponent,
     ProgressButtonComponent,
+    ProgressBarComponent,
     ConfirmDialogComponent,
     AlertDialogComponent,
     AnimatedLogoComponent,
@@ -40,6 +42,7 @@ import { PipesModule } from "./pipes.module";
   exports: [
     ProgressSpinnerComponent,
     ProgressButtonComponent,
+    ProgressBarComponent,
     ConfirmDialogComponent,
     AlertDialogComponent,
     AnimatedLogoComponent,

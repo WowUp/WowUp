@@ -2,15 +2,15 @@ import { from, Observable, of } from "rxjs";
 import { catchError } from "rxjs/operators";
 
 import { Component, OnInit } from "@angular/core";
-import { MatLegacyDialog as MatDialog } from "@angular/material/legacy-dialog";
+import { MatDialog } from "@angular/material/dialog";
 import { TranslateService } from "@ngx-translate/core";
 
 import { WarcraftInstallationService } from "../../../services/warcraft/warcraft-installation.service";
 import { WarcraftService } from "../../../services/warcraft/warcraft.service";
-import { getEnumList } from "wowup-lib-core/lib/utils";
+import { getEnumList } from "wowup-lib-core";
 import { AlertDialogComponent } from "../../common/alert-dialog/alert-dialog.component";
 import { WowClientType } from "wowup-lib-core";
-import { WowInstallation } from "wowup-lib-core/lib/models";
+import { WowInstallation } from "wowup-lib-core";
 
 @Component({
   selector: "app-options-wow-section",

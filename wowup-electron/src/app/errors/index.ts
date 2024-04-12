@@ -2,6 +2,12 @@ export * from "./install-error";
 import { CustomError } from "ts-custom-error";
 import { AddonWarningType, WowClientGroup } from "wowup-lib-core";
 
+export class TocNotFoundError extends CustomError {
+  public constructor(message?: string){
+    super(message);
+  }
+}
+
 export class ErrorContainer extends CustomError {
   public readonly innerError?: Error;
   public readonly warningType?: AddonWarningType;
