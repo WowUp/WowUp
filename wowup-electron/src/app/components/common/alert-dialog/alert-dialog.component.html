@@ -7,12 +7,11 @@
     *ngSwitchCase="'raised'"
     class="wu-btn"
     [mat-dialog-close]="true"
-    [color]="data.positiveButtonColor"
     cdkFocusInitial
   >
     {{ data.positiveButton ?? "DIALOGS.ALERT.POSITIVE_BUTTON" | translate }}
   </button>
-  <button *ngSwitchDefault class="wu-btn" [mat-dialog-close]="true" [color]="data.positiveButtonColor" cdkFocusInitial>
+  <button *ngSwitchDefault class="wu-btn" [mat-dialog-close]="true" cdkFocusInitial>
     {{ data.positiveButton ?? "DIALOGS.ALERT.POSITIVE_BUTTON" | translate }}
   </button>
 </div>
