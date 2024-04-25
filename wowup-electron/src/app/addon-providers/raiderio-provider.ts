@@ -3,7 +3,7 @@ import { v4 as uuidv4 } from "uuid";
 
 import { ADDON_PROVIDER_RAIDERIO } from "../../common/constants";
 import { TocService } from "../services/toc/toc.service";
-import { AddonChannelType, AddonFolder, AddonProvider, getGameVersion, getGameVersionList } from "wowup-lib-core";
+import { AddonChannelType, AddonFolder, AddonProvider, getGameVersionList } from "wowup-lib-core";
 import { getEnumName } from "wowup-lib-core";
 import { WowInstallation } from "wowup-lib-core";
 

@@ -16,7 +16,6 @@ import { nanoid } from "nanoid";
 import { FileService } from "../files/file.service";
 import { WowInstallation } from "wowup-lib-core";
 import { TocService } from "../toc/toc.service";
-import * as AddonUtils from "../../utils/addon.utils";
 import {
   ADDON_PROVIDER_RAIDERIO,
   ADDON_PROVIDER_TUKUI,
