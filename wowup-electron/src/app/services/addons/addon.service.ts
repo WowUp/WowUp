@@ -1081,7 +1081,7 @@ export class AddonService {
         if (latestFile.gameVersion) {
           addon.gameVersion = getGameVersionList([latestFile.gameVersion]);
         } else if (addon.gameVersion) {
-          addon.gameVersion = getGameVersionList(addon.gameVersion);
+          addon.gameVersion = getGameVersionList(addon.gameVersion ?? []);
         } else {
           console.warn("No game version found", addon);
         }
@@ -1232,6 +1232,7 @@ export class AddonService {
     const provider = this._addonProviderService.getProvider(addon.providerName ?? "");
 
     const migrationNeeded =
+      typeof addon.gameVersion === "string" ||
       addon.providerName === ADDON_PROVIDER_HUB_LEGACY ||
       typeof addon.autoUpdateNotificationsEnabled === "undefined" ||
       !addon.installedFolderList ||
@@ -1243,6 +1244,12 @@ export class AddonService {
 
   private async migrateLocalAddon(addon: Addon): Promise<boolean> {
     let changed = false;
+    if (typeof addon.gameVersion === "string") {
+      console.log(`[MigrateAddon] '${addon.name}' Updating gameVersion array`);
+      addon.gameVersion = [addon.gameVersion];
+      changed = true;
+    }
+
     if (typeof addon.autoUpdateNotificationsEnabled === "undefined") {
       console.log(`[MigrateAddon] '${addon.name}' Updating autoUpdateNotificationsEnabled`);
       addon.autoUpdateNotificationsEnabled = addon.autoUpdateEnabled;
@@ -1735,7 +1742,7 @@ export class AddonService {
       installedVersion: targetToc?.version || "",
       clientType: installation.clientType,
       externalId: "",
-      gameVersion: getGameVersionList(targetToc?.interface),
+      gameVersion: getGameVersionList(targetToc?.interface ?? []),
       author: targetToc?.author || "",
       downloadUrl: "",
       externalUrl: "",
