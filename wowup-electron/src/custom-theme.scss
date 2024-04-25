@@ -1,7 +1,6 @@
 @use "@angular/material" as mat;
 @import "./variables.scss";
 
-
 @import "ag-grid-community/styles/ag-grid.css";
 @import "ag-grid-community/styles/ag-theme-material.css";
 
@@ -270,6 +269,7 @@ body {
   --background-primary-3: #383773;
   --background-secondary-1: rgba(102, 102, 102, 0.85);
   --background-secondary-2: rgba(85, 85, 85, 0.9);
+  --background-secondary-2-fill: rgba(85, 85, 85, 1);
   --background-secondary-3: rgba(68, 68, 68, 0.8);
   --background-secondary-4: rgba(51, 51, 51, 0.8);
   --background-secondary-5: rgba(34, 34, 34, 0.8);
@@ -303,6 +303,7 @@ body {
   --background-primary-3: #383773;
   --background-secondary-1: rgba(255, 255, 255, 0.75);
   --background-secondary-2: rgba(243, 243, 243, 0.8);
+  --background-secondary-2-fill: rgba(243, 243, 243, 1);
   --background-secondary-3: rgba(235, 237, 239, 0.75);
   --background-secondary-4: rgba(227, 229, 232, 0.75);
   --background-secondary-5: rgba(202, 204, 206, 0.75);
@@ -332,6 +333,7 @@ body {
   --background-primary-3: #5c0606;
   --background-secondary-1: rgba(102, 102, 102, 0.85);
   --background-secondary-2: rgba(85, 85, 85, 0.9);
+  --background-secondary-2-fill: rgba(85, 85, 85, 1);
   --background-secondary-3: rgba(68, 68, 68, 0.8);
   --background-secondary-4: rgba(51, 51, 51, 0.8);
   --background-secondary-5: rgba(34, 34, 34, 0.8);
@@ -363,6 +365,7 @@ body {
   --background-primary-3: #5c0606;
   --background-secondary-1: rgba(255, 255, 255, 0.75);
   --background-secondary-2: rgba(243, 243, 243, 0.8);
+  --background-secondary-2-fill: rgba(243, 243, 243, 1);
   --background-secondary-3: rgba(235, 237, 239, 0.75);
   --background-secondary-4: rgba(227, 229, 232, 0.75);
   --background-secondary-5: rgba(202, 204, 206, 0.75);
@@ -392,6 +395,7 @@ body {
   --background-primary-3: #06102c;
   --background-secondary-1: rgba(102, 102, 102, 0.85);
   --background-secondary-2: rgba(85, 85, 85, 0.9);
+  --background-secondary-2-fill: rgba(85, 85, 85, 1);
   --background-secondary-3: rgba(68, 68, 68, 0.8);
   --background-secondary-4: rgba(51, 51, 51, 0.8);
   --background-secondary-5: rgba(34, 34, 34, 0.8);
@@ -422,6 +426,7 @@ body {
   --background-primary-3: #06102c;
   --background-secondary-1: rgba(255, 255, 255, 0.75);
   --background-secondary-2: rgba(243, 243, 243, 0.8);
+  --background-secondary-2-fill: rgba(243, 243, 243, 1);
   --background-secondary-3: rgba(235, 237, 239, 0.75);
   --background-secondary-4: rgba(227, 229, 232, 0.75);
   --background-secondary-5: rgba(202, 204, 206, 0.75);

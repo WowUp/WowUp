@@ -79,7 +79,13 @@
   </div>
 
   <mat-drawer-container class="wu-ag-table bg-secondary-2" [hasBackdrop]="true">
-    <mat-drawer #drawer mode="over" position="end" [autoFocus]="false" style="padding-right: 0.25em">
+    <mat-drawer
+      #drawer
+      mode="over"
+      position="end"
+      [autoFocus]="false"
+      style="padding-right: 0.25em; background-color: var(--background-secondary-2-fill)"
+    >
       <h3 class="px-3">{{ "PAGES.GET_ADDONS.ADDON_CATEGORIES_MENU_TITLE" | translate }}</h3>
       <mat-divider></mat-divider>
       <mat-action-list>
