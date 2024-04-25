@@ -5,6 +5,7 @@ import { WowClientType } from "wowup-lib-core";
 import * as tocModels from "wowup-lib-core";
 import { removeExtension } from "../../utils/string.utils";
 import { FileService } from "../files/file.service";
+import { uniq } from "lodash";
 
 @Injectable({
   providedIn: "root",
@@ -27,7 +28,7 @@ export class TocService {
       filePath: tocPath,
       author: this.getValue(tocModels.TOC_AUTHOR, tocText),
       curseProjectId: this.getValue(tocModels.TOC_X_CURSE_PROJECT_ID, tocText),
-      interface: this.getValue(tocModels.TOC_INTERFACE, tocText),
+      interface: this.getValueArray(tocModels.TOC_INTERFACE, tocText),
       title: this.getValue(tocModels.TOC_TITLE, tocText),
       website: this.getWebsite(tocText),
       version: this.getValue(tocModels.TOC_VERSION, tocText),
@@ -168,6 +169,11 @@ export class TocService {
     const tocText = await this._fileService.readFile(tocPath);
 
     return tocText.split("\n").filter((line) => line.trim().startsWith("## "));
+  }
+
+  private getValueArray(key: string, tocText: string): string[] {
+    const value = this.getValue(key, tocText);
+    return uniq(value.split(",").map((x) => x.trim()));
   }
 
   private getValue(key: string, tocText: string): string {

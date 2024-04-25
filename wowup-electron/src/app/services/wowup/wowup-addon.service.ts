@@ -17,6 +17,7 @@ import { WarcraftInstallationService } from "../warcraft/warcraft-installation.s
 import { Addon, AddonChannelType } from "wowup-lib-core";
 import { WowInstallation } from "wowup-lib-core";
 import { WarcraftService } from "../warcraft/warcraft.service";
+import { first } from "lodash";
 
 enum WowUpAddonFileType {
   Raw,
@@ -67,7 +68,7 @@ export class WowUpAddonService {
     private _addonProviderFactory: AddonProviderFactory,
     private _fileService: FileService,
     private _warcraftInstallationService: WarcraftInstallationService,
-    private _warcraftService: WarcraftService
+    private _warcraftService: WarcraftService,
   ) {
     _addonService.addonInstalled$
       .pipe(filter((update) => update.installState === AddonInstallState.Complete))
@@ -144,7 +145,7 @@ export class WowUpAddonService {
       let interfaceVersion = "";
 
       try {
-        interfaceVersion = toInterfaceVersion(wowUpAddon.gameVersion || "");
+        interfaceVersion = toInterfaceVersion(first(wowUpAddon.gameVersion) || "");
       } catch (e) {
         console.error(e);
       }
@@ -159,7 +160,7 @@ export class WowUpAddonService {
 
       const dataAddonPath = path.join(
         this._warcraftService.getAddonFolderPath(installation),
-        WOWUP_DATA_ADDON_FOLDER_NAME
+        WOWUP_DATA_ADDON_FOLDER_NAME,
       );
 
       const pathExists = await this._fileService.pathExists(dataAddonPath);
@@ -202,7 +203,7 @@ export class WowUpAddonService {
   private async handleHandlebarsTemplateFileType(
     file: WowUpAddonFileProcessing,
     designatedPath: string,
-    wowUpAddonData: WowUpAddonData
+    wowUpAddonData: WowUpAddonData,
   ) {
     const assetPath = path.join(WOWUP_ASSET_FOLDER_NAME, `${file.filename}.hbs`);
     const templatePath = await this._fileService.getAssetFilePath(assetPath);
@@ -233,7 +234,7 @@ export class WowUpAddonService {
 
   private findAddonByFolderName(addons: Addon[], folderName: string): Addon | undefined {
     return addons.find(
-      (addon: Addon) => Array.isArray(addon.installedFolderList) && addon.installedFolderList.includes(folderName)
+      (addon: Addon) => Array.isArray(addon.installedFolderList) && addon.installedFolderList.includes(folderName),
     );
   }
 }

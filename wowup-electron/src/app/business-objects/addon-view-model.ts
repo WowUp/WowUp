@@ -33,8 +33,8 @@ export class AddonViewModel {
     return this.addon?.latestVersion ?? "";
   }
 
-  public get gameVersion(): string {
-    return this.addon?.gameVersion ?? "";
+  public get gameVersion(): string[] {
+    return this.addon?.gameVersion ?? [];
   }
 
   public get externalChannel(): string {

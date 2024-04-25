@@ -10,8 +10,7 @@ import { CachingService } from "../services/caching/caching-service";
 import { CircuitBreakerWrapper, NetworkService } from "../services/network/network.service";
 import { TocService } from "../services/toc/toc.service";
 import { WarcraftService } from "../services/warcraft/warcraft.service";
-import { getGameVersion } from "../utils/addon.utils";
-import { getEnumName } from "wowup-lib-core";
+import { getEnumName, getGameVersion } from "wowup-lib-core";
 import { convertMarkdown } from "wowup-lib-core";
 import { getWowClientGroup } from "../../common/warcraft";
 import { HttpErrorResponse } from "@angular/common/http";
@@ -690,7 +689,7 @@ export class WagoAddonProvider extends AddonProvider {
       downloadUrl,
       externalUrl,
       externalId,
-      gameVersion,
+      gameVersion: [gameVersion],
       installedAt: new Date(),
       installedFolders: installedFolders.join(","),
       installedFolderList: installedFolders,
