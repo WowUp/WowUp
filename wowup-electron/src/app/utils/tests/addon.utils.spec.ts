@@ -62,6 +62,7 @@ describe("AddonUtils", () => {
   });
 
   it("Should throw interface undefined", () => {
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
     expect(() => AddonUtils.toInterfaceVersion(undefined as any)).toThrow(
       new Error("interface version empty or undefined"),
     );
