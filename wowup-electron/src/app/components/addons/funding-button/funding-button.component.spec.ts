@@ -18,7 +18,7 @@ describe("FundingButtonComponent", () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [FundingButtonComponent, MatIcon],
+      declarations: [FundingButtonComponent],
       imports: [
         MatModule,
         HttpClientModule,

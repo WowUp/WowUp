@@ -50,7 +50,7 @@ describe("FooterComponent", () => {
     });
 
     await TestBed.configureTestingModule({
-      declarations: [FooterComponent, MatIcon],
+      declarations: [FooterComponent],
       imports: [
         MatModule,
         NoopAnimationsModule,
