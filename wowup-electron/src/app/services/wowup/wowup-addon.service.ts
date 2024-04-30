@@ -100,7 +100,7 @@ export class WowUpAddonService {
   public async updateForInstallation(installation: WowInstallation): Promise<void> {
     const addons = await this._addonService.getAllAddons(installation);
     if (addons.length === 0) {
-      console.log(`WowUpAddonService: No addons to sync ${installation.label}`);
+      console.log(`WowUpAddonService: No addons to sync ${installation.displayName}`);
       return;
     }
 
@@ -111,7 +111,7 @@ export class WowUpAddonService {
   private async syncCompanionAddon(addons: Addon[], installation: WowInstallation): Promise<void> {
     const companionAddon = this.getCompanionAddon(addons);
     if (!companionAddon) {
-      console.debug(`No wow companion found: ${installation.label}`);
+      console.debug(`No wow companion found: ${installation.displayName}`);
       return;
     }
 
@@ -134,7 +134,7 @@ export class WowUpAddonService {
   private async persistUpdateInformationToWowUpAddon(installation: WowInstallation, addons: Addon[]) {
     const wowUpAddon = this.findAddonByFolderName(addons, WOWUP_ADDON_FOLDER_NAME);
     if (!wowUpAddon) {
-      console.debug(`WowUp Addon not found: ${installation.label}`);
+      console.debug(`WowUp Addon not found: ${installation.displayName}`);
       return;
     }
 

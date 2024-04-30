@@ -41,7 +41,7 @@ export class WarcraftInstallationService {
     private _warcraftService: WarcraftService,
     private _translateService: TranslateService,
     private _fileService: FileService,
-    private _electronService: ElectronService
+    private _electronService: ElectronService,
   ) {
     this._wowInstallationsSrc.subscribe((installations) => {
       for (const installation of installations) {
@@ -61,7 +61,7 @@ export class WarcraftInstallationService {
           this._blizzardAgentPath = blizzardAgentPath;
         }),
         // switchMap((blizzardAgentPath) => this.migrateAllLegacyInstallations(blizzardAgentPath)),
-        map((blizzardAgentPath) => this.importWowInstallations(blizzardAgentPath))
+        map((blizzardAgentPath) => this.importWowInstallations(blizzardAgentPath)),
       )
       .subscribe();
   }
@@ -255,7 +255,9 @@ export class WarcraftInstallationService {
       const typeName = getEnumName(WowClientType, product.clientType);
       const currentInstallations = await this.getWowInstallationsByClientType(product.clientType);
 
-      const label = currentInstallations.length ? `${DEFAULT_NAME_TOKEN} ${currentInstallations.length + 1}` : DEFAULT_NAME_TOKEN;
+      const label = currentInstallations.length
+        ? `${DEFAULT_NAME_TOKEN} ${currentInstallations.length + 1}`
+        : DEFAULT_NAME_TOKEN;
       const displayName = await this.getDisplayName(label, typeName);
 
       const fullProductPath = this.getFullProductPath(product.location, product.clientType);
@@ -288,9 +290,16 @@ export class WarcraftInstallationService {
 
   private async getDisplayName(label: string, typeName: string): Promise<string> {
     const defaultName: string = await firstValueFrom(
-      this._translateService.get(`COMMON.CLIENT_TYPES.${typeName.toUpperCase()}`)
+      this._translateService.get(`COMMON.CLIENT_TYPES.${typeName.toUpperCase()}`),
     );
-    return label.replace(DEFAULT_NAME_TOKEN, defaultName);
+    console.debug("getDisplayName", defaultName, label, typeName);
+    const finalLabel = label.replace(DEFAULT_NAME_TOKEN, defaultName);
+
+    if (finalLabel.includes(DEFAULT_NAME_TOKEN)) {
+      throw new Error(`Default token in name: ${label} => ${typeName} `);
+    }
+
+    return finalLabel;
   }
 
   private getFullProductPath(location: string, clientType: WowClientType): string {

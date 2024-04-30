@@ -796,7 +796,7 @@ export class AddonService {
       return [];
     }
 
-    console.debug(`[addon-service] rescanInstallation: ${installation.label}`);
+    console.debug(`[addon-service] rescanInstallation: ${installation.displayName}`);
     // Fetch existing installation addons
     let addons = await this._addonStorage.getAllForInstallationIdAsync(installation.id);
 
@@ -875,7 +875,7 @@ export class AddonService {
 
   /** Check for updates for all addons installed for the give WoW client */
   public async syncClient(installation: WowInstallation): Promise<void> {
-    console.debug("syncClient", installation.label);
+    console.debug("syncClient", installation.displayName);
     await this.syncBatchProviders([installation]);
 
     try {
@@ -957,7 +957,7 @@ export class AddonService {
           this._syncErrorSrc.next(
             new AddonSyncError({
               providerName: provider.name,
-              installationName: installation.label,
+              installationName: installation.displayName,
               innerError: e,
             }),
           );
@@ -993,8 +993,6 @@ export class AddonService {
   }
 
   private async syncProviderAddons(installation: WowInstallation, addons: Addon[], addonProvider: AddonProvider) {
-    // console.debug(`syncProviderAddons`, installation.label, addonProvider.name);
-
     const providerAddonIds = this.getExternalIdsForProvider(addonProvider, addons);
     if (!providerAddonIds.length) {
       return;
@@ -1010,7 +1008,6 @@ export class AddonService {
     addons: Addon[],
     installation: WowInstallation,
   ): Promise<void> {
-    // console.debug(`handleSyncResults`, installation.label, addonSearchResults);
     for (const result of addonSearchResults) {
       const addon = addons.find((addon) => this.addonMatchesSearchResult(addon, result));
       if (!addon) {
@@ -1028,7 +1025,7 @@ export class AddonService {
           this._syncErrorSrc.next(
             new AddonSyncError({
               providerName: addon.providerName ?? "",
-              installationName: installation.label,
+              installationName: installation.displayName,
               addonName: addon?.name,
             }),
           );
@@ -1116,7 +1113,7 @@ export class AddonService {
       this._syncErrorSrc.next(
         new AddonSyncError({
           providerName: addonProvider.name,
-          installationName: installation.label,
+          installationName: installation.displayName,
           innerError: error,
           addonName: addon?.name,
         }),
@@ -1185,13 +1182,13 @@ export class AddonService {
   private async migrateLocalAddons(installation: WowInstallation): Promise<void> {
     const existingAddons = await this.getAllAddons(installation);
     if (!existingAddons.length) {
-      console.log(`[MigrateInstall] ${installation.label} no addons found`);
+      console.log(`[MigrateInstall] ${installation.displayName} no addons found`);
       return;
     }
 
     const needsMigration = existingAddons.some((addon) => this.needsMigration(addon));
     if (!needsMigration) {
-      console.log(`[MigrateInstall] ${installation.label} No addons needed to be migrated`);
+      console.log(`[MigrateInstall] ${installation.displayName} No addons needed to be migrated`);
       return;
     }
 
@@ -1203,22 +1200,22 @@ export class AddonService {
       }
     }
 
-    console.log(`[MigrateInstall] Local addons complete: [${migratedCt}] ${installation.label}`);
+    console.log(`[MigrateInstall] Local addons complete: [${migratedCt}] ${installation.displayName}`);
   }
 
   public async migrateDeep(installation: WowInstallation): Promise<void> {
     await this.migrateLocalAddons(installation);
 
-    console.log(`[MigrateInstall] ${installation.label}`);
+    console.log(`[MigrateInstall] ${installation.displayName}`);
     const existingAddons = await this.getAllAddons(installation);
     if (!existingAddons.length) {
-      console.log(`[MigrateInstall] ${installation.label} no addons found`);
+      console.log(`[MigrateInstall] ${installation.displayName} no addons found`);
       return;
     }
 
     const needsMigration = existingAddons.some((addon) => this.needsMigration(addon));
     if (!needsMigration) {
-      console.log(`[MigrateInstall] ${installation.label} No addons needed to be migrated`);
+      console.log(`[MigrateInstall] ${installation.displayName} No addons needed to be migrated`);
       return;
     }
 

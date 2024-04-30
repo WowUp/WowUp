@@ -1,7 +1,7 @@
 <div mat-dialog-title class="">
   <div class="row align-items-center">
     <h2 class="flex-grow-1 m-0">
-      {{ "WTF_BACKUP.DIALOG_TITLE" | translate: { clientType: selectedInstallation.label } }}
+      {{ "WTF_BACKUP.DIALOG_TITLE" | translate: { clientType: selectedInstallation.displayName } }}
     </h2>
     <button class="wu-btn wu-btn-icon wu-btn-flat wu-btn-primary" [mat-dialog-close]="true" [disabled]="busy$ | async">
       <mat-icon svgIcon="fas:xmark"> </mat-icon>

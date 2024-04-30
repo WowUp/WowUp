@@ -1142,7 +1142,7 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
           this._translateService.instant("PAGES.MY_ADDONS.SPINNER.UPDATING_WITH_ADDON_NAME", {
             updateCount: updatedCt,
             addonCount: addons.length,
-            clientType: installation.label,
+            clientType: installation.displayName,
             addonName: addon.name,
           }) as string,
         );
