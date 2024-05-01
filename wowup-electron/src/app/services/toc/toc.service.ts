@@ -1,6 +1,6 @@
 import { Injectable } from "@angular/core";
 import * as path from "path";
-import { WowClientType } from "wowup-lib-core";
+import { WowClientType, getTocForGameType } from "wowup-lib-core";
 
 import * as tocModels from "wowup-lib-core";
 import { removeExtension } from "../../utils/string.utils";
@@ -97,42 +97,6 @@ export class TocService {
     return tocs;
   }
 
-  /**
-   * Given a list of toc file names, select the one that goes with the given client type
-   * Use a similar priority switch as the actual wow client, if a targeted one exists use that, if not check for a base toc and try that
-   */
-  public getTocForGameType(tocFileNames: string[], clientType: WowClientType): string {
-    let matchedToc = "";
-
-    switch (clientType) {
-      case WowClientType.Beta:
-      case WowClientType.Retail:
-      case WowClientType.RetailPtr:
-      case WowClientType.RetailXPtr:
-        matchedToc = tocFileNames.find((tfn) => /.*[-_]mainline\.toc$/gi.test(tfn)) || "";
-        break;
-      case WowClientType.ClassicEra:
-      case WowClientType.ClassicEraPtr:
-        matchedToc = tocFileNames.find((tfn) => /.*[-_](classic|vanilla)\.toc$/gi.test(tfn)) || "";
-        break;
-      case WowClientType.Classic:
-      case WowClientType.ClassicPtr:
-        matchedToc = tocFileNames.find((tfn) => /.*[-_](wrath|wotlkc)\.toc$/gi.test(tfn)) || "";
-        break;
-      case WowClientType.ClassicBeta:
-        matchedToc = tocFileNames.find((tfn) => /.*[-_](cata)\.toc$/gi.test(tfn)) || "";
-        break;
-      default:
-        break;
-    }
-
-    return (
-      matchedToc ||
-      tocFileNames.find((tfn) => /.*(?<![-_](classic|vanilla|bcc|tbc|mainline|wrath|wotlkc|cata))\.toc$/gi.test(tfn)) ||
-      ""
-    );
-  }
-
   public getTocForGameType2(
     folderName: string,
     tocs: tocModels.Toc[],
@@ -141,7 +105,7 @@ export class TocService {
     let matchedToc = "";
 
     const tocFileNames = tocs.map((toc) => toc.fileName);
-    matchedToc = this.getTocForGameType(tocFileNames, clientType);
+    matchedToc = getTocForGameType(tocFileNames, clientType);
 
     // If we still have no match, we need to return the toc that matches the folder name if it exists
     // Example: All the things for TBC (ATT-Classic)

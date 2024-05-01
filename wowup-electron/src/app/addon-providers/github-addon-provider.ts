@@ -378,10 +378,9 @@ export class GitHubAddonProvider extends AddonProvider {
   private getMetadataTargetFlavor(clientType: WowClientType): MetadataFlavor {
     switch (clientType) {
       case WowClientType.ClassicBeta:
-        return "cata";
       case WowClientType.Classic:
       case WowClientType.ClassicPtr:
-        return "wrath";
+        return "cata";
       case WowClientType.ClassicEra:
       case WowClientType.ClassicEraPtr:
         return "classic";
@@ -444,13 +443,12 @@ export class GitHubAddonProvider extends AddonProvider {
       case WowClientType.RetailPtr:
       case WowClientType.RetailXPtr:
       case WowClientType.Beta:
-        return !isClassic && !isBurningCrusade && !isWotlk;
+        return !isClassic && !isBurningCrusade && !isWotlk && !isCataclysm;
       case WowClientType.ClassicEra:
       case WowClientType.ClassicEraPtr:
         return isClassic;
       case WowClientType.Classic:
       case WowClientType.ClassicPtr:
-        return isWotlk;
       case WowClientType.ClassicBeta:
         return isCataclysm;
       default:
