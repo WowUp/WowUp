@@ -55,7 +55,7 @@
   </div>
 </div>
 <div *ngIf="ready === true" mat-dialog-actions>
-  <button class="wu-btn" [disabled]="isInstalling" (click)="onClose()">
+  <button class="wu-btn wu-btn-flat mr-2" [disabled]="isInstalling" (click)="onClose()">
     {{ "DIALOGS.INSTALL_FROM_PROTOCOL.CANCEL_BUTTON" | translate }}
   </button>
   <button

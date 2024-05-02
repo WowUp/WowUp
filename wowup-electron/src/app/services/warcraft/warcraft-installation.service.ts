@@ -8,8 +8,8 @@ import { Injectable } from "@angular/core";
 import { TranslateService } from "@ngx-translate/core";
 
 import { WOW_INSTALLATIONS_KEY } from "../../../common/constants";
-import { getWowClientFolderName, getWowClientGroup } from "../../../common/warcraft";
-import { getEnumName } from "wowup-lib-core";
+import { getWowClientFolderName } from "../../../common/warcraft";
+import { getEnumName, getWowClientGroupForType } from "wowup-lib-core";
 import { ElectronService } from "../electron/electron.service";
 import { FileService } from "../files/file.service";
 import { PreferenceStorageService } from "../storage/preference-storage.service";
@@ -117,7 +117,7 @@ export class WarcraftInstallationService {
   public async getWowInstallationsByClientGroups(clientGroups: WowClientGroup[]): Promise<WowInstallation[]> {
     const installations = await this.getWowInstallationsAsync();
     return _.filter(installations, (installation) => {
-      const clientGroup = getWowClientGroup(installation.clientType);
+      const clientGroup = getWowClientGroupForType(installation.clientType);
       return clientGroups.includes(clientGroup);
     });
   }

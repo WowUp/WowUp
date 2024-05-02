@@ -11,9 +11,8 @@ import {
   GitHubFetchRepositoryError,
   GitHubLimitError,
 } from "../errors";
-import { convertMarkdown } from "wowup-lib-core";
+import { convertMarkdown, getWowClientGroupForType } from "wowup-lib-core";
 import { strictFilterBy } from "../utils/array.utils";
-import { getWowClientGroup } from "../../common/warcraft";
 import { SensitiveStorageService } from "../services/storage/sensitive-storage.service";
 import {
   AddonChannelType,
@@ -153,7 +152,7 @@ export class GitHubAddonProvider extends AddonProvider {
       searchResult: undefined,
     };
 
-    const clientGroup = getWowClientGroup(installation.clientType);
+    const clientGroup = getWowClientGroupForType(installation.clientType);
 
     try {
       const results = await this.getReleases(repoPath);

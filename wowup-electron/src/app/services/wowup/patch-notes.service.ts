@@ -22,6 +22,10 @@ const CHANGELOGS: ChangeLog[] = [
     <ul>
     <li>Add Cataclysm</li>
     </ul>
+	<h4>Changes</h4>
+    <ul>
+    <li>Remove minor warning for folders not containing exact interface match</li>
+    </ul>
     `,
   },
   {

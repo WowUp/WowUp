@@ -10,9 +10,8 @@ import { CachingService } from "../services/caching/caching-service";
 import { CircuitBreakerWrapper, NetworkService } from "../services/network/network.service";
 import { TocService } from "../services/toc/toc.service";
 import { WarcraftService } from "../services/warcraft/warcraft.service";
-import { getEnumName, getGameVersion } from "wowup-lib-core";
+import { getEnumName, getGameVersion, getWowClientGroupForType } from "wowup-lib-core";
 import { convertMarkdown } from "wowup-lib-core";
-import { getWowClientGroup } from "../../common/warcraft";
 import { HttpErrorResponse } from "@angular/common/http";
 import { UiMessageService } from "../services/ui-message/ui-message.service";
 import { SensitiveStorageService } from "../services/storage/sensitive-storage.service";
@@ -746,7 +745,7 @@ export class WagoAddonProvider extends AddonProvider {
 
   // The wago name for the client type
   private getGameVersion(clientType: WowClientType): WagoGameVersion {
-    const clientGroup = getWowClientGroup(clientType);
+    const clientGroup = getWowClientGroupForType(clientType);
     switch (clientGroup) {
       case WowClientGroup.BurningCrusade:
         return "bc";
