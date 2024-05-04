@@ -1358,14 +1358,24 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
 
   // Sort the toc version column by converting from 'x.x.x' to interface version 'xxxxxx'
   private compareTocVersion(nodeA: IRowNode, nodeB: IRowNode): number {
-    const v1 = (nodeA.data["gameVersion"] as string)?.trim();
-    const v2 = (nodeB.data["gameVersion"] as string)?.trim();
+    let v1GameVers = nodeA.data["gameVersion"] as string[];
+    if (!Array.isArray(v1GameVers)) {
+      v1GameVers = [];
+    }
+
+    let v2GameVers = nodeB.data["gameVersion"] as string[];
+    if (!Array.isArray(v2GameVers)) {
+      v2GameVers = [];
+    }
 
     try {
-      const iv1 = +toInterfaceVersion(v1 || "0.0.0");
-      const iv2 = +toInterfaceVersion(v2 || "0.0.0");
+      const v1IntVers = v1GameVers.map((x) => +toInterfaceVersion(x || "0.0.0"));
+      const v2IntVers = v2GameVers.map((x) => +toInterfaceVersion(x || "0.0.0"));
 
-      return iv1 > iv2 ? 1 : -1;
+      const v1Max = _.max(v1IntVers) ?? 0;
+      const v2Max = _.max(v2IntVers) ?? 0;
+
+      return v1Max > v2Max ? 1 : -1;
     } catch (e) {
       console.error(e);
       return -1;

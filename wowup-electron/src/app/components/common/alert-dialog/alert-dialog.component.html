@@ -3,12 +3,7 @@
   <pre #dialogContent class="message changelog" [innerHTML]="data.message"></pre>
 </div>
 <div mat-dialog-actions [ngSwitch]="data.positiveButtonStyle" align="end">
-  <button
-    *ngSwitchCase="'raised'"
-    class="wu-btn"
-    [mat-dialog-close]="true"
-    cdkFocusInitial
-  >
+  <button *ngSwitchCase="'raised'" class="wu-btn wu-btn-flat mr-2" [mat-dialog-close]="true" cdkFocusInitial>
     {{ data.positiveButton ?? "DIALOGS.ALERT.POSITIVE_BUTTON" | translate }}
   </button>
   <button *ngSwitchDefault class="wu-btn" [mat-dialog-close]="true" cdkFocusInitial>
