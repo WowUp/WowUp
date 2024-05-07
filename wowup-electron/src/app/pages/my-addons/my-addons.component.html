@@ -17,10 +17,9 @@
           <mat-label>{{ "PAGES.MY_ADDONS.FILTER_LABEL" | translate }}</mat-label>
           <input #addonFilter matInput />
           <button
-            color="accent"
+            class="wu-btn wu-btn-icon"
             *ngIf="filterInput$ | async"
             matSuffix
-            mat-icon-button
             aria-label="Clear"
             (click)="onClickClearFilter()"
           >
@@ -30,27 +29,27 @@
       </div>
       <div class="button-container">
         <!-- UPDATE ALL DROPDOWN -->
-        <div class="row">
-          <button
-            mat-flat-button
-            color="primary"
-            class="menu-button"
-            [matTooltip]="'PAGES.MY_ADDONS.UPDATE_ALL_BUTTON_TOOLTIP' | translate"
-            [disabled]="enableUpdateAll$ | async | invertBool"
-            (click)="onUpdateAll()"
-          >
-            {{ "PAGES.MY_ADDONS.UPDATE_ALL_BUTTON" | translate }}
-          </button>
+        <div class="row align-items-center">
+          <div>
+            <button
+              class="wu-btn wu-btn-primary menu-button"
+              [matTooltip]="'PAGES.MY_ADDONS.UPDATE_ALL_BUTTON_TOOLTIP' | translate"
+              [disabled]="enableUpdateAll$ | async | invertBool"
+              (click)="onUpdateAll()"
+            >
+              {{ "PAGES.MY_ADDONS.UPDATE_ALL_BUTTON" | translate }}
+            </button>
+          </div>
           <div class="menu-button-divider"></div>
-          <button
-            mat-flat-button
-            color="primary"
-            class="chip col justify-content-center"
-            [matMenuTriggerFor]="updateAllMenu"
-            [disabled]="enableUpdateExtra$ | async | invertBool"
-          >
-            <mat-icon class="m-0" svgIcon="fas:caret-down"></mat-icon>
-          </button>
+          <div>
+            <button
+              class="wu-btn wu-btn-primary chip col justify-content-center"
+              [matMenuTriggerFor]="updateAllMenu"
+              [disabled]="enableUpdateExtra$ | async | invertBool"
+            >
+              <mat-icon class="m-0" svgIcon="fas:caret-down"></mat-icon>
+            </button>
+          </div>
         </div>
         <mat-menu #updateAllMenu="matMenu" xPosition="before">
           <button mat-menu-item (click)="onUpdateAllRetailClassic()">
@@ -62,24 +61,16 @@
         </mat-menu>
         <!-- CHECK UPDATES -->
         <button
-          mat-flat-button
-          color="primary"
+          class="wu-btn wu-btn-primary"
           [matTooltip]="'PAGES.MY_ADDONS.CHECK_UPDATES_BUTTON_TOOLTIP' | translate"
           [disabled]="enableControls$ | async | invertBool"
           (click)="onRefresh()"
         >
           {{ "PAGES.MY_ADDONS.CHECK_UPDATES_BUTTON" | translate }}
         </button>
-        <!-- RESCAN -->
-        <!-- <button mat-flat-button color="primary"
-          [matTooltip]="'PAGES.MY_ADDONS.RESCAN_FOLDERS_BUTTON_TOOLTIP' | translate"
-          [disabled]="enableControls$ | async | invertBool" (click)="onReScan()">
-          {{ "PAGES.MY_ADDONS.RESCAN_FOLDERS_BUTTON" | translate }}
-        </button> -->
         <!-- MORE ACTIONS -->
         <button
-          mat-icon-button
-          color="accent"
+          class="wu-btn wu-btn-flat wu-btn-icon"
           [matMenuTriggerFor]="pageActionMenu"
           [disabled]="enableControls$ | async | invertBool"
         >

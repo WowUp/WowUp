@@ -25,8 +25,7 @@
         <div class="row align-items-center">
           <p class="m-0">{{ news.publishedAt | localeDate }} - {{ news.publishedBy }}</p>
           <button
-            mat-icon-button
-            class="ml-2"
+            class="wu-btn wu-btn-icon ml-2"
             aria-label="Copy news link"
             [matTooltip]="'PAGES.NEWS.NEWS_LINK_COPY_TOOLTIP' | translate"
             [cdkCopyToClipboard]="news.link"

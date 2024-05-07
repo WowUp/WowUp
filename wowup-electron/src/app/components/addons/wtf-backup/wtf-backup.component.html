@@ -1,9 +1,9 @@
 <div mat-dialog-title class="">
   <div class="row align-items-center">
     <h2 class="flex-grow-1 m-0">
-      {{ "WTF_BACKUP.DIALOG_TITLE" | translate: { clientType: selectedInstallation.label } }}
+      {{ "WTF_BACKUP.DIALOG_TITLE" | translate: { clientType: selectedInstallation.displayName } }}
     </h2>
-    <button mat-icon-button [mat-dialog-close]="true" color="accent" [disabled]="busy$ | async">
+    <button class="wu-btn wu-btn-icon wu-btn-flat wu-btn-primary" [mat-dialog-close]="true" [disabled]="busy$ | async">
       <mat-icon svgIcon="fas:xmark"> </mat-icon>
     </button>
   </div>
@@ -41,12 +41,20 @@
           <!-- ACTIONS -->
           <div *ngIf="backup.error" class="flex-shrink-0">{{ "WTF_BACKUP.ERROR." + backup.error | translate }}</div>
           <div *ngIf="backup.error === undefined" class="flex-shrink-0">
-            <button mat-icon-button [disabled]="busy$ | async"
-              [matTooltip]="'WTF_BACKUP.TOOL_TIP.APPLY_BUTTON' | translate" (click)="onClickApplyBackup(backup)">
+            <button
+              class="wu-btn wu-btn-icon wu-btn-flat mr-2"
+              [disabled]="busy$ | async"
+              [matTooltip]="'WTF_BACKUP.TOOL_TIP.APPLY_BUTTON' | translate"
+              (click)="onClickApplyBackup(backup)"
+            >
               <mat-icon svgIcon="fas:clock-rotate-left"> </mat-icon>
             </button>
-            <button mat-icon-button color="warn" [disabled]="busy$ | async"
-              [matTooltip]="'WTF_BACKUP.TOOL_TIP.DELETE_BUTTON' | translate" (click)="onClickDeleteBackup(backup)">
+            <button
+              class="wu-btn wu-btn-warning wu-btn-flat wu-btn-icon"
+              [disabled]="busy$ | async"
+              [matTooltip]="'WTF_BACKUP.TOOL_TIP.DELETE_BUTTON' | translate"
+              (click)="onClickDeleteBackup(backup)"
+            >
               <mat-icon svgIcon="fas:trash"> </mat-icon>
             </button>
           </div>
@@ -56,11 +64,11 @@
   </div>
 </mat-dialog-content>
 <mat-dialog-actions>
-  <button mat-button color="primary" [disabled]="busy$ | async" (click)="onShowFolder()">
+  <button class="wu-btn wu-btn-flat" [disabled]="busy$ | async" (click)="onShowFolder()">
     {{ "WTF_BACKUP.SHOW_FOLDER_BUTTON" | translate }}
   </button>
   <div class="flex-grow-1"></div>
-  <button mat-flat-button color="primary" [disabled]="busy$ | async" (click)="onCreateBackup()">
+  <button class="wu-btn wu-btn-primary" [disabled]="busy$ | async" (click)="onCreateBackup()">
     {{ "WTF_BACKUP.CREATE_BACKUP_BUTTON" | translate }}
   </button>
 </mat-dialog-actions>

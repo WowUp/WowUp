@@ -1,7 +1,6 @@
 @use "@angular/material" as mat;
 @import "./variables.scss";
 
-
 @import "ag-grid-community/styles/ag-grid.css";
 @import "ag-grid-community/styles/ag-theme-material.css";
 
@@ -268,11 +267,12 @@ body {
   --background-primary: #6b69d6;
   --background-primary-2: #504fa1;
   --background-primary-3: #383773;
-  --background-secondary-1: #666666;
-  --background-secondary-2: #555555;
-  --background-secondary-3: #444444;
-  --background-secondary-4: #333333;
-  --background-secondary-5: #222222;
+  --background-secondary-1: rgba(102, 102, 102, 0.85);
+  --background-secondary-2: rgba(85, 85, 85, 0.9);
+  --background-secondary-2-fill: rgba(85, 85, 85, 1);
+  --background-secondary-3: rgba(68, 68, 68, 0.8);
+  --background-secondary-4: rgba(51, 51, 51, 0.8);
+  --background-secondary-5: rgba(34, 34, 34, 0.8);
   --control-color: #536dfe;
   --epic-color: #a335ee;
   --rare-color: #0070dd;
@@ -293,17 +293,20 @@ body {
   --theme-logo: url("assets/images/wowup-white-1.png");
   --ad-placeholder: url("assets/images/wowup-placeholder.png");
 
+  --mat-sidenav-content-background-color: rgba(0, 0, 0, 0);
+  --mat-sidenav-container-background-color: rgba(0, 0, 0, 0);
 }
 
 .default-theme-light-theme {
   --background-primary: #6b69d6;
   --background-primary-2: #504fa1;
   --background-primary-3: #383773;
-  --background-secondary-1: #ffffff;
-  --background-secondary-2: #f3f3f3;
-  --background-secondary-3: #ebedef;
-  --background-secondary-4: #e3e5e8;
-  --background-secondary-5: #caccce;
+  --background-secondary-1: rgba(255, 255, 255, 0.75);
+  --background-secondary-2: rgba(243, 243, 243, 0.8);
+  --background-secondary-2-fill: rgba(243, 243, 243, 1);
+  --background-secondary-3: rgba(235, 237, 239, 0.75);
+  --background-secondary-4: rgba(227, 229, 232, 0.75);
+  --background-secondary-5: rgba(202, 204, 206, 0.75);
   --control-color: #536dfe;
   --epic-color: #a335ee;
   --rare-color: #0070dd;
@@ -328,11 +331,12 @@ body {
   --background-primary: #8c1616;
   --background-primary-2: #9d3939;
   --background-primary-3: #5c0606;
-  --background-secondary-1: #666666;
-  --background-secondary-2: #555555;
-  --background-secondary-3: #444444;
-  --background-secondary-4: #333333;
-  --background-secondary-5: #222222;
+  --background-secondary-1: rgba(102, 102, 102, 0.85);
+  --background-secondary-2: rgba(85, 85, 85, 0.9);
+  --background-secondary-2-fill: rgba(85, 85, 85, 1);
+  --background-secondary-3: rgba(68, 68, 68, 0.8);
+  --background-secondary-4: rgba(51, 51, 51, 0.8);
+  --background-secondary-5: rgba(34, 34, 34, 0.8);
   --control-color: #ff5b5b;
   --epic-color: #a335ee;
   --rare-color: #0070dd;
@@ -351,17 +355,20 @@ body {
 
   --title-logo: url("assets/images/horde-1.png");
   --theme-logo: url("assets/images/horde-1.png");
+  --mat-sidenav-content-background-color: rgba(0, 0, 0, 0);
+  --mat-sidenav-container-background-color: rgba(0, 0, 0, 0);
 }
 
 .horde-theme-light-theme {
   --background-primary: #8c1616;
   --background-primary-2: #9d3939;
   --background-primary-3: #5c0606;
-  --background-secondary-1: #ffffff;
-  --background-secondary-2: #f3f3f3;
-  --background-secondary-3: #ebedef;
-  --background-secondary-4: #e3e5e8;
-  --background-secondary-5: #caccce;
+  --background-secondary-1: rgba(255, 255, 255, 0.75);
+  --background-secondary-2: rgba(243, 243, 243, 0.8);
+  --background-secondary-2-fill: rgba(243, 243, 243, 1);
+  --background-secondary-3: rgba(235, 237, 239, 0.75);
+  --background-secondary-4: rgba(227, 229, 232, 0.75);
+  --background-secondary-5: rgba(202, 204, 206, 0.75);
   --control-color: #ff5b5b;
   --epic-color: #a335ee;
   --rare-color: #0070dd;
@@ -386,11 +393,12 @@ body {
   --background-primary: #162c57;
   --background-primary-2: #394c70;
   --background-primary-3: #06102c;
-  --background-secondary-1: #666666;
-  --background-secondary-2: #555555;
-  --background-secondary-3: #444444;
-  --background-secondary-4: #333333;
-  --background-secondary-5: #222222;
+  --background-secondary-1: rgba(102, 102, 102, 0.85);
+  --background-secondary-2: rgba(85, 85, 85, 0.9);
+  --background-secondary-2-fill: rgba(85, 85, 85, 1);
+  --background-secondary-3: rgba(68, 68, 68, 0.8);
+  --background-secondary-4: rgba(51, 51, 51, 0.8);
+  --background-secondary-5: rgba(34, 34, 34, 0.8);
   --control-color: #335eff;
   --epic-color: #a335ee;
   --rare-color: #0070dd;
@@ -408,17 +416,20 @@ body {
 
   --title-logo: url("assets/images/alliance-1.png");
   --theme-logo: url("assets/images/alliance-1.png");
+  --mat-sidenav-content-background-color: rgba(0, 0, 0, 0);
+  --mat-sidenav-container-background-color: rgba(0, 0, 0, 0);
 }
 
 .alliance-theme-light-theme {
   --background-primary: #162c57;
   --background-primary-2: #394c70;
   --background-primary-3: #06102c;
-  --background-secondary-1: #ffffff;
-  --background-secondary-2: #f3f3f3;
-  --background-secondary-3: #ebedef;
-  --background-secondary-4: #e3e5e8;
-  --background-secondary-5: #caccce;
+  --background-secondary-1: rgba(255, 255, 255, 0.75);
+  --background-secondary-2: rgba(243, 243, 243, 0.8);
+  --background-secondary-2-fill: rgba(243, 243, 243, 1);
+  --background-secondary-3: rgba(235, 237, 239, 0.75);
+  --background-secondary-4: rgba(227, 229, 232, 0.75);
+  --background-secondary-5: rgba(202, 204, 206, 0.75);
   --control-color: #335eff;
   --epic-color: #a335ee;
   --rare-color: #0070dd;
@@ -553,7 +564,7 @@ body {
   .mdc-snackbar__surface {
     background-color: var(--background-secondary-4) !important;
   }
-  
+
   &.text-1 {
     * {
       color: var(--text-1) !important;
@@ -665,23 +676,6 @@ div[class*="light-theme"] {
 .mat-card {
   background-color: var(--background-secondary-3);
 }
-
-// .mat-button {
-//   color: var(--control-color);
-//   background: transparent;
-// }
-
-// .mat-stroked-button {
-//   background-color: transparent;
-//   color: var(--text-1);
-// }
-
-// .mat-flat-button {
-//   &.mat-primary {
-//     background-color: var(--background-primary) !important;
-//     color: var(--text-1) !important;
-//   }
-// }
 
 .mat-button {
   &.mat-primary {

@@ -1,5 +1,5 @@
 import { Pipe, PipeTransform } from "@angular/core";
-import { getGameVersion } from "../utils/addon.utils";
+import { getGameVersion } from "wowup-lib-core";
 
 @Pipe({
   name: "interfaceFormat",

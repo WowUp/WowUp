@@ -1,26 +1,38 @@
-<h1 *ngIf="ready === true" mat-dialog-title>{{ "DIALOGS.INSTALL_FROM_PROTOCOL.TITLE" | translate:{providerName:
-  getProviderName()} }}</h1>
+<h1 *ngIf="ready === true" mat-dialog-title>
+  {{ "DIALOGS.INSTALL_FROM_PROTOCOL.TITLE" | translate: { providerName: getProviderName() } }}
+</h1>
 <div mat-dialog-content class="content">
   <div *ngIf="ready === false" class="row justify-content-center">
     <app-progress-spinner></app-progress-spinner>
   </div>
   <div *ngIf="ready === true">
     <div *ngIf="error.length === 0" class="row mb-3">
-      <app-addon-thumbnail [url]="getThumbnailUrl()" [name]="getName()" [size]="60" class="pt-1 mr-3"></app-addon-thumbnail>
+      <app-addon-thumbnail
+        [url]="getThumbnailUrl()"
+        [name]="getName()"
+        [size]="60"
+        class="pt-1 mr-3"
+      ></app-addon-thumbnail>
       <div>
-        <h3 class="m-0">{{getName()}}</h3>
-        <p class="m-0">{{getAuthor()}}</p>
-        <p class="m-0 text-2">{{getVersion()}}</p>
+        <h3 class="m-0">{{ getName() }}</h3>
+        <p class="m-0">{{ getAuthor() }}</p>
+        <p class="m-0 text-2">{{ getVersion() }}</p>
       </div>
     </div>
 
     <mat-form-field *ngIf="error.length === 0" class="control">
       <mat-label>WoW Installation</mat-label>
-      <mat-select multiple class="select" [formControl]="installations"
-        [disabled]="isInstalling === true || isComplete === true">
-        <mat-option *ngFor="let installation of validWowInstallations" [value]="installation.id"
-          [disabled]="installation.isInstalled">{{ installation.label
-          }}
+      <mat-select
+        multiple
+        class="select"
+        [formControl]="installations"
+        [disabled]="isInstalling === true || isComplete === true"
+      >
+        <mat-option
+          *ngFor="let installation of validWowInstallations"
+          [value]="installation.id"
+          [disabled]="installation.isInstalled"
+          >{{ installation.displayName }}
           <mat-icon *ngIf="installation.isInstalled" class="option-icon success-icon" svgIcon="fas:circle-check">
           </mat-icon>
         </mat-option>
@@ -29,25 +41,29 @@
   </div>
   <div *ngIf="ready === true && error.length > 0" class="error">
     <h4>Error</h4>
-    <p>{{ error | translate:{protocol: data.protocol} }}</p>
+    <p>{{ error | translate: { protocol: data.protocol } }}</p>
   </div>
   <div *ngIf="isInstalling === true">
-    <p>{{ 'DIALOGS.INSTALL_FROM_PROTOCOL.ADDON_INSTALLING' | translate }}</p>
+    <p>{{ "DIALOGS.INSTALL_FROM_PROTOCOL.ADDON_INSTALLING" | translate }}</p>
     <mat-progress-bar mode="determinate" [value]="installProgress"></mat-progress-bar>
   </div>
   <div *ngIf="isComplete === true" class="installed">
     <div class="success-icon">
       <img src="assets/images/checkbox-marked-circle-green.svg" class="icon-larger" />
     </div>
-    <p class="text-center">{{ 'DIALOGS.INSTALL_FROM_PROTOCOL.ADDON_INSTALLED' | translate }}</p>
+    <p class="text-center">{{ "DIALOGS.INSTALL_FROM_PROTOCOL.ADDON_INSTALLED" | translate }}</p>
   </div>
 </div>
 <div *ngIf="ready === true" mat-dialog-actions>
-  <button mat-button [disabled]="isInstalling" (click)="onClose()">
+  <button class="wu-btn wu-btn-flat mr-2" [disabled]="isInstalling" (click)="onClose()">
     {{ "DIALOGS.INSTALL_FROM_PROTOCOL.CANCEL_BUTTON" | translate }}
   </button>
-  <button mat-flat-button color="primary" cdkFocusInitial (click)="onInstall()"
-    [disabled]="error.length > 0 || installations.value.length === 0 || isInstalling === true || isComplete === true">
+  <button
+    class="wu-btn wu-btn-primary"
+    cdkFocusInitial
+    (click)="onInstall()"
+    [disabled]="error.length > 0 || installations.value.length === 0 || isInstalling === true || isComplete === true"
+  >
     {{ "DIALOGS.INSTALL_FROM_PROTOCOL.INSTALL_BUTTON" | translate }}
   </button>
 </div>

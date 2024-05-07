@@ -1,10 +1,11 @@
 import { Injectable } from "@angular/core";
 import * as path from "path";
-import { WowClientType } from "wowup-lib-core";
+import { WowClientType, getTocForGameType } from "wowup-lib-core";
 
 import * as tocModels from "wowup-lib-core";
 import { removeExtension } from "../../utils/string.utils";
 import { FileService } from "../files/file.service";
+import { uniq } from "lodash";
 
 @Injectable({
   providedIn: "root",
@@ -27,7 +28,7 @@ export class TocService {
       filePath: tocPath,
       author: this.getValue(tocModels.TOC_AUTHOR, tocText),
       curseProjectId: this.getValue(tocModels.TOC_X_CURSE_PROJECT_ID, tocText),
-      interface: this.getValue(tocModels.TOC_INTERFACE, tocText),
+      interface: this.getValueArray(tocModels.TOC_INTERFACE, tocText),
       title: this.getValue(tocModels.TOC_TITLE, tocText),
       website: this.getWebsite(tocText),
       version: this.getValue(tocModels.TOC_VERSION, tocText),
@@ -72,7 +73,7 @@ export class TocService {
   public async getAllTocs(
     baseDir: string,
     installedFolders: string[],
-    clientType: WowClientType
+    clientType: WowClientType,
   ): Promise<tocModels.Toc[]> {
     const tocs: tocModels.Toc[] = [];
 
@@ -84,7 +85,7 @@ export class TocService {
         tocFiles.map((tf) => {
           const tocPath = path.join(dirPath, tf);
           return this.parse(tocPath);
-        })
+        }),
       );
 
       const tf = this.getTocForGameType2(dir, allTocs, clientType);
@@ -96,49 +97,15 @@ export class TocService {
     return tocs;
   }
 
-  /**
-   * Given a list of toc file names, select the one that goes with the given client type
-   * Use a similar priority switch as the actual wow client, if a targeted one exists use that, if not check for a base toc and try that
-   */
-  public getTocForGameType(tocFileNames: string[], clientType: WowClientType): string {
-    let matchedToc = "";
-
-    switch (clientType) {
-      case WowClientType.Beta:
-      case WowClientType.Retail:
-      case WowClientType.RetailPtr:
-      case WowClientType.RetailXPtr:
-        matchedToc = tocFileNames.find((tfn) => /.*[-_]mainline\.toc$/gi.test(tfn)) || "";
-        break;
-      case WowClientType.ClassicEra:
-      case WowClientType.ClassicEraPtr:
-        matchedToc = tocFileNames.find((tfn) => /.*[-_](classic|vanilla)\.toc$/gi.test(tfn)) || "";
-        break;
-      case WowClientType.Classic:
-      case WowClientType.ClassicPtr:
-      case WowClientType.ClassicBeta:
-        matchedToc = tocFileNames.find((tfn) => /.*[-_](wrath|wotlkc)\.toc$/gi.test(tfn)) || "";
-        break;
-      default:
-        break;
-    }
-
-    return (
-      matchedToc ||
-      tocFileNames.find((tfn) => /.*(?<![-_](classic|vanilla|bcc|tbc|mainline|wrath|wotlkc))\.toc$/gi.test(tfn)) ||
-      ""
-    );
-  }
-
   public getTocForGameType2(
     folderName: string,
     tocs: tocModels.Toc[],
-    clientType: WowClientType
+    clientType: WowClientType,
   ): tocModels.Toc | undefined {
     let matchedToc = "";
 
     const tocFileNames = tocs.map((toc) => toc.fileName);
-    matchedToc = this.getTocForGameType(tocFileNames, clientType);
+    matchedToc = getTocForGameType(tocFileNames, clientType);
 
     // If we still have no match, we need to return the toc that matches the folder name if it exists
     // Example: All the things for TBC (ATT-Classic)
@@ -166,6 +133,11 @@ export class TocService {
     const tocText = await this._fileService.readFile(tocPath);
 
     return tocText.split("\n").filter((line) => line.trim().startsWith("## "));
+  }
+
+  private getValueArray(key: string, tocText: string): string[] {
+    const value = this.getValue(key, tocText);
+    return uniq(value.split(",").map((x) => x.trim()));
   }
 
   private getValue(key: string, tocText: string): string {

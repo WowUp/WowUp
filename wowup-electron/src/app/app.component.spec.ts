@@ -25,6 +25,7 @@ import { WowUpAddonService } from "./services/wowup/wowup-addon.service";
 import { WowUpService } from "./services/wowup/wowup.service";
 import { ZoomService } from "./services/zoom/zoom.service";
 import { AddonProviderFactory } from "./services/addons/addon.provider.factory";
+import { mockPreload } from "./tests/test-helpers";
 
 describe("AppComponent", () => {
   let addonServiceSpy: AddonService;
@@ -40,6 +41,8 @@ describe("AppComponent", () => {
   let addonProviderService: any;
 
   beforeEach(async () => {
+    mockPreload();
+
     wowUpAddonServiceSpy = jasmine.createSpyObj(
       "WowUpAddonService",
       ["updateForClientType", "updateForAllClientTypes"],

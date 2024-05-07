@@ -182,8 +182,8 @@
     },
     "CLIENT_TYPES": {
       "BETA": "Bêta de Dragonflight",
-      "CLASSIC": "Wrath of the Lich King Classic",
-      "CLASSICBETA": "Bêta de Wrath of the Lich King Classic",
+      "CLASSIC": "Cataclysm Classic",
+      "CLASSICBETA": "Cataclysm Classic Beta",
       "CLASSICERA": "World of Warcraft Classic",
       "CLASSICERAPTR": "WoW Classic Era PTR",
       "CLASSICPTR": "Royaume public de test (Wrath of the Lich King Classic)",
@@ -294,6 +294,7 @@
       "ERROR": {
         "ASSET_NOT_FOUND": "No asset was found to download {message}.\n\nA valid zip file is required to be in the release in order for WowUp to download it.",
         "BURNING_CRUSADE_ASSET_NOT_FOUND": "No asset was found to download from {message}.\n\nA valid zip file ending with '-bc' is required in order for WowUp to download it.",
+        "CATACLYSM_ASSET_NOT_FOUND": "No asset was found to download from {message}.\n\nA valid zip file ending with '-cata' is required in order for WowUp to download it.",
         "CLASSIC_ASSET_NOT_FOUND": "No asset was found to download from {message}.\n\nA valid zip file ending with '-classic' is required in order for WowUp to download it.",
         "FAILED_TO_CONNECT": "Impossible de se connecter à l'API, veuillez patienter quelques instants et réessayer.",
         "INSTALL_FAILED": "Une erreur s'est produite lors de la tentative d'installation de l'addon, veuillez réessayer.\n\nSi ce message persiste, vous pouvez obtenir de l'aide sur Discord dans le canal #help-me.",

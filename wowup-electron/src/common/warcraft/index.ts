@@ -1,4 +1,4 @@
-import { WowClientGroup, WowClientType } from "wowup-lib-core";
+import { WowClientType } from "wowup-lib-core";
 import * as constants from "../constants";
 
 export function getWowClientFolderName(clientType: WowClientType): string {
@@ -23,25 +23,5 @@ export function getWowClientFolderName(clientType: WowClientType): string {
       return constants.WOW_CLASSIC_ERA_PTR_FOLDER;
     default:
       return "";
-  }
-}
-
-export function getWowClientGroup(clientType: string | WowClientType): WowClientGroup {
-  const enumVal: WowClientType = typeof clientType === "string" ? WowClientType[clientType] : clientType;
-  switch (enumVal) {
-    case WowClientType.Beta:
-    case WowClientType.Retail:
-    case WowClientType.RetailPtr:
-    case WowClientType.RetailXPtr:
-      return WowClientGroup.Retail;
-    case WowClientType.ClassicEra:
-    case WowClientType.ClassicEraPtr:
-      return WowClientGroup.Classic;
-    case WowClientType.Classic:
-    case WowClientType.ClassicPtr:
-    case WowClientType.ClassicBeta:
-      return WowClientGroup.WOTLK;
-    default:
-      throw new Error(`unsupported client type: ${clientType}`);
   }
 }

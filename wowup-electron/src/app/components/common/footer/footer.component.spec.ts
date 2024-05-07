@@ -5,7 +5,6 @@ import { BehaviorSubject, Subject } from "rxjs";
 import { OverlayModule } from "@angular/cdk/overlay";
 import { HttpClient, HttpClientModule } from "@angular/common/http";
 import { ComponentFixture, TestBed } from "@angular/core/testing";
-import { MatIcon } from "@angular/material/icon";
 import { MatIconTestingModule } from "@angular/material/icon/testing";
 import { NoopAnimationsModule } from "@angular/platform-browser/animations";
 import { TranslateCompiler, TranslateLoader, TranslateModule } from "@ngx-translate/core";
@@ -50,7 +49,7 @@ describe("FooterComponent", () => {
     });
 
     await TestBed.configureTestingModule({
-      declarations: [FooterComponent, MatIcon],
+      declarations: [FooterComponent],
       imports: [
         MatModule,
         NoopAnimationsModule,

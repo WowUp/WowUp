@@ -3,7 +3,7 @@ import { Injectable } from "@angular/core";
 import { from, mergeMap, Subject } from "rxjs";
 import slug from "slug";
 import { join as pathJoin } from "path";
-import { Addon, AddonExternalId, Toc, WowClientType } from "wowup-lib-core";
+import { Addon, AddonExternalId, getGameVersion, getGameVersionList, Toc, WowClientType } from "wowup-lib-core";
 import { AddonInstallState } from "../../models/wowup/addon-install-state";
 import { AddonUpdateEvent } from "../../models/wowup/addon-update-event";
 import { capitalizeString } from "../../utils/string.utils";
@@ -16,7 +16,7 @@ import { nanoid } from "nanoid";
 import { FileService } from "../files/file.service";
 import { WowInstallation } from "wowup-lib-core";
 import { TocService } from "../toc/toc.service";
-import * as AddonUtils from "../../utils/addon.utils";
+
 import {
   ADDON_PROVIDER_RAIDERIO,
   ADDON_PROVIDER_TUKUI,
@@ -70,7 +70,7 @@ export class AddonInstallService {
     private _fileService: FileService,
     private _tocService: TocService,
     private _addonStorage: AddonStorageService,
-    private _analyticsService: AnalyticsService
+    private _analyticsService: AnalyticsService,
   ) {
     // Setup our install queue pump here
     this._installQueue.pipe(mergeMap((item) => from(this.processInstallQueue(item)), 3)).subscribe({
@@ -96,7 +96,7 @@ export class AddonInstallService {
     this.logAddonAction(
       `Addon${capitalizeString(queueItem.installType)}`,
       addon,
-      `'${addon.installedVersion ?? ""}' -> '${addon.latestVersion ?? ""}'`
+      `'${addon.installedVersion ?? ""}' -> '${addon.latestVersion ?? ""}'`,
     );
 
     const installation = this._warcraftInstallationService.getWowInstallation(addon.installationId);
@@ -208,11 +208,11 @@ export class AddonInstallService {
       const allTocFiles = await this._tocService.getAllTocs(
         unzippedDirectory,
         unzippedDirectoryNames,
-        addon.clientType
+        addon.clientType,
       );
       const gameVersion = this.getLatestGameVersion(allTocFiles);
       if (gameVersion) {
-        addon.gameVersion = AddonUtils.getGameVersion(gameVersion);
+        addon.gameVersion = getGameVersionList([gameVersion]);
       }
 
       if (!addon.author) {
@@ -250,7 +250,7 @@ export class AddonInstallService {
       this.logAddonAction(
         `Addon${capitalizeString(queueItem.installType)}Complete`,
         addon,
-        addon.installedVersion ?? ""
+        addon.installedVersion ?? "",
       );
     } catch (err) {
       console.error(err);
@@ -280,7 +280,7 @@ export class AddonInstallService {
 
   private logAddonAction(action: string, addon: Addon, ...extras: string[]) {
     console.log(
-      `[${action}] ${addon.providerName ?? ""} ${addon.externalId ?? "NO_EXT_ID"} ${addon.name} ${extras.join(" ")}`
+      `[${action}] ${addon.providerName ?? ""} ${addon.externalId ?? "NO_EXT_ID"} ${addon.name} ${extras.join(" ")}`,
     );
   }
 
@@ -363,7 +363,7 @@ export class AddonInstallService {
   private getLatestGameVersion(tocs: Toc[]) {
     const versions = tocs.map((toc) => +toc.interface);
     const ordered = _.orderBy(versions, [], "desc");
-    return AddonUtils.getGameVersion(ordered[0]?.toString() || "");
+    return getGameVersion(ordered[0]?.toString() || "");
   }
 
   private getBestGuessTitle(tocs: Toc[]) {
@@ -429,7 +429,7 @@ export class AddonInstallService {
     const addonTocs = await this._tocService.getAllTocs(
       addonFolderPath,
       addon.installedFolderList ?? [],
-      installation.clientType
+      installation.clientType,
     );
 
     const tocPaths = addonTocs.map((toc) => toc.filePath);
@@ -467,7 +467,7 @@ export class AddonInstallService {
     // some addons are not always the same between providers ;)
     oldAddon.externalIds?.forEach((oldExtId) => {
       const match = newAddon.externalIds?.find(
-        (newExtId) => newExtId.id === oldExtId.id && newExtId.providerName === oldExtId.providerName
+        (newExtId) => newExtId.id === oldExtId.id && newExtId.providerName === oldExtId.providerName,
       );
       if (match) {
         return;
@@ -479,7 +479,7 @@ export class AddonInstallService {
     // Remove external ids that are not valid that we may have saved previously
     _.remove(
       newAddon.externalIds ?? [],
-      (extId) => !this._addonProviderService.getProvider(extId.providerName)?.isValidAddonId(extId.id) ?? false
+      (extId) => !this._addonProviderService.getProvider(extId.providerName)?.isValidAddonId(extId.id) ?? false,
     );
 
     await this.saveAddon(newAddon);
@@ -507,7 +507,7 @@ export class AddonInstallService {
 
     let existingAddons = await this.getAddons(installation);
     existingAddons = existingAddons.filter(
-      (ea) => ea.id !== addon.id && _.intersection(addon.installedFolderList, ea.installedFolderList).length > 0
+      (ea) => ea.id !== addon.id && _.intersection(addon.installedFolderList, ea.installedFolderList).length > 0,
     );
 
     for (const existingAddon of existingAddons) {
@@ -525,7 +525,7 @@ export class AddonInstallService {
   public async removeAddon(
     addon: Addon | undefined,
     removeDependencies = false,
-    removeDirectories = true
+    removeDirectories = true,
   ): Promise<void> {
     if (addon === undefined) {
       throw new Error("Invalid addon");
@@ -547,7 +547,7 @@ export class AddonInstallService {
       for (const directory of installedDirectories) {
         const addonDirectory = pathJoin(addonFolderPath, directory);
         console.log(
-          `[RemoveAddonDirectory] ${addon.providerName ?? ""} ${addon.externalId ?? "NO_EXT_ID"} ${addonDirectory}`
+          `[RemoveAddonDirectory] ${addon.providerName ?? ""} ${addon.externalId ?? "NO_EXT_ID"} ${addonDirectory}`,
         );
         try {
           await this._fileService.deleteIfExists(addonDirectory);
@@ -614,7 +614,7 @@ export class AddonInstallService {
       const dependencyAddon = await this.getByExternalId(
         dependency.externalAddonId,
         addon.providerName,
-        addon.installationId
+        addon.installationId,
       );
       if (!dependencyAddon) {
         console.log(`${addon.name}: Dependency not found ${dependency.externalAddonId}`);
@@ -628,7 +628,7 @@ export class AddonInstallService {
   public async getByExternalId(
     externalId: string,
     providerName: string,
-    installationId: string
+    installationId: string,
   ): Promise<Addon | undefined> {
     return await this._addonStorage.getByExternalIdAsync(externalId, providerName, installationId);
   }

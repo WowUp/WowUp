@@ -1,38 +1,39 @@
+import { getGameVersion } from "wowup-lib-core";
 import * as AddonUtils from "../addon.utils";
 
 describe("AddonUtils", () => {
   it("Should convert 9.1.2", () => {
-    const gameVersion = AddonUtils.getGameVersion("90102");
+    const gameVersion = getGameVersion("90102");
     expect(gameVersion).toEqual("9.1.2");
   });
 
   it("Should convert 9.11.22", () => {
-    const gameVersion = AddonUtils.getGameVersion("91122");
+    const gameVersion = getGameVersion("91122");
     expect(gameVersion).toEqual("9.11.22");
   });
 
   it("Should accept 9.11.22", () => {
-    const gameVersion = AddonUtils.getGameVersion("9.11.22");
+    const gameVersion = getGameVersion("9.11.22");
     expect(gameVersion).toEqual("9.11.22");
   });
 
   it("Should accept empty str", () => {
-    const gameVersion = AddonUtils.getGameVersion("");
+    const gameVersion = getGameVersion("");
     expect(gameVersion).toEqual("0.0.0");
   });
 
   it("Should accept undefined", () => {
-    const gameVersion = AddonUtils.getGameVersion(undefined);
+    const gameVersion = getGameVersion(undefined);
     expect(gameVersion).toEqual("0.0.0");
   });
 
   it("Should convert 10.1.2", () => {
-    const gameVersion = AddonUtils.getGameVersion("100102");
+    const gameVersion = getGameVersion("100102");
     expect(gameVersion).toEqual("10.1.2");
   });
 
   it("Should convert 10.11.22", () => {
-    const gameVersion = AddonUtils.getGameVersion("101122");
+    const gameVersion = getGameVersion("101122");
     expect(gameVersion).toEqual("10.11.22");
   });
 
@@ -62,7 +63,10 @@ describe("AddonUtils", () => {
   });
 
   it("Should throw interface undefined", () => {
-    expect(() => AddonUtils.toInterfaceVersion(undefined)).toThrow(new Error("interface version empty or undefined"));
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+    expect(() => AddonUtils.toInterfaceVersion(undefined as any)).toThrow(
+      new Error("interface version empty or undefined"),
+    );
   });
 
   it("Should interface 10.1.2", () => {

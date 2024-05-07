@@ -182,8 +182,8 @@
     },
     "CLIENT_TYPES": {
       "BETA": "Dragonflight Beta",
-      "CLASSIC": "Wrath of the Lich King Classic",
-      "CLASSICBETA": "Wrath of the Lich King Classic Beta",
+      "CLASSIC": "Cataclysm Classic",
+      "CLASSICBETA": "Cataclysm Classic Beta",
       "CLASSICERA": "World of Warcraft Classic",
       "CLASSICERAPTR": "WoW Classic Era PTR",
       "CLASSICPTR": "Public Test Realm (Wrath Classic)",
@@ -294,6 +294,7 @@
       "ERROR": {
         "ASSET_NOT_FOUND": "Ingen ressurs ble funnet for å laste ned {message}.\n\nEn gyldig Zip-fil må inkluderes med utgivelsen for at WowUp skal kunne laste den ned.",
         "BURNING_CRUSADE_ASSET_NOT_FOUND": "Ingen ressurs ble funnet for å laste ned fra {message}.\n\nEn gyldig Zip-fil som slutter på '-bc' må inkluderes i utgivelsen for at WowUp skal kunne laste den ned.",
+        "CATACLYSM_ASSET_NOT_FOUND": "No asset was found to download from {message}.\n\nA valid zip file ending with '-cata' is required in order for WowUp to download it.",
         "CLASSIC_ASSET_NOT_FOUND": "Ingen ressurs ble funnet for å laste ned fra {message}.\n\nEn gyldig Zip-fil som slutter på '-classic' må inkluderes i utgivelsen for at WowUp skal kunne laste den ned.",
         "FAILED_TO_CONNECT": "Kunne ikke koble til API-et. Vent litt og prøv igjen.",
         "INSTALL_FAILED": "Noe gikk galt under forsøket på å installere utvidelsen, vennligst prøv igjen.\n\nHvis du får denne meldingen gjentatte ganger kan du be om hjelp på vår Discord i kanalen #help-me",

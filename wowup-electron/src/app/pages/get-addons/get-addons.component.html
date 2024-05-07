@@ -19,9 +19,7 @@
         }}
       </h4>
       <button
-        mat-button
-        color="accent"
-        mat-icon-button
+        class="wu-btn wu-btn-icon"
         aria-label="Clear Category"
         [matTooltip]="'PAGES.GET_ADDONS.RESET_CATEGORY_TOOLTIP' | translate"
         (click)="resetCategory()"
@@ -41,11 +39,9 @@
             (keyup.enter)="onSearch()"
           />
           <button
-            mat-button
-            color="accent"
+            class="wu-btn wu-btn-flat wu-btn-icon"
             *ngIf="query"
             matSuffix
-            mat-icon-button
             aria-label="Clear"
             (click)="onClearSearch()"
           >
@@ -55,8 +51,7 @@
       </div>
       <div class="button-container">
         <button
-          mat-flat-button
-          color="primary"
+          class="wu-btn wu-btn-primary"
           [matTooltip]="'PAGES.GET_ADDONS.REFRESH_TOOLTIP' | translate"
           [disabled]="enableControls$ | async | invertBool"
           (click)="onRefresh()"
@@ -64,8 +59,7 @@
           {{ (query ? "PAGES.GET_ADDONS.SEARCH_LABEL" : "PAGES.GET_ADDONS.REFRESH_BUTTON") | translate }}
         </button>
         <button
-          mat-flat-button
-          color="primary"
+          class="wu-btn wu-btn-primary"
           [matTooltip]="'PAGES.GET_ADDONS.INSTALL_FROM_URL_TOOLTIP' | translate"
           [disabled]="enableControls$ | async | invertBool"
           (click)="onInstallFromUrl()"
@@ -73,8 +67,7 @@
           {{ "PAGES.GET_ADDONS.INSTALL_FROM_URL_BUTTON" | translate }}
         </button>
         <button
-          mat-flat-button
-          color="primary"
+          class="wu-btn wu-btn-primary"
           [matTooltip]="'PAGES.GET_ADDONS.ADDON_CATEGORIES_TOOLTIP' | translate"
           [disabled]="enableControls$ | async | invertBool"
           (click)="drawer.toggle()"
@@ -86,7 +79,13 @@
   </div>
 
   <mat-drawer-container class="wu-ag-table bg-secondary-2" [hasBackdrop]="true">
-    <mat-drawer #drawer mode="over" position="end" [autoFocus]="false" style="padding-right: 0.25em">
+    <mat-drawer
+      #drawer
+      mode="over"
+      position="end"
+      [autoFocus]="false"
+      style="padding-right: 0.25em; background-color: var(--background-secondary-2-fill)"
+    >
       <h3 class="px-3">{{ "PAGES.GET_ADDONS.ADDON_CATEGORIES_MENU_TITLE" | translate }}</h3>
       <mat-divider></mat-divider>
       <mat-action-list>
@@ -100,7 +99,7 @@
         </button>
       </mat-action-list>
     </mat-drawer>
-    <mat-drawer-content class="bg-secondary">
+    <mat-drawer-content>
       <div class="spinner-container flex-grow-1" style="height: 100%" *ngIf="(showTable$ | async) === false">
         <app-progress-spinner> </app-progress-spinner>
       </div>

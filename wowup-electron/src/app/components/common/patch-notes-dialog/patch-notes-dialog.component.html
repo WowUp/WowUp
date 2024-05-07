@@ -3,7 +3,7 @@
   <div #descriptionContainer [innerHTML]="changeLog.html ?? '' | trustHtml"></div>
 </mat-dialog-content>
 <mat-dialog-actions align="end">
-  <button mat-raised-button color="primary" [mat-dialog-close]="true" cdkFocusInitial>
+  <button class="wu-btn wu-btn-primary" [mat-dialog-close]="true" cdkFocusInitial>
     {{ "DIALOGS.ALERT.POSITIVE_BUTTON" | translate }}
   </button>
 </mat-dialog-actions>

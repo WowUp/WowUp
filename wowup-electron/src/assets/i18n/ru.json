@@ -182,8 +182,8 @@
     },
     "CLIENT_TYPES": {
       "BETA": "Бета Dragonflight",
-      "CLASSIC": "Wrath of the Lich King Classic",
-      "CLASSICBETA": "Бета Wrath of the Lich King Classic",
+      "CLASSIC": "Cataclysm Classic",
+      "CLASSICBETA": "Cataclysm Classic Beta",
       "CLASSICERA": "World of Warcraft Classic",
       "CLASSICERAPTR": "WoW Classic Era PTR",
       "CLASSICPTR": "PTR (Wrath Classic)",
@@ -294,6 +294,7 @@
       "ERROR": {
         "ASSET_NOT_FOUND": "Не найдено ресурсов для загрузки {message}.\n\nНеобходим верный .zip файл в выпусках, чтобы WowUp мог загрузить его.",
         "BURNING_CRUSADE_ASSET_NOT_FOUND": "Не найдено ресурсов для загрузки из {message}.\n\nНеобходим верный .zip файл с окончанием '-bc', чтобы WowUp мог загрузить его.",
+        "CATACLYSM_ASSET_NOT_FOUND": "No asset was found to download from {message}.\n\nA valid zip file ending with '-cata' is required in order for WowUp to download it.",
         "CLASSIC_ASSET_NOT_FOUND": "Не найдено ресурсов для загрузки из {message}.\n\nНеобходим верный .zip файл с окончанием '-classic', чтобы WowUp мог загрузить его.",
         "FAILED_TO_CONNECT": "Не удается подключиться к API, подождите немного и повторите попытку.",
         "INSTALL_FAILED": "Что-то пошло не так при попытке установить модификацию, попытайтесь снова.\n\nЕсли это сообщение продолжает появляться, Вы можете получить помощь в канале #help-me нашего Discord сообщества.",

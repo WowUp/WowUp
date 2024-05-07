@@ -16,7 +16,7 @@
       </mat-form-field>
     </div>
     <div class="flex-shrink-0">
-      <button mat-raised-button color="primary" [disabled]="(loading$ | async) === true" (click)="onClickRefresh()">
+      <button class="wu-btn wu-btn-primary" [disabled]="(loading$ | async) === true" (click)="onClickRefresh()">
         Refresh
       </button>
     </div>
@@ -43,14 +43,14 @@
         <!-- This is the tree node template for leaf nodes -->
         <mat-tree-node *matTreeNodeDef="let node" matTreeNodePadding>
           <!-- use a disabled button to provide padding for tree leaf -->
-          <button mat-icon-button disabled></button>
+          <button class="wu-btn wu-btn-icon" disabled></button>
           <span [ngClass]="{ 'text-warning': node.warn, 'text-4': node.ignore }">
             {{ node.name }}
           </span>
         </mat-tree-node>
         <!-- This is the tree node template for expandable nodes -->
         <mat-tree-node *matTreeNodeDef="let node; when: hasChild" matTreeNodePadding>
-          <button mat-icon-button matTreeNodeToggle [attr.aria-label]="'Toggle ' + node.name">
+          <button class="wu-btn wu-btn-icon" matTreeNodeToggle [attr.aria-label]="'Toggle ' + node.name">
             <mat-icon
               class="mat-icon-rtl-mirror"
               [svgIcon]="treeControl.isExpanded(node) ? 'fas:chevron-down' : 'fas:chevron-right'"
@@ -70,15 +70,15 @@
                 <mat-icon class="tree-icon" [ngClass]="{ 'expanded': node?.isExpanded }" svgIcon="fas:chevron-right">
                 </mat-icon>
               </div>
-  
+
               <div class="node-content-wrapper">
                 <span
                   [ngClass]="{ 'text-warning': !node.data.ignore && node.data.isLua && !node.data.hasAddon, 'text-3': node.data.ignore}">{{
                   node.data.name }}</span>
               </div>
             </div>
-  
-  
+
+
           </ng-template>
         </tree-root> -->
     </div>
@@ -95,14 +95,14 @@
                 {{account.globalVariables.length}} files, {{account.size | sizeDisplay}}
               </mat-panel-description>
             </mat-expansion-panel-header>
-  
+
             <ul class="variable-list">
               <li *ngFor="let gvar of account.globalVariables">
                 <div [ngClass]="{ 'text-warning': !gvar.hasAddon }">{{gvar.name}} | {{gvar.size | sizeDisplay}}</div>
               </li>
             </ul>
           </mat-expansion-panel>
-  
+
           <mat-expansion-panel *ngFor="let server of account.servers">
             <mat-expansion-panel-header>
               <mat-panel-title>
@@ -112,7 +112,7 @@
                 {{ server.characters.length }} characters, {{server.size | sizeDisplay}}
               </mat-panel-description>
             </mat-expansion-panel-header>
-  
+
             <mat-accordion class="sub-accordion" multi>
               <mat-expansion-panel *ngFor="let char of server.characters">
                 <mat-expansion-panel-header>
@@ -123,7 +123,7 @@
                     {{ char.variables.length }} files, {{char.size | sizeDisplay}}
                   </mat-panel-description>
                 </mat-expansion-panel-header>
-  
+
                 <ul class="variable-list">
                   <li *ngFor="let svar of char.variables">
                     <div [ngClass]="{ 'text-warning': !svar.hasAddon }">{{svar.name}} | {{svar.size | sizeDisplay}}</div>
@@ -131,7 +131,7 @@
                 </ul>
               </mat-expansion-panel>
             </mat-accordion>
-  
+
           </mat-expansion-panel>
         </mat-accordion>
       </div> -->

@@ -1,7 +1,10 @@
+<div class="cata-bg"></div>
+
 <div
   *ngIf="(showPreLoad$ | async) === false && quitEnabled === false"
   class="app"
   [ngClass]="[sessionService.currentTheme$ | async, electronService.platform]"
+  [style.zIndex]="1"
 >
   <app-titlebar class="gtitle"></app-titlebar>
   <!-- <app-horizontal-tabs></app-horizontal-tabs> -->

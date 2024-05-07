@@ -183,7 +183,7 @@
     "CLIENT_TYPES": {
       "BETA": "용군단 베타",
       "CLASSIC": "리치 왕의 분노 클래식",
-      "CLASSICBETA": "리치 왕의 분노 클래식 베타",
+      "CLASSICBETA": "Cataclysm Classic Beta",
       "CLASSICERA": "월드 오브 워크래프트 클래식",
       "CLASSICERAPTR": "WoW Classic Era PTR",
       "CLASSICPTR": "공개 테스트 서버 (리치 왕의 분노 클래식)",
@@ -294,6 +294,7 @@
       "ERROR": {
         "ASSET_NOT_FOUND": "No asset was found to download {message}.\n\nA valid zip file is required to be in the release in order for WowUp to download it.",
         "BURNING_CRUSADE_ASSET_NOT_FOUND": "No asset was found to download from {message}.\n\nA valid zip file ending with '-bc' is required in order for WowUp to download it.",
+        "CATACLYSM_ASSET_NOT_FOUND": "No asset was found to download from {message}.\n\nA valid zip file ending with '-cata' is required in order for WowUp to download it.",
         "CLASSIC_ASSET_NOT_FOUND": "No asset was found to download from {message}.\n\nA valid zip file ending with '-classic' is required in order for WowUp to download it.",
         "FAILED_TO_CONNECT": "API 연결 실패. 잠시 후 다시 시도해주세요.",
         "INSTALL_FAILED": "설치 실패! 뭔가 잘못됐습니다.다시 시도해주세요.\n\n이 메세지가 반복된다면, 디스코드의 #help-me 채널에서 도움을 요청해보세요.",

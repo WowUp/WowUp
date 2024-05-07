@@ -96,15 +96,14 @@
 </mat-dialog-content>
 <mat-dialog-actions *ngIf="isUnknownProvider === false">
   <div class="row w-100">
-    <button *ngIf="showRemoveButton" mat-button color="warn" (click)="onClickRemoveAddon()">
+    <button *ngIf="showRemoveButton" class="wu-btn wu-btn-flat wu-btn-warning" (click)="onClickRemoveAddon()">
       {{ "PAGES.MY_ADDONS.ADDON_CONTEXT_MENU.REMOVE_ADDON_BUTTON" | translate }}
     </button>
     <div class="flex-grow-1"></div>
     <a
       *ngIf="externalUrl !== 'UNKNOWN'"
       #providerLink
-      mat-button
-      class="mr-3 text-1"
+      class="wu-btn wu-btn-flat mr-3 text-1"
       appExternalLink
       [href]="externalUrl"
       [matTooltip]="'DIALOGS.ADDON_DETAILS.VIEW_IN_BROWSER_BUTTON' | translate"

@@ -183,7 +183,7 @@
     "CLIENT_TYPES": {
       "BETA": "巨龍崛起 Beta",
       "CLASSIC": "巫妖王之怒",
-      "CLASSICBETA": "巫妖王之怒 Beta",
+      "CLASSICBETA": "Cataclysm Classic Beta",
       "CLASSICERA": "經典舊世",
       "CLASSICERAPTR": "WoW Classic Era PTR",
       "CLASSICPTR": "巫妖王之怒 PTR",
@@ -294,6 +294,7 @@
       "ERROR": {
         "ASSET_NOT_FOUND": "未找到可下載的附件 {message}。\n\n要通過 WowUp 下載插件，釋出頁面（Releases）上需要有效的 zip 檔案。",
         "BURNING_CRUSADE_ASSET_NOT_FOUND": "未找到可下載的附件 {message}。\n\n要通過 WowUp 下載插件，釋出頁面（Releases）上需要檔名以「-bc」結尾的有效的 zip 檔案。",
+        "CATACLYSM_ASSET_NOT_FOUND": "No asset was found to download from {message}.\n\nA valid zip file ending with '-cata' is required in order for WowUp to download it.",
         "CLASSIC_ASSET_NOT_FOUND": "未找到可下載的附件 {message}。\n\n要通過 WowUp 下載插件，釋出頁面（Releases）上需要檔名以「-classic」結尾的有效的 zip 檔案。",
         "FAILED_TO_CONNECT": "無法連線 API，請稍後重試。",
         "INSTALL_FAILED": "安裝插件時出現了一些錯誤，請重試。\n\n如果一直出現此訊息，可以加入 Discord #help-me 頻道尋求幫助（英語）。",

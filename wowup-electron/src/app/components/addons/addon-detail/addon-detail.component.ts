@@ -23,6 +23,7 @@ import { ADDON_PROVIDER_GITHUB, ADDON_PROVIDER_UNKNOWN, TAB_INDEX_MY_ADDONS } fr
 import { AddonViewModel } from "../../../business-objects/addon-view-model";
 import { AddonUpdateEvent } from "../../../models/wowup/addon-update-event";
 import { AddonService } from "../../../services/addons/addon.service";
+
 import { SessionService } from "../../../services/session/session.service";
 import { SnackbarService } from "../../../services/snackbar/snackbar.service";
 import * as SearchResult from "../../../utils/search-result.utils";
@@ -103,6 +104,7 @@ export class AddonDetailComponent implements OnInit, OnDestroy, AfterViewInit {
     private _snackbarService: SnackbarService,
     private _translateService: TranslateService,
     private _sessionService: SessionService,
+
     private _addonUiService: AddonUiService,
     private _wowupService: WowUpService,
     public gallery: Gallery,
@@ -202,7 +204,6 @@ export class AddonDetailComponent implements OnInit, OnDestroy, AfterViewInit {
       .subscribe((description) => {
         this._descriptionSrc.next(description);
       });
-
   }
 
   public ngOnDestroy(): void {

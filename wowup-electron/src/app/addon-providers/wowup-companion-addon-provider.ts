@@ -4,8 +4,7 @@ import { v4 as uuidv4 } from "uuid";
 import { ADDON_PROVIDER_WOWUP_COMPANION, WOWUP_DATA_ADDON_FOLDER_NAME } from "../../common/constants";
 import { FileService } from "../services/files/file.service";
 import { TocService } from "../services/toc/toc.service";
-import { getGameVersion } from "../utils/addon.utils";
-import { getEnumName } from "wowup-lib-core";
+import { getEnumName, getGameVersionList } from "wowup-lib-core";
 import { AddonChannelType, AddonFolder, AddonProvider } from "wowup-lib-core";
 import { WowInstallation } from "wowup-lib-core";
 
@@ -20,14 +19,17 @@ export class WowUpCompanionAddonProvider extends AddonProvider {
   public readonly allowEdit = false;
   public enabled = true;
 
-  public constructor(private _fileService: FileService, private _tocService: TocService) {
+  public constructor(
+    private _fileService: FileService,
+    private _tocService: TocService,
+  ) {
     super();
   }
 
   public async scan(
     installation: WowInstallation,
     addonChannelType: AddonChannelType,
-    addonFolders: AddonFolder[]
+    addonFolders: AddonFolder[],
   ): Promise<void> {
     const companion = _.find(addonFolders, (addonFolder) => this.isWowUpCompanion(addonFolder));
     if (!companion) {
@@ -53,7 +55,7 @@ export class WowUpCompanionAddonProvider extends AddonProvider {
       downloadUrl: "",
       externalId: this.name,
       externalUrl: X_WEBSITE,
-      gameVersion: getGameVersion(targetToc.interface),
+      gameVersion: getGameVersionList(targetToc.interface),
       installedAt: new Date(lastUpdatedAt),
       installedFolders: companion.name,
       installedFolderList: [companion.name],

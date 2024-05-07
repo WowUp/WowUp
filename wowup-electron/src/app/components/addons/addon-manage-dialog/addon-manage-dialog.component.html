@@ -1,9 +1,9 @@
 <div mat-dialog-title class="addon-manage-dialog">
   <div class="row align-items-center">
     <h2 class="flex-grow-1 m-0">
-      {{ "ADDON_IMPORT.DIALOG_TITLE" | translate: { clientType: selectedInstallation.label } }}
+      {{ "ADDON_IMPORT.DIALOG_TITLE" | translate: { clientType: selectedInstallation.displayName } }}
     </h2>
-    <button mat-icon-button [mat-dialog-close]="true" color="accent" [disabled]="(installing$ | async) === true">
+    <button class="wu-btn wu-btn-icon wu-btn-flat wu-btn-primary" [mat-dialog-close]="true" [disabled]="(installing$ | async) === true">
       <mat-icon svgIcon="fas:xmark"> </mat-icon>
     </button>
   </div>
@@ -112,8 +112,7 @@
   <div class="flex-grow-1"></div>
   <button
     *ngIf="exportPayload !== undefined"
-    mat-flat-button
-    color="primary"
+    class="wu-btn wu-btn-primary"
     [cdkCopyToClipboard]="exportPayload"
     [disabled]="(installing$ | async) === true"
     (click)="onClickCopy()"
@@ -125,8 +124,7 @@
 <mat-dialog-actions *ngIf="(selectedTab$ | async) === TAB_IDX_IMPORT">
   <button
     *ngIf="hasImportSummary$ | async"
-    mat-button
-    color="warn"
+    class="wu-btn wu-btn-flat wu-btn-warning"
     [disabled]="(installing$ | async) === true"
     (click)="importSummary$.next(undefined)"
   >
@@ -135,8 +133,7 @@
   <div class="flex-grow-1"></div>
   <button
     *ngIf="hasImportSummary$ | async"
-    mat-flat-button
-    color="primary"
+    class="wu-btn wu-btn-primary"
     [disabled]="(canInstall$ | async) === false || (installing$ | async) === true"
     (click)="onClickInstall()"
   >
@@ -144,8 +141,7 @@
   </button>
   <button
     *ngIf="(hasImportSummary$ | async) === false"
-    mat-button
-    color="accent"
+    class="wu-btn wu-btn-flat mr-2"
     [disabled]="(installing$ | async) === true"
     (click)="onClickPaste()"
   >
@@ -153,8 +149,7 @@
   </button>
   <button
     *ngIf="(hasImportSummary$ | async) === false"
-    mat-flat-button
-    color="primary"
+    class="wu-btn wu-btn-primary"
     [disabled]="(installing$ | async) === true"
     (click)="onClickImport()"
   >

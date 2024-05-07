@@ -2,9 +2,8 @@ import * as _ from "lodash";
 import { v4 as uuidv4 } from "uuid";
 
 import { ADDON_PROVIDER_RAIDERIO } from "../../common/constants";
-import { getGameVersion } from "../utils/addon.utils";
 import { TocService } from "../services/toc/toc.service";
-import { AddonChannelType, AddonFolder, AddonProvider } from "wowup-lib-core";
+import { AddonChannelType, AddonFolder, AddonProvider, getGameVersionList } from "wowup-lib-core";
 import { getEnumName } from "wowup-lib-core";
 import { WowInstallation } from "wowup-lib-core";
 
@@ -27,7 +26,7 @@ export class RaiderIoAddonProvider extends AddonProvider {
   public scan(
     installation: WowInstallation,
     addonChannelType: AddonChannelType,
-    addonFolders: AddonFolder[]
+    addonFolders: AddonFolder[],
   ): Promise<void> {
     console.debug("RAIDER IO CLIENT SCAN");
     const raiderIo = _.find(addonFolders, (addonFolder) => this.isRaiderIo(addonFolder));
@@ -44,7 +43,14 @@ export class RaiderIoAddonProvider extends AddonProvider {
     const installedFolders = installedFolderList.join(",");
 
     for (const rioAddonFolder of rioAddonFolders) {
-      const subTargetToc = this._tocService.getTocForGameType2(rioAddonFolder.name, rioAddonFolder.tocs, installation.clientType);
+      const subTargetToc = this._tocService.getTocForGameType2(
+        rioAddonFolder.name,
+        rioAddonFolder.tocs,
+        installation.clientType,
+      );
+      if (subTargetToc === undefined) {
+        throw new Error("subTargetToc was undefined");
+      }
 
       rioAddonFolder.matchingAddon = {
         autoUpdateEnabled: false,
@@ -58,7 +64,7 @@ export class RaiderIoAddonProvider extends AddonProvider {
         downloadUrl: "",
         externalId: this.name,
         externalUrl: this._scanWebsite,
-        gameVersion: getGameVersion(subTargetToc.interface),
+        gameVersion: getGameVersionList(subTargetToc.interface),
         installedAt: new Date(),
         installedFolders: installedFolders,
         installedFolderList: installedFolderList,
@@ -89,7 +95,7 @@ export class RaiderIoAddonProvider extends AddonProvider {
 
   private isRaiderIoDependant(addonFolder: AddonFolder) {
     return addonFolder.tocs.some(
-      (toc) => toc.dependencies !== undefined && toc.dependencies.indexOf(this._scanFolderName) !== -1
+      (toc) => toc.dependencies !== undefined && toc.dependencies.indexOf(this._scanFolderName) !== -1,
     );
   }
 }

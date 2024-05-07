@@ -182,8 +182,8 @@
     },
     "CLIENT_TYPES": {
       "BETA": "Beta von Dragonflight",
-      "CLASSIC": "Wrath of the Lich King Classic",
-      "CLASSICBETA": "Beta von Wrath of the Lich King Classic",
+      "CLASSIC": "Cataclysm Classic",
+      "CLASSICBETA": "Cataclysm Classic Beta",
       "CLASSICERA": "World of Warcraft Classic",
       "CLASSICERAPTR": "WoW Classic Era PTR",
       "CLASSICPTR": "Öffentlicher Testrealm (Wrath Classic)",
@@ -294,6 +294,7 @@
       "ERROR": {
         "ASSET_NOT_FOUND": "Es wurde kein Asset zum Herunterladen von {message} gefunden.\n\nEine gültige Zip-Datei muss in dem Release enthalten sein, damit WowUp diese herunterladen kann.",
         "BURNING_CRUSADE_ASSET_NOT_FOUND": "Es wurde kein Asset zum Herunterladen von {message} gefunden.\n\nEine gültige Zip-Datei mit der Endung '-bc' muss in dem Release enthalten sein, damit WowUp diese herunterladen kann.",
+        "CATACLYSM_ASSET_NOT_FOUND": "No asset was found to download from {message}.\n\nA valid zip file ending with '-cata' is required in order for WowUp to download it.",
         "CLASSIC_ASSET_NOT_FOUND": "Es wurde kein Asset zum Herunterladen von {message} gefunden.\n\nEine gültige Zip-Datei mit der Endung '-classic' muss in dem Release enthalten sein, damit WowUp diese herunterladen kann.",
         "FAILED_TO_CONNECT": "Keine Verbindung mit der API möglich, warte ein wenig und versuche es erneut.",
         "INSTALL_FAILED": "Beim Versuch das Addon zu installieren ist etwas schief gelaufen, bitte versuche es erneut.\n\nWenn diese Nachricht weiterhin erscheint, kannst Du auf unserem Discord im Kanal #help-me nach Hilfe fragen.",
@@ -302,7 +303,7 @@
         "NO_RELEASE_FOUND": "Es wurde kein Release für {message} gefunden.\n\nEin gültiges Release mit Zip-Datei-Assets ist erforderlich, damit WowUp sie herunterladen kann.",
         "NO_SEARCH_RESULTS": "Es wurden keine Suchergebnisse gefunden.",
         "TITLE": "Installation fehlgeschlagen",
-        "WRATH_ASSET_NOT_FOUND": "No asset was found to download from {message}.\n\nA valid zip file ending with '-wrath' is required in order for WowUp to download it."
+        "WRATH_ASSET_NOT_FOUND": "Es wurde keine Datei gefunden, die von {message} heruntergeladen werden kann.\n\nFür den Download durch WowUp ist eine gültige ZIP-Datei erforderlich, die mit '-wrath' endet."
       },
       "IMPORT_ASSET_WARNING": "Wir konnten nicht überprüfen, ob die neueste Version dieses Add-ons mit deinem ausgewählten Client kompatibel ist.\n\nAber wir haben eine ZIP-Datei \"{zipName}\" gefunden.\n\nDie Installation erfolgt auf eigene Gefahr.",
       "IMPORT_BUTTON": "Importieren",

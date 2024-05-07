@@ -14,11 +14,9 @@
       [disabled]="isBusy === true"
     />
     <button
-      mat-button
-      color="accent"
+      class="wu-btn wu-btn-icon"
       *ngIf="query"
       matSuffix
-      mat-icon-button
       aria-label="Clear"
       (click)="onClearSearch()"
       [disabled]="isBusy === true"
@@ -50,7 +48,7 @@
     </div>
     <div class="install-container">
       <mat-spinner *ngIf="showInstallSpinner === true" diameter="40"></mat-spinner>
-      <button *ngIf="showInstallButton === true" mat-flat-button color="primary" (click)="onInstall()">
+      <button *ngIf="showInstallButton === true" class="wu-btn wu-btn-flat wu-btn-primary" (click)="onInstall()">
         {{ "DIALOGS.INSTALL_FROM_URL.INSTALL_BUTTON" | translate }}
       </button>
       <div [hidden]="showInstallSuccess === false">
@@ -65,10 +63,10 @@
   </div>
 </div>
 <div mat-dialog-actions align="end">
-  <button mat-button (click)="onClose()">
+  <button class="wu-btn wu-btn-flat mr-2" (click)="onClose()">
     {{ "DIALOGS.INSTALL_FROM_URL.CLOSE_BUTTON" | translate }}
   </button>
-  <button mat-flat-button color="primary" cdkFocusInitial (click)="onImportUrl()">
+  <button class="wu-btn wu-btn-primary" cdkFocusInitial (click)="onImportUrl()">
     {{ "DIALOGS.INSTALL_FROM_URL.IMPORT_BUTTON" | translate }}
   </button>
 </div>

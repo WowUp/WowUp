@@ -3,8 +3,7 @@ import _ from "lodash";
 import { Injectable } from "@angular/core";
 import { nanoid } from "nanoid";
 
-import { getWowClientGroup } from "../../../common/warcraft";
-import { getEnumName } from "wowup-lib-core";
+import { getEnumName, getWowClientGroupForType } from "wowup-lib-core";
 import { AddonStorageService } from "../storage/addon-storage.service";
 import { WarcraftService } from "../warcraft/warcraft.service";
 import { AddonService } from "./addon.service";
@@ -78,7 +77,7 @@ export class AddonBrokerService {
     private _addonStorage: AddonStorageService,
     private _addonService: AddonService,
     private _warcraftService: WarcraftService,
-    private _electronService: ElectronService
+    private _electronService: ElectronService,
   ) {}
 
   public async getExportSummary(installation: WowInstallation): Promise<ExportSummary> {
@@ -129,10 +128,7 @@ export class AddonBrokerService {
     return importJson;
   }
 
-  public async installImportSummary(
-    importSummary: ImportSummary,
-    installation: WowInstallation
-  ): Promise<void> {
+  public async installImportSummary(importSummary: ImportSummary, installation: WowInstallation): Promise<void> {
     const comps = importSummary.comparisons.filter((comp) => comp.state === "added");
 
     const tasks = comps.map((comp) => {
@@ -148,7 +144,7 @@ export class AddonBrokerService {
                 installState,
                 progress,
               });
-            }
+            },
           );
         } catch (e) {
           console.error(`Failed to install imported addon`, e);
@@ -159,10 +155,7 @@ export class AddonBrokerService {
     await Promise.all(tasks);
   }
 
-  public async getImportSummary(
-    exportPayload: ExportPayload,
-    installation: WowInstallation
-  ): Promise<ImportSummary> {
+  public async getImportSummary(exportPayload: ExportPayload, installation: WowInstallation): Promise<ImportSummary> {
     const summary: ImportSummary = {
       addedCt: 0,
       conflictCt: 0,
@@ -189,7 +182,7 @@ export class AddonBrokerService {
       };
 
       const externalIdMatch = currentAddons.find(
-        (addon) => addon.externalId === impAddon.id && addon.providerName == impAddon.provider_name
+        (addon) => addon.externalId === impAddon.id && addon.providerName == impAddon.provider_name,
       );
       if (externalIdMatch) {
         comparison.original = {
@@ -200,7 +193,7 @@ export class AddonBrokerService {
         };
       } else {
         const nameMatch = currentAddons.find(
-          (addon) => impAddon.name.length > 0 && addon.name.toLowerCase() === impAddon.name.toLowerCase()
+          (addon) => impAddon.name.length > 0 && addon.name.toLowerCase() === impAddon.name.toLowerCase(),
         );
         if (nameMatch) {
           comparison.original = {
@@ -238,8 +231,9 @@ export class AddonBrokerService {
   }
 
   private isSameClient(srcClient: WowClientType, targetClient: string) {
-    const srcGroup = getWowClientGroup(srcClient);
-    const targetGroup = getWowClientGroup(targetClient);
+    const tct = WowClientType[targetClient] as WowClientType;
+    const srcGroup = getWowClientGroupForType(srcClient);
+    const targetGroup = getWowClientGroupForType(tct);
 
     return srcGroup === targetGroup;
   }
