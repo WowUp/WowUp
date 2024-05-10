@@ -109,6 +109,7 @@ interface WagoScanRelease {
   created_at: string;
   label: string;
   patch: string;
+  supported_patches: string[];
   link?: string;
 }
 
@@ -647,7 +648,7 @@ export class WagoAddonProvider extends AddonProvider {
     const name = wagoScanAddon?.name ?? "";
     const externalUrl = wagoScanAddon?.website_url ?? "";
     const externalId = wagoScanAddon?.id ?? "";
-    const gameVersion = getGameVersion(wagoScanAddon?.matched_release?.patch);
+    const gameVersions = wagoScanAddon?.matched_release?.supported_patches ?? [];
     const thumbnailUrl = wagoScanAddon?.thumbnail ?? "";
     const releasedAt = wagoScanAddon?.matched_release?.created_at
       ? new Date(wagoScanAddon?.matched_release?.created_at)
@@ -688,7 +689,7 @@ export class WagoAddonProvider extends AddonProvider {
       downloadUrl,
       externalUrl,
       externalId,
-      gameVersion: [gameVersion],
+      gameVersion: gameVersions,
       installedAt: new Date(),
       installedFolders: installedFolders.join(","),
       installedFolderList: installedFolders,
