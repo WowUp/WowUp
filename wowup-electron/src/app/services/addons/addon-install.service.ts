@@ -210,9 +210,9 @@ export class AddonInstallService {
         unzippedDirectoryNames,
         addon.clientType,
       );
-      const gameVersion = this.getLatestGameVersion(allTocFiles);
-      if (gameVersion) {
-        addon.gameVersion = getGameVersionList([gameVersion]);
+      const gameVersions = this.getLatestGameVersions(allTocFiles);
+      if (gameVersions.length > 0) {
+        addon.gameVersion = gameVersions;
       }
 
       if (!addon.author) {
@@ -360,10 +360,10 @@ export class AddonInstallService {
     }
   }
 
-  private getLatestGameVersion(tocs: Toc[]) {
-    const versions = tocs.map((toc) => +toc.interface);
-    const ordered = _.orderBy(versions, [], "desc");
-    return getGameVersion(ordered[0]?.toString() || "");
+  private getLatestGameVersions(tocs: Toc[]): string[] {
+    const versions = _.concat([], ...tocs.map((toc) => _.map(toc.interface, (i) => i)));
+    // const ordered = _.orderBy(versions, [], "desc");
+    return getGameVersionList(versions);
   }
 
   private getBestGuessTitle(tocs: Toc[]) {
