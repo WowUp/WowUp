@@ -10,7 +10,7 @@ import { CachingService } from "../services/caching/caching-service";
 import { CircuitBreakerWrapper, NetworkService } from "../services/network/network.service";
 import { TocService } from "../services/toc/toc.service";
 import { WarcraftService } from "../services/warcraft/warcraft.service";
-import { getEnumName, getGameVersion, getWowClientGroupForType } from "wowup-lib-core";
+import { getEnumName, getWowClientGroupForType } from "wowup-lib-core";
 import { convertMarkdown } from "wowup-lib-core";
 import { HttpErrorResponse } from "@angular/common/http";
 import { UiMessageService } from "../services/ui-message/ui-message.service";
