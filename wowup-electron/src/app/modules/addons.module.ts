@@ -22,6 +22,7 @@ import { DirectiveModule } from "./directive.module";
 import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { AddonManageDialogComponent } from "../components/addons/addon-manage-dialog/addon-manage-dialog.component";
 import { WtfBackupComponent } from "../components/addons/wtf-backup/wtf-backup.component";
+import { GameVersionCellComponent } from "../components/addons/game-version-cell/game-version-cell.component";
 
 @NgModule({
   declarations: [
@@ -35,6 +36,7 @@ import { WtfBackupComponent } from "../components/addons/wtf-backup/wtf-backup.c
     PotentialAddonTableCellComponent,
     TableContextHeaderCellComponent,
     MyAddonStatusCellComponent,
+    GameVersionCellComponent,
     InstallFromProtocolDialogComponent,
     MyAddonsAddonCellComponent,
     InstallFromUrlDialogComponent,
@@ -63,6 +65,7 @@ import { WtfBackupComponent } from "../components/addons/wtf-backup/wtf-backup.c
     PotentialAddonTableCellComponent,
     TableContextHeaderCellComponent,
     MyAddonStatusCellComponent,
+    GameVersionCellComponent,
     InstallFromProtocolDialogComponent,
     MyAddonsAddonCellComponent,
     InstallFromUrlDialogComponent,
