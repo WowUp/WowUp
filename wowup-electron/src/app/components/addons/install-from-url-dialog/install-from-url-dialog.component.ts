@@ -164,7 +164,7 @@ export class InstallFromUrlDialogComponent implements OnDestroy {
       } else if (message === NO_SEARCH_RESULTS_ERROR) {
         message = this._translateService.instant("DIALOGS.INSTALL_FROM_URL.ERROR.NO_SEARCH_RESULTS");
       } else if (err instanceof AssetMissingError) {
-        let key = "ERROR.ASSET_NOT_FOUND";
+        let key = "DIALOGS.INSTALL_FROM_URL.ERROR.ASSET_NOT_FOUND";
         switch (err.clientGroup) {
           case WowClientGroup.BurningCrusade:
             key = "DIALOGS.INSTALL_FROM_URL.ERROR.BURNING_CRUSADE_ASSET_NOT_FOUND";

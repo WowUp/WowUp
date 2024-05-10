@@ -1,4 +1,4 @@
-import { orderBy, filter } from "lodash";
+import { orderBy, filter, add } from "lodash";
 import { Addon, AddonDependency, AddonDependencyType, AddonExternalId } from "wowup-lib-core";
 
 export function getAllProviders(addon: Addon): AddonExternalId[] {
@@ -15,7 +15,7 @@ export function hasMultipleProviders(addon: Addon): boolean {
 
 export function getAddonDependencies(
   addon: Addon,
-  dependencyType: AddonDependencyType | undefined = undefined
+  dependencyType: AddonDependencyType | undefined = undefined,
 ): AddonDependency[] {
   if (dependencyType === undefined) {
     return addon.dependencies ?? [];
@@ -25,7 +25,7 @@ export function getAddonDependencies(
 }
 
 export function needsUpdate(addon: Addon | undefined): boolean {
-  if (addon.isIgnored) {
+  if (addon === undefined || addon.isIgnored) {
     return false;
   }
 
@@ -34,7 +34,10 @@ export function needsUpdate(addon: Addon | undefined): boolean {
     return true;
   }
 
-  return !!addon.installedVersion && addon.installedVersion !== addon.latestVersion;
+  const installedVer = (addon?.installedVersion ?? "").replace(/^v/i, "");
+  const latestVer = (addon?.latestVersion ?? "").replace(/^v/i, "");
+
+  return installedVer.length > 0 && installedVer !== latestVer;
 }
 
 export function needsInstall(addon: Addon): boolean {
