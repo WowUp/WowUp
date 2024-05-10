@@ -3,7 +3,7 @@ import { Injectable } from "@angular/core";
 import { from, mergeMap, Subject } from "rxjs";
 import slug from "slug";
 import { join as pathJoin } from "path";
-import { Addon, AddonExternalId, getGameVersion, getGameVersionList, Toc, WowClientType } from "wowup-lib-core";
+import { Addon, AddonExternalId, getGameVersionList, Toc, WowClientType } from "wowup-lib-core";
 import { AddonInstallState } from "../../models/wowup/addon-install-state";
 import { AddonUpdateEvent } from "../../models/wowup/addon-update-event";
 import { capitalizeString } from "../../utils/string.utils";
