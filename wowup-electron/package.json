@@ -1,6 +1,6 @@
 {
   "name": "wowup",
-  "version": "2.12.1-beta.1",
+  "version": "2.12.1-beta.2",
   "private": true,
   "description": "World of Warcraft addon updater",
   "keywords": [
@@ -70,7 +70,7 @@
     "pushy-electron": "1.0.11",
     "rxjs": "7.8.1",
     "win-ca": "3.5.1",
-    "wowup-lib-core": "1.0.6",
+    "wowup-lib-core": "1.0.7",
     "yauzl": "2.10.0"
   },
   "devDependencies": {
