@@ -1,0 +1,61 @@
+{
+  "productName": "WowUp",
+  "appId": "io.wowup.jliddev",
+  "directories": {
+    "output": "release/"
+  },
+  "afterSign": "./electron-build/after-sign.js",
+  "generateUpdatesFilesForAllChannels": true,
+  "publish": ["github"],
+  "nodeGypRebuild": true,
+  "files": ["dist/**/*.*", "assets/**/*.*", "app/**/*.js", "src/common/**/*.js", "build/Release/*.node"],
+  "win": {
+    "icon": "electron-build/icon.ico",
+    "target": ["nsis", "portable"],
+    "forceCodeSigning": false,
+    "publisherName": "WowUp LLC"
+  },
+  "nsis": {
+    "deleteAppDataOnUninstall": true,
+    "include": "./electron-build/uninstaller.nsh"
+  },
+  "mac": {
+    "icon": "electron-build/icon.icns",
+    "category": "public.app-category.games",
+    "target": [
+      {
+        "target": "default",
+        "arch": ["x64", "arm64"]
+      }
+    ]
+  },
+  "linux": {
+    "icon": "electron-build/flatpak/",
+    "target": ["AppImage"]
+  },
+  "flatpak": {
+    "base": "org.electronjs.Electron2.BaseApp",
+    "runtime": "org.freedesktop.Platform",
+    "runtimeVersion": "21.08",
+    "sdk": "org.freedesktop.Sdk",
+    "baseVersion": "21.08",
+    "finishArgs": [
+      "--socket=wayland",
+      "--socket=x11",
+      "--socket=pulseaudio",
+      "--socket=system-bus",
+      "--socket=session-bus",
+      "--share=ipc",
+      "--share=network",
+      "--device=dri",
+      "--filesystem=xdg-config/WoWUp",
+      "--filesystem=~/Games",
+      "--filesystem=~/.wine/drive_c",
+      "--talk-name=org.freedesktop.Notifications",
+      "--talk-name=org.gtk.Notifications",
+      "--talk-name=org.kde.StatusNotifierWatcher",
+      "--env=APPIMAGE=true"
+    ],
+    "useWaylandFlags": false
+  }
+}

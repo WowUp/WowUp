@@ -2,9 +2,9 @@
   "productName": "WowUp-CF",
   "appId": "io.wowupcf.jliddev",
   "directories": {
-    "output": "release/"
+    "output": "release-ow/"
   },
-  "afterSign": "./electron-build/after-sign.js",
+  "afterSign": "./electron-build/after-sign-ow.js",
   "generateUpdatesFilesForAllChannels": true,
   "publish": ["github"],
   "nodeGypRebuild": true,
