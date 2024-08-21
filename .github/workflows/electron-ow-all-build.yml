@@ -57,7 +57,7 @@ jobs:
       - name: Build Linux App
         if: matrix.os == 'ubuntu-latest'
         env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token
+          GH_TOKEN: ${{ secrets.WOWUP_CF_REPO_KEY }} # This token is provided by Actions, you do not need to create your own token
         run: |
           cd ./wowup-electron
           npm ci
@@ -66,7 +66,7 @@ jobs:
       - name: Build Mac App
         if: matrix.os == 'macos-latest'
         env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token
+          GH_TOKEN: ${{ secrets.WOWUP_CF_REPO_KEY }} # This token is provided by Actions, you do not need to create your own token
           CSC_LINK: ${{ secrets.MACOS_CERT }}
           CSC_KEY_PASSWORD: ${{ secrets.MACOS_CERT_PASSWORD }}
           NOTARIZE_APPLE_ID: ${{ secrets.NOTARIZE_APPLE_ID }}
@@ -80,7 +80,7 @@ jobs:
       - name: Build Windows App
         if: matrix.os == 'windows-latest'
         env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token
+          GH_TOKEN: ${{ secrets.WOWUP_CF_REPO_KEY }} # This token is provided by Actions, you do not need to create your own token
           CSC_LINK: ${{ secrets.WINDOWS_CSC_LINK }}
           CSC_KEY_PASSWORD: ${{ secrets.WINDOWS_CSC_KEY_PASSWORD }}
         run: cd ./wowup-electron && npm ci && npm run ow:electron:publish
