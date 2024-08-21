@@ -4,6 +4,7 @@
   "directories": {
     "output": "release/"
   },
+  "afterSign": "./electron-build/after-sign.js",
   "generateUpdatesFilesForAllChannels": true,
   "publish": ["github"],
   "nodeGypRebuild": true,
@@ -36,8 +37,7 @@
           "CFBundleURLSchemes": "curseforge"
         }
       ]
-    },
-    "notarize": true
+    }
   },
   "linux": {
     "icon": "electron-build/flatpak/",
