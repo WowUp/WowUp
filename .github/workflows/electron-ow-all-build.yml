@@ -72,9 +72,6 @@ jobs:
           NOTARIZE_APPLE_ID: ${{ secrets.NOTARIZE_APPLE_ID }}
           NOTARIZE_APPLE_PASSWORD: ${{ secrets.NOTARIZE_APPLE_PASSWORD }}
           NOTARIZE_APPLE_TEAM_ID: ${{ secrets.NOTARIZE_APPLE_TEAM_ID }}
-          APPLE_ID: ${{ secrets.NOTARIZE_APPLE_ID }}
-          APPLE_APP_SPECIFIC_PASSWORD: ${{ secrets.NOTARIZE_APPLE_PASSWORD }}
-          APPLE_TEAM_ID: ${{ secrets.NOTARIZE_APPLE_TEAM_ID }}
         run: |
           cd ./wowup-electron
           npm ci
