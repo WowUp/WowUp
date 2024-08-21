@@ -77,8 +77,12 @@ import {
   IPC_PUSH_SUBSCRIBE,
   IPC_WINDOW_IS_FULLSCREEN,
   IPC_WINDOW_IS_MAXIMIZED,
+  IPC_CURSE_GET_SCAN_RESULTS,
+  IPC_OW_IS_CMP_REQUIRED,
+  IPC_OW_OPEN_CMP,
   ZOOM_FACTOR_KEY,
 } from "../src/common/constants";
+
 import { CopyFileRequest } from "../src/common/models/copy-file-request";
 import { DownloadRequest } from "../src/common/models/download-request";
 import { DownloadStatus } from "../src/common/models/download-status";
@@ -110,6 +114,7 @@ import { GetDirectoryTreeRequest } from "../src/common/models/ipc-request";
 import { ProductDb } from "../src/common/wowup/product-db";
 import { restoreWindow } from "./window-state";
 import { firstValueFrom, from, mergeMap, toArray } from "rxjs";
+import { CurseFolderScanner } from "./curse-folder-scanner";
 import { Addon, AddonScanResult, FsStats } from "wowup-lib-core";
 
 let PENDING_OPEN_URLS: string[] = [];
@@ -216,6 +221,25 @@ export function initializeIpcHandlers(window: BrowserWindow): void {
     log.info(`[CreateDirectory] '${directoryPath}'`);
     await fsp.mkdir(directoryPath, { recursive: true });
     return true;
+  });
+
+  handle(IPC_OW_IS_CMP_REQUIRED, async (): Promise<boolean> => {
+    // NOTE(twolf): Next version of the ow-electron will fix the types
+    try {
+      return await (app as any).overwolf.isCMPRequired();
+    } catch (e) {
+      console.error("IPC_OW_IS_CMP_REQUIRED failed", e);
+      return false;
+    }
+  });
+
+  handle(IPC_OW_OPEN_CMP, (evt, cmpTab?: string) => {
+    const options = {} as any;
+    if (cmpTab) {
+      options.tab = cmpTab;
+    }
+
+    (app as any).overwolf.openCMPWindow(options);
   });
 
   handle(IPC_GET_ZOOM_FACTOR, () => {
@@ -375,6 +399,23 @@ export function initializeIpcHandlers(window: BrowserWindow): void {
     }
 
     return true;
+  });
+
+  handle(IPC_CURSE_GET_SCAN_RESULTS, async (evt, filePaths: string[]): Promise<AddonScanResult[]> => {
+    // Scan addon folders in parallel for speed!?
+    try {
+      const taskResults = await firstValueFrom(
+        from(filePaths).pipe(
+          mergeMap((folder) => from(new CurseFolderScanner().scanFolder(folder)), 2),
+          toArray()
+        )
+      );
+
+      return taskResults;
+    } catch (e) {
+      log.error("Failed during curse scan", e);
+      throw e;
+    }
   });
 
   handle(IPC_WOWUP_GET_SCAN_RESULTS, async (evt, filePaths: string[]): Promise<AddonScanResult[]> => {

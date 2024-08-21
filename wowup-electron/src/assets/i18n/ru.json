@@ -32,9 +32,13 @@
     "VERSION_MISMATCH": "Не совпадают версии"
   },
   "ADS": {
-    "AD_EXPLAINER_BUTTON": "Почему я вижу эту рекламу?",
+    "AD_EXPLAINER_BUTTON": "Это объявление поддерживает создателей дополнений ❤",
     "AD_EXPLAINER_DIALOG": {
       "MESSAGE": "Чтобы использовать <a appExternalLink href=\"https://addons.wago.io/\">wago.io</a> в виде источника модификаций и для поддержки их авторов за тяжёлый труд над Вашими любимыми модификациями, мы должны показывать эту рекламу.\n\nЕсли Вы не хотите видеть эту рекламу, то всегда можете отключить wago.io как источник модификаций во вкладке настроек.",
+      "TITLE": "Почему я вижу эту рекламу?"
+    },
+    "AD_EXPLAINER_DIALOG_CF": {
+      "MESSAGE": "Для того, чтобы использовать <a appExternalLink href=\"https://curseforge.com/\">CurseForge</a> в качестве поставщика аддонов и помочь поддержать авторов за их тяжелую работу над вашими любимыми аддонами, мы должны показать эту рекламу.\n\nЕсли Вы не хотите видеть эту рекламу, то всегда можете отключить CurseForge в качестве поставщика на вкладке опций.",
       "TITLE": "Почему я вижу эту рекламу?"
     }
   },
@@ -317,6 +321,13 @@
       "TITLE": "Список изменений в версии {versionNumber}"
     },
     "PERMISSIONS": {
+      "CURSEFORGE": {
+        "DESCRIPTION_AD_LINK": "поставщики рекламы",
+        "DESCRIPTION_BOTTOM": ". Нажмите на кнопку 'Управление', чтобы контролировать свои согласия или возражать против обработки Ваших данных. Вы можете изменить свои предпочтения в любое время через экран настроек.",
+        "DESCRIPTION_TOP": " Для того, чтобы использовать интеграцию этого приложения с CurseForge, они требуют, чтобы Вы разрешили им показывать Вам рекламу от одного из своих приложений ",
+        "MANAGE_BUTTON": "Управление",
+        "TITLE": "CurseForge"
+      },
       "MESSAGE": "Прежде чем мы начнем, нам нужно настроить несколько разрешений для приложения.",
       "POSITIVE_BUTTON": "Подтвердить",
       "TELEMETRY": {
@@ -487,7 +498,7 @@
     },
     "OPTIONS": {
       "ADDON": {
-        "AD_REQUIRED_HINT": "Ad or access key required",
+        "AD_REQUIRED_HINT": "Необходима реклама",
         "CURSE_FORGE_V2": {
           "API_KEY_DESCRIPTION": "Если Вы запросили ключ CurseForge API, Вы можете ввести его здесь, чтобы подключиться к их API.",
           "API_KEY_TITLE": "Ключ CurseForge API",
@@ -519,6 +530,8 @@
         "APP_RELEASE_CHANNEL_DROPDOWN_LABEL": "Канал",
         "APP_RELEASE_CHANNEL_LABEL": "Канал выпуска приложения",
         "CURRENT_LANGUAGE_LABEL": "Текущий язык",
+        "CURSE_PROTOCOL_DESCRIPTION": "При загрузке модификаций с сайта CurseForge, WowUp будет брать установку на себя.",
+        "CURSE_PROTOCOL_LABEL": "Обрабатывать ссылки на установку с CurseForge",
         "ENABLE_APP_BADGE_DESCRIPTION": "Показывать количество доступных обновлений на значке приложения.",
         "ENABLE_APP_BADGE_LABEL": "Включить уведомления на значке приложения",
         "ENABLE_SYSTEM_NOTIFICATIONS_DESCRIPTION": "Включить различные окна системных уведомлений, такие как автоматически обновлённые модификации.",
@@ -557,6 +570,12 @@
         "USE_SYMLINK_SUPPORT_CONFIRMATION_LABEL": "Включить поддержку символических ссылок?",
         "USE_SYMLINK_SUPPORT_DESCRIPTION": "Разрешает WowUp сканировать папки символических ссылок в папке Вашей модификации. Предупреждение: они будут заменены при обновлении/установке."
       },
+      "CURSEFORGE": {
+        "ADS_OPTION_DESCRIPTION": "Просмотр и управление тем, как рекламодатели CurseForge могут использовать Ваши данные для персонализации рекламы",
+        "ADS_OPTION_LABEL": "Персонализация рекламы и данные",
+        "ADS_OPTION_MANAGE": "Управление",
+        "TITLE": "CurseForge"
+      },
       "DEBUG": {
         "CONFIG_FILES_BUTTON": "Показать файлы настроек",
         "CONFIG_FILES_DESCRIPTION": "Открыть папку, в которой хранятся Ваши файлы addons.json и preferences.json.",
@@ -574,6 +593,7 @@
         "ADDONS": "Модификации",
         "APPLICATION": "Приложение",
         "CLIENTS": "Клиенты",
+        "CURSEFORGE": "CurseForge",
         "DEBUG": "Отладка",
         "WTF_EXPLORER": "WTF Explorer"
       },

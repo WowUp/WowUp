@@ -4,6 +4,8 @@
     mac: electronService.isMac,
     windows: electronService.isWin,
     linux: electronService.isLinux,
+    wago: isWago,
+    curseforge: isCurseForge,
     collapsed: (isCollapsed$ | async)
   }"
 >
@@ -127,8 +129,8 @@
   </div>
 
   <!-- AD FRAME -->
-  <div *ngIf="sessionService.adSpace$ | async" class="ad-space text-1 bg-secondary-2">
-    <div class="tab hover-bg-secondary-4" style="" (click)="onClickAdExplainer()">
+  <div *ngIf="sessionService.adSpace$ | async" class="ad-space">
+    <div class="tab hover-bg-secondary-4 addon-info-btn" (click)="onClickAdExplainer()">
       {{ "ADS.AD_EXPLAINER_BUTTON" | translate }}
     </div>
     <div class="ad">

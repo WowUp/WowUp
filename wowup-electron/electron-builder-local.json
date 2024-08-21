@@ -1,6 +1,6 @@
 {
-  "productName": "WowUp",
-  "appId": "io.wowup.jliddev",
+  "productName": "WowUp-CF",
+  "appId": "io.wowupcf.jliddev",
   "directories": {
     "output": "release/"
   },
@@ -10,7 +10,7 @@
   "nodeGypRebuild": true,
   "files": ["dist/**/*.*", "assets/**/*.*", "app/**/*.js", "src/common/**/*.js", "build/Release/*.node"],
   "win": {
-    "icon": "electron-build/icon.ico",
+    "icon": "electron-build/icon-cf.ico",
     "target": ["nsis", "portable"],
     "forceCodeSigning": false,
     "publisherName": "WowUp LLC"

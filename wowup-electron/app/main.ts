@@ -1,4 +1,5 @@
-import { app, BrowserWindow, BrowserWindowConstructorOptions, dialog, powerMonitor } from "electron";
+import { dialog } from "electron";
+import { app, BrowserWindow, BrowserWindowConstructorOptions, powerMonitor } from "electron";
 import * as log from "electron-log/main";
 import { find } from "lodash";
 import * as minimist from "minimist";
@@ -10,6 +11,7 @@ import { inspect } from "util";
 import {
   APP_PROTOCOL_NAME,
   APP_USER_MODEL_ID,
+  APP_USER_MODEL_ID_CF,
   COLLAPSE_TO_TRAY_PREFERENCE_KEY,
   CURRENT_THEME_KEY,
   DEFAULT_BG_COLOR,
@@ -33,18 +35,20 @@ import {
   WINDOW_MIN_HEIGHT,
   WINDOW_MIN_WIDTH,
   WOWUP_LOGO_FILENAME,
+  WOWUP_LOGO_FILENAME_CF,
 } from "../src/common/constants";
 import { AppOptions } from "../src/common/wowup/models";
 import { createAppMenu } from "./app-menu";
 import { appUpdater } from "./app-updater";
+import { wagoHandler } from "./wago-handler";
 import { initializeIpcHandlers, setPendingOpenUrl } from "./ipc-events";
 import * as platform from "./platform";
 import { initializeDefaultPreferences } from "./preferences";
 import { PUSH_NOTIFICATION_EVENT, pushEvents } from "./push";
 import { getPreferenceStore, initializeStoreIpcHandlers } from "./stores";
-import { wagoHandler } from "./wago-handler";
 import * as windowState from "./window-state";
 import { validateGpuCache } from "./utils/gpu-cache-buster";
+import { AppEnv } from "./env/environment";
 
 // LOGGING SETUP
 // Override the default log path so they aren't a pain to find on Mac
@@ -75,7 +79,7 @@ if (platform.isWin) {
   require("win-ca");
 }
 
-validateGpuCache(app)
+validateGpuCache(app);
 
 // VARIABLES
 const startedAt = Date.now();
@@ -100,7 +104,7 @@ createAppMenu(win);
 app.setAsDefaultProtocolClient(APP_PROTOCOL_NAME);
 
 // Set the app ID so that our notifications work correctly on Windows
-app.setAppUserModelId(APP_USER_MODEL_ID);
+app.setAppUserModelId(AppEnv.buildFlavor === "ow" ? APP_USER_MODEL_ID_CF : APP_USER_MODEL_ID);
 
 // HARDWARE ACCELERATION SETUP
 if (getPreferenceStore().get(USE_HARDWARE_ACCELERATION_PREFERENCE_KEY) === "false") {
@@ -156,16 +160,35 @@ function getProtocol(arg: string) {
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
 // Added 400 ms to fix the black background issue while using transparent window. More details at https://github.com/electron/electron/issues/15947
-if (app.isReady()) {
-  log.info(`App already ready: ${Date.now() - startedAt}ms`);
-} else {
-  app.once("ready", () => {
+app
+  .whenReady()
+  .then(() => {
+    powerMonitor.on("resume", () => {
+      log.info("powerMonitor resume");
+      win?.webContents?.send(IPC_POWER_MONITOR_RESUME);
+    });
+
+    powerMonitor.on("suspend", () => {
+      log.info("powerMonitor suspend");
+      win?.webContents?.send(IPC_POWER_MONITOR_SUSPEND);
+    });
+
+    powerMonitor.on("lock-screen", () => {
+      log.info("powerMonitor lock-screen");
+      win?.webContents?.send(IPC_POWER_MONITOR_LOCK);
+    });
+
+    powerMonitor.on("unlock-screen", () => {
+      log.info("powerMonitor unlock-screen");
+      win?.webContents?.send(IPC_POWER_MONITOR_UNLOCK);
+    });
+
     log.info(`App ready: ${Date.now() - startedAt}ms`);
-    // setTimeout(() => {
     createWindow();
-    // }, 400);
+  })
+  .catch((e) => {
+    log.error("whenready failed", e);
   });
-}
 
 app.on("before-quit", () => {
   windowState.saveWindowConfig(win);
@@ -211,26 +234,6 @@ if (platform.isMac) {
   });
 }
 
-powerMonitor.on("resume", () => {
-  log.info("powerMonitor resume");
-  win?.webContents?.send(IPC_POWER_MONITOR_RESUME);
-});
-
-powerMonitor.on("suspend", () => {
-  log.info("powerMonitor suspend");
-  win?.webContents?.send(IPC_POWER_MONITOR_SUSPEND);
-});
-
-powerMonitor.on("lock-screen", () => {
-  log.info("powerMonitor lock-screen");
-  win?.webContents?.send(IPC_POWER_MONITOR_LOCK);
-});
-
-powerMonitor.on("unlock-screen", () => {
-  log.info("powerMonitor unlock-screen");
-  win?.webContents?.send(IPC_POWER_MONITOR_UNLOCK);
-});
-
 let lastCrash = 0;
 
 const crashMap = new Map<string, number>();
@@ -273,7 +276,7 @@ function createWindow(): BrowserWindow {
     transparent: false,
     resizable: true,
     backgroundColor: getBackgroundColor(),
-    title: "WowUp",
+    title: "WowUp" + AppEnv.buildFlavor === "ow" ? " CF" : "",
     titleBarStyle: "hidden",
     webPreferences: {
       preload: join(__dirname, "preload.js"),
@@ -297,7 +300,11 @@ function createWindow(): BrowserWindow {
 
   // Attempt to fix the missing icon issue on Ubuntu
   if (platform.isLinux) {
-    windowOptions.icon = join(__dirname, "assets", WOWUP_LOGO_FILENAME);
+    windowOptions.icon = join(
+      __dirname,
+      "assets",
+      AppEnv.buildFlavor === "ow" ? WOWUP_LOGO_FILENAME_CF : WOWUP_LOGO_FILENAME,
+    );
   }
 
   windowState.applyWindowBoundsToConfig(windowOptions);
@@ -315,7 +322,10 @@ function createWindow(): BrowserWindow {
 
   initializeIpcHandlers(win);
   initializeStoreIpcHandlers();
-  wagoHandler.initialize(win);
+
+  if (AppEnv.buildFlavor === "wago") {
+    wagoHandler.initialize(win);
+  }
 
   pushEvents.on(PUSH_NOTIFICATION_EVENT, (data) => {
     win?.webContents.send(IPC_PUSH_NOTIFICATION, data);
@@ -348,6 +358,10 @@ function createWindow(): BrowserWindow {
       log.error("[webview] preload-error", e.message);
     });
 
+    webContents.on("did-fail-provisional-load", (evt) => {
+      log.error("[webview] did-fail-provisional-load", evt);
+    });
+
     webContents.session.setPermissionRequestHandler((contents, permission, callback) => {
       log.warn("[webview] setPermissionRequestHandler", permission);
       return callback(false);
@@ -362,11 +376,21 @@ function createWindow(): BrowserWindow {
       return false;
     });
 
-    webContents.on("did-start-navigation", (evt, url) => {
-      if (url === "https://addons.wago.io/wowup_ad") {
-        log.debug("[webview] did-start-navigation", url);
-        wagoHandler.initializeWebContents(webContents);
-      }
+    if (AppEnv.buildFlavor === "wago") {
+      webContents.on("did-start-navigation", (evt, url) => {
+        if (url === "https://addons.wago.io/wowup_ad") {
+          log.debug("[webview] did-start-navigation", url);
+          wagoHandler.initializeWebContents(webContents);
+        }
+      });
+    }
+
+    // webview allowpopups must be enabled for any link to work
+    // https://www.electronjs.org/docs/latest/api/webview-tag#allowpopups
+    webContents.setWindowOpenHandler((details) => {
+      log.debug("[webview] setWindowOpenHandler");
+      win?.webContents.send("webview-new-window", details); // forward this new window to the app for processing
+      return { action: "deny" };
     });
   });
 
@@ -557,5 +581,5 @@ function canStartHidden() {
 
 function getUserAgent() {
   const portableStr = isPortable ? " portable;" : "";
-  return `WowUp-Client/${app.getVersion()} (${osType()}; ${osRelease()}; ${osArch()}; ${portableStr} +https://wowup.io)`;
+  return `WowUp-Client/${app.getVersion()} (${osType()}; ${osRelease()}; ${osArch()}; ${AppEnv.buildFlavor === "ow" ? "CF;" : ""} ${portableStr} +https://wowup.io)`;
 }

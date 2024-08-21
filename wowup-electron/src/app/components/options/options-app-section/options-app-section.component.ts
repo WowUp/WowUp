@@ -11,6 +11,7 @@ import {
   ALLIANCE_LIGHT_THEME,
   ALLIANCE_THEME,
   APP_PROTOCOL_NAME,
+  CURSE_PROTOCOL_NAME,
   DEFAULT_LIGHT_THEME,
   DEFAULT_THEME,
   HORDE_LIGHT_THEME,
@@ -27,6 +28,7 @@ import { ConfirmDialogComponent } from "../../common/confirm-dialog/confirm-dial
 import { ZoomService } from "../../../services/zoom/zoom.service";
 import { AddonService } from "../../../services/addons/addon.service";
 import { WowUpReleaseChannelType } from "../../../../common/wowup/wowup-release-channel-type";
+import { AppConfig } from "../../../../environments/environment";
 
 interface LocaleListItem {
   localeId: string;
@@ -45,9 +47,11 @@ interface ReleaseChannelViewModel {
 })
 export class OptionsAppSectionComponent implements OnInit {
   public readonly wowupProtocolName = APP_PROTOCOL_NAME;
+  public readonly curseProtocolName = CURSE_PROTOCOL_NAME;
 
   public minimizeOnCloseDescription = "";
   public protocolRegistered = false;
+  public isCurseForge = AppConfig.curseforge.enabled;
   public zoomScale = ZOOM_SCALE;
   public currentScale = 1;
   public languages: LocaleListItem[] = [
@@ -90,6 +94,7 @@ export class OptionsAppSectionComponent implements OnInit {
     { value: WowUpReleaseChannelType.Beta, labelKey: "COMMON.ENUM.ADDON_CHANNEL_TYPE.BETA" },
   ];
 
+  public curseforgeProtocolHandled$ = from(this.electronService.isDefaultProtocolClient(CURSE_PROTOCOL_NAME));
   public wowupProtocolHandled$ = from(this.electronService.isDefaultProtocolClient(APP_PROTOCOL_NAME));
 
   private _currentTheme: string;

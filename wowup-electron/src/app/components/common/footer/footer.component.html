@@ -10,28 +10,40 @@
   <p class="text-1">{{ sessionService.statusText$ | async }}</p>
   <div class="flex-grow-1"></div>
   <p class="mr-3">{{ sessionService.pageContextText$ | async }}</p>
-  <p>v{{ versionNumber | async }}</p>
+  <p>v{{ versionNumber | async }} {{ isCurseForge ? "CF" : "" }}</p>
   <div class="h-100 ml-3" [ngSwitch]="appUpdateState$ | async">
     <div *ngSwitchCase="appUpdateState.CheckingForUpdate">
-      <p>{{'APP.WOWUP_UPDATE.CHECKING_FOR_UPDATE' | translate}}</p>
+      <p>{{ "APP.WOWUP_UPDATE.CHECKING_FOR_UPDATE" | translate }}</p>
     </div>
     <div *ngSwitchCase="appUpdateState.UpdateAvailable">
-      <p>{{'APP.WOWUP_UPDATE.UPDATE_AVAILABLE' | translate}}</p>
+      <p>{{ "APP.WOWUP_UPDATE.UPDATE_AVAILABLE" | translate }}</p>
     </div>
     <div *ngSwitchCase="appUpdateState.Downloading" class="row align-items-center">
-      <mat-progress-spinner class="" color="primary" mode="determinate" [value]="appUpdateProgress$ | async"
-        [diameter]="20"></mat-progress-spinner>
-      <span>{{'APP.WOWUP_UPDATE.DOWNLOADING_UPDATE' | translate}}</span>
+      <mat-progress-spinner
+        class=""
+        color="primary"
+        mode="determinate"
+        [value]="appUpdateProgress$ | async"
+        [diameter]="20"
+      ></mat-progress-spinner>
+      <span>{{ "APP.WOWUP_UPDATE.DOWNLOADING_UPDATE" | translate }}</span>
     </div>
     <div *ngSwitchCase="appUpdateState.Downloaded">
-      <button class="footer-button update-button text-1" matTooltip="{{ updateIconTooltip | translate }}"
-        (click)="onClickInstallUpdate()">
+      <button
+        class="footer-button update-button text-1"
+        matTooltip="{{ updateIconTooltip | translate }}"
+        (click)="onClickInstallUpdate()"
+      >
         <mat-icon svgIcon="fas:rotate"></mat-icon>
-        {{ 'APP.WOWUP_UPDATE.SNACKBAR_ACTION' | translate }}
+        {{ "APP.WOWUP_UPDATE.SNACKBAR_ACTION" | translate }}
       </button>
     </div>
-    <div *ngSwitchDefault class="btn text-1" (click)="onClickCheckForUpdates()"
-      matTooltip="{{ 'APP.SYSTEM_TRAY.CHECK_UPDATE' | translate }}">
+    <div
+      *ngSwitchDefault
+      class="btn text-1"
+      (click)="onClickCheckForUpdates()"
+      matTooltip="{{ 'APP.SYSTEM_TRAY.CHECK_UPDATE' | translate }}"
+    >
       <mat-icon svgIcon="fas:rotate"></mat-icon>
     </div>
   </div>

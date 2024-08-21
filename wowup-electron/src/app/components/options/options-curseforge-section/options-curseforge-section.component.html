@@ -1,0 +1,21 @@
+<div class="container">
+  <h2>
+    {{ "PAGES.OPTIONS.CURSEFORGE.TITLE" | translate }}
+  </h2>
+  <div class="toggle">
+    <div class="row align-items-center">
+      <div class="flex-grow-1">
+        <div class="label">
+          {{ "PAGES.OPTIONS.CURSEFORGE.ADS_OPTION_LABEL" | translate }}
+        </div>
+      </div>
+      <button mat-raised-button color="primary" type="button" (click)="onClickManage($event)">
+        {{ "PAGES.OPTIONS.CURSEFORGE.ADS_OPTION_MANAGE" | translate }}
+      </button>
+    </div>
+    <small class="text-2">
+      {{ "PAGES.OPTIONS.CURSEFORGE.ADS_OPTION_DESCRIPTION" | translate }}
+    </small>
+    <div class="divider"></div>
+  </div>
+</div>

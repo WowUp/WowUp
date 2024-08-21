@@ -4,3 +4,4 @@ obj/
 .vs/
 Packages/
 wowup-electron/package_workspace/
+wowup-electron/app/env/environment.js

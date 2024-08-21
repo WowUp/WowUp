@@ -12,16 +12,17 @@ import { NetworkService } from "../network/network.service";
 import { FileService } from "../files/file.service";
 import { TocService } from "../toc/toc.service";
 import { WarcraftService } from "../warcraft/warcraft.service";
-import { WagoAddonProvider } from "../../addon-providers/wago-addon-provider";
 import { AddonProviderState } from "../../models/wowup/addon-provider-state";
 import { ADDON_PROVIDER_UNKNOWN, WAGO_PROMPT_KEY } from "../../../common/constants";
 import { Subject } from "rxjs";
 import { PreferenceStorageService } from "../storage/preference-storage.service";
 import { SensitiveStorageService } from "../storage/sensitive-storage.service";
 import { UiMessageService } from "../ui-message/ui-message.service";
+import { CurseAddonProvider } from "../../addon-providers/curse-addon-provider";
 import { WowUpAddonProvider, WowInterfaceAddonProvider, TukUiAddonProvider } from "wowup-lib-core";
 import { AppConfig } from "../../../environments/environment";
 import { GenericNetworkInterface } from "../../business-objects/generic-network-interface";
+import { WagoAddonProvider } from "../../addon-providers/wago-addon-provider";
 
 @Injectable({
   providedIn: "root",
@@ -46,32 +47,33 @@ export class AddonProviderFactory {
     private _fileService: FileService,
     private _tocService: TocService,
     private _warcraftService: WarcraftService,
+
     private _preferenceStorageService: PreferenceStorageService,
     private _sensitiveStorageService: SensitiveStorageService,
-    private _uiMessageService: UiMessageService
+    private _uiMessageService: UiMessageService,
   ) {
     this._wowupNetworkInterface = new GenericNetworkInterface(
       this._networkService.getCircuitBreaker(
         "wowup_addon_provider",
         AppConfig.defaultHttpResetTimeoutMs,
-        AppConfig.wowUpHubHttpTimeoutMs
-      )
+        AppConfig.wowUpHubHttpTimeoutMs,
+      ),
     );
 
     this._wowInterfaceNetworkInterface = new GenericNetworkInterface(
       this._networkService.getCircuitBreaker(
         "wow_interface_provider",
         AppConfig.defaultHttpResetTimeoutMs,
-        AppConfig.wowUpHubHttpTimeoutMs
-      )
+        AppConfig.wowUpHubHttpTimeoutMs,
+      ),
     );
 
     this._tukuiNetworkInterface = new GenericNetworkInterface(
       this._networkService.getCircuitBreaker(
         "tukui_provider",
         AppConfig.defaultHttpResetTimeoutMs,
-        AppConfig.wowUpHubHttpTimeoutMs
-      )
+        AppConfig.wowUpHubHttpTimeoutMs,
+      ),
     );
   }
 
@@ -85,11 +87,21 @@ export class AddonProviderFactory {
       this.createRaiderIoAddonProvider(),
       this.createWowUpCompanionAddonProvider(),
       this.createWowUpAddonProvider(),
-      this.createWagoAddonProvider(),
+    ];
+
+    if (AppConfig.wago.enabled) {
+      providers.push(this.createWagoAddonProvider());
+    }
+
+    if (AppConfig.curseforge.enabled) {
+      providers.push(this.createCurseProvider());
+    }
+
+    providers.push(
       this.createTukUiAddonProvider(),
       this.createWowInterfaceAddonProvider(),
       this.createGitHubAddonProvider(),
-    ];
+    );
 
     for (const provider of providers) {
       await this.setProviderState(provider);
@@ -98,7 +110,10 @@ export class AddonProviderFactory {
   }
 
   public async shouldShowConsentDialog(): Promise<boolean> {
-    return (await this._preferenceStorageService.getAsync(WAGO_PROMPT_KEY)) === undefined;
+    if (AppConfig.wago.enabled) {
+      return (await this._preferenceStorageService.getAsync(WAGO_PROMPT_KEY)) === undefined;
+    }
+    return false;
   }
 
   public async updateWagoConsent(): Promise<void> {
@@ -133,7 +148,7 @@ export class AddonProviderFactory {
       this._tocService,
       this._uiMessageService,
       this._sensitiveStorageService,
-      this._networkService
+      this._networkService,
     );
   }
 
@@ -143,6 +158,10 @@ export class AddonProviderFactory {
 
   public createRaiderIoAddonProvider(): RaiderIoAddonProvider {
     return new RaiderIoAddonProvider(this._tocService);
+  }
+
+  public createCurseProvider(): CurseAddonProvider {
+    return new CurseAddonProvider(this._cachingService, this._networkService, this._tocService);
   }
 
   public createTukUiAddonProvider(): TukUiAddonProvider {

@@ -1,4 +1,5 @@
 export const APP_USER_MODEL_ID = "io.wowup.jliddev"; // Bundle ID
+export const APP_USER_MODEL_ID_CF = "io.wowupcf.jliddev"; // Bundle ID
 
 // FEATURES
 export const FEATURE_ACCOUNTS_ENABLED = false;
@@ -17,6 +18,7 @@ export const ADDON_PROVIDER_WOWUP_COMPANION = "WowUpCompanion";
 export const ADDON_PROVIDER_ZIP = "Zip";
 
 export const APP_PROTOCOL_NAME = "wowup";
+export const CURSE_PROTOCOL_NAME = "curseforge";
 
 // WOWUP ADDON
 export const WOWUP_ADDON_FOLDER_NAME = "WowUp";
@@ -24,6 +26,7 @@ export const WOWUP_DATA_ADDON_FOLDER_NAME = "wowup_data_addon";
 export const WOWUP_ASSET_FOLDER_NAME = "WowUpAddon";
 
 // IPC CHANNELS
+export const IPC_CURSE_GET_SCAN_RESULTS = "curse-get-scan-results";
 export const IPC_DOWNLOAD_FILE_CHANNEL = "download-file";
 export const IPC_COPY_DIRECTORY_CHANNEL = "copy-directory";
 export const IPC_CREATE_DIRECTORY_CHANNEL = "create-directory";
@@ -45,6 +48,8 @@ export const IPC_GET_ASSET_FILE_PATH = "get-asset-file-path";
 export const IPC_CREATE_TRAY_MENU_CHANNEL = "create-tray-menu";
 export const IPC_LIST_DISKS_WIN32 = "list-disks-win32";
 export const IPC_CREATE_APP_MENU_CHANNEL = "create-app-menu";
+export const IPC_OW_IS_CMP_REQUIRED = "ow-is-cmp-required";
+export const IPC_OW_OPEN_CMP = "ow-open-cmp";
 export const IPC_MENU_ZOOM_OUT_CHANNEL = "menu-zoom-out";
 export const IPC_MENU_ZOOM_IN_CHANNEL = "menu-zoom-in";
 export const IPC_MENU_ZOOM_RESET_CHANNEL = "menu-zoom-reset";
@@ -147,6 +152,7 @@ export const BETA_LOCATION_KEY = "wow_beta_location"; // TODO remove, deprecated
 export const ACCT_PUSH_ENABLED_KEY = "acct_push_enabled";
 export const WAGO_PROMPT_KEY = "wago_prompt";
 export const PREF_TABS_COLLAPSED = "tabs_collapsed";
+export const PREF_CF2_API_KEY = "cf2_api_key";
 export const PREF_GITHUB_PERSONAL_ACCESS_TOKEN = "github_personal_access_token";
 export const PREF_WAGO_ACCESS_KEY = "wago_access_key";
 
@@ -174,6 +180,7 @@ export const WINDOW_MIN_WIDTH = 940;
 export const WINDOW_MIN_HEIGHT = 700;
 export const MIN_VISIBLE_ON_SCREEN = 32;
 export const WOWUP_LOGO_FILENAME = "wowup_logo_purple.png";
+export const WOWUP_LOGO_FILENAME_CF = "wowup_logo_cf.png";
 export const WOWUP_LOGO_MAC_SYSTEM_TRAY = "wowupBlackLgNopadTemplate.png";
 export const DEFAULT_FILE_MODE = 0o655;
 export const DEFAULT_TRUSTED_DOMAINS = [
@@ -194,10 +201,8 @@ export const WOW_CLASSIC_PTR_FOLDER = "_classic_ptr_";
 export const WOW_RETAIL_PTR_FOLDER = "_ptr_";
 export const WOW_RETAIL_XPTR_FOLDER = "_xptr_";
 export const WOW_RETAIL_FOLDER = "_retail_";
-
 export const WOW_ADDON_FOLDER_NAME = "AddOns";
 export const WOW_INTERFACE_FOLDER_NAME = "Interface";
-
 
 export const YEAR_SECONDS = 31536000;
 export const MONTH_SECONDS = 2592000;

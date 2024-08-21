@@ -32,9 +32,13 @@
     "VERSION_MISMATCH": "Ten addon jest już zainstalowany, ale wersja nie zgadza się"
   },
   "ADS": {
-    "AD_EXPLAINER_BUTTON": "Czemu widzę tę reklamę?",
+    "AD_EXPLAINER_BUTTON": "This ad supports addon creators ❤",
     "AD_EXPLAINER_DIALOG": {
       "MESSAGE": "Aby używać <a appExternalLink href=\"https://addons.wago.io/\">wago.io</a> jako dostawcę addonu i pomagać autorom za ich ciężką pracę nad twoimi ulubionimi addonami, jesteśmy zmuszeni pokazywać tę reklamę.\n\nJeśli nie chcesz widzieć tej reklamy, zawsze możesz zablokować Wago jako dostawcę w zakładce opcje.",
+      "TITLE": "Czemu widzę tę reklamę?"
+    },
+    "AD_EXPLAINER_DIALOG_CF": {
+      "MESSAGE": "In order to use <a appExternalLink href=\"https://curseforge.com/\">CurseForge</a> as an addon provider and help support authors for their hard work on your favorite addons we are required to show this advertisement.\n\nIf you do not want to see this ad, you can always disable CurseForge as a provider in the options tab.",
       "TITLE": "Czemu widzę tę reklamę?"
     }
   },
@@ -317,6 +321,13 @@
       "TITLE": "Opis łatki {versionNumber}"
     },
     "PERMISSIONS": {
+      "CURSEFORGE": {
+        "DESCRIPTION_AD_LINK": "ad vendors",
+        "DESCRIPTION_BOTTOM": ". Click on the Manage button to control you consents, or to object to the processing of your data. You can change your preferences any time via the settings screen.",
+        "DESCRIPTION_TOP": " In order to use this application's integration with CurseForge they require that you allow them to show you an ad from one of their ",
+        "MANAGE_BUTTON": "Manage",
+        "TITLE": "CurseForge"
+      },
       "MESSAGE": "Przed rozpoczęciem potrzebujemy ustawić klika uprawień dla aplikacji.",
       "POSITIVE_BUTTON": "Potwierdź",
       "TELEMETRY": {
@@ -487,7 +498,7 @@
     },
     "OPTIONS": {
       "ADDON": {
-        "AD_REQUIRED_HINT": "Ad or access key required",
+        "AD_REQUIRED_HINT": "Reklama wymagana",
         "CURSE_FORGE_V2": {
           "API_KEY_DESCRIPTION": "Jeśli zażądałeś klucza API CurseForge, możesz go wprowadzić tutaj, aby połączyć się z API.",
           "API_KEY_TITLE": "Klucz API CurseForge",
@@ -519,6 +530,8 @@
         "APP_RELEASE_CHANNEL_DROPDOWN_LABEL": "Kanał",
         "APP_RELEASE_CHANNEL_LABEL": "Kanał udostępniania aplikacji",
         "CURRENT_LANGUAGE_LABEL": "Aktualny język",
+        "CURSE_PROTOCOL_DESCRIPTION": "Podczas pobierania dodatków ze strony CurseForge, WowUp zajmie się instalacją",
+        "CURSE_PROTOCOL_LABEL": "Obsługa pobranych linków CurseForge",
         "ENABLE_APP_BADGE_DESCRIPTION": "Pokaż plakietkę na ikonie aplikacji z liczbą dodatków z dostępnymi aktualizacjami.",
         "ENABLE_APP_BADGE_LABEL": "Włącz powiadamianie o odznakach aplikacji",
         "ENABLE_SYSTEM_NOTIFICATIONS_DESCRIPTION": "Włącz różne wyskakujące okienka powiadomień, np. o automatycznie aktualizowanych addonach.",
@@ -557,6 +570,12 @@
         "USE_SYMLINK_SUPPORT_CONFIRMATION_LABEL": "Włączyć obsługę symlink?",
         "USE_SYMLINK_SUPPORT_DESCRIPTION": "Pozwól WowUp na skanowanie folderów z symlinkami w folderze addonów. Ostrzeżenie: zostaną one zastąpione podczas aktualizacji/instalacji."
       },
+      "CURSEFORGE": {
+        "ADS_OPTION_DESCRIPTION": "View and manage how CurseForge advertisers may use your data for ad personalization",
+        "ADS_OPTION_LABEL": "Ads Personalization & Data",
+        "ADS_OPTION_MANAGE": "Manage",
+        "TITLE": "CurseForge"
+      },
       "DEBUG": {
         "CONFIG_FILES_BUTTON": "Pokaż pliki konfiguracyjne",
         "CONFIG_FILES_DESCRIPTION": "Otwórz folder, w którym przechowywane są na przykład pliki addons.json oraz preferences.json.",
@@ -574,6 +593,7 @@
         "ADDONS": "Addony",
         "APPLICATION": "Aplikacja",
         "CLIENTS": "Klienty",
+        "CURSEFORGE": "CurseForge",
         "DEBUG": "Debugowanie",
         "WTF_EXPLORER": "WTF Explorer"
       },

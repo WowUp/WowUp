@@ -32,9 +32,13 @@
     "VERSION_MISMATCH": "Versionen stimmen nicht überein"
   },
   "ADS": {
-    "AD_EXPLAINER_BUTTON": "Warum sehe ich diese Werbung?",
+    "AD_EXPLAINER_BUTTON": "Diese Werbung unterstützt den Addon Autor ❤",
     "AD_EXPLAINER_DIALOG": {
       "MESSAGE": "Um <a appExternalLink href=\"https://addons.wago.io/\">wago.io</a> als Addon-Anbieter zu nutzen und seine Autoren für ihre harte Arbeit an deinen bevorzugten Addons zu unterstützen, müssen wir diese Werbung zeigen.\n\nWenn du diese Werbung nicht sehen möchtest, kannst du wago.io jederzeit als Addon-Anbieter in den Einstellungen deaktivieren.",
+      "TITLE": "Warum sehe ich diese Werbung?"
+    },
+    "AD_EXPLAINER_DIALOG_CF": {
+      "MESSAGE": "Um <a appExternalLink href=\"https://curseforge.com/\">CurseForge</a> als Anbieter von Add-Ons zu nutzen und Autoren bei ihrer harten Arbeit an Ihren Lieblings-Add-Ons zu unterstützen, sind wir verpflichtet, diese Werbung anzuzeigen.\n\nWenn du diese Anzeige nicht sehen möchtest, kannst du CurseForge jederzeit in den Einstellungen deaktivieren.",
       "TITLE": "Warum sehe ich diese Werbung?"
     }
   },
@@ -317,6 +321,13 @@
       "TITLE": "Neu in Version {versionNumber}"
     },
     "PERMISSIONS": {
+      "CURSEFORGE": {
+        "DESCRIPTION_AD_LINK": "Werbepartner",
+        "DESCRIPTION_BOTTOM": ". Klicke auf die Schaltfläche 'Verwalten', um deine Einwilligungen zu steuern oder Widerspruch gegen die Verarbeitung deiner Daten einzulegen. Du kannst deine Einstellungen jederzeit über das Einstellungsmenü ändern.",
+        "DESCRIPTION_TOP": " In order to use this application's integration with CurseForge they require that you allow them to show you an ad from one of their ",
+        "MANAGE_BUTTON": "Verwalten",
+        "TITLE": "CurseForge"
+      },
       "MESSAGE": "Bevor wir beginnen, müssen wir einige Berechtigungen für die App einrichten.",
       "POSITIVE_BUTTON": "Bestätigen",
       "TELEMETRY": {
@@ -487,7 +498,7 @@
     },
     "OPTIONS": {
       "ADDON": {
-        "AD_REQUIRED_HINT": "Werbung oder API-Schlüssel erforderlich",
+        "AD_REQUIRED_HINT": "Werbung erforderlich",
         "CURSE_FORGE_V2": {
           "API_KEY_DESCRIPTION": "Wenn du einen CurseForge-API-Schlüssel angefordert hast, kannst du ihn hier eingeben, um dich mit deren API zu verbinden.",
           "API_KEY_TITLE": "CurseForge API-Schlüssel",
@@ -519,6 +530,8 @@
         "APP_RELEASE_CHANNEL_DROPDOWN_LABEL": "Kanal",
         "APP_RELEASE_CHANNEL_LABEL": "App-Release-Kanal",
         "CURRENT_LANGUAGE_LABEL": "Aktuelle Sprache",
+        "CURSE_PROTOCOL_DESCRIPTION": "Beim Herunterladen von Addons von der CurseForge-Website übernimmt WowUp die Installation",
+        "CURSE_PROTOCOL_LABEL": "CurseForge-Download-Links verarbeiten",
         "ENABLE_APP_BADGE_DESCRIPTION": "Zeigt auf dem App-Symbol einen Zähler, mit der Anzahl an verfügbaren Updates an.",
         "ENABLE_APP_BADGE_LABEL": "App-Badge-Benachrichtigung aktivieren",
         "ENABLE_SYSTEM_NOTIFICATIONS_DESCRIPTION": "Aktivieren/Deaktivieren verschiedener Systembenachrichtigungen",
@@ -557,6 +570,12 @@
         "USE_SYMLINK_SUPPORT_CONFIRMATION_LABEL": "Symlink-Unterstützung aktivieren?",
         "USE_SYMLINK_SUPPORT_DESCRIPTION": "Erlaubt WowUp Symlink-Ordner in deinem Addon-Ordner zu scannen. Warnung: Diese werden beim Aktualisieren/Installieren ersetzt."
       },
+      "CURSEFORGE": {
+        "ADS_OPTION_DESCRIPTION": "Sehe ein und verwalte, wie CurseForge-Werbetreibende deine Daten für Werbepersonalisierung nutzen können.",
+        "ADS_OPTION_LABEL": "Werbepersonalisierung und Daten",
+        "ADS_OPTION_MANAGE": "Verwalten",
+        "TITLE": "CurseForge"
+      },
       "DEBUG": {
         "CONFIG_FILES_BUTTON": "Konfigurationsdateien anzeigen",
         "CONFIG_FILES_DESCRIPTION": "Öffne den Ordner, in dem beispielsweise deine addons.json und preferences.json gespeichert sind.",
@@ -574,6 +593,7 @@
         "ADDONS": "Addons",
         "APPLICATION": "Anwendung",
         "CLIENTS": "Clients",
+        "CURSEFORGE": "CurseForge",
         "DEBUG": "Debug",
         "WTF_EXPLORER": "WTF Explorer"
       },
@@ -603,8 +623,8 @@
         "TITLE": "World of Warcraft"
       },
       "WTF_EXPLORER": {
-        "FOLDER_PATH_LABEL": "Folder: ",
-        "PAGE_EXPLANATION": "The WTF Explorer allows you to inspect all the data your addons have saved.\nFiles in grey are typically things you can ignore such as backup files.\nFiles in red should belong to addons that you no longer have installed.",
+        "FOLDER_PATH_LABEL": "Ordner: ",
+        "PAGE_EXPLANATION": "Der WTF Explorer ermöglicht dir, alle Daten zu inspizieren, die deine Add-Ons gespeichert haben.\nDateien in Grau sind in der Regel Dinge, die du ignorieren kannst, wie beispielsweise Sicherungskopien.\nDateien in Rot sollten zu Add-Ons gehören, die du nicht mehr installiert hast.",
         "TITLE": "WTF Explorer"
       }
     }
