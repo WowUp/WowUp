@@ -32,7 +32,7 @@ a[href^="ftp://"]
 }
 
 .cata-bg {
-  background-image: url("~assets/images/wow-cata-background.jpg");
+  background-image: url("~assets/images/wow-war-within-background.jpg");
   position: absolute;
   top: 0;
   left: 0;
@@ -41,6 +41,7 @@ a[href^="ftp://"]
   background-size: cover;
   background-position: center;
   z-index: -10;
+  opacity: .3;
 }
 
 .selectable {

@@ -133,6 +133,12 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
     public sessionService: SessionService,
     public wowUpService: WowUpService,
   ) {
+    setTimeout(() => {
+      if (document.getElementById("wow-background") !== undefined) {
+        document.getElementById("wow-background")!.style.opacity = "0.5";
+      }
+    }, 1000);
+
     this._warcraftInstallationService.wowInstallations$
       .pipe(
         first((installations) => installations.length > 0),
