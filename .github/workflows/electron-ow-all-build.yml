@@ -1,4 +1,4 @@
-name: Build WowUp Electron All
+name: Build WowUp Electron All CF
 on:
   # - push
   workflow_dispatch:
