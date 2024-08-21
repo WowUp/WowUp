@@ -24,7 +24,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [ubuntu-latest, windows-latest,"macos-latest"]
+        os: [ubuntu-latest, windows-latest, "macos-latest"]
         node-version: [20.x]
 
     steps:
@@ -61,7 +61,7 @@ jobs:
         run: |
           cd ./wowup-electron
           npm ci
-          npm run electron:publish
+          npm run ow:electron:publish
 
       - name: Build Mac App
         if: matrix.os == 'macos-latest'
@@ -75,7 +75,7 @@ jobs:
         run: |
           cd ./wowup-electron
           npm ci
-          npm run electron:publish
+          npm run ow:electron:publish
 
       - name: Build Windows App
         if: matrix.os == 'windows-latest'

@@ -46,6 +46,7 @@
     "ow:electron:build": "npm run build:prod && ow-electron-builder build",
     "ow:electron:build:local": "npm run build:prod && ow-electron-builder build -c electron-build/electron-builder-local.json",
     "ow:electron:publish": "npm run lint && npm run ow:build:prod && ow-electron-builder -c electron-build/electron-builder-local-ow.json build --publish always",
+    "ow:electron:publish:vanilla": "npm run lint && npm run ow:build:prod && electron-builder -c electron-build/electron-builder-local-ow.json build --publish always",
     "ow:electron:publish:never": "npm run electron:build && ow-electron-builder --publish never",
     "ow:electron:publish:local": "npm run lint && npm run ow:build:dev && npx ow-electron-builder -c electron-build/electron-builder-local-ow.json --publish never",
     "test": "ng test --watch=false",
