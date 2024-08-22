@@ -29,9 +29,7 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
-        with:
-          fetch-depth: 0
+        uses: actions/checkout@v4
 
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v2
@@ -53,6 +51,22 @@ jobs:
         run: |
           cd ./wowup-electron
           npm i dmg-license
+
+      - name: Chceckout-CF
+        if: matrix.os == 'ubuntu-latest'
+        uses: actions/checkout@v4
+        with:
+          repository: 'https://github.com/WowUp/WowUp.CF.git'
+          token: ${{ secrets.WOWUP_CF_REPO_KEY }}
+          path: 'wowup-cf'
+
+      - name: Create CF Change
+        if: matrix.os == 'ubuntu-latest'
+        run: |
+          cd ./wowup-cf
+          date +%s > wowup-build-dt.txt
+          git commit -am "WowUp Main Build"
+          git push
 
       - name: Build Linux App
         if: matrix.os == 'ubuntu-latest'
