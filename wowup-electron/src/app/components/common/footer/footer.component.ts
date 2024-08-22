@@ -25,6 +25,7 @@ export class FooterComponent implements OnInit {
   public isWowUpUpdateDownloaded = false;
   public isCheckingForUpdates = false;
   public isWowUpdateDownloading = false;
+  public isCurseForge = AppConfig.curseforge.enabled;
   public updateIconTooltip = "APP.WOWUP_UPDATE.TOOLTIP";
   public versionNumber = from(this.wowUpService.getApplicationVersion());
   public appUpdateState = AppUpdateState;

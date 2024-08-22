@@ -10,7 +10,7 @@
       </div>
       <mat-hint>{{ "DIALOGS.PERMISSIONS.TELEMETRY.DESCRIPTION" | translate }}</mat-hint>
     </div>
-    <div>
+    <div *ngIf="isWago">
       <div>
         <mat-slide-toggle formControlName="wagoProvider">{{
           "DIALOGS.PERMISSIONS.WAGO.TOGGLE_LABEL" | translate
@@ -23,8 +23,21 @@
         "
       ></mat-hint>
     </div>
+    <div *ngIf="isCurseForge && requiresCmp" class="mb-3">
+      <h3 class="m-0">{{ "DIALOGS.PERMISSIONS.CURSEFORGE.TITLE" | translate }}</h3>
+      <mat-hint style="max-width: 600px; display: block">
+        <span>{{ "DIALOGS.PERMISSIONS.CURSEFORGE.DESCRIPTION_TOP" | translate }}</span>
+        <button class="link-btn" (click)="onClickAdVendors($event)">
+          {{ "DIALOGS.PERMISSIONS.CURSEFORGE.DESCRIPTION_AD_LINK" | translate }}
+        </button>
+        <span>{{ "DIALOGS.PERMISSIONS.CURSEFORGE.DESCRIPTION_BOTTOM" | translate }}</span>
+      </mat-hint>
+    </div>
   </div>
   <div mat-dialog-actions align="end">
+    <button *ngIf="requiresCmp" mat-raised-button color="primary" type="button" (click)="onClickManage($event)">
+      Manage
+    </button>
     <button class="wu-btn wu-btn-primary" type="submit" cdkFocusInitial>
       {{ "DIALOGS.PERMISSIONS.POSITIVE_BUTTON" | translate }}
     </button>

@@ -6,7 +6,6 @@ import {
   IRowNode,
   RowClickedEvent,
   RowDoubleClickedEvent,
-
 } from "ag-grid-community";
 import * as _ from "lodash";
 import { BehaviorSubject, combineLatest, from, Observable, of, Subject } from "rxjs";
@@ -20,10 +19,12 @@ import { MatDrawer } from "@angular/material/sidenav";
 import { TranslateService } from "@ngx-translate/core";
 
 import {
+  ADDON_PROVIDER_CURSEFORGEV2,
   ADDON_PROVIDER_HUB,
   ADDON_PROVIDER_WAGO,
   DEFAULT_CHANNEL_PREFERENCE_KEY_SUFFIX,
 } from "../../../common/constants";
+
 import { GetAddonListItem } from "../../business-objects/get-addon-list-item";
 import { CellWrapTextComponent } from "../../components/common/cell-wrap-text/cell-wrap-text.component";
 import { GetAddonStatusColumnComponent } from "../../components/addons/get-addon-status-cell/get-addon-status-cell.component";
@@ -34,6 +35,7 @@ import {
 } from "../../components/addons/potential-addon-table-cell/potential-addon-table-cell.component";
 import { TableContextHeaderCellComponent } from "../../components/addons/table-context-header-cell/table-context-header-cell.component";
 import { GenericProviderError } from "../../errors";
+
 import { ColumnState } from "../../models/wowup/column-state";
 import { DownloadCountPipe } from "../../pipes/download-count.pipe";
 import { RelativeDurationPipe } from "../../pipes/relative-duration-pipe";
@@ -47,6 +49,7 @@ import { WarcraftService } from "../../services/warcraft/warcraft.service";
 import { WowUpService } from "../../services/wowup/wowup.service";
 import { getEnumKeys } from "wowup-lib-core";
 import { camelToSnakeCase } from "../../utils/string.utils";
+
 import { AddonProviderFactory } from "../../services/addons/addon.provider.factory";
 import { AddonCategory, AddonChannelType, AddonSearchResult, WowClientType } from "wowup-lib-core";
 import { WowInstallation } from "wowup-lib-core";
@@ -79,6 +82,7 @@ export class GetAddonsComponent implements OnInit, OnDestroy {
   public columnDefs$ = new BehaviorSubject<ColDef[]>([]);
   public rowData$ = this._rowDataSrc.asObservable();
   public enableControls$ = this._sessionService.enableControls$;
+
   public columnTypes: {
     [key: string]: ColDef;
   } = { nonEditableColumn: { editable: false } };
@@ -614,9 +618,10 @@ export class GetAddonsComponent implements OnInit, OnDestroy {
       [
         (sr) => (sr.providerName === ADDON_PROVIDER_HUB ? 1 : 0),
         (sr) => (sr.providerName === ADDON_PROVIDER_WAGO ? 1 : 0),
+        (sr) => (sr.providerName === ADDON_PROVIDER_CURSEFORGEV2 ? 1 : 0),
         "downloadCount",
       ],
-      ["desc", "desc", "desc"]
+      ["desc", "desc", "desc", "desc"],
     );
   }
 

@@ -75,6 +75,7 @@ import { AddonProviderFactory } from "../../services/addons/addon.provider.facto
 import { toInterfaceVersion } from "../../utils/addon.utils";
 import { Addon, WowClientType } from "wowup-lib-core";
 import { WowInstallation } from "wowup-lib-core";
+import { GameVersionCellComponent } from "../../components/addons/game-version-cell/game-version-cell.component";
 
 @Component({
   selector: "app-my-addons",
@@ -1460,6 +1461,7 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
         headerName: this._translateService.instant("PAGES.MY_ADDONS.TABLE.GAME_VERSION_COLUMN_HEADER"),
         comparator: (va, vb, na, nb) => this.compareTocVersion(na, nb),
         ...baseColumn,
+        cellRenderer: GameVersionCellComponent,
       },
       {
         field: "externalChannel",

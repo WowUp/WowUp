@@ -3,7 +3,7 @@ import { Injectable } from "@angular/core";
 import { from, mergeMap, Subject } from "rxjs";
 import slug from "slug";
 import { join as pathJoin } from "path";
-import { Addon, AddonExternalId, getGameVersion, getGameVersionList, Toc, WowClientType } from "wowup-lib-core";
+import { Addon, AddonExternalId, getGameVersionList, Toc, WowClientType } from "wowup-lib-core";
 import { AddonInstallState } from "../../models/wowup/addon-install-state";
 import { AddonUpdateEvent } from "../../models/wowup/addon-update-event";
 import { capitalizeString } from "../../utils/string.utils";
@@ -210,9 +210,9 @@ export class AddonInstallService {
         unzippedDirectoryNames,
         addon.clientType,
       );
-      const gameVersion = this.getLatestGameVersion(allTocFiles);
-      if (gameVersion) {
-        addon.gameVersion = getGameVersionList([gameVersion]);
+      const gameVersions = this.getLatestGameVersions(allTocFiles);
+      if (gameVersions.length > 0) {
+        addon.gameVersion = gameVersions;
       }
 
       if (!addon.author) {
@@ -360,10 +360,10 @@ export class AddonInstallService {
     }
   }
 
-  private getLatestGameVersion(tocs: Toc[]) {
-    const versions = tocs.map((toc) => +toc.interface);
-    const ordered = _.orderBy(versions, [], "desc");
-    return getGameVersion(ordered[0]?.toString() || "");
+  private getLatestGameVersions(tocs: Toc[]): string[] {
+    const versions = _.concat([], ...tocs.map((toc) => _.map(toc.interface, (i) => i)));
+    // const ordered = _.orderBy(versions, [], "desc");
+    return getGameVersionList(versions);
   }
 
   private getBestGuessTitle(tocs: Toc[]) {

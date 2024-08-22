@@ -32,6 +32,9 @@
             <button mat-list-item (click)="optionTabIndex = 5">
               {{ "PAGES.OPTIONS.TABS.ABOUT" | translate }}
             </button>
+            <button *ngIf="isCurseForge && isCMPRequired" mat-list-item (click)="optionTabIndex = 6">
+              {{ "PAGES.OPTIONS.TABS.CURSEFORGE" | translate }}
+            </button>
           </mat-action-list>
         </div>
       </div>
@@ -57,6 +60,9 @@
             </mat-tab>
             <mat-tab label="About">
               <app-about></app-about>
+            </mat-tab>
+            <mat-tab *ngIf="isCurseForge && isCMPRequired" label="CurseForge">
+              <app-options-curseforge-section></app-options-curseforge-section>
             </mat-tab>
           </mat-tab-group>
         </div>

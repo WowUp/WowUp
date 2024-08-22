@@ -25,6 +25,11 @@
     "IMPORT_TOTAL_COUNT": "Importerer {count} {count, plural, =1{utvidelse} other{utvidelser}}",
     "INSTALL_BUTTON": "Installer",
     "INVALID_CLIENT_TYPE": "Importstrengen samsvarer ikke med den valgte klienttypen",
+    "MISSING_ADDON_PROVIDERS": "En eller flere tilleggstilbydere var ikke tilgjengelige/aktivert ({missingProviders})",
+    "MISSING_CURSEFORGE_PROVIDER": "Tilleggslisten inneholder et CurseForge-tillegg, du må installere<br>\"WowUp with CurseForge\" fra wowup.io",
+    "MISSING_PROVIDER_MODAL_DOWNLOAD_BTN": "Last ned",
+    "MISSING_PROVIDER_MODAL_TITLE": "Manglende tilleggstilbyder",
+    "MISSING_WAGO_PROVIDER": "Tilleggslisten inneholder et Wago-tillegg, du må installere<br>\"WowUp with Wago\" fra wowup.io",
     "NO_CHANGE_BADGE_TOOLTIP": "Du har allerede denne utvidelsen installert",
     "PASTE_BUTTON": "Lim inn",
     "PROVIDER_MISMATCH": "Utvidelsesleverandør samsvarer ikke",
@@ -36,6 +41,10 @@
     "AD_EXPLAINER_DIALOG": {
       "MESSAGE": "For å kunne bruke <a appExternalLink href=\"https://addons.wago.io/\">wago.io</a> som leverandør av utvidelser, og støtte forfatterene deres for deres harde arbeid med favorittutvidelsene dine, er vi nødt til å vise denne annonsen.\n\nHvis du ikke vil se denne annonsen kan du alltids deaktivere Wago som leverandør i fanen for alternativer.",
       "TITLE": "Hvorfor ser jeg denne annonsen?"
+    },
+    "AD_EXPLAINER_DIALOG_CF": {
+      "MESSAGE": "In order to use <a appExternalLink href=\"https://curseforge.com/\">CurseForge</a> as an addon provider and help support authors for their hard work on your favorite addons we are required to show this advertisement.\n\nIf you do not want to see this ad, you can always disable CurseForge as a provider in the options tab.",
+      "TITLE": "Why am I seeing this ad?"
     }
   },
   "APP": {
@@ -98,6 +107,7 @@
       "HORDE": "Horde"
     },
     "WINDOW_TITLE": "WowUp.io",
+    "WINDOW_TITLE_CF": "WowUp.io CF",
     "WINDOW_TITLE_FULLSCREEN": "WowUp.io - Fullskjerm",
     "WOWUP_UPDATE": {
       "CHECKING_FOR_UPDATE": "Ser etter oppdateringer",
@@ -181,15 +191,15 @@
       "TOC_NAME_MISMATCH_TOOLTIP": "Mappen til denne utvidelsen samsvarer ikke med TOC-filen"
     },
     "CLIENT_TYPES": {
-      "BETA": "Dragonflight Beta",
+      "BETA": "TWW Beta",
       "CLASSIC": "Cataclysm Classic",
       "CLASSICBETA": "Cataclysm Classic Beta",
       "CLASSICERA": "World of Warcraft Classic",
-      "CLASSICERAPTR": "WoW Classic Era PTR",
-      "CLASSICPTR": "Public Test Realm (Wrath Classic)",
-      "RETAIL": "Dragonflight",
-      "RETAILPTR": "Public Test Realm (DF 10.2.5)",
-      "RETAILXPTR": "Public Test Realm (DF 10.2.0)"
+      "CLASSICERAPTR": "PTR (Classic Era)",
+      "CLASSICPTR": "PTR (Cataclysm Classic)",
+      "RETAIL": "World of Warcraft",
+      "RETAILPTR": "PTR (TWW 11.0.2)",
+      "RETAILXPTR": "PTR (TWW 11.0)"
     },
     "DATES": {
       "DAYS_AGO": "{count} {count, plural, =1{dag} other{dager}} siden",
@@ -317,6 +327,13 @@
       "TITLE": "Nytt i versjon {versionNumber}"
     },
     "PERMISSIONS": {
+      "CURSEFORGE": {
+        "DESCRIPTION_AD_LINK": "ad vendors",
+        "DESCRIPTION_BOTTOM": ". Click on the Manage button to control you consents, or to object to the processing of your data. You can change your preferences any time via the settings screen.",
+        "DESCRIPTION_TOP": " In order to use this application's integration with CurseForge they require that you allow them to show you an ad from one of their ",
+        "MANAGE_BUTTON": "Manage",
+        "TITLE": "CurseForge"
+      },
       "MESSAGE": "Før vi kan komme igang må vi sette opp noen tillatelser for appen.",
       "POSITIVE_BUTTON": "Bekreft",
       "TELEMETRY": {
@@ -519,6 +536,8 @@
         "APP_RELEASE_CHANNEL_DROPDOWN_LABEL": "Kanal",
         "APP_RELEASE_CHANNEL_LABEL": "Apputgivelseskanal",
         "CURRENT_LANGUAGE_LABEL": "Nåværende språk",
+        "CURSE_PROTOCOL_DESCRIPTION": "When downloading addons from the CurseForge website, WowUp will handle the install",
+        "CURSE_PROTOCOL_LABEL": "Handle CurseForge download links",
         "ENABLE_APP_BADGE_DESCRIPTION": "Viser en teller på appikonet med antall tilgjengelige oppdateringer.",
         "ENABLE_APP_BADGE_LABEL": "Aktiver notifikasjonsbadge for appen",
         "ENABLE_SYSTEM_NOTIFICATIONS_DESCRIPTION": "Aktiver ulike systemvarsler, som for eksempel for automatisk oppdaterte utvidelser.",
@@ -557,6 +576,12 @@
         "USE_SYMLINK_SUPPORT_CONFIRMATION_LABEL": "Aktiver symlink-støtte?",
         "USE_SYMLINK_SUPPORT_DESCRIPTION": "Tillat WowUp å skanne symlink-mapper i utvidelsesmappen din. Advarsel: de vil bli erstattet ved oppdatering/installering."
       },
+      "CURSEFORGE": {
+        "ADS_OPTION_DESCRIPTION": "View and manage how CurseForge advertisers may use your data for ad personalization",
+        "ADS_OPTION_LABEL": "Ads Personalization & Data",
+        "ADS_OPTION_MANAGE": "Manage",
+        "TITLE": "CurseForge"
+      },
       "DEBUG": {
         "CONFIG_FILES_BUTTON": "Vis konfigurasjonsfiler",
         "CONFIG_FILES_DESCRIPTION": "Åpne mappen der for eksempel addons.json og preferences.json er lagret.",
@@ -574,6 +599,7 @@
         "ADDONS": "Utvidelser",
         "APPLICATION": "Applikasjon",
         "CLIENTS": "Klienter",
+        "CURSEFORGE": "CurseForge",
         "DEBUG": "Debug",
         "WTF_EXPLORER": "WTF Explorer"
       },

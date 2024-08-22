@@ -80,6 +80,14 @@ export class TitlebarComponent implements OnDestroy {
     this._subscriptions.forEach((subscription) => subscription.unsubscribe());
   }
 
+  public getTitleKey():string {
+    if(this.isFullscreen){
+      return "APP.WINDOW_TITLE_FULLSCREEN"
+    }
+
+    return AppConfig.curseforge.enabled ? "APP.WINDOW_TITLE_CF" : "APP.WINDOW_TITLE"
+  }
+
   public async onClickClose(): Promise<void> {
     await this.electronService.closeWindow();
   }

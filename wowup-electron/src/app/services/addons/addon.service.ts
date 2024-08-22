@@ -1,4 +1,5 @@
 import * as _ from "lodash";
+
 import * as path from "path";
 import { BehaviorSubject, firstValueFrom, forkJoin, from, Observable, of, Subject } from "rxjs";
 import { catchError, filter, first, map, switchMap, tap } from "rxjs/operators";
@@ -25,12 +26,17 @@ import {
 } from "../../../common/constants";
 
 import { AddonScanError, AddonSyncError, GenericProviderError } from "../../errors";
+
 import { AddonInstallState } from "../../models/wowup/addon-install-state";
+
 import { AddonUpdateEvent } from "../../models/wowup/addon-update-event";
+
 import * as AddonUtils from "../../utils/addon.utils";
 import { getEnumName, getGameVersionList, WowInstallation, WowUpAddonProvider } from "wowup-lib-core";
 import * as SearchResults from "../../utils/search-result.utils";
+
 import { AnalyticsService } from "../analytics/analytics.service";
+
 import { FileService } from "../files/file.service";
 import { AddonStorageService } from "../storage/addon-storage.service";
 import { TocService } from "../toc/toc.service";
@@ -39,6 +45,7 @@ import { WarcraftService } from "../warcraft/warcraft.service";
 import { WowUpService } from "../wowup/wowup.service";
 import { AddonProviderFactory } from "./addon.provider.factory";
 import { AddonFingerprintService } from "./addon-fingerprint.service";
+import { CurseAddonProvider } from "../../addon-providers/curse-addon-provider";
 import {
   Addon,
   AddonCategory,
@@ -95,11 +102,14 @@ const ADDON_PROVIDER_TOC_EXTERNAL_ID_MAP = {
 })
 export class AddonService {
   private readonly _addonActionSrc = new Subject<AddonActionEvent>();
+
   private readonly _addonRemovedSrc = new Subject<string>();
   private readonly _scanUpdateSrc = new BehaviorSubject<ScanUpdate>({ type: ScanUpdateType.Unknown });
+
   private readonly _syncErrorSrc = new Subject<AddonSyncError>();
   private readonly _scanErrorSrc = new Subject<AddonScanError>();
   private readonly _searchErrorSrc = new Subject<GenericProviderError>();
+
   private readonly _anyUpdatesAvailableSrc = new BehaviorSubject<boolean>(false);
   private readonly _addonProviderChangeSrc = new Subject<AddonProvider>();
   private readonly _syncingSrc = new BehaviorSubject<boolean>(false);
@@ -124,6 +134,7 @@ export class AddonService {
     private _analyticsService: AnalyticsService,
     private _warcraftService: WarcraftService,
     private _wowUpService: WowUpService,
+
     private _fileService: FileService,
     private _tocService: TocService,
     private _warcraftInstallationService: WarcraftInstallationService,
@@ -600,7 +611,11 @@ export class AddonService {
   };
 
   public async logDebugData(): Promise<void> {
+    const curseProvider = this._addonProviderService.getProvider<CurseAddonProvider>(ADDON_PROVIDER_CURSEFORGE);
     const hubProvider = this._addonProviderService.getProvider<WowUpAddonProvider>(ADDON_PROVIDER_HUB);
+    if (curseProvider === undefined) {
+      throw new Error("curse provider not found");
+    }
     if (hubProvider === undefined) {
       throw new Error("hub provider not found");
     }
@@ -614,14 +629,21 @@ export class AddonService {
       const addonFolders = await this._warcraftService.listAddons(installation, useSymlinkMode);
       await this._addonFingerprintService.getFingerprints(addonFolders);
 
+      const curseMap = {};
       const hubMap = {};
+
       addonFolders.forEach((af) => {
+        if (af.cfScanResults !== undefined) {
+          curseMap[af.cfScanResults.folderName] = af.cfScanResults.fingerprint;
+        }
+
         if (af.wowUpScanResults !== undefined) {
           hubMap[af.wowUpScanResults.folderName] = af.wowUpScanResults.fingerprint;
         }
       });
 
       clientMap[clientTypeName] = {
+        curse: curseMap,
         hub: hubMap,
       };
 
@@ -993,6 +1015,8 @@ export class AddonService {
   }
 
   private async syncProviderAddons(installation: WowInstallation, addons: Addon[], addonProvider: AddonProvider) {
+
+
     const providerAddonIds = this.getExternalIdsForProvider(addonProvider, addons);
     if (!providerAddonIds.length) {
       return;

@@ -39,6 +39,20 @@
         "runtimeExecutable": "${workspaceFolder}/node_modules/.bin/electron.cmd"
       },
       "preLaunchTask": "Build.Main"
+    },
+    {
+      "name": "OW Main",
+      "type": "node",
+      "request": "launch",
+      "protocol": "inspector",
+      "cwd": "${workspaceFolder}",
+      "runtimeExecutable": "${workspaceFolder}/node_modules/.bin/ow-electron",
+      "trace": "verbose",
+      "runtimeArgs": ["--force-cmp", "--serve", ".", "--remote-debugging-port=9876"],
+      "windows": {
+        "runtimeExecutable": "${workspaceFolder}/node_modules/.bin/ow-electron.cmd"
+      },
+      "preLaunchTask": "Build.Main"
     }
   ],
   "compounds": [

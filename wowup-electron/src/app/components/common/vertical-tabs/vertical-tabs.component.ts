@@ -43,6 +43,8 @@ export class VerticalTabsComponent implements OnInit, OnDestroy {
   private readonly destroy$: Subject<boolean> = new Subject<boolean>();
 
   public wowUpWebsiteUrl = AppConfig.wowUpWebsiteUrl;
+  public isWago = AppConfig.wago.enabled;
+  public isCurseForge = AppConfig.curseforge.enabled;
   public TAB_INDEX_ACCOUNT = TAB_INDEX_ABOUT;
   public FEATURE_ACCOUNTS_ENABLED = FEATURE_ACCOUNTS_ENABLED;
   public adPageParams$ = new BehaviorSubject<AdPageOptions[]>([]);
@@ -179,13 +181,14 @@ export class VerticalTabsComponent implements OnInit, OnDestroy {
   }
 
   public onClickAdExplainer(): void {
+    const dialogKey = this.isCurseForge ? "AD_EXPLAINER_DIALOG_CF" : "AD_EXPLAINER_DIALOG";
     this._dialog.open(AlertDialogComponent, {
       minWidth: 250,
       maxWidth: 400,
       disableClose: true,
       data: {
-        title: this._translateService.instant("ADS.AD_EXPLAINER_DIALOG.TITLE"),
-        message: this._translateService.instant("ADS.AD_EXPLAINER_DIALOG.MESSAGE"),
+        title: this._translateService.instant(`ADS.${dialogKey}.TITLE`),
+        message: this._translateService.instant(`ADS.${dialogKey}.MESSAGE`),
       },
     });
   }

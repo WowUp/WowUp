@@ -25,6 +25,11 @@
     "IMPORT_TOTAL_COUNT": "Импорт {count} {count, plural, =1{модификации} other{модификаций}}",
     "INSTALL_BUTTON": "Установить",
     "INVALID_CLIENT_TYPE": "Строка импорта не совпадает с выбранным типом клиента",
+    "MISSING_ADDON_PROVIDERS": "Один или несколько поставщиков аддонов недоступны/не включены ({missingProviders})",
+    "MISSING_CURSEFORGE_PROVIDER": "Список аддонов содержит аддон CurseForge, вам нужно установить<br>\"WowUp with CurseForge\" с сайта wowup.io",
+    "MISSING_PROVIDER_MODAL_DOWNLOAD_BTN": "Скачать",
+    "MISSING_PROVIDER_MODAL_TITLE": "Отсутствует поставщик аддонов",
+    "MISSING_WAGO_PROVIDER": "Список аддонов содержит аддон Wago, вам нужно установить<br>\"WowUp with Wago\" с сайта wowup.io",
     "NO_CHANGE_BADGE_TOOLTIP": "У Вас уже установлена эта модификация",
     "PASTE_BUTTON": "Вставить",
     "PROVIDER_MISMATCH": "Не совпадает источник модификации",
@@ -32,9 +37,13 @@
     "VERSION_MISMATCH": "Не совпадают версии"
   },
   "ADS": {
-    "AD_EXPLAINER_BUTTON": "Почему я вижу эту рекламу?",
+    "AD_EXPLAINER_BUTTON": "Это объявление поддерживает создателей дополнений ❤",
     "AD_EXPLAINER_DIALOG": {
       "MESSAGE": "Чтобы использовать <a appExternalLink href=\"https://addons.wago.io/\">wago.io</a> в виде источника модификаций и для поддержки их авторов за тяжёлый труд над Вашими любимыми модификациями, мы должны показывать эту рекламу.\n\nЕсли Вы не хотите видеть эту рекламу, то всегда можете отключить wago.io как источник модификаций во вкладке настроек.",
+      "TITLE": "Почему я вижу эту рекламу?"
+    },
+    "AD_EXPLAINER_DIALOG_CF": {
+      "MESSAGE": "Для того, чтобы использовать <a appExternalLink href=\"https://curseforge.com/\">CurseForge</a> в качестве поставщика аддонов и помочь поддержать авторов за их тяжелую работу над вашими любимыми аддонами, мы должны показать эту рекламу.\n\nЕсли Вы не хотите видеть эту рекламу, то всегда можете отключить CurseForge в качестве поставщика на вкладке опций.",
       "TITLE": "Почему я вижу эту рекламу?"
     }
   },
@@ -98,6 +107,7 @@
       "HORDE": "Орда"
     },
     "WINDOW_TITLE": "WowUp.io",
+    "WINDOW_TITLE_CF": "WowUp.io CF",
     "WINDOW_TITLE_FULLSCREEN": "WowUp.io — Полный экран",
     "WOWUP_UPDATE": {
       "CHECKING_FOR_UPDATE": "Проверка на наличие обновления",
@@ -181,15 +191,15 @@
       "TOC_NAME_MISMATCH_TOOLTIP": "Папка этой модификации не соответствует названию"
     },
     "CLIENT_TYPES": {
-      "BETA": "Бета Dragonflight",
+      "BETA": "TWW Beta",
       "CLASSIC": "Cataclysm Classic",
       "CLASSICBETA": "Cataclysm Classic Beta",
       "CLASSICERA": "World of Warcraft Classic",
-      "CLASSICERAPTR": "WoW Classic Era PTR",
-      "CLASSICPTR": "PTR (Wrath Classic)",
-      "RETAIL": "Dragonflight",
-      "RETAILPTR": "Public Test Realm (DF 10.2.5)",
-      "RETAILXPTR": "Public Test Realm (DF 10.2.0)"
+      "CLASSICERAPTR": "PTR (Classic Era)",
+      "CLASSICPTR": "PTR (Cataclysm Classic)",
+      "RETAIL": "World of Warcraft",
+      "RETAILPTR": "PTR (TWW 11.0.2)",
+      "RETAILXPTR": "PTR (TWW 11.0)"
     },
     "DATES": {
       "DAYS_AGO": "{count} {count, plural, one{день} few{дня} other{дней}} назад",
@@ -317,6 +327,13 @@
       "TITLE": "Список изменений в версии {versionNumber}"
     },
     "PERMISSIONS": {
+      "CURSEFORGE": {
+        "DESCRIPTION_AD_LINK": "поставщики рекламы",
+        "DESCRIPTION_BOTTOM": ". Нажмите на кнопку 'Управление', чтобы контролировать свои согласия или возражать против обработки Ваших данных. Вы можете изменить свои предпочтения в любое время через экран настроек.",
+        "DESCRIPTION_TOP": " Для того, чтобы использовать интеграцию этого приложения с CurseForge, они требуют, чтобы Вы разрешили им показывать Вам рекламу от одного из своих приложений ",
+        "MANAGE_BUTTON": "Управление",
+        "TITLE": "CurseForge"
+      },
       "MESSAGE": "Прежде чем мы начнем, нам нужно настроить несколько разрешений для приложения.",
       "POSITIVE_BUTTON": "Подтвердить",
       "TELEMETRY": {
@@ -487,7 +504,7 @@
     },
     "OPTIONS": {
       "ADDON": {
-        "AD_REQUIRED_HINT": "Ad or access key required",
+        "AD_REQUIRED_HINT": "Необходима реклама",
         "CURSE_FORGE_V2": {
           "API_KEY_DESCRIPTION": "Если Вы запросили ключ CurseForge API, Вы можете ввести его здесь, чтобы подключиться к их API.",
           "API_KEY_TITLE": "Ключ CurseForge API",
@@ -519,6 +536,8 @@
         "APP_RELEASE_CHANNEL_DROPDOWN_LABEL": "Канал",
         "APP_RELEASE_CHANNEL_LABEL": "Канал выпуска приложения",
         "CURRENT_LANGUAGE_LABEL": "Текущий язык",
+        "CURSE_PROTOCOL_DESCRIPTION": "При загрузке модификаций с сайта CurseForge, WowUp будет брать установку на себя.",
+        "CURSE_PROTOCOL_LABEL": "Обрабатывать ссылки на установку с CurseForge",
         "ENABLE_APP_BADGE_DESCRIPTION": "Показывать количество доступных обновлений на значке приложения.",
         "ENABLE_APP_BADGE_LABEL": "Включить уведомления на значке приложения",
         "ENABLE_SYSTEM_NOTIFICATIONS_DESCRIPTION": "Включить различные окна системных уведомлений, такие как автоматически обновлённые модификации.",
@@ -557,6 +576,12 @@
         "USE_SYMLINK_SUPPORT_CONFIRMATION_LABEL": "Включить поддержку символических ссылок?",
         "USE_SYMLINK_SUPPORT_DESCRIPTION": "Разрешает WowUp сканировать папки символических ссылок в папке Вашей модификации. Предупреждение: они будут заменены при обновлении/установке."
       },
+      "CURSEFORGE": {
+        "ADS_OPTION_DESCRIPTION": "Просмотр и управление тем, как рекламодатели CurseForge могут использовать Ваши данные для персонализации рекламы",
+        "ADS_OPTION_LABEL": "Персонализация рекламы и данные",
+        "ADS_OPTION_MANAGE": "Управление",
+        "TITLE": "CurseForge"
+      },
       "DEBUG": {
         "CONFIG_FILES_BUTTON": "Показать файлы настроек",
         "CONFIG_FILES_DESCRIPTION": "Открыть папку, в которой хранятся Ваши файлы addons.json и preferences.json.",
@@ -574,6 +599,7 @@
         "ADDONS": "Модификации",
         "APPLICATION": "Приложение",
         "CLIENTS": "Клиенты",
+        "CURSEFORGE": "CurseForge",
         "DEBUG": "Отладка",
         "WTF_EXPLORER": "WTF Explorer"
       },

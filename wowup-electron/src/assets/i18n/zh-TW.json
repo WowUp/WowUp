@@ -25,6 +25,11 @@
     "IMPORT_TOTAL_COUNT": "正在匯入 {count} 個插件",
     "INSTALL_BUTTON": "安裝",
     "INVALID_CLIENT_TYPE": "匯入字串和客戶端型別不匹配",
+    "MISSING_ADDON_PROVIDERS": "一個或多個插件提供者無法使用/啟用 ({missingProviders})",
+    "MISSING_CURSEFORGE_PROVIDER": "插件列表中包含 CurseForge 插件，您需要從 wowup.io 安裝<br>\"WowUp with CurseForge\"",
+    "MISSING_PROVIDER_MODAL_DOWNLOAD_BTN": "下載",
+    "MISSING_PROVIDER_MODAL_TITLE": "缺少插件提供者",
+    "MISSING_WAGO_PROVIDER": "插件列表中包含 Wago 插件，您需要從 wowup.io 安裝<br>\"WowUp with Wago\"",
     "NO_CHANGE_BADGE_TOOLTIP": "此插件已安裝",
     "PASTE_BUTTON": "貼上",
     "PROVIDER_MISMATCH": "插件安裝源不匹配",
@@ -32,9 +37,13 @@
     "VERSION_MISMATCH": "版本號不匹配"
   },
   "ADS": {
-    "AD_EXPLAINER_BUTTON": "為什麼會看見廣告？",
+    "AD_EXPLAINER_BUTTON": "This ad supports addon creators ❤",
     "AD_EXPLAINER_DIALOG": {
       "MESSAGE": "顯示此廣告是為了支援 <a appExternalLink href=\"https://addons.wago.io/\">wago.io</a> 上辛勤工作、開發出優秀插件的作者們。如果不想看到此廣告，可以在「選項」中禁用 Wago.io 安裝源。",
+      "TITLE": "為什麼會看見廣告？"
+    },
+    "AD_EXPLAINER_DIALOG_CF": {
+      "MESSAGE": "In order to use <a appExternalLink href=\"https://curseforge.com/\">CurseForge</a> as an addon provider and help support authors for their hard work on your favorite addons we are required to show this advertisement.\n\nIf you do not want to see this ad, you can always disable CurseForge as a provider in the options tab.",
       "TITLE": "為什麼會看見廣告？"
     }
   },
@@ -98,6 +107,7 @@
       "HORDE": "部落"
     },
     "WINDOW_TITLE": "WowUp.io",
+    "WINDOW_TITLE_CF": "WowUp.io CF",
     "WINDOW_TITLE_FULLSCREEN": "WowUp.io - 全螢幕模式",
     "WOWUP_UPDATE": {
       "CHECKING_FOR_UPDATE": "檢查更新",
@@ -181,15 +191,15 @@
       "TOC_NAME_MISMATCH_TOOLTIP": "插件資料夾和 TOC 不匹配"
     },
     "CLIENT_TYPES": {
-      "BETA": "巨龍崛起 Beta",
-      "CLASSIC": "巫妖王之怒",
+      "BETA": "TWW Beta",
+      "CLASSIC": "Cataclysm Classic",
       "CLASSICBETA": "Cataclysm Classic Beta",
-      "CLASSICERA": "經典舊世",
-      "CLASSICERAPTR": "WoW Classic Era PTR",
-      "CLASSICPTR": "巫妖王之怒 PTR",
-      "RETAIL": "巨龍崛起",
-      "RETAILPTR": "Public Test Realm (DF 10.2.5)",
-      "RETAILXPTR": "Public Test Realm (DF 10.2.0)"
+      "CLASSICERA": "World of Warcraft Classic",
+      "CLASSICERAPTR": "PTR (Classic Era)",
+      "CLASSICPTR": "PTR (Cataclysm Classic)",
+      "RETAIL": "World of Warcraft",
+      "RETAILPTR": "PTR (TWW 11.0.2)",
+      "RETAILXPTR": "PTR (TWW 11.0)"
     },
     "DATES": {
       "DAYS_AGO": "{count} 天前",
@@ -317,6 +327,13 @@
       "TITLE": "更新記錄 {versionNumber}"
     },
     "PERMISSIONS": {
+      "CURSEFORGE": {
+        "DESCRIPTION_AD_LINK": "ad vendors",
+        "DESCRIPTION_BOTTOM": ". Click on the Manage button to control you consents, or to object to the processing of your data. You can change your preferences any time via the settings screen.",
+        "DESCRIPTION_TOP": " In order to use this application's integration with CurseForge they require that you allow them to show you an ad from one of their ",
+        "MANAGE_BUTTON": "Manage",
+        "TITLE": "CurseForge"
+      },
       "MESSAGE": "在開始使用 WowUp 之前，請設定此應用程式的許可權。",
       "POSITIVE_BUTTON": "確認",
       "TELEMETRY": {
@@ -487,7 +504,7 @@
     },
     "OPTIONS": {
       "ADDON": {
-        "AD_REQUIRED_HINT": "啟用此項需要提供訪問金鑰或顯示廣告",
+        "AD_REQUIRED_HINT": "啟用此項會顯示廣告",
         "CURSE_FORGE_V2": {
           "API_KEY_DESCRIPTION": "如果申請過 CurseForge API 金鑰，請填入此處以連線到 CurseForge API。",
           "API_KEY_TITLE": "CurseForge API 金鑰",
@@ -519,6 +536,8 @@
         "APP_RELEASE_CHANNEL_DROPDOWN_LABEL": "更新通道",
         "APP_RELEASE_CHANNEL_LABEL": "應用程式更新通道",
         "CURRENT_LANGUAGE_LABEL": "當前語言",
+        "CURSE_PROTOCOL_DESCRIPTION": "從 CurseForge 網站下載插件時，WowUp 將會接管安裝過程",
+        "CURSE_PROTOCOL_LABEL": "接管 CurseForge 下載連結",
         "ENABLE_APP_BADGE_DESCRIPTION": "在應用程式圖示上用角標顯示可更新的插件數量。",
         "ENABLE_APP_BADGE_LABEL": "啟用數字角標通知",
         "ENABLE_SYSTEM_NOTIFICATIONS_DESCRIPTION": "啟用各種系統通知彈窗，如自動更新插件通知。",
@@ -557,6 +576,12 @@
         "USE_SYMLINK_SUPPORT_CONFIRMATION_LABEL": "啟用符號連結？",
         "USE_SYMLINK_SUPPORT_DESCRIPTION": "允許 WowUp 掃描插件所在路徑下的符號連結。警告：符號連結在安裝或更新插件時會被替換。"
       },
+      "CURSEFORGE": {
+        "ADS_OPTION_DESCRIPTION": "View and manage how CurseForge advertisers may use your data for ad personalization",
+        "ADS_OPTION_LABEL": "Ads Personalization & Data",
+        "ADS_OPTION_MANAGE": "Manage",
+        "TITLE": "CurseForge"
+      },
       "DEBUG": {
         "CONFIG_FILES_BUTTON": "顯示配置檔案",
         "CONFIG_FILES_DESCRIPTION": "開啟儲存 addons.json、preferences.json 等配置檔案的資料夾。",
@@ -574,6 +599,7 @@
         "ADDONS": "插件",
         "APPLICATION": "應用程式",
         "CLIENTS": "客戶端",
+        "CURSEFORGE": "CurseForge",
         "DEBUG": "除錯",
         "WTF_EXPLORER": "WTF Explorer"
       },

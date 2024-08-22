@@ -10,7 +10,7 @@ import { CachingService } from "../services/caching/caching-service";
 import { CircuitBreakerWrapper, NetworkService } from "../services/network/network.service";
 import { TocService } from "../services/toc/toc.service";
 import { WarcraftService } from "../services/warcraft/warcraft.service";
-import { getEnumName, getGameVersion, getWowClientGroupForType } from "wowup-lib-core";
+import { getEnumName, getWowClientGroupForType } from "wowup-lib-core";
 import { convertMarkdown } from "wowup-lib-core";
 import { HttpErrorResponse } from "@angular/common/http";
 import { UiMessageService } from "../services/ui-message/ui-message.service";
@@ -109,6 +109,7 @@ interface WagoScanRelease {
   created_at: string;
   label: string;
   patch: string;
+  supported_patches: string[];
   link?: string;
 }
 
@@ -647,7 +648,7 @@ export class WagoAddonProvider extends AddonProvider {
     const name = wagoScanAddon?.name ?? "";
     const externalUrl = wagoScanAddon?.website_url ?? "";
     const externalId = wagoScanAddon?.id ?? "";
-    const gameVersion = getGameVersion(wagoScanAddon?.matched_release?.patch);
+    const gameVersions = wagoScanAddon?.matched_release?.supported_patches ?? [];
     const thumbnailUrl = wagoScanAddon?.thumbnail ?? "";
     const releasedAt = wagoScanAddon?.matched_release?.created_at
       ? new Date(wagoScanAddon?.matched_release?.created_at)
@@ -688,7 +689,7 @@ export class WagoAddonProvider extends AddonProvider {
       downloadUrl,
       externalUrl,
       externalId,
-      gameVersion: [gameVersion],
+      gameVersion: gameVersions,
       installedAt: new Date(),
       installedFolders: installedFolders.join(","),
       installedFolderList: installedFolders,

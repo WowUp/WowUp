@@ -44,15 +44,12 @@
         <input matInput formControlName="ghPersonalAccessToken" type="password" />
       </mat-form-field>
     </div>
-    <div class="setting row align-items-center">
+    <div *ngIf="isWago" class="setting row align-items-center">
       <div class="flex-grow-1">
         <div>
           {{ "PAGES.OPTIONS.ADDON.WAGO_ACCESS_KEY.TITLE" | translate }}
         </div>
-        <small
-          class="text-2 changelog"
-          [innerHtml]="'PAGES.OPTIONS.ADDON.WAGO_ACCESS_KEY.MESSAGE' | translate"
-        ></small>
+        <small class="text-2 changelog" [innerHtml]="'PAGES.OPTIONS.ADDON.WAGO_ACCESS_KEY.MESSAGE' | translate"></small>
       </div>
       <mat-form-field class="example-full-width" appearance="fill">
         <mat-label>{{ "PAGES.OPTIONS.ADDON.WAGO_ACCESS_KEY.PLACEHOLDER" | translate }}</mat-label>

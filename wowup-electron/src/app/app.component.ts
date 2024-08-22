@@ -4,6 +4,7 @@
 import * as _ from "lodash";
 import { BehaviorSubject, from, of } from "rxjs";
 import { catchError, delay, filter, first, map, switchMap } from "rxjs/operators";
+import { Addon } from "wowup-lib-core";
 
 import { OverlayContainer } from "@angular/cdk/overlay";
 import {
@@ -35,34 +36,34 @@ import {
   IPC_POWER_MONITOR_UNLOCK,
   IPC_REQUEST_INSTALL_FROM_URL,
   WOWUP_LOGO_FILENAME,
+  WOWUP_LOGO_FILENAME_CF,
   ZOOM_FACTOR_KEY,
 } from "../common/constants";
 import { AppUpdateState, MenuConfig, SystemTrayConfig } from "../common/wowup/models";
 import { AppConfig } from "../environments/environment";
 import { InstallFromUrlDialogComponent } from "./components/addons/install-from-url-dialog/install-from-url-dialog.component";
 import { AlertDialogComponent } from "./components/common/alert-dialog/alert-dialog.component";
+import {
+  ConsentDialogComponent,
+  ConsentDialogResult,
+} from "./components/common/consent-dialog/consent-dialog.component";
 import { AddonSyncError, GitHubFetchReleasesError, GitHubFetchRepositoryError, GitHubLimitError } from "./errors";
 import { AddonInstallState } from "./models/wowup/addon-install-state";
 import { ElectronService } from "./services";
+import { AddonProviderFactory } from "./services/addons/addon.provider.factory";
 import { AddonService } from "./services/addons/addon.service";
 import { AnalyticsService } from "./services/analytics/analytics.service";
 import { FileService } from "./services/files/file.service";
+import { LinkService } from "./services/links/link.service";
 import { SessionService } from "./services/session/session.service";
 import { SnackbarService } from "./services/snackbar/snackbar.service";
 import { PreferenceStorageService } from "./services/storage/preference-storage.service";
 import { WarcraftInstallationService } from "./services/warcraft/warcraft-installation.service";
 import { WowUpAddonService } from "./services/wowup/wowup-addon.service";
+import { WowUpProtocolService } from "./services/wowup/wowup-protocol.service";
 import { WowUpService } from "./services/wowup/wowup.service";
 import { ZoomService } from "./services/zoom/zoom.service";
 import { ZoomDirection } from "./utils/zoom.utils";
-import { AddonProviderFactory } from "./services/addons/addon.provider.factory";
-import {
-  ConsentDialogComponent,
-  ConsentDialogResult,
-} from "./components/common/consent-dialog/consent-dialog.component";
-import { WowUpProtocolService } from "./services/wowup/wowup-protocol.service";
-import { Addon } from "wowup-lib-core";
-import { LinkService } from "./services/links/link.service";
 
 @Component({
   selector: "app-root",
@@ -72,7 +73,6 @@ import { LinkService } from "./services/links/link.service";
 })
 export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
   private _autoUpdateInterval?: number;
-
   @HostListener("document:click", ["$event"])
   public onDocumentClick(event: MouseEvent) {
     let currentElem: HTMLElement | null = event.target as HTMLElement;
@@ -133,6 +133,12 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
     public sessionService: SessionService,
     public wowUpService: WowUpService,
   ) {
+    setTimeout(() => {
+      if (document.getElementById("wow-background") !== null) {
+        document.getElementById("wow-background").style.opacity = "0.5";
+      }
+    }, 1000);
+
     this._warcraftInstallationService.wowInstallations$
       .pipe(
         first((installations) => installations.length > 0),
@@ -326,10 +332,22 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
     dialogRef
       .afterClosed()
       .pipe(
-        switchMap((result: ConsentDialogResult) =>
-          from(this._addonProviderService.setProviderEnabled("Wago", result.wagoProvider)).pipe(map(() => result))
-        ),
-        switchMap((result) => from(this._addonProviderService.updateWagoConsent()).pipe(map(() => result))),
+        switchMap((result: ConsentDialogResult) => {
+          if (AppConfig.wago.enabled) {
+            return from(this._addonProviderService.setProviderEnabled("Wago", result.wagoProvider)).pipe(
+              map(() => result),
+            );
+          } else {
+            return of(result);
+          }
+        }),
+        switchMap((result) => {
+          if (AppConfig.wago.enabled) {
+            return from(this._addonProviderService.updateWagoConsent()).pipe(map(() => result));
+          } else {
+            return of(result);
+          }
+        }),
         switchMap((result: ConsentDialogResult) => {
           this._analyticsService.setTelemetryEnabled(result.telemetry).catch(console.error);
           if (result.telemetry) {
@@ -404,7 +422,9 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
   };
 
   private async showManyAddonsAutoUpdated(updatedAddons: Addon[]) {
-    const iconPath = await this._fileService.getAssetFilePath(WOWUP_LOGO_FILENAME);
+    const iconPath = await this._fileService.getAssetFilePath(
+      AppConfig.curseforge.enabled ? WOWUP_LOGO_FILENAME_CF : WOWUP_LOGO_FILENAME,
+    );
     const translated: { [key: string]: string } = await this._translateService
       .get(["APP.AUTO_UPDATE_NOTIFICATION_TITLE", "APP.AUTO_UPDATE_NOTIFICATION_BODY"], {
         count: updatedAddons.length,
@@ -423,7 +443,9 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
   private async showFewAddonsAutoUpdated(updatedAddons: Addon[]) {
     const addonNames = _.map(updatedAddons, (addon) => addon.name);
     const addonText = _.join(addonNames, "\r\n");
-    const iconPath = await this._fileService.getAssetFilePath(WOWUP_LOGO_FILENAME);
+    const iconPath = await this._fileService.getAssetFilePath(
+      AppConfig.curseforge.enabled ? WOWUP_LOGO_FILENAME_CF : WOWUP_LOGO_FILENAME,
+    );
     const translated: { [key: string]: string } = await this._translateService
       .get(["APP.AUTO_UPDATE_NOTIFICATION_TITLE", "APP.AUTO_UPDATE_FEW_NOTIFICATION_BODY"], {
         addonNames: addonText,

@@ -25,6 +25,11 @@
     "IMPORT_TOTAL_COUNT": "Importando {count} {count, plural, =1{addon} other{addons}}",
     "INSTALL_BUTTON": "Instalar",
     "INVALID_CLIENT_TYPE": "La cadena de importación no concuerda con el tipo de cliente seleccionado",
+    "MISSING_ADDON_PROVIDERS": "Uno o más proveedores de addons no estaban disponibles/habilitados ({missingProviders})",
+    "MISSING_CURSEFORGE_PROVIDER": "La lista de addons contiene un addon de CurseForge, necesitarás instalar<br>\"WowUp with CurseForge\" desde wowup.io",
+    "MISSING_PROVIDER_MODAL_DOWNLOAD_BTN": "Descargar",
+    "MISSING_PROVIDER_MODAL_TITLE": "Proveedor de Addon Faltante",
+    "MISSING_WAGO_PROVIDER": "La lista de addons contiene un addon de Wago, necesitarás instalar<br>\"WowUp with Wago\" desde wowup.io",
     "NO_CHANGE_BADGE_TOOLTIP": "Este addon ya está instalado",
     "PASTE_BUTTON": "Pegar",
     "PROVIDER_MISMATCH": "El proveedor del addon no concuerda",
@@ -32,9 +37,13 @@
     "VERSION_MISMATCH": "Las versiones no coinciden"
   },
   "ADS": {
-    "AD_EXPLAINER_BUTTON": "¿Por qué estoy viendo este anuncio?",
+    "AD_EXPLAINER_BUTTON": "Este anuncio ayuda a los creadores de addons ❤",
     "AD_EXPLAINER_DIALOG": {
       "MESSAGE": "Para poder usar <a appExternalLink href=\"https://addons.wago.io/\">wago.io</a> como proveedor de addons y apoyar a sus autores por su duro trabajo, se nos requiere mostrar esta publicidad.\n\nSi no quiere ver estos anuncios, puede desactivar el proveedor wago.io en la pestaña de Opciones.",
+      "TITLE": "¿Por qué estoy viendo este anuncio?"
+    },
+    "AD_EXPLAINER_DIALOG_CF": {
+      "MESSAGE": "Para poder utilizar <a appExternalLink href=\"https://curseforge.com/\">CurseForge</a> como proveedor de addons y apoyar a los autores por su duro trabajo creando tus addons favoritos, necesitamos mostrar esta publicidad.\n\nSi no quieres ver esta publicidad, siempre puedes desactivar CurseForge como proveedor en la pestaña de opciones.",
       "TITLE": "¿Por qué estoy viendo este anuncio?"
     }
   },
@@ -98,6 +107,7 @@
       "HORDE": "Horda"
     },
     "WINDOW_TITLE": "WowUp.io",
+    "WINDOW_TITLE_CF": "WowUp.io CF",
     "WINDOW_TITLE_FULLSCREEN": "WowUp.io - Pantalla completa",
     "WOWUP_UPDATE": {
       "CHECKING_FOR_UPDATE": "Buscando actualización",
@@ -181,15 +191,15 @@
       "TOC_NAME_MISMATCH_TOOLTIP": "La carpeta de este addon no se corresponde con el archivo toc"
     },
     "CLIENT_TYPES": {
-      "BETA": "Beta de Dragonflight",
+      "BETA": "TWW Beta",
       "CLASSIC": "Cataclysm Classic",
       "CLASSICBETA": "Cataclysm Classic Beta",
       "CLASSICERA": "World of Warcraft Classic",
-      "CLASSICERAPTR": "WoW Classic Era PTR",
-      "CLASSICPTR": "Reino público de pruebas (Wrath Classic)",
-      "RETAIL": "Dragonflight",
-      "RETAILPTR": "Public Test Realm (DF 10.2.5)",
-      "RETAILXPTR": "Public Test Realm (DF 10.2.0)"
+      "CLASSICERAPTR": "PTR (Classic Era)",
+      "CLASSICPTR": "PTR (Cataclysm Classic)",
+      "RETAIL": "World of Warcraft",
+      "RETAILPTR": "PTR (TWW 11.0.2)",
+      "RETAILXPTR": "PTR (TWW 11.0)"
     },
     "DATES": {
       "DAYS_AGO": "Hace {count} {count, plural, one{día} other{días}}",
@@ -317,6 +327,13 @@
       "TITLE": "Notas de la versión {versionNumber}"
     },
     "PERMISSIONS": {
+      "CURSEFORGE": {
+        "DESCRIPTION_AD_LINK": "distribuidores de anuncios",
+        "DESCRIPTION_BOTTOM": ". Haga clic en el botón Administrar para controlar sus consentimientos o para oponerse al procesado de sus datos. Puede cambiar sus preferencias en cualquier momento a través de la pantalla de configuración.",
+        "DESCRIPTION_TOP": " Para poder utilizar la integración con CurseForge de esta aplicación, es necesario su consentimiento para mostrarle publicidad de uno de sus ",
+        "MANAGE_BUTTON": "Administrar",
+        "TITLE": "CurseForge"
+      },
       "MESSAGE": "Antes de empezar, necesitamos configurar algunos permisos para la aplicación.",
       "POSITIVE_BUTTON": "Confirmar",
       "TELEMETRY": {
@@ -487,7 +504,7 @@
     },
     "OPTIONS": {
       "ADDON": {
-        "AD_REQUIRED_HINT": "Publicidad o clave de acceso requeridos",
+        "AD_REQUIRED_HINT": "Publicidad requerida",
         "CURSE_FORGE_V2": {
           "API_KEY_DESCRIPTION": "Si ha solicitado una clave para la API de CurseForge, puede introducirla aquí para conectar con ella.",
           "API_KEY_TITLE": "Clave de API CurseForge",
@@ -519,6 +536,8 @@
         "APP_RELEASE_CHANNEL_DROPDOWN_LABEL": "Canal",
         "APP_RELEASE_CHANNEL_LABEL": "Canal de publicación de la aplicación",
         "CURRENT_LANGUAGE_LABEL": "Idioma actual",
+        "CURSE_PROTOCOL_DESCRIPTION": "Al descargar addons desde la web de CurseForge, WowUp se hará cargo de la instalación",
+        "CURSE_PROTOCOL_LABEL": "Tramitar enlaces de descarga de CurseForge",
         "ENABLE_APP_BADGE_DESCRIPTION": "Muestra un contador en el icono de la aplicación en la barra de tareas con el número de addons con actualizaciones disponibles.",
         "ENABLE_APP_BADGE_LABEL": "Activar contador en el icono",
         "ENABLE_SYSTEM_NOTIFICATIONS_DESCRIPTION": "Activa varios mensajes de notificación del sistema, tales como cuando los addons son actualizados automáticamente.",
@@ -557,6 +576,12 @@
         "USE_SYMLINK_SUPPORT_CONFIRMATION_LABEL": "¿Activar soporte de enlaces simbólicos?",
         "USE_SYMLINK_SUPPORT_DESCRIPTION": "Permite a WowUp escanear enlaces simbólicos en la carpeta de addons.\nAdvertecia: Los enlaces serán reemplazados al actualizar/instalar los addons."
       },
+      "CURSEFORGE": {
+        "ADS_OPTION_DESCRIPTION": "Ver y administrar la manera en que los anunciantes de CurseForge pueden usar sus datos para la personalización de la publicidad",
+        "ADS_OPTION_LABEL": "Personalización de publicidad y datos",
+        "ADS_OPTION_MANAGE": "Administrar",
+        "TITLE": "CurseForge"
+      },
       "DEBUG": {
         "CONFIG_FILES_BUTTON": "Mostrar archivos de configuración",
         "CONFIG_FILES_DESCRIPTION": "Abre la carpeta donde se encuentra almacenado addons.json y preferences.json por ejemplo.",
@@ -574,6 +599,7 @@
         "ADDONS": "Addons",
         "APPLICATION": "Aplicación",
         "CLIENTS": "Clientes",
+        "CURSEFORGE": "CurseForge",
         "DEBUG": "Depuración",
         "WTF_EXPLORER": "WTF Explorer"
       },

@@ -2,5 +2,8 @@ node_modules/
 bin/
 obj/
 .vs/
+.nx/
 Packages/
 wowup-electron/package_workspace/
+wowup-electron/app/env/environment.js
+wowup-electron/release-ow/

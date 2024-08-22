@@ -5,18 +5,25 @@ import { nanoid } from "nanoid";
 
 import { getEnumName, getWowClientGroupForType } from "wowup-lib-core";
 import { AddonStorageService } from "../storage/addon-storage.service";
-import { WarcraftService } from "../warcraft/warcraft.service";
 import { AddonService } from "./addon.service";
 import { Subject } from "rxjs";
 import { AddonInstallState } from "../../models/wowup/addon-install-state";
 import { ElectronService } from "..";
 import { Addon, WowClientType } from "wowup-lib-core";
 import { WowInstallation } from "wowup-lib-core";
+import { AddonProviderFactory } from "./addon.provider.factory";
+import { ADDON_PROVIDER_CURSEFORGE, ADDON_PROVIDER_WAGO } from "../../../common/constants";
+import { AppConfig } from "../../../environments/environment";
 
 export type ExportReleaseType = "stable" | "beta" | "alpha";
 export type ImportState = "no-change" | "added" | "conflict";
 export type ConflictReasonCode = "VERSION_MISMATCH" | "PROVIDER_MISMATCH";
-export type ImportErrorCode = "GENERIC_IMPORT_ERROR" | "INVALID_CLIENT_TYPE";
+export type ImportErrorCode =
+  | "GENERIC_IMPORT_ERROR"
+  | "INVALID_CLIENT_TYPE"
+  | "MISSING_ADDON_PROVIDERS"
+  | "MISSING_WAGO_PROVIDER"
+  | "MISSING_CURSEFORGE_PROVIDER";
 
 export interface ExportSummary {
   activeCount: number;
@@ -43,6 +50,7 @@ export interface ImportSummary {
   conflictCt: number;
   comparisons: ImportComparison[];
   errorCode?: ImportErrorCode;
+  errorParams?: { [key: string]: string };
 }
 
 export interface ImportComparison {
@@ -76,7 +84,7 @@ export class AddonBrokerService {
   public constructor(
     private _addonStorage: AddonStorageService,
     private _addonService: AddonService,
-    private _warcraftService: WarcraftService,
+    private _addonProviderFactory: AddonProviderFactory,
     private _electronService: ElectronService,
   ) {}
 
@@ -155,6 +163,19 @@ export class AddonBrokerService {
     await Promise.all(tasks);
   }
 
+  private getMissingProviders(payload: ExportPayload): string[] {
+    const providers = this._addonProviderFactory.getEnabledAddonProviders();
+    const providerNames = providers.map((x) => x.name.toLowerCase());
+    const missingSet = new Set<string>();
+    payload.addons.forEach((x) => {
+      if (!providerNames.includes(x.provider_name.toLowerCase())) {
+        missingSet.add(x.provider_name);
+      }
+    });
+
+    return Array.from(missingSet.values());
+  }
+
   public async getImportSummary(exportPayload: ExportPayload, installation: WowInstallation): Promise<ImportSummary> {
     const summary: ImportSummary = {
       addedCt: 0,
@@ -170,6 +191,18 @@ export class AddonBrokerService {
 
     if (!this.isSameClient(installation.clientType, exportPayload.client_type)) {
       summary.errorCode = "INVALID_CLIENT_TYPE";
+      return summary;
+    }
+
+    const missingProviders = this.getMissingProviders(exportPayload);
+    if (missingProviders.length > 0) {
+      summary.errorCode = "MISSING_ADDON_PROVIDERS";
+      if (!AppConfig.wago.enabled && missingProviders.includes(ADDON_PROVIDER_WAGO)) {
+        summary.errorCode = "MISSING_WAGO_PROVIDER";
+      } else if (!AppConfig.curseforge.enabled && missingProviders.includes(ADDON_PROVIDER_CURSEFORGE)) {
+        summary.errorCode = "MISSING_CURSEFORGE_PROVIDER";
+      }
+      summary.errorParams = { missingProviders: missingProviders.join(", ") };
       return summary;
     }
 

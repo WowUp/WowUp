@@ -16,15 +16,31 @@ export class PatchNotesService {
 
 const CHANGELOGS: ChangeLog[] = [
   {
+    Version: "2.20.0",
+    html: `
+    <h4>Features</h4>
+    <ul>
+    <li>Add The War Within</li>
+    </ul>
+    `,
+  },
+  {
     Version: "2.12.0",
     html: `
     <h4>Features</h4>
     <ul>
     <li>Add Cataclysm</li>
-    </ul>
-	<h4>Changes</h4>
-    <ul>
+    <h4>Changes</h4>
     <li>Remove minor warning for folders not containing exact interface match</li>
+    </ul>
+    `,
+  },
+  {
+    Version: "2.11.1",
+    html: `
+    <h4>Changes</h4>
+    <ul>
+    <li>Update for better Linux support</li>
     </ul>
     `,
   },
@@ -33,7 +49,9 @@ const CHANGELOGS: ChangeLog[] = [
     html: `
     <h4>Changes</h4>
     <ul>
+    <li>German locale updates (Glow)</li>
     <li>Support new WoW Dragonflight 10.2 PTR</li>
+    <li>Update to latest OW framework</li>
     <li>Update to latest UI framework</li>
     </ul>
     `,
@@ -65,15 +83,6 @@ const CHANGELOGS: ChangeLog[] = [
     `,
   },
   {
-    Version: "2.9.3",
-    html: `
-    <h4 style="margin-top: 1em;">Fixes</h4>
-    <ul>
-    <li>Fix Wago key issue when downloading (KDederichs)</li>
-    </ul>
-    `,
-  },
-  {
     Version: "2.9.2",
     html: `
     <h4>New Features</h4>
@@ -85,6 +94,7 @@ const CHANGELOGS: ChangeLog[] = [
     <li>Spanish locale updates (SkollVargr)</li>
     <li>Norwegian locale updates (espenja)</li>
     <li>German locale updates (maestrohdude)</li>
+    <li>Russian locale updates (Valdemar)</li>
     <li>Improved WowInterface API usage for some addons</li>
     <li>Improved private GitHub repo support</li>
     <li>Disable the ability to shift + click columns</li>
@@ -92,8 +102,9 @@ const CHANGELOGS: ChangeLog[] = [
     </ul>
     <h4 style="margin-top: 1em;">Fixes</h4>
     <ul>
-    <li>Fix an issue with My Addon columns appearing squished</li>
+    <li>Searching on CurseForge should work more as expected</li>
     <li>Rendering lists should no longer fail due to malformed game version</li>
+    <li>Fix an issue with missing client types when installing from CF page link</li>
     <li>Audio should now be muted just in case of an annoying ad</li>
     <li>Fix an issue with window not showing at startup on Mac</li>
     <li>Improve some error handling when installing addons</li>
@@ -105,11 +116,12 @@ const CHANGELOGS: ChangeLog[] = [
     html: `
     <h4 style="margin-top: 1em;">New Features</h4>
     <ul>
-    <li>Added support for custom Wago API keys (Linaori)</li>
-    <li>Added support Dragonflight</li>
+    <li>Added support for CurseForge API</li>
+    <li>Added support handling CurseForge protocol</li>
     </ul>
     <h4 style="margin-top: 1em;">Changes</h4>
     <ul>
+    <li>Spanish locale updates (SkollVargr)</li>
     <li>Attempt to fix the weird diagonal line bug</li>
     <li>Fix issues with 10.x interface version detection/sorting</li>
     <li>Update a bunch of dependencies</li>

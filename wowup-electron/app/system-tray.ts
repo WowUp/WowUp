@@ -1,10 +1,11 @@
 import { app, BrowserWindow, Menu, Tray } from "electron";
 import * as path from "path";
 
-import { WOWUP_LOGO_FILENAME, WOWUP_LOGO_MAC_SYSTEM_TRAY } from "../src/common/constants";
+import { WOWUP_LOGO_FILENAME, WOWUP_LOGO_FILENAME_CF, WOWUP_LOGO_MAC_SYSTEM_TRAY } from "../src/common/constants";
 import { SystemTrayConfig } from "../src/common/wowup/models";
 import * as platform from "./platform";
 import { restoreWindow } from "./window-state";
+import { AppEnv } from "./env/environment";
 
 let _trayRef: Tray;
 
@@ -12,7 +13,11 @@ export function createTray(window: BrowserWindow, config: SystemTrayConfig): boo
   _trayRef?.destroy();
 
   console.log("Creating tray");
-  const trayIconFile = platform.isMac ? WOWUP_LOGO_MAC_SYSTEM_TRAY : WOWUP_LOGO_FILENAME;
+  const trayIconFile = platform.isMac
+    ? WOWUP_LOGO_MAC_SYSTEM_TRAY
+    : AppEnv.buildFlavor === "ow"
+      ? WOWUP_LOGO_FILENAME_CF
+      : WOWUP_LOGO_FILENAME;
   const trayIconPath = path.join(__dirname, "..", "assets", trayIconFile);
 
   _trayRef = new Tray(trayIconPath);

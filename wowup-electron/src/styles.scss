@@ -32,7 +32,7 @@ a[href^="ftp://"]
 }
 
 .cata-bg {
-  background-image: url("~assets/images/wow-cata-background.jpg");
+  background-image: url("~assets/images/wow-war-within-background.jpg");
   position: absolute;
   top: 0;
   left: 0;
@@ -41,6 +41,7 @@ a[href^="ftp://"]
   background-size: cover;
   background-position: center;
   z-index: -10;
+  opacity: .3;
 }
 
 .selectable {
@@ -540,6 +541,24 @@ mat-icon.success-icon {
 
 .snackbar-success {
   border: 2px solid green;
+}
+
+.link-btn {
+  color: var(--control-color);
+  background: none;
+  text-decoration: underline;
+  border: none;
+  font-family: var(--mdc-dialog-supporting-text-font, Roboto, sans-serif);
+  line-height: var(--mdc-dialog-supporting-text-line-height, 1.5rem);
+  font-size: var(--mdc-dialog-supporting-text-size, 1rem);
+  font-weight: var(--mdc-dialog-supporting-text-weight, 400);
+  letter-spacing: var(--mdc-dialog-supporting-text-tracking, 0.03125em);
+  border-radius: 4px;
+
+  &:hover {
+    cursor: pointer;
+    background-color: rgba(0, 0, 0, 0.2);
+  }
 }
 
 .bnet-btn {

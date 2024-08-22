@@ -24,14 +24,12 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [ubuntu-latest, windows-latest,"macos-latest"]
+        os: [ubuntu-latest, windows-latest, "macos-latest"]
         node-version: [20.x]
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
-        with:
-          fetch-depth: 0
+        uses: actions/checkout@v4
 
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v2
@@ -48,19 +46,43 @@ jobs:
       - name: Install Angular CLI
         run: npm install -g @angular/cli
 
+      - name: dmg-license
+        if: matrix.os == 'macos-latest'
+        run: |
+          cd ./wowup-electron
+          npm i dmg-license
+
+      - name: Chceckout-CF
+        if: matrix.os == 'ubuntu-latest'
+        uses: actions/checkout@v4
+        with:
+          repository: 'WowUp/WowUp.CF'
+          token: ${{ secrets.WOWUP_CF_REPO_KEY }}
+          path: 'wowup-cf'
+
+      - name: Create CF Change
+        if: matrix.os == 'ubuntu-latest'
+        run: |
+          cd ./wowup-cf
+          date +%s > wowup-build-dt.txt
+          git config --global user.name 'zakrn'
+          git config --global user.email 'zakrn@wowup.io'
+          git commit -am "WowUp Main Build"
+          git push
+
       - name: Build Linux App
         if: matrix.os == 'ubuntu-latest'
         env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token
+          GH_TOKEN: ${{ secrets.WOWUP_CF_REPO_KEY }} # This token is provided by Actions, you do not need to create your own token
         run: |
           cd ./wowup-electron
           npm ci
-          npm run electron:publish
+          npm run ow:electron:publish
 
       - name: Build Mac App
-        if: matrix.os == 'macos-11'
+        if: matrix.os == 'macos-latest'
         env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token
+          GH_TOKEN: ${{ secrets.WOWUP_CF_REPO_KEY }} # This token is provided by Actions, you do not need to create your own token
           CSC_LINK: ${{ secrets.MACOS_CERT }}
           CSC_KEY_PASSWORD: ${{ secrets.MACOS_CERT_PASSWORD }}
           NOTARIZE_APPLE_ID: ${{ secrets.NOTARIZE_APPLE_ID }}
@@ -69,12 +91,12 @@ jobs:
         run: |
           cd ./wowup-electron
           npm ci
-          npm run electron:publish
+          npm run ow:electron:publish
 
       - name: Build Windows App
         if: matrix.os == 'windows-latest'
         env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token
+          GH_TOKEN: ${{ secrets.WOWUP_CF_REPO_KEY }} # This token is provided by Actions, you do not need to create your own token
           CSC_LINK: ${{ secrets.WINDOWS_CSC_LINK }}
           CSC_KEY_PASSWORD: ${{ secrets.WINDOWS_CSC_KEY_PASSWORD }}
         run: cd ./wowup-electron && npm ci && npm run ow:electron:publish

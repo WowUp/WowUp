@@ -1,6 +1,5 @@
 import { IpcRendererEvent, OpenExternalOptions } from "electron";
 
-
 // Events that can be sent from main to renderer
 declare type MainChannels =
   | "app-update-check-start"
@@ -39,6 +38,7 @@ declare type RendererChannels =
   | "create-app-menu"
   | "create-directory"
   | "create-tray-menu"
+  | "curse-get-scan-results"
   | "decode-product-db"
   | "delete-directory"
   | "focus-window"
@@ -62,6 +62,8 @@ declare type RendererChannels =
   | "list-files"
   | "maximize-window"
   | "minimize-window"
+  | "ow-is-cmp-required"
+  | "ow-open-cmp"
   | "path-exists"
   | "push-init"
   | "push-register"

@@ -7,6 +7,7 @@ import { FileService } from "../../../services/files/file.service";
 import { LinkService } from "../../../services/links/link.service";
 import { SessionService } from "../../../services/session/session.service";
 import { UiMessageService } from "../../../services/ui-message/ui-message.service";
+import { AppConfig } from "../../../../environments/environment";
 
 @Component({
   selector: "app-webview",
@@ -34,7 +35,12 @@ export class WebViewComponent implements OnDestroy, AfterViewInit {
   ) {}
 
   public ngAfterViewInit(): void {
-    this.initWebview(this.webviewContainer).catch((e) => console.error(e));
+    if (AppConfig.wago.enabled) {
+      this.initWebview(this.webviewContainer).catch((e) => console.error(e));
+    } else if (AppConfig.curseforge.enabled) {
+      this.initWebviewCurseForge(this.webviewContainer);
+    }
+
     this._electronService.on("webview-new-window", this.onWebviewNewWindow);
     this._uiMessageService.message$
       .pipe(
@@ -89,21 +95,31 @@ export class WebViewComponent implements OnDestroy, AfterViewInit {
     webview.allowpopups = true;
     webview.partition = partition;
     webview.preload = preloadPath;
-    // webview.useragent = userAgent;
 
-    // placeholder.innerHTML = `
-    // <webview id="${this._id}"
-    //   ${pageReferrer}
-    //   style="width: 100%; height: 100%;"
-    //   nodeintegration​="false"
-    //   nodeintegrationinsubframes​="false"
-    //   plugins​="false"
-    //   allowpopups
-    //   partition="${partition}"
-    //   ${preload}
-    //   useragent="${userAgent}">
-    // </webview>`;
-    /* eslint-enable no-irregular-whitespace */
+    this._tag = webview;
+
+    this._tag.addEventListener("error", (evt) => {
+      console.error("ERROR", evt);
+    });
+
+    this._tag.addEventListener("did-fail-load", (evt) => {
+      console.error("did-fail-load", evt);
+    });
+
+    this._tag.addEventListener("dom-ready", this.onWebviewReady);
+
+    placeholder.appendChild(webview);
+    element.nativeElement.appendChild(placeholder);
+  }
+
+  private initWebviewCurseForge(element: ElementRef) {
+    console.debug("initWebview", this.options);
+
+    const placeholder = document.createElement("div");
+    placeholder.style.width = "400px";
+    placeholder.style.height = "300px";
+
+    const webview: any = document.createElement("owadview");
 
     this._tag = webview; // placeholder.firstElementChild as Electron.WebviewTag;
 

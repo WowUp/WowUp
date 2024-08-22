@@ -25,6 +25,11 @@
     "IMPORT_TOTAL_COUNT": "Importing {count} {count, plural, =1{addon} other{addons}}",
     "INSTALL_BUTTON": "Install",
     "INVALID_CLIENT_TYPE": "Import string did not match your selected client type",
+    "MISSING_ADDON_PROVIDERS": "하나 이상의 애드온 제공자가 사용 불가능하거나 활성화되지 않았습니다 ({missingProviders})",
+    "MISSING_CURSEFORGE_PROVIDER": "애드온 목록에 CurseForge 애드온이 포함되어 있습니다. \"WowUp with CurseForge\"를 wowup.io에서 설치해야 합니다.",
+    "MISSING_PROVIDER_MODAL_DOWNLOAD_BTN": "다운로드",
+    "MISSING_PROVIDER_MODAL_TITLE": "애드온 제공자 누락",
+    "MISSING_WAGO_PROVIDER": "애드온 목록에 Wago 애드온이 포함되어 있습니다. \"WowUp with Wago\"를 wowup.io에서 설치해야 합니다.",
     "NO_CHANGE_BADGE_TOOLTIP": "You already have this addon installed",
     "PASTE_BUTTON": "Paste",
     "PROVIDER_MISMATCH": "Addon provider does not match",
@@ -32,9 +37,13 @@
     "VERSION_MISMATCH": "Versions do not match"
   },
   "ADS": {
-    "AD_EXPLAINER_BUTTON": "Why am I seeing this ad?",
+    "AD_EXPLAINER_BUTTON": "This ad supports addon creators ❤",
     "AD_EXPLAINER_DIALOG": {
       "MESSAGE": "In order to use <a appExternalLink href=\"https://addons.wago.io/\">wago.io</a> as an addon provider and support their authors for their hard work on your favorite addons we are required to show this advertisement.\n\nIf you do not want to see this ad, you can always disable wago.io as a provider in the options tab.",
+      "TITLE": "Why am I seeing this ad?"
+    },
+    "AD_EXPLAINER_DIALOG_CF": {
+      "MESSAGE": "In order to use <a appExternalLink href=\"https://curseforge.com/\">CurseForge</a> as an addon provider and help support authors for their hard work on your favorite addons we are required to show this advertisement.\n\nIf you do not want to see this ad, you can always disable CurseForge as a provider in the options tab.",
       "TITLE": "Why am I seeing this ad?"
     }
   },
@@ -98,6 +107,7 @@
       "HORDE": "호드"
     },
     "WINDOW_TITLE": "WowUp.io",
+    "WINDOW_TITLE_CF": "WowUp.io CF",
     "WINDOW_TITLE_FULLSCREEN": "WowUp.io - 전체 화면",
     "WOWUP_UPDATE": {
       "CHECKING_FOR_UPDATE": "Checking for update",
@@ -181,15 +191,15 @@
       "TOC_NAME_MISMATCH_TOOLTIP": "This addon's folder does not match the toc"
     },
     "CLIENT_TYPES": {
-      "BETA": "용군단 베타",
-      "CLASSIC": "리치 왕의 분노 클래식",
+      "BETA": "TWW Beta",
+      "CLASSIC": "Cataclysm Classic",
       "CLASSICBETA": "Cataclysm Classic Beta",
-      "CLASSICERA": "월드 오브 워크래프트 클래식",
-      "CLASSICERAPTR": "WoW Classic Era PTR",
-      "CLASSICPTR": "공개 테스트 서버 (리치 왕의 분노 클래식)",
-      "RETAIL": "용군단",
-      "RETAILPTR": "Public Test Realm (DF 10.2.5)",
-      "RETAILXPTR": "Public Test Realm (DF 10.2.0)"
+      "CLASSICERA": "World of Warcraft Classic",
+      "CLASSICERAPTR": "PTR (Classic Era)",
+      "CLASSICPTR": "PTR (Cataclysm Classic)",
+      "RETAIL": "World of Warcraft",
+      "RETAILPTR": "PTR (TWW 11.0.2)",
+      "RETAILXPTR": "PTR (TWW 11.0)"
     },
     "DATES": {
       "DAYS_AGO": "{count}일 전",
@@ -317,6 +327,13 @@
       "TITLE": "Patch Notes {versionNumber}"
     },
     "PERMISSIONS": {
+      "CURSEFORGE": {
+        "DESCRIPTION_AD_LINK": "ad vendors",
+        "DESCRIPTION_BOTTOM": ". Click on the Manage button to control you consents, or to object to the processing of your data. You can change your preferences any time via the settings screen.",
+        "DESCRIPTION_TOP": " In order to use this application's integration with CurseForge they require that you allow them to show you an ad from one of their ",
+        "MANAGE_BUTTON": "Manage",
+        "TITLE": "CurseForge"
+      },
       "MESSAGE": "Before we get started we need to setup a few permissions for the app.",
       "POSITIVE_BUTTON": "Confirm",
       "TELEMETRY": {
@@ -487,7 +504,7 @@
     },
     "OPTIONS": {
       "ADDON": {
-        "AD_REQUIRED_HINT": "Ad or access key required",
+        "AD_REQUIRED_HINT": "Ad required",
         "CURSE_FORGE_V2": {
           "API_KEY_DESCRIPTION": "If you have requested a CurseForge API key you can input it here to connect to their API.",
           "API_KEY_TITLE": "CurseForge API Key",
@@ -519,6 +536,8 @@
         "APP_RELEASE_CHANNEL_DROPDOWN_LABEL": "Channel",
         "APP_RELEASE_CHANNEL_LABEL": "Application Release Channel",
         "CURRENT_LANGUAGE_LABEL": "현재 언어",
+        "CURSE_PROTOCOL_DESCRIPTION": "When downloading addons from the CurseForge website, WowUp will handle the install",
+        "CURSE_PROTOCOL_LABEL": "Handle CurseForge download links",
         "ENABLE_APP_BADGE_DESCRIPTION": "Show a badge on the app icon with the number of addons with available updates.",
         "ENABLE_APP_BADGE_LABEL": "Enable app badge notification",
         "ENABLE_SYSTEM_NOTIFICATIONS_DESCRIPTION": "애드온 자동업데이트 등과 같은 다양한 시스템 알림 팝업 활성화 여부",
@@ -557,6 +576,12 @@
         "USE_SYMLINK_SUPPORT_CONFIRMATION_LABEL": "Enable symlink support?",
         "USE_SYMLINK_SUPPORT_DESCRIPTION": "Allow WowUp to scan symlink folders in your addon folder. Warning: they will be replaced when updating/installing."
       },
+      "CURSEFORGE": {
+        "ADS_OPTION_DESCRIPTION": "View and manage how CurseForge advertisers may use your data for ad personalization",
+        "ADS_OPTION_LABEL": "Ads Personalization & Data",
+        "ADS_OPTION_MANAGE": "Manage",
+        "TITLE": "CurseForge"
+      },
       "DEBUG": {
         "CONFIG_FILES_BUTTON": "Show Config Files",
         "CONFIG_FILES_DESCRIPTION": "Open the folder where for example your addons.json and preferences.json are stored.",
@@ -574,6 +599,7 @@
         "ADDONS": "애드온",
         "APPLICATION": "게임 애플리케이션",
         "CLIENTS": "클라이언트",
+        "CURSEFORGE": "CurseForge",
         "DEBUG": "디버그",
         "WTF_EXPLORER": "WTF Explorer"
       },
