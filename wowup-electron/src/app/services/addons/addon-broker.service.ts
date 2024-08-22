@@ -1,11 +1,10 @@
-import _, { sum } from "lodash";
+import _ from "lodash";
 
 import { Injectable } from "@angular/core";
 import { nanoid } from "nanoid";
 
 import { getEnumName, getWowClientGroupForType } from "wowup-lib-core";
 import { AddonStorageService } from "../storage/addon-storage.service";
-import { WarcraftService } from "../warcraft/warcraft.service";
 import { AddonService } from "./addon.service";
 import { Subject } from "rxjs";
 import { AddonInstallState } from "../../models/wowup/addon-install-state";
