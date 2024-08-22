@@ -56,7 +56,7 @@ jobs:
         if: matrix.os == 'ubuntu-latest'
         uses: actions/checkout@v4
         with:
-          repository: 'https://github.com/WowUp/WowUp.CF.git'
+          repository: 'WowUp/WowUp.CF'
           token: ${{ secrets.WOWUP_CF_REPO_KEY }}
           path: 'wowup-cf'
 
