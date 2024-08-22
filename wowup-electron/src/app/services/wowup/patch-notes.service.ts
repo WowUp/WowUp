@@ -16,6 +16,15 @@ export class PatchNotesService {
 
 const CHANGELOGS: ChangeLog[] = [
   {
+    Version: "2.20.0",
+    html: `
+    <h4>Features</h4>
+    <ul>
+    <li>Add The War Within</li>
+    </ul>
+    `,
+  },
+  {
     Version: "2.12.0",
     html: `
     <h4>Features</h4>

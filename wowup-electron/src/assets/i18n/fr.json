@@ -102,6 +102,7 @@
       "HORDE": "Horde"
     },
     "WINDOW_TITLE": "WowUp.io",
+    "WINDOW_TITLE_CF": "WowUp.io CF",
     "WINDOW_TITLE_FULLSCREEN": "WowUp.io - Plein écran",
     "WOWUP_UPDATE": {
       "CHECKING_FOR_UPDATE": "Checking for update",
@@ -185,15 +186,15 @@
       "TOC_NAME_MISMATCH_TOOLTIP": "This addon's folder does not match the toc"
     },
     "CLIENT_TYPES": {
-      "BETA": "Bêta de Dragonflight",
+      "BETA": "TWW Beta",
       "CLASSIC": "Cataclysm Classic",
       "CLASSICBETA": "Cataclysm Classic Beta",
       "CLASSICERA": "World of Warcraft Classic",
-      "CLASSICERAPTR": "WoW Classic Era PTR",
-      "CLASSICPTR": "Royaume public de test (Wrath of the Lich King Classic)",
-      "RETAIL": "Dragonflight",
-      "RETAILPTR": "Public Test Realm (DF 10.2.5)",
-      "RETAILXPTR": "Public Test Realm (DF 10.2.0)"
+      "CLASSICERAPTR": "PTR (Classic Era)",
+      "CLASSICPTR": "PTR (Cataclysm Classic)",
+      "RETAIL": "World of Warcraft",
+      "RETAILPTR": "PTR (TWW 11.0.2)",
+      "RETAILXPTR": "PTR (TWW 11.0)"
     },
     "DATES": {
       "DAYS_AGO": "il y a {count} {count, plural, one{jour} other{jours}}",
