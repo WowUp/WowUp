@@ -152,7 +152,7 @@ export class AddonManageDialogComponent implements OnInit, OnDestroy {
             .pipe(
               tap((result) => {
                 if (result) {
-                  this._linkService.openExternalLink(AppConfig.wowUpWebsiteUrl);
+                  this._linkService.openExternalLink(AppConfig.wowUpWebsiteUrl).catch((e) => console.error(e));
                 }
               }),
             )
