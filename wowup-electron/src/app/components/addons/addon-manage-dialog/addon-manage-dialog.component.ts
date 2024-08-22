@@ -1,6 +1,6 @@
 import { Component, OnDestroy, OnInit } from "@angular/core";
 import { BehaviorSubject, Subscription } from "rxjs";
-import { map } from "rxjs/operators";
+import { map, tap } from "rxjs/operators";
 import { AddonInstallState } from "../../../models/wowup/addon-install-state";
 import {
   AddonBrokerService,
@@ -14,6 +14,11 @@ import { SnackbarService } from "../../../services/snackbar/snackbar.service";
 import { ElectronService } from "../../../services";
 import { WowInstallation } from "wowup-lib-core";
 import { WarcraftInstallationService } from "../../../services/warcraft/warcraft-installation.service";
+import { TranslateService } from "@ngx-translate/core";
+import { MatDialog } from "@angular/material/dialog";
+import { ConfirmDialogComponent } from "../../common/confirm-dialog/confirm-dialog.component";
+import { LinkService } from "../../../services/links/link.service";
+import { AppConfig } from "../../../../environments/environment";
 
 interface ImportComparisonViewModel extends ImportComparison {
   isInstalling?: boolean;
@@ -59,7 +64,7 @@ export class AddonManageDialogComponent implements OnInit, OnDestroy {
 
       // if there are any new addons, we can install
       return summary.comparisons.some((comp) => comp.state === "added");
-    })
+    }),
   );
 
   public constructor(
@@ -67,7 +72,10 @@ export class AddonManageDialogComponent implements OnInit, OnDestroy {
     private _addonBrokerService: AddonBrokerService,
     private _sessionService: SessionService,
     private _snackbarService: SnackbarService,
-    private _warcraftInstallationService: WarcraftInstallationService
+    private _warcraftInstallationService: WarcraftInstallationService,
+    private _dialog: MatDialog,
+    private _translateService: TranslateService,
+    private _linkService: LinkService,
   ) {}
 
   public ngOnInit(): void {
@@ -126,9 +134,35 @@ export class AddonManageDialogComponent implements OnInit, OnDestroy {
       console.debug(importSummary);
 
       if (importSummary.errorCode !== undefined) {
-        this._snackbarService.showErrorSnackbar(`ADDON_IMPORT.${importSummary.errorCode}`, {
-          timeout: 2000,
-        });
+        if (
+          importSummary.errorCode === "MISSING_WAGO_PROVIDER" ||
+          importSummary.errorCode == "MISSING_CURSEFORGE_PROVIDER"
+        ) {
+          const dialogRef = this._dialog.open(ConfirmDialogComponent, {
+            data: {
+              title: this._translateService.instant("ADDON_IMPORT.MISSING_PROVIDER_MODAL_TITLE"),
+              message: this._translateService.instant(`ADDON_IMPORT.${importSummary.errorCode}`),
+              positiveKey: "ADDON_IMPORT.MISSING_PROVIDER_MODAL_DOWNLOAD_BTN",
+              negativeKey: "DIALOGS.ALERT.POSITIVE_BUTTON",
+            },
+          });
+
+          dialogRef
+            .afterClosed()
+            .pipe(
+              tap((result) => {
+                if (result) {
+                  this._linkService.openExternalLink(AppConfig.wowUpWebsiteUrl);
+                }
+              }),
+            )
+            .subscribe();
+        } else {
+          this._snackbarService.showErrorSnackbar(`ADDON_IMPORT.${importSummary.errorCode}`, {
+            localeArgs: importSummary.errorParams,
+            timeout: 2000,
+          });
+        }
         return;
       }
 
@@ -148,7 +182,7 @@ export class AddonManageDialogComponent implements OnInit, OnDestroy {
       if (installation !== undefined) {
         this.selectedInstallation = { ...installation };
         this.selectedInstallation.label = await this._warcraftInstallationService.getInstallationDisplayName(
-          this.selectedInstallation
+          this.selectedInstallation,
         );
       }
 
