@@ -65,6 +65,8 @@ jobs:
         run: |
           cd ./wowup-cf
           date +%s > wowup-build-dt.txt
+          git config --global user.name 'zakrn'
+          git config --global user.email 'zakrn@wowup.io'
           git commit -am "WowUp Main Build"
           git push
 
