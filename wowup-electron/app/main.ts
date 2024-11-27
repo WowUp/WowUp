@@ -97,26 +97,6 @@ let loadFailCount = 0;
 
 initializeDefaultPreferences();
 
-// APP MENU SETUP
-createAppMenu(win);
-
-// WowUp Protocol Handler
-app.setAsDefaultProtocolClient(APP_PROTOCOL_NAME);
-
-// Set the app ID so that our notifications work correctly on Windows
-app.setAppUserModelId(AppEnv.buildFlavor === "ow" ? APP_USER_MODEL_ID_CF : APP_USER_MODEL_ID);
-
-// HARDWARE ACCELERATION SETUP
-if (getPreferenceStore().get(USE_HARDWARE_ACCELERATION_PREFERENCE_KEY) === "false") {
-  log.info("Hardware acceleration disabled");
-  app.disableHardwareAcceleration();
-} else {
-  log.info("Hardware acceleration enabled");
-}
-
-// Some servers don't supply good CORS headers for us, so we ignore them.
-app.commandLine.appendSwitch("disable-features", "HardwareMediaKeyHandling,OutOfBlinkCors");
-
 // Only allow one instance of the app to run at a time, focus running window if user opens a 2nd time
 // Adapted from https://github.com/electron/electron/blob/master/docs/api/app.md#apprequestsingleinstancelock
 const singleInstanceLock = app.requestSingleInstanceLock();
@@ -146,6 +126,26 @@ if (!singleInstanceLock) {
     }
   });
 }
+
+// APP MENU SETUP
+createAppMenu(win);
+
+// WowUp Protocol Handler
+app.setAsDefaultProtocolClient(APP_PROTOCOL_NAME);
+
+// Set the app ID so that our notifications work correctly on Windows
+app.setAppUserModelId(AppEnv.buildFlavor === "ow" ? APP_USER_MODEL_ID_CF : APP_USER_MODEL_ID);
+
+// HARDWARE ACCELERATION SETUP
+if (getPreferenceStore().get(USE_HARDWARE_ACCELERATION_PREFERENCE_KEY) === "false") {
+  log.info("Hardware acceleration disabled");
+  app.disableHardwareAcceleration();
+} else {
+  log.info("Hardware acceleration enabled");
+}
+
+// Some servers don't supply good CORS headers for us, so we ignore them.
+app.commandLine.appendSwitch("disable-features", "HardwareMediaKeyHandling,OutOfBlinkCors");
 
 function isProtocol(arg: string) {
   return getProtocol(arg) != null;
