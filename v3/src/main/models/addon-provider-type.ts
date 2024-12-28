@@ -1,0 +1,12 @@
+export type AddonProviderType =
+  | 'Unknown'
+  | 'Curse'
+  | 'CurseV2'
+  | 'GitHub'
+  | 'TukUI'
+  | 'WowInterface'
+  | 'WowUpHub'
+  | 'RaiderIO'
+  | 'Zip'
+  | 'WowUpCompanion'
+  | 'Wago'
