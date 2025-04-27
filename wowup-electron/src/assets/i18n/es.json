@@ -630,7 +630,7 @@
       },
       "WTF_EXPLORER": {
         "FOLDER_PATH_LABEL": "Carpeta: ",
-        "PAGE_EXPLANATION": "El Explorador WTF permite inspeccionar todos los datos que tus addons han guardado.\nLos archivos en gris son habitualmente cosas que puedes ignorar, como archivos de copia de seguridad.\nLos archivos en rojo pertecen a addons que ya no se encuentran instalados.",
+        "PAGE_EXPLANATION": "El Explorador WTF permite inspeccionar todos los datos que tus addons han guardado.\nLos archivos en gris son habitualmente cosas que puedes ignorar, como archivos de copia de seguridad.\nLos archivos en rojo pertenecen a addons que ya no se encuentran instalados.",
         "TITLE": "Explorador WTF"
       }
     }
