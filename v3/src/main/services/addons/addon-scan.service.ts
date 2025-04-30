@@ -14,9 +14,10 @@ import { basename, extname, join } from 'path'
 import { readdir } from 'fs/promises'
 import * as _ from 'lodash'
 import { Toc } from '@shared/addons/toc'
-import { type ITocService, TocService } from './toc.service'
+import { type ITocService } from './toc.service'
 import { limitedForEach } from '../../utilities/operations'
-import { AddonFolder } from '../../models'
+import { AddonFolder, AddonScanResult } from '../../models'
+import { ADDON_PROVIDER_CURSEFORGE, ADDON_PROVIDER_HUB, TYPES } from '../../constants'
 
 export interface IAddonScanService extends IService {
   scanWowClient(wowClientId: string): Promise<AddonFolder[]>
@@ -26,7 +27,7 @@ export interface IAddonScanService extends IService {
 export class AddonScanService implements IAddonScanService {
   public constructor(
     @inject(DatabaseService) private _databaseService: IDatabaseService,
-    @inject(TocService) private _tocService: ITocService,
+    @inject(TYPES.ITocService) private _tocService: ITocService,
     @inject(CurseFolderScanner) @optional() private _curseFolderScanner: ICurseFolderScanner,
     @inject(WowUpFolderScanner) private _wowupFolderScanner: IWowUpFolderScanner
   ) {
@@ -66,7 +67,7 @@ export class AddonScanService implements IAddonScanService {
       addonFolders,
       async (addonFolder) => {
         const result = await this._wowupFolderScanner.scanFolder(addonFolder.path)
-        addonFolder.scanResults.push(result)
+        addonFolder.scanResults.get(ADDON_PROVIDER_HUB)?.push(result)
       },
       3
     )
@@ -78,7 +79,7 @@ export class AddonScanService implements IAddonScanService {
         addonFolders,
         async (addonFolder) => {
           const result = await this._curseFolderScanner.scanFolder(addonFolder.path)
-          addonFolder.scanResults.push(result)
+          addonFolder.scanResults.get(ADDON_PROVIDER_CURSEFORGE)?.push(result)
         },
         3
       )
@@ -168,11 +169,15 @@ export class AddonScanService implements IAddonScanService {
         tocs.push(toc)
       }
 
+      const scanResults = new Map<string, AddonScanResult[]>()
+      scanResults.set(ADDON_PROVIDER_HUB, [])
+      scanResults.set(ADDON_PROVIDER_CURSEFORGE, [])
+
       return {
         name: basename(dir),
         path: dir,
         tocs,
-        scanResults: []
+        scanResults
       }
     } catch (err) {
       log.error(err)

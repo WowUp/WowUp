@@ -30,7 +30,11 @@ export class WarcraftClientHandler implements IWarcraftClientHandler {
     _evt: IpcMainInvokeEvent,
     clientId: string
   ): Promise<void> => {
-    await this._warcraftClientService.setSelectedClientId(clientId)
+    try {
+      await this._warcraftClientService.setSelectedClientId(clientId)
+    } catch (err) {
+      console.error('failed to set selected client id', err)
+    }
   }
 
   private handleGetWowClients = async (): Promise<WarcraftClient[]> => {

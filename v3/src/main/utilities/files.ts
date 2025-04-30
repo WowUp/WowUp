@@ -3,6 +3,7 @@ import { join } from 'path'
 import * as _ from 'lodash'
 import { Dirent, Stats } from 'fs'
 import * as crypto from 'crypto'
+import { shell } from 'electron'
 
 interface SymlinkDir {
   original: Dirent
@@ -13,6 +14,14 @@ interface SymlinkDir {
 
 interface StatFilesResult {
   [path: string]: Stats
+}
+
+export function removeExtension(str: string): string {
+  return str.replace(/\.[^/.]+$/, '')
+}
+
+export const showFile = (filePath: string): void => {
+  shell.showItemInFolder(filePath)
 }
 
 export const readFile = async (filePath: string): Promise<string> => {

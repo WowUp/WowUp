@@ -2,7 +2,8 @@ import { Container } from 'inversify'
 import * as svc from './services'
 import * as hndl from './handlers'
 import * as providers from './providers'
-import { IS_OW, IS_WAGO } from './constants'
+import { IS_OW, IS_WAGO, TAGS, TYPES } from './constants'
+import { AddonProvider } from './models'
 
 export function createContainer(): Container {
   const container = new Container()
@@ -13,6 +14,12 @@ export function createContainer(): Container {
     .to(hndl.AddonHandler)
     .inSingletonScope()
     .whenTargetNamed('Addon')
+
+  container
+    .bind<hndl.IPCHandler>('Handler')
+    .to(hndl.OsHandler)
+    .inSingletonScope()
+    .whenTargetNamed('OS')
 
   container
     .bind<hndl.IPCHandler>('Handler')
@@ -39,15 +46,23 @@ export function createContainer(): Container {
       .to(providers.CurseFolderScanner)
   }
 
-  // Addon providers
-
   //Services
   container
     .bind<svc.IDatabaseService>(svc.DatabaseService)
     .to(svc.DatabaseService)
     .inSingletonScope()
 
-  container.bind<svc.ITocService>(svc.TocService).to(svc.TocService).inSingletonScope()
+  container.bind<svc.ITocService>(TYPES.ITocService).to(svc.TocService).inSingletonScope()
+
+  container
+    .bind<svc.INetworkService>(TYPES.INetworkService)
+    .to(svc.NetworkService)
+    .inSingletonScope()
+
+  container
+    .bind<svc.IRendererMessageService>(TYPES.IRendererMessageService)
+    .to(svc.RendererMessageService)
+    .inSingletonScope()
 
   container
     .bind<svc.IWarcraftClientService>(svc.WarcraftClientService)
@@ -65,6 +80,11 @@ export function createContainer(): Container {
     .inSingletonScope()
 
   container
+    .bind<svc.IAddonStoreService>(TYPES.IAddonStoreService)
+    .to(svc.AddonStoreService)
+    .inSingletonScope()
+
+  container
     .bind<svc.IAddonProviderService>(svc.AddonProviderService)
     .to(svc.AddonProviderService)
     .inSingletonScope()
@@ -72,6 +92,26 @@ export function createContainer(): Container {
   if (IS_WAGO) {
     container.bind<svc.IWagoService>(svc.WagoService).to(svc.WagoService).inSingletonScope()
   }
+
+  // Addon providers
+
+  container
+    .bind<AddonProvider>(TYPES.IAddonProvider)
+    .to(providers.WowUpProvider)
+    .inTransientScope()
+    .whenTargetNamed(TAGS.WowUpProvider)
+
+  container
+    .bind<AddonProvider>(TYPES.IAddonProvider)
+    .to(providers.TukUiProvider)
+    .inTransientScope()
+    .whenTargetNamed(TAGS.TukUiProvider)
+
+  container
+    .bind<AddonProvider>(TYPES.IAddonProvider)
+    .to(providers.CurseforgeProvider)
+    .inTransientScope()
+    .whenTargetNamed(TAGS.CurseForgeProvider)
 
   return container
 }

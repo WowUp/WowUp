@@ -7,7 +7,13 @@ import icon from '../../resources/icon.png?asset'
 import * as svc from './services'
 import { IPCHandler } from './handlers/ipc/ipc-handler'
 import { BrowserWindowConstructorOptions } from 'electron/main'
-import { APP_USER_MODEL_ID, APP_USER_MODEL_ID_CF, BUILD_FLAVOR, IS_PORTABLE } from './constants'
+import {
+  APP_USER_MODEL_ID,
+  APP_USER_MODEL_ID_CF,
+  BUILD_FLAVOR,
+  IS_PORTABLE,
+  TYPES
+} from './constants'
 import { createContainer } from './dependencies'
 
 const PRELOAD_PATH = join(__dirname, '../preload/index.js')
@@ -114,6 +120,14 @@ function createWindow(): void {
     wagoService.setWindow(mainWindow)
     // wagoService.setWebContents(mainWindow.webContents)
   }
+
+  const rendererMessageService = container.get<svc.IRendererMessageService>(
+    TYPES.IRendererMessageService
+  )
+  rendererMessageService.setWindow(mainWindow)
+
+  const networkService = container.get<svc.INetworkService>(TYPES.INetworkService)
+  networkService.setWindow(mainWindow)
 }
 
 // Some servers don't supply good CORS headers for us, so we ignore them.

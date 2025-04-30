@@ -26,14 +26,15 @@
     "dev": "electron-vite dev",
     "build": "npm run typecheck && electron-vite build",
     "postinstall": "electron-builder install-app-deps && ow-electron-builder install-app-deps",
+    "build:clean": "node ./scripts/clean.js",
     "build:unpack": "npm run build && electron-builder --dir",
     "build:win": "npm run build && electron-builder --win",
     "build:mac": "electron-vite build && electron-builder --mac",
     "build:linux": "electron-vite build && electron-builder --linux",
     "ow:dev": "cross-env BUILD_FLAVOR=ow npm run dev",
-    "ow:build:win": "cross-env BUILD_FLAVOR=ow npm run build && ow-electron-builder --win -c ./electron-builder-ow.yml",
+    "ow:build:win": "cross-env BUILD_FLAVOR=ow npm run build && npm run build:clean && ow-electron-builder --win -c ./electron-builder-ow.yml",
     "wago:dev": "cross-env BUILD_FLAVOR=wago npm run dev",
-    "wago:build:win": "cross-env BUILD_FLAVOR=wago npm run build && electron-builder --win -c ./electron-builder-wago.yml"
+    "wago:build:win": "cross-env BUILD_FLAVOR=wago npm run build && npm run build:clean && electron-builder --win -c ./electron-builder-wago.yml"
   },
   "dependencies": {
     "@electron-toolkit/preload": "^3.0.1",
@@ -55,10 +56,12 @@
     "@types/node": "^20.14.8",
     "@types/react": "^18.3.3",
     "@types/react-dom": "^18.3.0",
+    "@types/string-similarity": "^4.0.2",
     "@vitejs/plugin-react": "^4.3.1",
     "ag-grid-react": "^33.0.3",
     "antd": "^5.22.7",
     "cross-env": "^7.0.3",
+    "curseforge-v2": "^1.3.0",
     "electron": "^31.0.2",
     "electron-builder": "^24.13.3",
     "electron-log": "^5.2.4",
@@ -72,6 +75,7 @@
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "react-router-dom": "^7.1.1",
+    "string-similarity": "^4.0.4",
     "typescript": "^5.5.2",
     "vite": "^5.3.1",
     "zustand": "^5.0.2"

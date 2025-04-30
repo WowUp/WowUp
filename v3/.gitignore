@@ -3,7 +3,8 @@ dist
 out
 .DS_Store
 *.log*
-.env
+
+.env.local
 db.json
 
 /build

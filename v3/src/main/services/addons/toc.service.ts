@@ -4,6 +4,9 @@ import { Toc } from '@shared/addons/toc'
 import path from 'path'
 import * as fu from '../../utilities/files'
 import * as _ from 'lodash'
+import { WowClientType } from '@shared/warcraft'
+import { removeExtension } from '../../utilities/files'
+import { AddonFolder } from '../../models'
 
 export const TOC_AUTHOR = 'Author'
 export const TOC_DEPENDENCIES = 'Dependencies'
@@ -27,6 +30,9 @@ export const TOC_X_WAGO_ID = 'X-Wago-ID'
 
 export interface ITocService extends IService {
   parse(tocPath: string): Promise<Toc>
+  getTocForGameType(tocFileNames: string[], clientType: WowClientType): string
+  getTocForGameType2(folderName: string, tocs: Toc[], clientType: WowClientType): Toc | undefined
+  getTocForAddonFolderGameType(addonFolder: AddonFolder, clientType: WowClientType): Toc | undefined
 }
 
 @injectable()
@@ -67,6 +73,85 @@ export class TocService implements ITocService {
       addonProvider: this.getValue(TOC_X_ADDON_PROVIDER, tocText),
       notes: this.getValue(TOC_NOTES, tocText)
     }
+  }
+
+  /**
+   * Given a list of toc file names, select the one that goes with the given client type
+   * Use a similar priority switch as the actual wow client, if a targeted one exists use that, if not check for a base toc and try that
+   */
+  public getTocForGameType(tocFileNames: string[], clientType: WowClientType): string {
+    let matchedToc = ''
+
+    switch (clientType) {
+      case WowClientType.Beta:
+      case WowClientType.Retail:
+      case WowClientType.RetailPtr:
+      case WowClientType.RetailXPtr:
+        matchedToc = tocFileNames.find((tfn) => /.*[-_]mainline\.toc$/gi.test(tfn)) || ''
+        break
+      case WowClientType.ClassicEra:
+      case WowClientType.ClassicEraPtr:
+        matchedToc = tocFileNames.find((tfn) => /.*[-_](classic|vanilla)\.toc$/gi.test(tfn)) || ''
+        break
+      case WowClientType.Classic:
+      case WowClientType.ClassicPtr:
+      case WowClientType.ClassicBeta:
+        matchedToc = tocFileNames.find((tfn) => /.*[-_](cata)\.toc$/gi.test(tfn)) || ''
+        break
+      default:
+        break
+    }
+
+    return (
+      matchedToc ||
+      tocFileNames.find((tfn) =>
+        /.*(?<![-_](classic|vanilla|bcc|tbc|mainline|wrath|wotlkc|cata))\.toc$/gi.test(tfn)
+      ) ||
+      ''
+    )
+  }
+
+  public getTocForGameType2(
+    folderName: string,
+    tocs: Toc[],
+    clientType: WowClientType
+  ): Toc | undefined {
+    let matchedToc = ''
+
+    const tocFileNames = _.map(tocs, (toc) => toc.fileName)
+    matchedToc = this.getTocForGameType(tocFileNames, clientType)
+
+    // If we still have no match, we need to return the toc that matches the folder name if it exists
+    // Example: All the things for TBC (ATT-Classic)
+    if (matchedToc === '') {
+      return _.find(
+        tocs,
+        (toc) => removeExtension(toc.fileName).toLowerCase() === folderName.toLowerCase()
+      )
+    }
+
+    return tocs.find((toc) => toc.fileName === matchedToc)
+  }
+
+  public getTocForAddonFolderGameType = (
+    addonFolder: AddonFolder,
+    clientType: WowClientType
+  ): Toc | undefined => {
+    let matchedToc = ''
+
+    const tocs = addonFolder.tocs
+    const tocFileNames = tocs.map((toc) => toc.fileName)
+    matchedToc = this.getTocForGameType(tocFileNames, clientType)
+
+    // If we still have no match, we need to return the toc that matches the folder name if it exists
+    // Example: All the things for TBC (ATT-Classic)
+    if (matchedToc === '') {
+      return tocs.find(
+        (toc) => removeExtension(toc.fileName).toLowerCase() === addonFolder.name.toLowerCase()
+      )
+    }
+
+    return tocs.find((toc) => toc.fileName === matchedToc)
   }
 
   private getWebsite(tocText: string): string {

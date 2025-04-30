@@ -1,19 +1,18 @@
-import { AddonProviderType } from './addon-provider-type'
+import { WarcraftClient } from '@shared/warcraft'
+import { AddonFolder } from './addon-folder'
+import { AddonChannelType, AddonProviderSettings } from '@shared/addons'
 
-export abstract class AddonProvider {
-  name: AddonProviderType = 'Unknown'
-  enabled: boolean = true
-  forceIgnore: boolean = false
-  allowReinstall: boolean = false
-  allowChannelChange: boolean = false
-  allowEdit: boolean = false
-  allowViewAtSource: boolean = false
-  allowReScan: boolean = false
-  canShowChangelog: boolean = false
-  canBatchFetch: boolean = false
-  authRequired: boolean = false
-  adRequired: boolean = false
-  providerNote: string = ''
+export interface AddonProvider {
+  getSettings(): AddonProviderSettings
+  isEnabled(): boolean
+  getName(): string
+
+  scan(
+    installation: WarcraftClient,
+    addonChannelType: AddonChannelType,
+    addonFolders: AddonFolder[]
+  ): Promise<void>
+
   // getAllBatch(installations: WowInstallation[], addonIds: string[]): Promise<GetAllBatchResult>
   // getAll(installation: WowInstallation, addonIds: string[]): Promise<GetAllResult>
   // getFeaturedAddons(
@@ -33,11 +32,7 @@ export abstract class AddonProvider {
   // isValidAddonUri(addonUri: URL): boolean
   // isValidAddonId(addonId: string): boolean
   // isValidProtocol(protocol: string): boolean
-  // scan(
-  //   installation: WowInstallation,
-  //   addonChannelType: AddonChannelType,
-  //   addonFolders: AddonFolder[]
-  // ): Promise<void>
+
   // getChangelog(
   //   installation: WowInstallation,
   //   externalId: string,

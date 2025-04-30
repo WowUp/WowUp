@@ -3,17 +3,31 @@ import { Button, Dropdown, Input, Layout, Space, theme } from 'antd'
 import { Content, Header } from 'antd/es/layout/layout'
 import { AgGridReact } from 'ag-grid-react'
 import { ColDef } from 'ag-grid-community'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { darkGridTheme } from '@renderer/components/GridStyle'
 import { ItemType } from 'antd/es/menu/interface'
 import { SIDER_WIDTH } from '@renderer/constants'
 import { AddonMessage } from '../../../shared/messages'
 import useWarcraftClientStore from '@renderer/stores/warcraft-client.store'
+import { Addon } from '@shared/addons'
+import { IpcRenderer } from 'electron'
 
 const sectionHeaderStyle: React.CSSProperties = {
   display: 'grid',
   gridTemplateColumns: '1fr 1fr auto auto auto',
   gap: '1rem'
+}
+
+interface AddonViewModel {
+  addonId: string
+  name: string
+}
+
+const toAddonViewModel = (addon: Addon): AddonViewModel => {
+  return {
+    addonId: addon.id,
+    name: addon.name
+  }
 }
 
 function MyAddonsPage(): JSX.Element {
@@ -24,15 +38,12 @@ function MyAddonsPage(): JSX.Element {
   const { selectedClient } = useWarcraftClientStore()
 
   // Row Data: The data to be displayed.
-  const [rowData] = useState([
-    { make: 'Tesla', model: 'Model Y', price: 64950, electric: true },
-    { make: 'Ford', model: 'F-Series', price: 33850, electric: false },
-    { make: 'Toyota', model: 'Corolla', price: 29600, electric: false }
-  ])
+  const [rowData, setRowData] = useState<AddonViewModel[]>([])
+  const [loadingAddons, setLoadingAddons] = useState<boolean>(false)
 
   // Column Definitions: Defines the columns to be displayed.
   const [colDefs] = useState<ColDef[]>([
-    { field: 'hash', headerName: 'Addon' },
+    { field: 'name', headerName: 'Addon' },
     { field: 'sortOrder', headerName: 'Status' },
     { field: 'installedAt', headerName: 'Updated At' },
     { field: 'latestVersion', headerName: 'Latest Version' },
@@ -43,15 +54,66 @@ function MyAddonsPage(): JSX.Element {
     { field: 'author', headerName: 'Author' }
   ])
 
-  const onClicReScanFolders = async (): Promise<void> => {
-    await window.electron.ipcRenderer.invoke(AddonMessage.ScanAddonFolder, selectedClient)
+  useEffect(() => {
+    setLoadingAddons(true)
+
+    window.electron.ipcRenderer
+      .invoke(AddonMessage.GetAddonList, selectedClient)
+      .then((addons) => {
+        console.debug('res', addons)
+        setRowData(addons.map(toAddonViewModel))
+
+        // If there are no addons, re-scan the folders
+        if (addons.length === 0) {
+          onClickReScanFolders()
+        } else {
+          setLoadingAddons(false)
+        }
+      })
+      .catch((err) => {
+        console.error('failed to get addon list', err)
+        setLoadingAddons(false)
+      })
+  }, [selectedClient, setLoadingAddons])
+
+  useEffect(() => {
+    const onScanningAddonProvider = (_, providerName: string): void => {
+      console.log('ScanningAddonProvider', providerName)
+    }
+    window.electron.ipcRenderer.on(AddonMessage.ScanningAddonProvider, onScanningAddonProvider)
+
+    return (): void => {
+      window.electron.ipcRenderer.removeListener(
+        AddonMessage.ScanningAddonProvider,
+        onScanningAddonProvider
+      )
+    }
+  }, [])
+
+  const onClickReScanFolders = async (): Promise<void> => {
+    setLoadingAddons(true)
+
+    try {
+      const addons: Addon[] = await window.electron.ipcRenderer.invoke(
+        AddonMessage.ScanAddonFolder,
+        selectedClient
+      )
+
+      console.debug('ADDONS', addons)
+
+      setRowData(addons.map(toAddonViewModel))
+    } catch (err) {
+      console.error('failed to scan addon folders', err)
+    } finally {
+      setLoadingAddons(false)
+    }
   }
 
   const dropdownItems: ItemType[] = [
     {
       key: '0',
       label: 'Re-Scan Folders',
-      onClick: onClicReScanFolders
+      onClick: onClickReScanFolders
     },
     {
       key: '1',
@@ -93,7 +155,12 @@ function MyAddonsPage(): JSX.Element {
           // define a height because the Data Grid will fill the size of the parent container
           style={{ width: '100%', height: '100%' }}
         >
-          <AgGridReact theme={darkGridTheme} rowData={rowData} columnDefs={colDefs} />
+          <AgGridReact<AddonViewModel>
+            theme={darkGridTheme}
+            rowData={rowData}
+            columnDefs={colDefs}
+            loading={loadingAddons}
+          />
         </div>
       </Content>
     </Layout>

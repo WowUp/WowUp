@@ -25,7 +25,7 @@ if (process.env.BUILD_FLAVOR === 'ow') {
   process.env.PRELOAD_VITE_BUILD_FLAVOR = 'ow'
 }
 
-const packagePath = join(__dirname, '..', 'package.json')
+const packagePath = join(__dirname, 'package.json')
 const packageData = readFileSync(packagePath, 'utf8')
 const packageJson = JSON.parse(packageData)
 

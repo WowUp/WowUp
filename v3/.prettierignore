@@ -1,6 +1,7 @@
 out
 dist
 release
+release-ow
 pnpm-lock.yaml
 LICENSE.md
 tsconfig.json
