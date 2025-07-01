@@ -191,15 +191,15 @@
       "TOC_NAME_MISMATCH_TOOLTIP": "Der Ordner dieses Addons stimmt nicht mit der TOC-Datei überein"
     },
     "CLIENT_TYPES": {
-      "BETA": "TWW Beta",
+      "BETA": "The War Within Beta",
       "CLASSIC": "Cataclysm Classic",
-      "CLASSICBETA": "Cataclysm Classic Beta",
+      "CLASSICBETA": "MoP Classic Beta",
       "CLASSICERA": "World of Warcraft Classic",
-      "CLASSICERAPTR": "PTR (Classic Era)",
-      "CLASSICPTR": "PTR (Cataclysm Classic)",
+      "CLASSICERAPTR": "PTR (Classic Ära)",
+      "CLASSICPTR": "PTR (MoP Classic)",
       "RETAIL": "World of Warcraft",
-      "RETAILPTR": "PTR (TWW 11.0.2)",
-      "RETAILXPTR": "PTR (TWW 11.0)"
+      "RETAILPTR": "PTR (TWW 11.1.7)",
+      "RETAILXPTR": "PTR (TWW 11.2.0)"
     },
     "DATES": {
       "DAYS_AGO": "Vor {count} {count, plural, one{Tag} other{Tagen}}",
