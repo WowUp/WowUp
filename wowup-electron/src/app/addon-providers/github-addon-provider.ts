@@ -27,7 +27,7 @@ import {
 import { GitHubAsset, GitHubRelease, GitHubRepository, WowInstallation } from "wowup-lib-core";
 import { SourceRemovedAddonError } from "wowup-lib-core";
 
-type MetadataFlavor = "bcc" | "classic" | "mainline" | "wrath" | "cata";
+type MetadataFlavor = "bcc" | "classic" | "mainline" | "wrath" | "cata" | "mists";
 
 interface LatestValidAsset {
   matchedAsset: GitHubAsset | undefined;
@@ -376,10 +376,11 @@ export class GitHubAddonProvider extends AddonProvider {
   /** Return the BigWigs metadata flavor for a given client type */
   private getMetadataTargetFlavor(clientType: WowClientType): MetadataFlavor {
     switch (clientType) {
-      case WowClientType.ClassicBeta:
       case WowClientType.Classic:
-      case WowClientType.ClassicPtr:
         return "cata";
+      case WowClientType.ClassicPtr:
+      case WowClientType.ClassicBeta:
+        return "mists";
       case WowClientType.ClassicEra:
       case WowClientType.ClassicEraPtr:
         return "classic";
@@ -436,6 +437,7 @@ export class GitHubAddonProvider extends AddonProvider {
     const isBurningCrusade = this.isBurningCrusadeAsset(asset);
     const isWotlk = this.isWotlk(asset);
     const isCataclysm = this.isCataclysm(asset);
+    const isMists = this.isMists(asset);
 
     switch (clientType) {
       case WowClientType.Retail:
@@ -447,9 +449,10 @@ export class GitHubAddonProvider extends AddonProvider {
       case WowClientType.ClassicEraPtr:
         return isClassic;
       case WowClientType.Classic:
+        return isCataclysm;
       case WowClientType.ClassicPtr:
       case WowClientType.ClassicBeta:
-        return isCataclysm;
+        return isMists;
       default:
         return false;
     }
@@ -469,6 +472,10 @@ export class GitHubAddonProvider extends AddonProvider {
 
   private isCataclysm(asset: GitHubAsset): boolean {
     return /[-_](cata)\.zip$/i.test(asset.name);
+  }
+
+  private isMists(asset: GitHubAsset): boolean {
+    return /[-_](mists)\.zip$/i.test(asset.name);
   }
 
   private getAddonName(addonId: string): string {

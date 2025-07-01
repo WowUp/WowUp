@@ -32,7 +32,7 @@ import {
 import { WowInstallation } from "wowup-lib-core";
 import { SourceRemovedAddonError } from "wowup-lib-core";
 
-declare type WagoGameVersion = "retail" | "classic" | "bc" | "wotlk" | "cata";
+declare type WagoGameVersion = "retail" | "classic" | "bc" | "wotlk" | "cata" | "mop";
 declare type WagoStability = "stable" | "beta" | "alpha";
 
 interface WagoFingerprintAddon {
@@ -758,6 +758,8 @@ export class WagoAddonProvider extends AddonProvider {
         return "wotlk";
       case WowClientGroup.Cata:
         return "cata";
+      case WowClientGroup.Mists:
+        return "mop";
       default:
         throw new Error(`[wago] Un-handled client type: ${clientType}`);
     }

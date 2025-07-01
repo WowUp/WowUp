@@ -73,7 +73,12 @@ const GAME_TYPE_LISTS = [
   {
     flavor: "wow-cataclysm-classic",
     typeId: 77522,
-    matches: [WowClientType.Classic, WowClientType.ClassicPtr, WowClientType.ClassicBeta],
+    matches: [WowClientType.Classic],
+  },
+  {
+    flavor: "wow-mists-of-pandaria-classic",
+    typeId: 79434,
+    matches: [WowClientType.ClassicPtr, WowClientType.ClassicBeta],
   },
 ];
 
@@ -522,7 +527,7 @@ export class CurseAddonProvider extends AddonProvider {
 
     const targetToc = this._tocService.getTocForGameType2(addonFolder.name, addonFolder.tocs, installation.clientType);
     if (!targetToc) {
-      console.error('targetToc undefined', cfAddon.name, addonFolder.tocs);
+      console.error("targetToc undefined", cfAddon.name, addonFolder.tocs);
       throw new TocNotFoundError("Target toc not found");
     }
 
@@ -696,6 +701,8 @@ export class CurseAddonProvider extends AddonProvider {
         return cfv2.CF2WowGameVersionType.Classic;
       case WowClientGroup.Retail:
         return cfv2.CF2WowGameVersionType.Retail;
+      case WowClientGroup.Mists:
+        return cfv2.CF2WowGameVersionType.Mists;
       default:
         throw new Error(`invalid game type: ${clientGroup as string}`);
     }
