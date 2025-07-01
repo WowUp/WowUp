@@ -12,8 +12,10 @@
   "win": {
     "icon": "electron-build/icon-cf.ico",
     "target": ["nsis", "portable"],
-    "forceCodeSigning": true,
-    "publisherName": "WowUp LLC"
+    "forceCodeSigning": false,
+    "signtoolOptions": {
+      "publisherName": "WowUp LLC"
+    }
   },
   "nsis": {
     "deleteAppDataOnUninstall": true
