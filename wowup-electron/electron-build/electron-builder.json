@@ -13,7 +13,9 @@
     "icon": "electron-build/icon.ico",
     "target": ["nsis", "portable"],
     "forceCodeSigning": true,
-    "publisherName": "WowUp LLC"
+    "signtoolOptions": {
+      "publisherName": "WowUp LLC"
+    }
   },
   "nsis": {
     "deleteAppDataOnUninstall": true
