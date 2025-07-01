@@ -1,7 +1,6 @@
 {
   "productName": "WowUp-CF",
   "appId": "io.wowupcf.jliddev",
-  "publisherName": "WowUp LLC",
   "directories": {
     "output": "release/"
   },
@@ -13,7 +12,8 @@
   "win": {
     "icon": "electron-build/icon-cf.ico",
     "target": ["nsis", "portable"],
-    "forceCodeSigning": true
+    "forceCodeSigning": true,
+    "publisherName": "WowUp LLC"
   },
   "nsis": {
     "deleteAppDataOnUninstall": true
