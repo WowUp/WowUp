@@ -28,7 +28,7 @@
     "MISSING_ADDON_PROVIDERS": "Uno o más proveedores de addons no estaban disponibles/habilitados ({missingProviders})",
     "MISSING_CURSEFORGE_PROVIDER": "La lista de addons contiene un addon de CurseForge, necesitarás instalar<br>\"WowUp with CurseForge\" desde wowup.io",
     "MISSING_PROVIDER_MODAL_DOWNLOAD_BTN": "Descargar",
-    "MISSING_PROVIDER_MODAL_TITLE": "Proveedor de Addon Faltante",
+    "MISSING_PROVIDER_MODAL_TITLE": "Falta el Proveedor de addons",
     "MISSING_WAGO_PROVIDER": "La lista de addons contiene un addon de Wago, necesitarás instalar<br>\"WowUp with Wago\" desde wowup.io",
     "NO_CHANGE_BADGE_TOOLTIP": "Este addon ya está instalado",
     "PASTE_BUTTON": "Pegar",
@@ -39,11 +39,11 @@
   "ADS": {
     "AD_EXPLAINER_BUTTON": "Este anuncio ayuda a los creadores de addons ❤",
     "AD_EXPLAINER_DIALOG": {
-      "MESSAGE": "Para poder usar <a appExternalLink href=\"https://addons.wago.io/\">wago.io</a> como proveedor de addons y apoyar a sus autores por su duro trabajo, se nos requiere mostrar esta publicidad.\n\nSi no quiere ver estos anuncios, puede desactivar el proveedor wago.io en la pestaña de Opciones.",
+      "MESSAGE": "Para poder utilizar <a appExternalLink href=\"https://addons.wago.io/\">wago.io</a> como proveedor de addons y apoyar a los autores por su duro trabajo creando tus addons favoritos, necesitamos mostrar estos anuncios.\n\nSi no quiere ver publicidad, puede desactivar el proveedor de addons wago.io en la pestaña de Opciones.",
       "TITLE": "¿Por qué estoy viendo este anuncio?"
     },
     "AD_EXPLAINER_DIALOG_CF": {
-      "MESSAGE": "Para poder utilizar <a appExternalLink href=\"https://curseforge.com/\">CurseForge</a> como proveedor de addons y apoyar a los autores por su duro trabajo creando tus addons favoritos, necesitamos mostrar esta publicidad.\n\nSi no quieres ver esta publicidad, siempre puedes desactivar CurseForge como proveedor en la pestaña de opciones.",
+      "MESSAGE": "Para poder utilizar <a appExternalLink href=\"https://curseforge.com/\">CurseForge</a> como proveedor de addons y apoyar a los autores por su duro trabajo creando tus addons favoritos, necesitamos mostrar estos anuncios.\n\nSi no quiere ver publicidad, puede desactivar el proveedor de addons CurseForge en la pestaña de Opciones.",
       "TITLE": "¿Por qué estoy viendo este anuncio?"
     }
   },
@@ -174,13 +174,13 @@
       "ERROR": "Error",
       "INSTALLING": "Instalando",
       "PENDING": "Pendiente",
-      "RETRY": "Retrying...",
+      "RETRY": "Reintentando...",
       "UNINSTALLING": "Desinstalando",
       "UPDATING": "Actualizando"
     },
     "ADDON_WARNING": {
-      "GAME_VERSION_TOC_MISSING_DESCRIPTION": "This addon or its children have one or more missing toc files for this game version",
-      "GAME_VERSION_TOC_MISSING_TOOLTIP": "One or more missing toc files for this game version",
+      "GAME_VERSION_TOC_MISSING_DESCRIPTION": "A este addon o sus dependencias le faltan uno o más archivos toc para esta versión del juego",
+      "GAME_VERSION_TOC_MISSING_TOOLTIP": "Faltan uno o más archivos toc para esta versión del juego",
       "GENERIC_DESCRIPTION": "Se ha detectado un problema con este addon. No es posible actualizarlo ni proveer detalles.",
       "GENERIC_TOOLTIP": "Se ha detectado un problema con este addon",
       "MISSING_ON_PROVIDER_DESCRIPTION": "Este addon parece haber sido eliminado por el autor o el proveedor.<br>No es posible actualizarlo ni proveer detalles.",
@@ -304,7 +304,7 @@
       "ERROR": {
         "ASSET_NOT_FOUND": "No se encontró el recurso a descargar {message}.\n\nEs necesario que la publicación contenga un archivo zip válido para que WowUp pueda descargarlo.",
         "BURNING_CRUSADE_ASSET_NOT_FOUND": "No se encontró el recurso a descargar desde {message}.\n\nEs necesario un archivo zip válido con el sufijo '-bc' para que WowUp pueda descargarlo.",
-        "CATACLYSM_ASSET_NOT_FOUND": "No asset was found to download from {message}.\n\nA valid zip file ending with '-cata' is required in order for WowUp to download it.",
+        "CATACLYSM_ASSET_NOT_FOUND": "No se encontró el recurso a descargar desde {message}.\n\nEs necesario un archivo zip válido con el sufijo '-cata' para que WowUp pueda descargarlo.",
         "CLASSIC_ASSET_NOT_FOUND": "No se encontró el recurso a descargar desde {message}.\n\nEs necesario un archivo zip válido con el sufijo '-classic' para que WowUp pueda descargarlo.",
         "FAILED_TO_CONNECT": "No se pudo conectar con la API. Por favor, espere un momento y vuelva a intentarlo.",
         "INSTALL_FAILED": "Ocurrió un error al intentar instalar el addon. Por favor, inténtelo de nuevo.\n\nSi se sigue mostrando este mensaje, puede obtener ayuda en Discord en el canal #help-me.",
@@ -329,7 +329,7 @@
     "PERMISSIONS": {
       "CURSEFORGE": {
         "DESCRIPTION_AD_LINK": "distribuidores de anuncios",
-        "DESCRIPTION_BOTTOM": ". Haga clic en el botón Administrar para controlar sus consentimientos o para oponerse al procesado de sus datos. Puede cambiar sus preferencias en cualquier momento a través de la pantalla de configuración.",
+        "DESCRIPTION_BOTTOM": ". Haga clic en el botón Administrar para controlar sus consentimientos o para oponerse al procesado de sus datos. Puede cambiar sus preferencias en cualquier momento a través de las opciones de configuración.",
         "DESCRIPTION_TOP": " Para poder utilizar la integración con CurseForge de esta aplicación, es necesario su consentimiento para mostrarle publicidad de uno de sus ",
         "MANAGE_BUTTON": "Administrar",
         "TITLE": "CurseForge"
@@ -601,7 +601,7 @@
         "CLIENTS": "Clientes",
         "CURSEFORGE": "CurseForge",
         "DEBUG": "Depuración",
-        "WTF_EXPLORER": "WTF Explorer"
+        "WTF_EXPLORER": "Explorador WTF"
       },
       "WOW": {
         "ADD_CLIENT_BUTTON": "Añadir nuevo",
@@ -629,9 +629,9 @@
         "TITLE": "World of Warcraft"
       },
       "WTF_EXPLORER": {
-        "FOLDER_PATH_LABEL": "Folder: ",
-        "PAGE_EXPLANATION": "The WTF Explorer allows you to inspect all the data your addons have saved.\nFiles in grey are typically things you can ignore such as backup files.\nFiles in red should belong to addons that you no longer have installed.",
-        "TITLE": "WTF Explorer"
+        "FOLDER_PATH_LABEL": "Carpeta: ",
+        "PAGE_EXPLANATION": "El Explorador WTF permite inspeccionar todos los datos que tus addons han guardado.\nLos archivos en gris son habitualmente cosas que puedes ignorar, como archivos de copia de seguridad.\nLos archivos en rojo pertenecen a addons que ya no se encuentran instalados.",
+        "TITLE": "Explorador WTF"
       }
     }
   },
