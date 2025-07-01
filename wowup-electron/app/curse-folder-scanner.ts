@@ -56,7 +56,7 @@ export class CurseFolderScanner {
   }
 
   private get tocFileRegex() {
-    return /^([^/]+)[\\/]\1([-|_](mainline|bcc|tbc|classic|vanilla|wrath|wotlkc|cata))?\.toc$/i;
+    return /^([^/]+)[\\/]\1([-|_](mainline|bcc|tbc|classic|vanilla|wrath|wotlkc|cata|mists))?\.toc$/i;
   }
 
   private get bindingsXmlRegex() {
