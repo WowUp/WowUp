@@ -377,7 +377,6 @@ export class GitHubAddonProvider extends AddonProvider {
   private getMetadataTargetFlavor(clientType: WowClientType): MetadataFlavor {
     switch (clientType) {
       case WowClientType.Classic:
-        return "cata";
       case WowClientType.ClassicPtr:
       case WowClientType.ClassicBeta:
         return "mists";
@@ -449,7 +448,6 @@ export class GitHubAddonProvider extends AddonProvider {
       case WowClientType.ClassicEraPtr:
         return isClassic;
       case WowClientType.Classic:
-        return isCataclysm;
       case WowClientType.ClassicPtr:
       case WowClientType.ClassicBeta:
         return isMists;

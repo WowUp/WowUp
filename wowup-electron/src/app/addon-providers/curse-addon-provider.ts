@@ -73,12 +73,12 @@ const GAME_TYPE_LISTS = [
   {
     flavor: "wow-cataclysm-classic",
     typeId: 77522,
-    matches: [WowClientType.Classic],
+    matches: [],
   },
   {
     flavor: "wow-mists-of-pandaria-classic",
     typeId: 79434,
-    matches: [WowClientType.ClassicPtr, WowClientType.ClassicBeta],
+    matches: [WowClientType.Classic, WowClientType.ClassicPtr, WowClientType.ClassicBeta],
   },
 ];
 
