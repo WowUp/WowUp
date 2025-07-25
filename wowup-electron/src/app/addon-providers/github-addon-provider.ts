@@ -187,7 +187,7 @@ export class GitHubAddonProvider extends AddonProvider {
         files: [
           {
             channelType: result.release?.prerelease ? AddonChannelType.Beta : AddonChannelType.Stable,
-            downloadUrl: (hasPat ? asset?.url : asset?.browser_download_url) ?? "",
+            downloadUrl: asset?.browser_download_url ?? "",
             folders: [],
             gameVersion: "",
             releaseDate: new Date(result.release?.published_at ?? ""),
@@ -248,11 +248,9 @@ export class GitHubAddonProvider extends AddonProvider {
     const asset = assetResult.matchedAsset || assetResult.latestAsset;
     console.debug("asset", asset);
 
-    const hasPat = await this.hasPersonalAccessKey();
-
     const searchResultFile: AddonSearchResultFile = {
       channelType: AddonChannelType.Stable,
-      downloadUrl: (hasPat ? asset?.url : asset?.browser_download_url) ?? "",
+      downloadUrl: asset?.browser_download_url ?? "",
       folders: [addonName],
       gameVersion: "",
       version: asset?.name ?? "",
@@ -338,7 +336,7 @@ export class GitHubAddonProvider extends AddonProvider {
     }
 
     const hasPat = await this.hasPersonalAccessKey();
-    const url = hasPat ? metadataAsset.url : metadataAsset.browser_download_url;
+    const url =  metadataAsset.browser_download_url;
 
     return await this.getWithRateLimit<ReleaseMeta>(url, hasPat);
   }
@@ -552,7 +550,7 @@ export class GitHubAddonProvider extends AddonProvider {
     const personalAccessToken = await this._sensitiveStorageService.getAsync(PREF_GITHUB_PERSONAL_ACCESS_TOKEN);
     const headers: { [param: string]: string } = {};
     if (typeof personalAccessToken === "string" && personalAccessToken.length > 0) {
-      headers.Authorization = `token ${personalAccessToken}`;
+      headers.Authorization = `Bearer ${personalAccessToken}`;
     }
 
     return headers;
