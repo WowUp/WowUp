@@ -170,7 +170,6 @@ export class GitHubAddonProvider extends AddonProvider {
         throw new AssetMissingError(addonUri.toString(), clientGroup);
       }
 
-      const hasPat = await this.hasPersonalAccessKey();
       const repository = await this.getRepository(repoPath);
       const author = repository.owner.login;
       const authorImageUrl = repository.owner.avatar_url;
