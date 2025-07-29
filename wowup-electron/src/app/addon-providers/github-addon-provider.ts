@@ -186,7 +186,7 @@ export class GitHubAddonProvider extends AddonProvider {
         files: [
           {
             channelType: result.release?.prerelease ? AddonChannelType.Beta : AddonChannelType.Stable,
-            downloadUrl: asset?.browser_download_url ?? "",
+            downloadUrl: asset?.url ?? "",
             folders: [],
             gameVersion: "",
             releaseDate: new Date(result.release?.published_at ?? ""),
@@ -249,7 +249,7 @@ export class GitHubAddonProvider extends AddonProvider {
 
     const searchResultFile: AddonSearchResultFile = {
       channelType: AddonChannelType.Stable,
-      downloadUrl: asset?.browser_download_url ?? "",
+      downloadUrl: asset?.url ?? "",
       folders: [addonName],
       gameVersion: "",
       version: asset?.name ?? "",
@@ -292,8 +292,12 @@ export class GitHubAddonProvider extends AddonProvider {
       let iAsset: GitHubAsset | undefined = undefined;
       if (this.hasReleaseMetadata(release)) {
         console.log(`Checking release metadata: ${release.name}`);
-        const metadata = await this.getReleaseMetadata(release);
-        iAsset = this.getValidAssetFromMetadata(release, clientType, metadata);
+        try {
+          const metadata = await this.getReleaseMetadata(release);
+          iAsset = this.getValidAssetFromMetadata(release, clientType, metadata);
+        } catch (err) {
+          console.error(`Failed to get release metadata for ${release.name}`, err);
+        }
       }
 
       // If we didn't find an asset with metadata, try the old way
@@ -329,13 +333,14 @@ export class GitHubAddonProvider extends AddonProvider {
 
   /** Fetch the json object for the BigWigs metadata json file */
   private async getReleaseMetadata(release: GitHubRelease): Promise<ReleaseMeta> {
+    console.debug(`Fetching release metadata for ${release.name}`, release);
     const metadataAsset = release.assets.find((asset) => asset.name === "release.json");
     if (!metadataAsset) {
       throw new Error("No metadata asset found");
     }
 
     const hasPat = await this.hasPersonalAccessKey();
-    const url =  metadataAsset.browser_download_url;
+    const url = metadataAsset.url;
 
     return await this.getWithRateLimit<ReleaseMeta>(url, hasPat);
   }
