@@ -12,9 +12,9 @@
   "win": {
     "icon": "electron-build/icon.ico",
     "target": ["nsis", "portable"],
-    "forceCodeSigning": false,
     "signtoolOptions": {
-      "publisherName": "WowUp LLC"
+      "sign": "./electron-build/sign-windows.js",
+      "signingHashAlgorithms": ["sha256"]
     }
   },
   "nsis": {

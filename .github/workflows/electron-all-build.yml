@@ -70,10 +70,23 @@ jobs:
           npm i
           npm run electron:publish
 
+      - name: Get ssl.com esigner zip file and unzip
+        if: matrix.os == 'windows-latest'
+        run: |
+          mkdir ./wowup-electron/electron-build/code_signer
+          cd ./wowup-electron/electron-build/code_signer
+          powershell -Command "Invoke-WebRequest -Uri 'https://www.ssl.com/download/codesigntool-for-windows' -OutFile 'out.zip'"
+          powershell -Command "Expand-Archive -Path 'out.zip' -DestinationPath '.'"
+          cd ../../..
+
       - name: Build Windows App
         if: matrix.os == 'windows-latest'
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token
-          CSC_LINK: ${{ secrets.WINDOWS_CSC_LINK }}
-          CSC_KEY_PASSWORD: ${{ secrets.WINDOWS_CSC_KEY_PASSWORD }}
+          WINDOWS_SIGN_USER_NAME: ${{ secrets.WINDOWS_SIGN_USER_NAME }}
+          WINDOWS_SIGN_USER_PASSWORD: ${{ secrets.WINDOWS_SIGN_USER_PASSWORD }}
+          WINDOWS_SIGN_CREDENTIAL_ID: ${{ secrets.WINDOWS_SIGN_CREDENTIAL_ID }}
+          WINDOWS_SIGN_USER_TOTP: ${{ secrets.WINDOWS_SIGN_USER_TOTP }}
+          # CSC_LINK: ${{ secrets.WINDOWS_CSC_LINK }}
+          # CSC_KEY_PASSWORD: ${{ secrets.WINDOWS_CSC_KEY_PASSWORD }}
         run: cd ./wowup-electron && npm i && npm run electron:publish

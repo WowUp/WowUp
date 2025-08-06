@@ -56,3 +56,5 @@ testem.log
 # System Files
 .DS_Store
 Thumbs.db
+electron-build/code_signer
+**/*.log
