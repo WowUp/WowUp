@@ -73,8 +73,9 @@ jobs:
       - name: Get ssl.com esigner zip file and unzip
         if: matrix.os == 'windows-latest'
         run: |
-          mkdir ./wowup-electron/electron-build/code_signer
-          cd ./wowup-electron/electron-build/code_signer
+          cd ./wowup-electron/electron-build
+          mkdir code_signer
+          cd ./code_signer
           powershell -Command "Invoke-WebRequest -Uri 'https://www.ssl.com/download/codesigntool-for-windows' -OutFile 'out.zip'"
           powershell -Command "Expand-Archive -Path 'out.zip' -DestinationPath '.'"
           cd ../../..
