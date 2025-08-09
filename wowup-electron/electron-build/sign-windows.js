@@ -19,8 +19,26 @@ if (!fs.existsSync(WORKING_DIR)) {
   fs.mkdirSync(WORKING_DIR, { recursive: true });
 }
 
+function setNonProdConfig() {
+  const configDir = path.join(__dirname, "code_signer", "conf", "code_sign_tool.properties");
+  console.log("Setting NON-PROD code signing config", configDir);
+
+  const config = `
+CLIENT_ID=qOUeZCCzSqgA93acB3LYq6lBNjgZdiOxQc-KayC3UMw
+OAUTH2_ENDPOINT=https://oauth-sandbox.ssl.com/oauth2/token
+CSC_API_ENDPOINT=https://cs-try.ssl.com
+TSA_URL=http://ts.ssl.com
+`;
+
+  fs.writeFileSync(configDir, config);
+}
+
 console.log(`SIGNING FOR WINDOWS ${isNonProd ? "NON-PROD" : "PROD"} BUILD`);
 function sign(configuration) {
+  if (isNonProd) {
+    setNonProdConfig();
+  }
+
   const credentialId = isNonProd
     ? process.env.WINDOWS_SIGN_CREDENTIAL_ID_NONPROD
     : process.env.WINDOWS_SIGN_CREDENTIAL_ID_PROD;
