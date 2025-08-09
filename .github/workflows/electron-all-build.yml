@@ -90,7 +90,9 @@ jobs:
           WINDOWS_SIGN_USER_NAME: ${{ secrets.WINDOWS_SIGN_USER_NAME }}
           WINDOWS_SIGN_USER_PASSWORD: ${{ secrets.WINDOWS_SIGN_USER_PASSWORD }}
           WINDOWS_SIGN_CREDENTIAL_ID: ${{ secrets.WINDOWS_SIGN_CREDENTIAL_ID }}
+          WINDOWS_SIGN_CREDENTIAL_ID_NONPROD: ${{ secrets.WINDOWS_SIGN_CREDENTIAL_ID_NONPROD }}
           WINDOWS_SIGN_USER_TOTP: ${{ secrets.WINDOWS_SIGN_USER_TOTP }}
+          WINDOWS_SIGN_USER_TOTP_NONPROD: ${{ secrets.WINDOWS_SIGN_USER_TOTP_NONPROD }}
           # CSC_LINK: ${{ secrets.WINDOWS_CSC_LINK }}
           # CSC_KEY_PASSWORD: ${{ secrets.WINDOWS_CSC_KEY_PASSWORD }}
         run: cd ./wowup-electron && npm i && npm run electron:publish
