@@ -93,6 +93,19 @@ jobs:
           npm ci
           npm run ow:electron:publish
 
+      - name: Get ssl.com esigner zip file and unzip
+        if: matrix.os == 'windows-latest'
+        run: |
+          cd ./wowup-electron/electron-build
+          mkdir code_signer
+          cd ./code_signer
+          Write-Host "Downloading CodeSignTool from ssl.com..."
+          powershell -Command "Invoke-WebRequest -Uri 'https://www.ssl.com/download/codesigntool-for-windows' -OutFile 'out.zip' -Verbose"
+          Write-Host "Expanding CodeSignTool archive..."
+          powershell -Command "Expand-Archive -Path 'out.zip' -DestinationPath '.' -Force -Verbose"
+          Write-Host "Done extracting CodeSignTool."
+          cd ../../..
+
       - name: Build Windows App
         if: matrix.os == 'windows-latest'
         env:
