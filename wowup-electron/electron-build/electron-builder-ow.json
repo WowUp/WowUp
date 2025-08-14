@@ -6,13 +6,7 @@
   },
   "afterSign": "./electron-build/after-sign-ow.js",
   "generateUpdatesFilesForAllChannels": true,
-  "publish": [
-    {
-      "provider": "github",
-      "owner": "WowUp",
-      "repo": "WowUp.CF"
-    }
-  ],
+  "publish": ["github"],
   "nodeGypRebuild": true,
   "files": ["dist/**/*.*", "assets/**/*.*", "app/**/*.js", "src/common/**/*.js", "build/Release/*.node"],
   "win": {
