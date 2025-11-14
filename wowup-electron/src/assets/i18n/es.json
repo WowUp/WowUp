@@ -191,12 +191,12 @@
       "TOC_NAME_MISMATCH_TOOLTIP": "La carpeta de este addon no se corresponde con el archivo toc"
     },
     "CLIENT_TYPES": {
-      "BETA": "TWW Beta",
-      "CLASSIC": "Cataclysm Classic",
-      "CLASSICBETA": "Cataclysm Classic Beta",
+     "BETA": "TWW Beta",
+      "CLASSIC": "Mists of Pandaria Classic",
+      "CLASSICBETA": "Mists of Pandaria Classic Beta",
       "CLASSICERA": "World of Warcraft Classic",
       "CLASSICERAPTR": "PTR (Classic Era)",
-      "CLASSICPTR": "PTR (Cataclysm Classic)",
+      "CLASSICPTR": "PTR (Mists of Pandaria Classic)",
       "RETAIL": "World of Warcraft",
       "RETAILPTR": "PTR (TWW 11.0.2)",
       "RETAILXPTR": "PTR (TWW 11.0)"
