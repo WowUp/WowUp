@@ -192,11 +192,11 @@
     },
     "CLIENT_TYPES": {
       "BETA": "TWW Beta",
-      "CLASSIC": "Cataclysm Classic",
-      "CLASSICBETA": "Cataclysm Classic Beta",
+      "CLASSIC": "Mists of Pandaria Classic",
+      "CLASSICBETA": "Mists of Pandaria Classic Beta",
       "CLASSICERA": "World of Warcraft Classic",
       "CLASSICERAPTR": "PTR (Classic Era)",
-      "CLASSICPTR": "PTR (Cataclysm Classic)",
+      "CLASSICPTR": "PTR (Mists of Pandaria Classic)",
       "RETAIL": "World of Warcraft",
       "RETAILPTR": "PTR (TWW 11.0.2)",
       "RETAILXPTR": "PTR (TWW 11.0)"
