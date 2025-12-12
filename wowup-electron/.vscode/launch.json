@@ -52,7 +52,7 @@
       "windows": {
         "runtimeExecutable": "${workspaceFolder}/node_modules/.bin/ow-electron.cmd"
       },
-      "preLaunchTask": "Build.Main"
+      "preLaunchTask": "Build.Main.OW"
     }
   ],
   "compounds": [

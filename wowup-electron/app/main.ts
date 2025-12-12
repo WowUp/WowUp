@@ -47,6 +47,7 @@ import { initializeDefaultPreferences } from "./preferences";
 import { PUSH_NOTIFICATION_EVENT, pushEvents } from "./push";
 import { getPreferenceStore, initializeStoreIpcHandlers } from "./stores";
 import * as windowState from "./window-state";
+import { createFingerprintController } from "./controllers/fingerprint-controller";
 import { validateGpuCache } from "./utils/gpu-cache-buster";
 import { AppEnv } from "./env/environment";
 
@@ -64,6 +65,7 @@ log.info(`BinaryPath: ${app.getPath("exe")}`);
 log.info("ExecPath", process.execPath);
 log.info("Args", process.argv);
 log.info(`Log path: ${LOG_PATH}`);
+log.info(`App flavor: ${AppEnv.buildFlavor}`);
 
 // ERROR HANDLING SETUP
 process.on("uncaughtException", (error) => {
@@ -323,6 +325,10 @@ function createWindow(): BrowserWindow {
   initializeIpcHandlers(win);
   initializeStoreIpcHandlers();
 
+  // Register IPC Router controllers
+  const fingerprintController = createFingerprintController(win);
+  fingerprintController.register(win);
+
   if (AppEnv.buildFlavor === "wago") {
     wagoHandler.initialize(win);
   }
@@ -482,7 +488,7 @@ function createWindow(): BrowserWindow {
 
     if (platform.isMac) {
       app.setBadgeCount(0);
-      app.dock.hide();
+      app.dock?.hide();
     }
   });
 
@@ -548,7 +554,7 @@ async function onActivate() {
   // On OS X it's common to re-create a window in the app when the
   // dock icon is clicked and there are no other windows open.
   if (platform.isMac) {
-    await app.dock.show();
+    await app.dock?.show();
     win?.show();
   }
 

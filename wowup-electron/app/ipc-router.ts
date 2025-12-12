@@ -344,56 +344,56 @@ export class IpcRouter {
  * const result = await ipcCall('POST', '/api/addons/install', { addonId: '123' });
  * ```
  */
-export function createIpcClient() {
-  return {
-    /**
-     * Make an IPC call using REST-like method and path
-     */
-    async call<TResponse = any, TBody = any>(
-      method: IpcMethod,
-      path: string,
-      body?: TBody,
-      options?: { params?: any; query?: any }
-    ): Promise<TResponse> {
-      const channel = `${path.replace(/^\//, "").replace(/\//g, ":")}:${method.toLowerCase()}`;
+// export function createIpcClient() {
+//   return {
+//     /**
+//      * Make an IPC call using REST-like method and path
+//      */
+//     async call<TResponse = any, TBody = any>(
+//       method: IpcMethod,
+//       path: string,
+//       body?: TBody,
+//       options?: { params?: any; query?: any }
+//     ): Promise<TResponse> {
+//       const channel = `${path.replace(/^\//, "").replace(/\//g, ":")}:${method.toLowerCase()}`;
 
-      const payload = {
-        body: body ?? {},
-        params: options?.params ?? {},
-        query: options?.query ?? {},
-      };
+//       const payload = {
+//         body: body ?? {},
+//         params: options?.params ?? {},
+//         query: options?.query ?? {},
+//       };
 
-      // This would be called from renderer via window.wowup.rendererInvoke
-      const response: IpcResponseData<TResponse> = await (window as any).wowup.rendererInvoke(
-        channel,
-        payload
-      );
+//       // This would be called from renderer via window.wowup.rendererInvoke
+//       const response: IpcResponseData<TResponse> = await (window as any).wowup.rendererInvoke(
+//         channel,
+//         payload
+//       );
 
-      if (!response.success) {
-        throw new Error(response.error?.message || "IPC call failed");
-      }
+//       if (!response.success) {
+//         throw new Error(response.error?.message || "IPC call failed");
+//       }
 
-      return response.data as TResponse;
-    },
+//       return response.data as TResponse;
+//     },
 
-    get<TResponse = any>(path: string, query?: any): Promise<TResponse> {
-      return this.call<TResponse>("GET", path, undefined, { query });
-    },
+//     get<TResponse = any>(path: string, query?: any): Promise<TResponse> {
+//       return this.call<TResponse>("GET", path, undefined, { query });
+//     },
 
-    post<TResponse = any, TBody = any>(path: string, body?: TBody): Promise<TResponse> {
-      return this.call<TResponse, TBody>("POST", path, body);
-    },
+//     post<TResponse = any, TBody = any>(path: string, body?: TBody): Promise<TResponse> {
+//       return this.call<TResponse, TBody>("POST", path, body);
+//     },
 
-    put<TResponse = any, TBody = any>(path: string, body?: TBody): Promise<TResponse> {
-      return this.call<TResponse, TBody>("PUT", path, body);
-    },
+//     put<TResponse = any, TBody = any>(path: string, body?: TBody): Promise<TResponse> {
+//       return this.call<TResponse, TBody>("PUT", path, body);
+//     },
 
-    patch<TResponse = any, TBody = any>(path: string, body?: TBody): Promise<TResponse> {
-      return this.call<TResponse, TBody>("PATCH", path, body);
-    },
+//     patch<TResponse = any, TBody = any>(path: string, body?: TBody): Promise<TResponse> {
+//       return this.call<TResponse, TBody>("PATCH", path, body);
+//     },
 
-    delete<TResponse = any>(path: string): Promise<TResponse> {
-      return this.call<TResponse>("DELETE", path);
-    },
-  };
-}
+//     delete<TResponse = any>(path: string): Promise<TResponse> {
+//       return this.call<TResponse>("DELETE", path);
+//     },
+//   };
+// }
