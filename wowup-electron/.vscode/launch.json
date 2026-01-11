@@ -41,6 +41,20 @@
       "preLaunchTask": "Build.Main"
     },
     {
+      "name": "OW Renderer",
+      "type": "chrome",
+      "request": "attach",
+      "port": 9876,
+      "url": "http://localhost:4200",
+      "sourceMaps": true,
+      "timeout": 10000,
+      "trace": "verbose",
+      "sourceMapPathOverrides": {
+        "webpack:///./*": "${workspaceFolder}/*"
+      },
+      "preLaunchTask": "Build.Renderer.OW"
+    },
+    {
       "name": "OW Main",
       "type": "node",
       "request": "launch",
@@ -52,7 +66,7 @@
       "windows": {
         "runtimeExecutable": "${workspaceFolder}/node_modules/.bin/ow-electron.cmd"
       },
-      "preLaunchTask": "Build.Main.OW"
+      "preLaunchTask": "Build.Main.OW.Compile"
     }
   ],
   "compounds": [
