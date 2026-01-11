@@ -47,7 +47,7 @@ import { initializeDefaultPreferences } from "./preferences";
 import { PUSH_NOTIFICATION_EVENT, pushEvents } from "./push";
 import { getPreferenceStore, initializeStoreIpcHandlers } from "./stores";
 import * as windowState from "./window-state";
-import { createFingerprintController } from "./controllers/fingerprint-controller";
+
 import { validateGpuCache } from "./utils/gpu-cache-buster";
 import { AppEnv } from "./env/environment";
 
@@ -325,9 +325,7 @@ function createWindow(): BrowserWindow {
   initializeIpcHandlers(win);
   initializeStoreIpcHandlers();
 
-  // Register IPC Router controllers
-  const fingerprintController = createFingerprintController(win);
-  fingerprintController.register(win);
+
 
   if (AppEnv.buildFlavor === "wago") {
     wagoHandler.initialize(win);

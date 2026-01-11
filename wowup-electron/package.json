@@ -1,6 +1,6 @@
 {
-  "name": "wowup-cf",
-  "productName": "WowUpCf",
+  "name": "wowup",
+  "productName": "WowUp",
   "version": "2.22.0-beta.1",
   "private": true,
   "description": "World of Warcraft addon updater",
@@ -11,7 +11,7 @@
   "homepage": "https://wowup.io",
   "repository": {
     "type": "git",
-    "url": "https://github.com/WowUp/WowUp.CF.git"
+    "url": "https://github.com/WowUp/WowUp.git"
   },
   "author": {
     "name": "WowUp LLC",
