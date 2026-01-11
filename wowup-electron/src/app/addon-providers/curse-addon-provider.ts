@@ -71,6 +71,11 @@ const GAME_TYPE_LISTS = [
     matches: [WowClientType.Retail, WowClientType.RetailPtr, WowClientType.Beta, WowClientType.RetailXPtr],
   },
   {
+    flavor: "wow-burning-crusade-classic",
+    typeId: 73246,
+    matches: [],
+  },
+  {
     flavor: "wow-cataclysm-classic",
     typeId: 77522,
     matches: [],
@@ -79,6 +84,11 @@ const GAME_TYPE_LISTS = [
     flavor: "wow-mists-of-pandaria-classic",
     typeId: 79434,
     matches: [WowClientType.Classic, WowClientType.ClassicPtr, WowClientType.ClassicBeta],
+  },
+  {
+    flavor: "wow-wrath-titan",
+    typeId: 81212,
+    matches: [],
   },
 ];
 
@@ -867,7 +877,7 @@ export class CurseAddonProvider extends AddonProvider {
   private async getSearchResults(query: string, clientType: WowClientType): Promise<cfv2.CF2Addon[]> {
     const request: cfv2.CF2SearchModsParams = {
       gameId: 1,
-      categoryId: 0,
+      // categoryId: 0, // setting 0 now returns no results
       searchFilter: query,
       sortField: 2,
       sortOrder: "desc",

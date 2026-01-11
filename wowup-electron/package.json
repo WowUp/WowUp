@@ -1,7 +1,7 @@
 {
-  "name": "wowup",
-  "productName": "WowUp",
-  "version": "2.21.0",
+  "name": "wowup-cf",
+  "productName": "WowUpCf",
+  "version": "2.22.0-beta.1",
   "private": true,
   "description": "World of Warcraft addon updater",
   "keywords": [
@@ -11,7 +11,7 @@
   "homepage": "https://wowup.io",
   "repository": {
     "type": "git",
-    "url": "https://github.com/WowUp/WowUp.git"
+    "url": "https://github.com/WowUp/WowUp.CF.git"
   },
   "author": {
     "name": "WowUp LLC",
@@ -72,7 +72,7 @@
   "dependencies": {
     "adm-zip": "0.5.12",
     "auto-launch": "5.0.6",
-    "electron-log": "5.4.0",
+    "electron-log": "5.4.3",
     "electron-store": "8.2.0",
     "electron-updater": "6.6.2",
     "globrex": "0.1.2",
@@ -118,8 +118,8 @@
     "@microsoft/applicationinsights-web": "3.0.5",
     "@ngx-translate/core": "15.0.0",
     "@ngx-translate/http-loader": "8.0.0",
-    "@overwolf/ow-electron": "34.5.5",
-    "@overwolf/ow-electron-builder": "26.0.11",
+    "@overwolf/ow-electron": "37.7.0",
+    "@overwolf/ow-electron-builder": "26.0.12",
     "@types/adm-zip": "0.5.1",
     "@types/flat": "5.0.2",
     "@types/globrex": "0.1.2",
@@ -143,8 +143,8 @@
     "curseforge-v2": "1.4.0",
     "del": "7.1.0",
     "dotenv": "16.4.5",
-    "electron": "36.4.0",
-    "electron-builder": "26.0.12",
+    "electron": "39.2.7",
+    "electron-builder": "26.4.0",
     "electron-notarize": "1.2.2",
     "electron-reload": "2.0.0-alpha.1",
     "eslint": "^8.57.0",
