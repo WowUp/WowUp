@@ -1,7 +1,7 @@
 {
   "name": "wowup",
   "productName": "WowUp",
-  "version": "2.22.0-beta.3",
+  "version": "2.22.0-beta.4",
   "private": true,
   "description": "World of Warcraft addon updater",
   "keywords": [
@@ -37,7 +37,7 @@
     "electron:publish:never": "npm run electron:build && electron-builder --publish never",
     "electron:publish:local": "npm run lint && npm run build:dev && npx electron-builder -c electron-build/electron-builder-local.json --publish never",
     "ow:start": "npm-run-all -p ow:electron:serve ow:ng:serve",
-    "ow:build": "cross-env BUILD_FLAVOR=ow npm run build:injectenv && npm run electron:serve-tsc && ng build --base-href ./",
+    "ow:build": "cross-env BUILD_FLAVOR=ow npm run build:injectenv && npm run ow:electron:serve-tsc && ng build --base-href ./",
     "ow:build:dev": "npm run ow:build -- -c ow-dev",
     "ow:build:prod": "npm run ow:build -- -c ow-production",
     "ow:ng:serve": "ng serve -c ow-dev",
