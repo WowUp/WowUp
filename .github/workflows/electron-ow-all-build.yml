@@ -45,7 +45,7 @@ jobs:
 
       - name: Install lib dependencies
         run: |
-          cd ./lib
+          cd ./wowup-lib
           npm install
 
       - name: Install Angular CLI
