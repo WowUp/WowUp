@@ -191,15 +191,16 @@
       "TOC_NAME_MISMATCH_TOOLTIP": "La carpeta de este addon no se corresponde con el archivo toc"
     },
     "CLIENT_TYPES": {
-      "BETA": "Beta de The War Within",
-      "CLASSIC": "Cataclysm Classic",
+      "BETA": "Beta de Midnight",
+      "CLASSIC": "MoP Classic",
       "CLASSICBETA": "Beta de MoP Classic",
       "CLASSICERA": "World of Warcraft Classic",
       "CLASSICERAPTR": "PTR (Classic Era)",
       "CLASSICPTR": "PTR (MoP Classic)",
       "RETAIL": "World of Warcraft",
       "RETAILPTR": "PTR (TWW 11.1.7)",
-      "RETAILXPTR": "PTR (TWW 11.2.0)"
+      "RETAILXPTR": "PTR (TWW 11.2.0)",
+      "ANNIVERSARY": "Classic Anniversary"
     },
     "DATES": {
       "DAYS_AGO": "Hace {count} {count, plural, one{día} other{días}}",

@@ -191,15 +191,16 @@
       "TOC_NAME_MISMATCH_TOOLTIP": "This addon's folder does not match the toc"
     },
     "CLIENT_TYPES": {
-      "BETA": "The War Within Bêta",
-      "CLASSIC": "Cataclysm Classic",
+      "BETA": "Midnight Bêta",
+      "CLASSIC": "MoP Classic",
       "CLASSICBETA": "MoP Classic Bêta",
       "CLASSICERA": "World of Warcraft Classic",
       "CLASSICERAPTR": "PTR (Classic Era)",
       "CLASSICPTR": "PTR (MoP Classic)",
       "RETAIL": "World of Warcraft",
       "RETAILPTR": "PTR (TWW 11.1.7)",
-      "RETAILXPTR": "PTR (TWW 11.2.0)"
+      "RETAILXPTR": "PTR (TWW 11.2.0)",
+      "ANNIVERSARY": "Classic Anniversary"
     },
     "DATES": {
       "DAYS_AGO": "il y a {count} {count, plural, one{jour} other{jours}}",
