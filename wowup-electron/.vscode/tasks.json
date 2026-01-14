@@ -2,6 +2,17 @@
   "version": "2.0.0",
   "tasks": [
     {
+      "label": "Build.Lib",
+      "type": "shell",
+      "command": "npm",
+      "args": ["run", "build"],
+      "options": {
+        "cwd": "${workspaceFolder}/../wowup-lib"
+      },
+      "isBackground": false,
+      "problemMatcher": []
+    },
+    {
       "label": "Build.Main",
       "type": "shell",
       "command": "npm run electron:serve-tsc",
@@ -21,7 +32,8 @@
           "beginsPattern": "^.*",
           "endsPattern": "^.*Terminal will be reused by tasks, press any key to close it.*"
         }
-      }
+      },
+      "dependsOn": ["Build.Lib"]
     },
     {
       "label": "Inject.Token",
@@ -89,7 +101,7 @@
           "endsPattern": "^.*Terminal will be reused by tasks, press any key to close it.*"
         }
       },
-      "dependsOn": ["Build.Main.OW.Simple"]
+      "dependsOn": ["Build.Lib", "Build.Main.OW.Simple"]
     },
     {
       "label": "Build.Renderer",
