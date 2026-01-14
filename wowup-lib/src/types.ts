@@ -78,6 +78,7 @@ export enum WowClientType {
   ClassicEraPtr,
   RetailXPtr,
   None,
+  Anniversary,
 }
 
 // Grouping of the various clients into their expansions

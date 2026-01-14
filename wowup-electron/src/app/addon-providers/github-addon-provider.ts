@@ -390,6 +390,8 @@ export class GitHubAddonProvider extends AddonProvider {
       case WowClientType.RetailPtr:
       case WowClientType.RetailXPtr:
         return "mainline";
+      case WowClientType.Anniversary:
+        return "bcc";
       default:
         throw new Error("Unknown client type for metadata");
     }
@@ -453,6 +455,8 @@ export class GitHubAddonProvider extends AddonProvider {
       case WowClientType.ClassicPtr:
       case WowClientType.ClassicBeta:
         return isMists;
+      case WowClientType.Anniversary:
+        return isBurningCrusade;
       default:
         return false;
     }

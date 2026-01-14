@@ -192,6 +192,7 @@ export const DEFAULT_TRUSTED_DOMAINS = [
   "wago.io",
   "addons.wago.io",
 ];
+export const WOW_ANNIVERSARY_FOLDER = "_anniversary_";
 export const WOW_BETA_FOLDER = "_beta_";
 export const WOW_CLASSIC_FOLDER = "_classic_";
 export const WOW_CLASSIC_BETA_FOLDER = "_classic_beta_";

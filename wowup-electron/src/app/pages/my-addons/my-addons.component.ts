@@ -645,12 +645,12 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
     this._sessionService.setEnableControls(this.calculateControlState());
   }
 
-  // Handle when the user clicks the update all retail/classic button
+  // Handle when the user clicks the update all retail/classic/anniversary button
   public async onUpdateAllRetailClassic(): Promise<void> {
     let installations = await this.warcraftInstallationService.getWowInstallationsAsync();
     installations = installations.filter(
       (installation) =>
-        installation.clientType === WowClientType.Retail || installation.clientType === WowClientType.ClassicEra,
+        installation.clientType === WowClientType.Retail || installation.clientType === WowClientType.ClassicEra || installation.clientType === WowClientType.Anniversary,
     );
     this.updateAllWithSpinner(...installations).catch((e) => console.error(e));
   }

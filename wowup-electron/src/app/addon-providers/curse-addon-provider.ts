@@ -73,7 +73,7 @@ const GAME_TYPE_LISTS = [
   {
     flavor: "wow-burning-crusade-classic",
     typeId: 73246,
-    matches: [],
+    matches: [WowClientType.Anniversary],
   },
   {
     flavor: "wow-cataclysm-classic",

@@ -284,6 +284,8 @@ export class WarcraftService {
         return WowClientType.ClassicBeta;
       case constants.WOW_CLASSIC_ERA_PTR_FOLDER:
         return WowClientType.ClassicEraPtr;
+      case constants.WOW_ANNIVERSARY_FOLDER:
+        return WowClientType.Anniversary;
       default:
         return WowClientType.None;
     }
