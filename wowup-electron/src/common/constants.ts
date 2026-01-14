@@ -201,6 +201,7 @@ export const WOW_CLASSIC_PTR_FOLDER = "_classic_ptr_";
 export const WOW_RETAIL_PTR_FOLDER = "_ptr_";
 export const WOW_RETAIL_XPTR_FOLDER = "_xptr_";
 export const WOW_RETAIL_FOLDER = "_retail_";
+export const WOW_ANNIVERSARY_FOLDER = "_anniversary_";
 export const WOW_ADDON_FOLDER_NAME = "AddOns";
 export const WOW_INTERFACE_FOLDER_NAME = "Interface";
 

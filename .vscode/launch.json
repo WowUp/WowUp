@@ -1,0 +1,78 @@
+{
+  // Use IntelliSense to learn about possible attributes.
+  // Hover to view descriptions of existing attributes.
+  // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Run Test Fixer",
+      "program": "./wowup-electron/test-fixer.js",
+      "request": "launch",
+      "skipFiles": ["<node_internals>/**"],
+      "args": ["--find-break"],
+      "type": "pwa-node"
+    },
+    {
+      "name": "Renderer",
+      "type": "chrome",
+      "request": "attach",
+      "port": 9876,
+      "url": "http://localhost:4200",
+      "sourceMaps": true,
+      "timeout": 10000,
+      "trace": "verbose",
+      "sourceMapPathOverrides": {
+        "webpack:///./*": "${workspaceFolder}/wowup-electron/*"
+      },
+      "preLaunchTask": "Build.Renderer"
+    },
+    {
+      "name": "Main",
+      "type": "node",
+      "request": "launch",
+      "protocol": "inspector",
+      "cwd": "${workspaceFolder}/wowup-electron",
+      "runtimeExecutable": "${workspaceFolder}/wowup-electron/node_modules/.bin/electron",
+      "trace": "verbose",
+      "runtimeArgs": ["--serve", ".", "--remote-debugging-port=9876"],
+      "windows": {
+        "runtimeExecutable": "${workspaceFolder}/wowup-electron/node_modules/.bin/electron.cmd"
+      },
+      "preLaunchTask": "Build.Main"
+    },
+    {
+      "name": "OW Renderer",
+      "type": "chrome",
+      "request": "attach",
+      "port": 9876,
+      "url": "http://localhost:4200",
+      "sourceMaps": true,
+      "timeout": 10000,
+      "trace": "verbose",
+      "sourceMapPathOverrides": {
+        "webpack:///./*": "${workspaceFolder}/wowup-electron/*"
+      },
+      "preLaunchTask": "Build.Renderer.OW"
+    },
+    {
+      "name": "OW Main",
+      "type": "node",
+      "request": "launch",
+      "protocol": "inspector",
+      "cwd": "${workspaceFolder}/wowup-electron",
+      "runtimeExecutable": "${workspaceFolder}/wowup-electron/node_modules/.bin/ow-electron",
+      "trace": "verbose",
+      "runtimeArgs": ["--force-cmp", "--serve", ".", "--remote-debugging-port=9876"],
+      "windows": {
+        "runtimeExecutable": "${workspaceFolder}/wowup-electron/node_modules/.bin/ow-electron.cmd"
+      },
+      "preLaunchTask": "Build.Main.OW.Compile"
+    }
+  ],
+  "compounds": [
+    {
+      "name": "Application Debug",
+      "configurations": ["Renderer", "Main"]
+    }
+  ]
+}

@@ -31,6 +31,8 @@ export function getWowGameType(clientType: WowClientType): WowGameType {
     case WowClientType.ClassicPtr:
     case WowClientType.ClassicBeta:
       return WowGameType.Mists;
+    case WowClientType.Anniversary:
+      return WowGameType.BurningCrusade;
     case WowClientType.Retail:
     case WowClientType.RetailPtr:
     case WowClientType.RetailXPtr:
@@ -49,6 +51,8 @@ export function getWowMajorVersion(clientType: WowClientType): number {
     case WowClientType.ClassicPtr:
     case WowClientType.ClassicBeta:
       return WowMajorVersion.Mists;
+    case WowClientType.Anniversary:
+      return WowMajorVersion.BurningCrusade;
     case WowClientType.Beta:
     case WowClientType.RetailPtr:
     case WowClientType.RetailXPtr:

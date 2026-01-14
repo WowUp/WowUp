@@ -191,15 +191,16 @@
       "TOC_NAME_MISMATCH_TOOLTIP": "插件資料夾和 TOC 不匹配"
     },
     "CLIENT_TYPES": {
-      "BETA": "地心之戰 Beta",
-      "CLASSIC": "浩劫與重生經典版",
-      "CLASSICBETA": "潘達利亞之謎經典版 Beta",
-      "CLASSICERA": "魔獸世界經典版",
-      "CLASSICERAPTR": "經典版 PTR",
-      "CLASSICPTR": "潘達利亞之謎經典版 PTR",
-      "RETAIL": "魔獸世界",
-      "RETAILPTR": "地心之戰 PTR (11.1.7)",
-      "RETAILXPTR": "地心之戰 PTR (11.2.0)"
+      "ANNIVERSARY": "Burning Crusade Anniversary",
+      "BETA": "The War Within Beta",
+      "CLASSIC": "Mists of Pandaria Classic",
+      "CLASSICBETA": "MoP Classic Beta",
+      "CLASSICERA": "World of Warcraft Classic",
+      "CLASSICERAPTR": "PTR (Classic Era)",
+      "CLASSICPTR": "PTR (MoP Classic)",
+      "RETAIL": "World of Warcraft",
+      "RETAILPTR": "PTR (Midnight)",
+      "RETAILXPTR": "PTR (TWW 11.2.7)"
     },
     "DATES": {
       "DAYS_AGO": "{count} 天前",

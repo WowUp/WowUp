@@ -1,7 +1,12 @@
 import * as path from "path";
 import { WowClientType } from "wowup-lib-core";
 import { InstalledProduct } from "wowup-lib-core";
-import { WOW_CLASSIC_ERA_FOLDER, WOW_CLASSIC_ERA_PTR_FOLDER, WOW_RETAIL_XPTR_FOLDER } from "../../../common/constants";
+import {
+  WOW_ANNIVERSARY_FOLDER,
+  WOW_CLASSIC_ERA_FOLDER,
+  WOW_CLASSIC_ERA_PTR_FOLDER,
+  WOW_RETAIL_XPTR_FOLDER,
+} from "../../../common/constants";
 import { ElectronService } from "../electron/electron.service";
 import { FileService } from "../files/file.service";
 import { WarcraftServiceImpl } from "./warcraft.service.impl";
@@ -34,7 +39,10 @@ const WINDOWS_BLIZZARD_AGENT_PATH = "ProgramData/Battle.net/Agent";
 const BLIZZARD_PRODUCT_DB_NAME = "product.db";
 
 export class WarcraftServiceLinux implements WarcraftServiceImpl {
-  public constructor(private _electronService: ElectronService, private _fileService: FileService) {}
+  public constructor(
+    private _electronService: ElectronService,
+    private _fileService: FileService,
+  ) {}
 
   public getExecutableExtension(): string {
     return "exe";
@@ -127,6 +135,7 @@ export class WarcraftServiceLinux implements WarcraftServiceImpl {
         return WOW_RETAIL_NAME;
       case WowClientType.ClassicEra:
       case WowClientType.Classic:
+      case WowClientType.Anniversary:
         return WOW_CLASSIC_NAME;
       case WowClientType.RetailPtr:
       case WowClientType.RetailXPtr:
@@ -151,6 +160,8 @@ export class WarcraftServiceLinux implements WarcraftServiceImpl {
       case WOW_CLASSIC_NAME:
         if (binaryPath.toLowerCase().includes(WOW_CLASSIC_ERA_FOLDER)) {
           return WowClientType.ClassicEra;
+        } else if (binaryPath.toLowerCase().includes(WOW_ANNIVERSARY_FOLDER)) {
+          return WowClientType.Anniversary;
         } else {
           return WowClientType.Classic;
         }

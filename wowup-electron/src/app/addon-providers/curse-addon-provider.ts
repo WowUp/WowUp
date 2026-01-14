@@ -73,7 +73,7 @@ const GAME_TYPE_LISTS = [
   {
     flavor: "wow-burning-crusade-classic",
     typeId: 73246,
-    matches: [],
+    matches: [WowClientType.Anniversary],
   },
   {
     flavor: "wow-cataclysm-classic",
@@ -879,7 +879,8 @@ export class CurseAddonProvider extends AddonProvider {
       gameId: 1,
       // categoryId: 0, // setting 0 now returns no results
       searchFilter: query,
-      sortField: 2,
+      // sortField: 2, // Popularity
+      sortField: 1, // Featured
       sortOrder: "desc",
       index: 0,
       gameVersionTypeId: this.getCFGameVersionType(clientType),

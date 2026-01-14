@@ -191,15 +191,16 @@
       "TOC_NAME_MISMATCH_TOOLTIP": "Mappen til denne utvidelsen samsvarer ikke med TOC-filen"
     },
     "CLIENT_TYPES": {
+      "ANNIVERSARY": "Burning Crusade Anniversary",
       "BETA": "The War Within Beta",
-      "CLASSIC": "Cataclysm Classic",
+      "CLASSIC": "Mists of Pandaria Classic",
       "CLASSICBETA": "MoP Classic Beta",
       "CLASSICERA": "World of Warcraft Classic",
       "CLASSICERAPTR": "PTR (Classic Era)",
       "CLASSICPTR": "PTR (MoP Classic)",
       "RETAIL": "World of Warcraft",
-      "RETAILPTR": "PTR (TWW 11.1.7)",
-      "RETAILXPTR": "PTR (TWW 11.2.0)"
+      "RETAILPTR": "PTR (Midnight)",
+      "RETAILXPTR": "PTR (TWW 11.2.7)"
     },
     "DATES": {
       "DAYS_AGO": "{count} {count, plural, =1{dag} other{dager}} siden",

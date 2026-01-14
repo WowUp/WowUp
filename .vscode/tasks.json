@@ -1,0 +1,167 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Build.Lib",
+      "type": "shell",
+      "command": "npm",
+      "args": ["run", "build"],
+      "options": {
+        "cwd": "${workspaceFolder}/wowup-lib"
+      },
+      "isBackground": false,
+      "problemMatcher": []
+    },
+    {
+      "label": "Build.Main",
+      "type": "shell",
+      "command": "npm run electron:serve-tsc",
+      "isBackground": false,
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      },
+      "options": {
+        "cwd": "${workspaceFolder}/wowup-electron"
+      },
+      "problemMatcher": {
+        "owner": "typescript",
+        "source": "ts",
+        "applyTo": "closedDocuments",
+        "fileLocation": ["relative", "${workspaceFolder}/wowup-electron"],
+        "pattern": "$tsc",
+        "background": {
+          "activeOnStart": true,
+          "beginsPattern": "^.*",
+          "endsPattern": "^.*Terminal will be reused by tasks, press any key to close it.*"
+        }
+      },
+      "dependsOn": ["Build.Lib"]
+    },
+    {
+      "label": "Inject.Token",
+      "type": "shell",
+      "command": "node",
+      "args": ["inject-token.js"],
+      "isBackground": false,
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      },
+      "options": {
+        "cwd": "${workspaceFolder}/wowup-electron",
+        "env": {
+          // VS Code should pick up the environment variable after restart
+          // If this doesn't work, you can temporarily hardcode it here:
+          // "CURSEFORGE_API_KEY": "your-actual-key-here"
+          "CURSEFORGE_API_KEY": "${env:CURSEFORGE_API_KEY}"
+        }
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "Build.Main.OW.Simple",
+      "type": "shell",
+      "command": "npx",
+      "args": ["cross-env", "BUILD_FLAVOR=ow", "npm", "run", "build:injectenv"],
+      "isBackground": false,
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      },
+      "options": {
+        "cwd": "${workspaceFolder}/wowup-electron"
+      },
+      "problemMatcher": {
+        "owner": "typescript",
+        "source": "ts",
+        "applyTo": "closedDocuments",
+        "fileLocation": ["relative", "${workspaceFolder}/wowup-electron"],
+        "pattern": "$tsc",
+        "background": {
+          "activeOnStart": true,
+          "beginsPattern": "^.*",
+          "endsPattern": "^.*Terminal will be reused by tasks, press any key to close it.*"
+        }
+      },
+      "dependsOn": ["Inject.Token"]
+    },
+    {
+      "label": "Build.Main.OW.Compile",
+      "type": "shell",
+      "command": "npx",
+      "args": ["tsc", "-p", "tsconfig.serve.json"],
+      "isBackground": false,
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      },
+      "options": {
+        "cwd": "${workspaceFolder}/wowup-electron"
+      },
+      "problemMatcher": {
+        "owner": "typescript",
+        "source": "ts",
+        "applyTo": "closedDocuments",
+        "fileLocation": ["relative", "${workspaceFolder}/wowup-electron"],
+        "pattern": "$tsc",
+        "background": {
+          "activeOnStart": true,
+          "beginsPattern": "^.*",
+          "endsPattern": "^.*Terminal will be reused by tasks, press any key to close it.*"
+        }
+      },
+      "dependsOn": ["Build.Lib", "Build.Main.OW.Simple"]
+    },
+    {
+      "label": "Build.Renderer",
+      "type": "shell",
+      "command": "npm run ng:serve",
+      "isBackground": true,
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      },
+      "options": {
+        "cwd": "${workspaceFolder}/wowup-electron"
+      },
+      "problemMatcher": {
+        "owner": "typescript",
+        "source": "ts",
+        "applyTo": "closedDocuments",
+        "fileLocation": ["relative", "${workspaceFolder}/wowup-electron"],
+        "pattern": "$tsc",
+        "background": {
+          "activeOnStart": true,
+          "beginsPattern": "^.*",
+          "endsPattern": "^.*Compiled successfully.*"
+        }
+      }
+    },
+    {
+      "label": "Build.Renderer.OW",
+      "type": "shell",
+      "command": "npm run ow:ng:serve",
+      "isBackground": true,
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      },
+      "options": {
+        "cwd": "${workspaceFolder}/wowup-electron"
+      },
+      "problemMatcher": {
+        "owner": "typescript",
+        "source": "ts",
+        "applyTo": "closedDocuments",
+        "fileLocation": ["relative", "${workspaceFolder}/wowup-electron"],
+        "pattern": "$tsc",
+        "background": {
+          "activeOnStart": true,
+          "beginsPattern": "^.*",
+          "endsPattern": "^.*Compiled successfully.*"
+        }
+      }
+    }
+  ]
+}

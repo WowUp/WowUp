@@ -4,6 +4,7 @@ import { FileService } from "../files/file.service";
 import { WarcraftServiceImpl } from "./warcraft.service.impl";
 import {
   IPC_LIST_DISKS_WIN32,
+  WOW_ANNIVERSARY_FOLDER,
   WOW_CLASSIC_ERA_FOLDER,
   WOW_CLASSIC_ERA_PTR_FOLDER,
   WOW_RETAIL_XPTR_FOLDER,
@@ -93,6 +94,7 @@ export class WarcraftServiceWin implements WarcraftServiceImpl {
         return this.getRetailName();
       case WowClientType.ClassicEra:
       case WowClientType.Classic:
+      case WowClientType.Anniversary:
         return this.getClassicName();
       case WowClientType.RetailPtr:
       case WowClientType.RetailXPtr:
@@ -119,6 +121,8 @@ export class WarcraftServiceWin implements WarcraftServiceImpl {
       case WOW_CLASSIC_NAME_ARM64:
         if (binaryPath.toLowerCase().includes(WOW_CLASSIC_ERA_FOLDER)) {
           return WowClientType.ClassicEra;
+        } else if (binaryPath.toLowerCase().includes(WOW_ANNIVERSARY_FOLDER)) {
+          return WowClientType.Anniversary;
         } else {
           return WowClientType.Classic;
         }

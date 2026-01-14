@@ -16,6 +16,19 @@ export class PatchNotesService {
 
 const CHANGELOGS: ChangeLog[] = [
   {
+    Version: "2.22.0",
+    html: `
+    <h4>Features</h4>
+    <ul>
+    <li>Add Burning Crusade Anniversary support</li>
+    </ul>
+    <h4>Fixes</h4>
+    <ul>
+    <li>Fix an issue with the CurseForge search results</li>
+    </ul>
+    `,
+  },
+  {
     Version: "2.21.0",
     html: `
     <h4>Features</h4>

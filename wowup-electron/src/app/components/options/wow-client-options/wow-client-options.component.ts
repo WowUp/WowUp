@@ -90,6 +90,8 @@ export class WowClientOptionsComponent implements OnInit, OnDestroy {
       case WowClientType.ClassicPtr:
       case WowClientType.ClassicBeta:
         return "assets/images/wow-classic-mists-logo.png";
+      case WowClientType.Anniversary:
+        return "assets/images/wow-classic-tbc-logo.png";
       default:
         return "";
     }

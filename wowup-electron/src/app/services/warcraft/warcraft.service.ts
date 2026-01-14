@@ -27,7 +27,7 @@ export class WarcraftService {
   private readonly _productsSrc = new BehaviorSubject<InstalledProduct[]>([]);
   private readonly _installedClientTypesSrc = new BehaviorSubject<WowClientType[] | undefined>(undefined);
   private readonly _allClientTypes = getEnumList<WowClientType>(WowClientType).filter(
-    (clientType) => clientType !== WowClientType.None
+    (clientType) => clientType !== WowClientType.None,
   );
 
   public readonly products$ = this._productsSrc.asObservable();
@@ -49,14 +49,14 @@ export class WarcraftService {
           value: ct,
         };
       });
-    })
+    }),
   );
 
   public constructor(
     private _electronService: ElectronService,
     private _fileService: FileService,
     private _preferenceStorageService: PreferenceStorageService,
-    private _tocService: TocService
+    private _tocService: TocService,
   ) {
     this._impl = this.getImplementation();
   }
@@ -85,7 +85,7 @@ export class WarcraftService {
 
   public getProductLocation(
     clientType: WowClientType,
-    installedProducts: Map<WowClientType, InstalledProduct>
+    installedProducts: Map<WowClientType, InstalledProduct>,
   ): string {
     const clientLocation = installedProducts.get(clientType);
     return clientLocation?.location ?? "";
@@ -284,6 +284,8 @@ export class WarcraftService {
         return WowClientType.ClassicBeta;
       case constants.WOW_CLASSIC_ERA_PTR_FOLDER:
         return WowClientType.ClassicEraPtr;
+      case constants.WOW_ANNIVERSARY_FOLDER:
+        return WowClientType.Anniversary;
       default:
         return WowClientType.None;
     }

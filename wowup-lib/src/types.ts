@@ -77,6 +77,7 @@ export enum WowClientType {
   ClassicEra,
   ClassicEraPtr,
   RetailXPtr,
+  Anniversary,
   None,
 }
 

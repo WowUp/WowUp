@@ -382,6 +382,8 @@ export class GitHubAddonProvider extends AddonProvider {
       case WowClientType.ClassicPtr:
       case WowClientType.ClassicBeta:
         return "mists";
+      case WowClientType.Anniversary:
+        return "bcc";
       case WowClientType.ClassicEra:
       case WowClientType.ClassicEraPtr:
         return "classic";
@@ -453,6 +455,8 @@ export class GitHubAddonProvider extends AddonProvider {
       case WowClientType.ClassicPtr:
       case WowClientType.ClassicBeta:
         return isMists;
+      case WowClientType.Anniversary:
+        return isBurningCrusade;
       default:
         return false;
     }

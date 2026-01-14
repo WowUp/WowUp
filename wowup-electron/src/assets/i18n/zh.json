@@ -191,15 +191,16 @@
       "TOC_NAME_MISMATCH_TOOLTIP": "插件文件夹和 TOC 不匹配"
     },
     "CLIENT_TYPES": {
-      "BETA": "地心之战测试服",
-      "CLASSIC": "大灾变怀旧服",
-      "CLASSICBETA": "熊猫人之谜怀旧服测试服",
-      "CLASSICERA": "魔兽世界经典怀旧服",
-      "CLASSICERAPTR": "PTR（经典怀旧服）",
-      "CLASSICPTR": "PTR（熊猫人之谜怀旧服）",
-      "RETAIL": "魔兽世界正式服",
-      "RETAILPTR": "PTR（地心之战 11.1.7）",
-      "RETAILXPTR": "PTR（地心之战 11.2.0）"
+      "ANNIVERSARY": "Burning Crusade Anniversary",
+      "BETA": "The War Within Beta",
+      "CLASSIC": "Mists of Pandaria Classic",
+      "CLASSICBETA": "MoP Classic Beta",
+      "CLASSICERA": "World of Warcraft Classic",
+      "CLASSICERAPTR": "PTR (Classic Era)",
+      "CLASSICPTR": "PTR (MoP Classic)",
+      "RETAIL": "World of Warcraft",
+      "RETAILPTR": "PTR (Midnight)",
+      "RETAILXPTR": "PTR (TWW 11.2.7)"
     },
     "DATES": {
       "DAYS_AGO": "{count} 天前",
