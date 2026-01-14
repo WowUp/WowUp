@@ -43,6 +43,11 @@ jobs:
           cd ./wowup-electron
           node ./inject-token.js
 
+      - name: Install lib dependencies
+        run: |
+          cd ./lib
+          npm install
+
       - name: Install Angular CLI
         run: npm install -g @angular/cli
 
