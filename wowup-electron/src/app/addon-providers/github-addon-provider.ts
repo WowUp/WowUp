@@ -186,7 +186,7 @@ export class GitHubAddonProvider extends AddonProvider {
         files: [
           {
             channelType: result.release?.prerelease ? AddonChannelType.Beta : AddonChannelType.Stable,
-            downloadUrl: asset?.url ?? "",
+            downloadUrl: asset?.browser_download_url || asset?.url || "",
             folders: [],
             gameVersion: "",
             releaseDate: new Date(result.release?.published_at ?? ""),
@@ -333,14 +333,14 @@ export class GitHubAddonProvider extends AddonProvider {
 
   /** Fetch the json object for the BigWigs metadata json file */
   private async getReleaseMetadata(release: GitHubRelease): Promise<ReleaseMeta> {
-    console.debug(`Fetching release metadata for ${release.name}`, release);
+    console.log(`Fetching release metadata for ${release.name}`, release);
     const metadataAsset = release.assets.find((asset) => asset.name === "release.json");
     if (!metadataAsset) {
       throw new Error("No metadata asset found");
     }
 
     const hasPat = await this.hasPersonalAccessKey();
-    const url = metadataAsset.url;
+    const url = metadataAsset.browser_download_url || metadataAsset.url;
 
     return await this.getWithRateLimit<ReleaseMeta>(url, hasPat);
   }
@@ -356,23 +356,29 @@ export class GitHubAddonProvider extends AddonProvider {
     clientType: WowClientType,
     releaseMeta: ReleaseMeta,
   ): GitHubAsset | undefined {
-    // map the client type to the flavor we want
-    const targetFlavor = this.getMetadataTargetFlavor(clientType);
-    console.log(`Target metadata flavor: ${targetFlavor}`);
+    try {
+      // map the client type to the flavor we want
+      const targetFlavor = this.getMetadataTargetFlavor(clientType);
+      console.log(`Target metadata flavor: ${targetFlavor}`);
 
-    // see if we can find that flavor in the metadata
-    const targetMetaRelease = releaseMeta.releases.find(
-      (release) => release.nolib === false && release.metadata.findIndex((m) => m.flavor === targetFlavor) !== -1,
-    );
-    if (!targetMetaRelease) {
-      console.log(`No matching metadata file found for target`);
-      return undefined;
+      // see if we can find that flavor in the metadata
+      const targetMetaRelease = releaseMeta.releases.find(
+        (release) => release.nolib === false && release.metadata.findIndex((m) => m.flavor === targetFlavor) !== -1,
+      );
+      if (!targetMetaRelease) {
+        console.log(`No matching metadata file found for target`);
+        return undefined;
+      }
+
+      console.log(`Target metadata release: ${targetMetaRelease.filename}`);
+
+      // return any matching valid asset with the metadata file name and content type
+      return release.assets.find((asset) => this.isValidContentType(asset) && asset.name === targetMetaRelease.filename);
+    } catch (err) {
+      console.error("Error in getValidAssetFromMetadata", err);
+      console.error("Release:", releaseMeta);
+      throw err;
     }
-
-    console.log(`Target metadata release: ${targetMetaRelease.filename}`);
-
-    // return any matching valid asset with the metadata file name and content type
-    return release.assets.find((asset) => this.isValidContentType(asset) && asset.name === targetMetaRelease.filename);
   }
 
   /** Return the BigWigs metadata flavor for a given client type */
