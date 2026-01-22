@@ -35,9 +35,9 @@ TSA_URL=http://ts.ssl.com
 
 console.log(`SIGNING FOR WINDOWS ${isNonProd ? "NON-PROD" : "PROD"} BUILD`);
 function sign(configuration) {
-  if (isNonProd) {
-    setNonProdConfig();
-  }
+  // if (isNonProd) {
+  //   setNonProdConfig();
+  // }
 
   const credentialId = isNonProd
     ? process.env.WINDOWS_SIGN_CREDENTIAL_ID_NONPROD
