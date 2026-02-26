@@ -23,7 +23,6 @@ import * as fs from "fs";
 import * as os from "os";
 
 import {
-  IPC_ADDONS_SAVE_ALL,
   IPC_CLOSE_WINDOW,
   IPC_COPY_FILE_CHANNEL,
   IPC_CREATE_APP_MENU_CHANNEL,
@@ -106,7 +105,7 @@ import {
   remove,
   zipFile,
 } from "./file.utils";
-import { getAddonStore, getPreferenceStore } from "./stores";
+import { getPreferenceStore } from "./stores";
 import { createTray } from "./system-tray";
 import { WowUpFolderScanner } from "./wowup-folder-scanner";
 import * as push from "./push";
@@ -115,7 +114,7 @@ import { ProductDb } from "../src/common/wowup/product-db";
 import { restoreWindow } from "./window-state";
 import { firstValueFrom, from, mergeMap, toArray } from "rxjs";
 import { CurseFolderScanner } from "./curse-folder-scanner";
-import { Addon, AddonScanResult, FsStats } from "wowup-lib-core";
+import { AddonScanResult, FsStats } from "wowup-lib-core";
 
 let PENDING_OPEN_URLS: string[] = [];
 
@@ -265,27 +264,6 @@ export function initializeIpcHandlers(window: BrowserWindow): void {
       log.warn("could not set zoom factor, no web contents");
     }
     getPreferenceStore().set(ZOOM_FACTOR_KEY, zoomFactor);
-  });
-
-  handle(IPC_ADDONS_SAVE_ALL, (evt, addons: Addon[]) => {
-    if (!Array.isArray(addons)) {
-      return;
-    }
-
-    const addonStore = getAddonStore();
-    if (addonStore === undefined) {
-      log.warn("IPC_ADDONS_SAVE_ALL failed, addon store undefined");
-      return;
-    }
-
-    for (const addon of addons) {
-      if (typeof addon.id !== "string") {
-        log.warn("malformed addon not saved", addon);
-        continue;
-      }
-
-      addonStore?.set(addon.id, addon);
-    }
   });
 
   handle(IPC_GET_APP_VERSION, () => {

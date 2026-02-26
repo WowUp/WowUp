@@ -45,7 +45,8 @@ import { initializeIpcHandlers, setPendingOpenUrl } from "./ipc-events";
 import * as platform from "./platform";
 import { initializeDefaultPreferences } from "./preferences";
 import { PUSH_NOTIFICATION_EVENT, pushEvents } from "./push";
-import { getPreferenceStore, initializeStoreIpcHandlers } from "./stores";
+import { getAddonStore, getPreferenceStore, initializeStoreIpcHandlers } from "./stores";
+import { registerControllers } from "./controllers";
 import * as windowState from "./window-state";
 
 import { validateGpuCache } from "./utils/gpu-cache-buster";
@@ -324,6 +325,7 @@ function createWindow(): BrowserWindow {
 
   initializeIpcHandlers(win);
   initializeStoreIpcHandlers();
+  registerControllers({ window: win, addonStore: getAddonStore() });
 
 
 
