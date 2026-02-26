@@ -64,8 +64,6 @@ export function initializeStoreIpcHandlers(): void {
     }
 
     store?.set(key, storedVal);
-
-    return storedVal;
   });
 
   // Remove the store value for a specific key

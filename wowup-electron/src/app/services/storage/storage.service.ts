@@ -35,9 +35,8 @@ export abstract class StorageService {
 
   public async setAsync(key: string, value: unknown): Promise<void> {
     try {
-      const result = await this._electronService.invoke(IPC_STORE_SET_OBJECT, this.storageName, key, value);
-      this._changeSrc.next({ key, value: result });
-      return result;
+      await this._electronService.invoke(IPC_STORE_SET_OBJECT, this.storageName, key, value);
+      this._changeSrc.next({ key, value });
     } catch (e) {
       console.error(`setAsync failed: ${key}`);
       throw e;
