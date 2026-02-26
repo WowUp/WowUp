@@ -214,7 +214,7 @@ export function initializeIpcHandlers(window: BrowserWindow): void {
   });
 
   handle(IPC_GET_ASSET_FILE_PATH, (evt, fileName: string) => {
-    return path.join(__dirname, "..", "assets", fileName);
+    return path.join(app.getAppPath(), "assets", fileName);
   });
 
   handle(IPC_CREATE_DIRECTORY_CHANNEL, async (evt, directoryPath: string): Promise<boolean> => {

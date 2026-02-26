@@ -89,8 +89,7 @@
     {
       "label": "Build.Main.OW.Compile",
       "type": "shell",
-      "command": "npx",
-      "args": ["tsc", "-p", "tsconfig.serve.json"],
+      "command": "npm run ow:electron:serve-tsc",
       "isBackground": false,
       "group": {
         "kind": "build",
@@ -111,7 +110,7 @@
           "endsPattern": "^.*Terminal will be reused by tasks, press any key to close it.*"
         }
       },
-      "dependsOn": ["Build.Lib", "Build.Main.OW.Simple"]
+      "dependsOn": ["Build.Lib"]
     },
     {
       "label": "Build.Renderer",

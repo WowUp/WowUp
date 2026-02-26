@@ -73,6 +73,10 @@
     {
       "name": "Application Debug",
       "configurations": ["Renderer", "Main"]
+    },
+    {
+      "name": "OW Application Debug",
+      "configurations": ["OW Renderer", "OW Main"]
     }
   ]
 }

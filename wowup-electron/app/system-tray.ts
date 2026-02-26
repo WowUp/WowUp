@@ -18,7 +18,7 @@ export function createTray(window: BrowserWindow, config: SystemTrayConfig): boo
     : AppEnv.buildFlavor === "ow"
       ? WOWUP_LOGO_FILENAME_CF
       : WOWUP_LOGO_FILENAME;
-  const trayIconPath = path.join(__dirname, "..", "assets", trayIconFile);
+  const trayIconPath = path.join(app.getAppPath(), "assets", trayIconFile);
 
   _trayRef = new Tray(trayIconPath);
   const contextMenu = Menu.buildFromTemplate([

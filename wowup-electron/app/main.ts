@@ -303,7 +303,7 @@ function createWindow(): BrowserWindow {
   // Attempt to fix the missing icon issue on Ubuntu
   if (platform.isLinux) {
     windowOptions.icon = join(
-      __dirname,
+      app.getAppPath(),
       "assets",
       AppEnv.buildFlavor === "ow" ? WOWUP_LOGO_FILENAME_CF : WOWUP_LOGO_FILENAME,
     );
@@ -447,8 +447,8 @@ function createWindow(): BrowserWindow {
       return callback(false);
     });
 
-    win?.webContents.session.setPermissionCheckHandler((contents, permission, origin) => {
-      log.warn("win setPermissionCheckHandler", permission, origin);
+    win?.webContents.session.setPermissionCheckHandler(() => {
+      // log.warn("win setPermissionCheckHandler", permission, origin);
       return false;
     });
 
@@ -529,7 +529,7 @@ function createWindow(): BrowserWindow {
   log.info(`Loading app URL: ${Date.now() - startedAt}ms`);
   if (argv.serve) {
     require("electron-reload")(__dirname, {
-      electron: require(join(__dirname, "..", "node_modules", "electron")),
+      electron: require(join(app.getAppPath(), "node_modules", "electron")),
     });
     win.loadURL("http://localhost:4200").catch((e) => log.error(e));
   } else {
@@ -544,7 +544,7 @@ async function loadMainUrl(window: BrowserWindow | null): Promise<void> {
     return;
   }
 
-  const url = pathToFileURL(join(__dirname, "..", "dist", "index.html"));
+  const url = pathToFileURL(join(app.getAppPath(), "dist", "index.html"));
   return await window?.loadURL(url.toString());
 }
 
