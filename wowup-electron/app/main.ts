@@ -371,7 +371,7 @@ function createWindow(): BrowserWindow {
       return callback(false);
     });
 
-    webContents.session.setPermissionCheckHandler((contents, permission, origin) => {
+    webContents.session.setPermissionCheckHandler((contents, permission) => {
       if (["background-sync"].includes(permission)) {
         return true;
       }
