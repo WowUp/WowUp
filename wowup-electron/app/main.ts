@@ -279,7 +279,7 @@ function createWindow(): BrowserWindow {
     transparent: false,
     resizable: true,
     backgroundColor: getBackgroundColor(),
-    title: "WowUp" + AppEnv.buildFlavor === "ow" ? " CF" : "",
+    title: "WowUp" + (AppEnv.buildFlavor === "ow" ? " CF" : ""),
     titleBarStyle: "hidden",
     webPreferences: {
       preload: join(__dirname, "preload.js"),
@@ -326,8 +326,6 @@ function createWindow(): BrowserWindow {
   initializeIpcHandlers(win);
   initializeStoreIpcHandlers();
   registerControllers({ window: win, addonStore: getAddonStore() });
-
-
 
   if (AppEnv.buildFlavor === "wago") {
     wagoHandler.initialize(win);
@@ -377,8 +375,6 @@ function createWindow(): BrowserWindow {
       if (["background-sync"].includes(permission)) {
         return true;
       }
-
-      log.warn("[webview] setPermissionCheckHandler", permission, origin);
       return false;
     });
 
@@ -445,12 +441,10 @@ function createWindow(): BrowserWindow {
     }
 
     win?.webContents.session.setPermissionRequestHandler((contents, permission, callback) => {
-      log.warn("win setPermissionRequestHandler", permission);
       return callback(false);
     });
 
     win?.webContents.session.setPermissionCheckHandler(() => {
-      // log.warn("win setPermissionCheckHandler", permission, origin);
       return false;
     });
 

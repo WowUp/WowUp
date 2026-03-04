@@ -414,14 +414,8 @@ export class AddonService {
       : [];
   }
 
-  public async getAllAddonsAvailableForUpdate(wowInstallation?: WowInstallation): Promise<Addon[]> {
-    return await this._addonStorage.queryAllAsync((addon) => {
-      if (typeof wowInstallation === "object" && wowInstallation.id !== addon.installationId) {
-        return false;
-      }
-
-      return addon.isIgnored !== true && AddonUtils.needsUpdate(addon);
-    });
+  public getAllAddonsAvailableForUpdate(wowInstallation?: WowInstallation): Promise<Addon[]> {
+    return this._addonStorage.getAvailableForUpdate(wowInstallation?.id);
   }
 
   public async installDependencies(
@@ -500,16 +494,12 @@ export class AddonService {
     return results.filter((res) => res !== undefined).map((res) => res as Addon);
   }
 
-  public async getAutoUpdateEnabledAddons(): Promise<Addon[]> {
-    return await this._addonStorage.queryAllAsync((addon) => {
-      return addon.isIgnored !== true && addon.autoUpdateEnabled && !!addon.installationId;
-    });
+  public getAutoUpdateEnabledAddons(): Promise<Addon[]> {
+    return this._addonStorage.getAutoUpdateEnabled();
   }
 
-  public async getAllByExternalAddonId(externalAddonIds: string[]): Promise<Addon[]> {
-    return await this._addonStorage.queryAllAsync((addon) => {
-      return externalAddonIds.includes(addon.externalId);
-    });
+  public getAllByExternalAddonId(externalAddonIds: string[]): Promise<Addon[]> {
+    return this._addonStorage.getByExternalIds(externalAddonIds);
   }
 
   public async hasAnyWithExternalAddonIds(externalAddonIds: string[]): Promise<boolean> {

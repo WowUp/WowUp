@@ -16,6 +16,16 @@ export class PatchNotesService {
 
 const CHANGELOGS: ChangeLog[] = [
   {
+    Version: "2.22.1",
+    html: `
+    <h4>Fixes</h4>
+    <ul>
+    <li>Update electron versions</li>
+    <li>Various bug fixes</li>
+    </ul>
+    `,
+  },
+  {
     Version: "2.22.0",
     html: `
     <h4>Features</h4>

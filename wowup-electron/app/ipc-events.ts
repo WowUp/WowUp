@@ -370,7 +370,7 @@ export function initializeIpcHandlers(window: BrowserWindow): void {
     try {
       await fsp.access(filePath);
     } catch (e) {
-      if (e.code !== "ENOENT") {
+      if ((e as NodeJS.ErrnoException).code !== "ENOENT") {
         log.error(e);
       }
       return false;
@@ -739,7 +739,7 @@ export function initializeIpcHandlers(window: BrowserWindow): void {
     } catch (err) {
       log.error(err);
       status.type = DownloadStatusType.Error;
-      status.error = err;
+      status.error = err instanceof Error ? err : undefined;
       window.webContents.send(arg.responseKey, status);
     }
   }
@@ -765,18 +765,19 @@ function handleZipFile(err: Error | null, zipfile: yauzl.ZipFile, targetDir: str
       if (/\/$/.test(entry.fileName)) {
         // directory file names end with '/'
         const dirPath = path.join(targetDir, entry.fileName);
-        fs.mkdir(dirPath, { recursive: true }, function () {
-          if (err) throw err;
+        fs.mkdir(dirPath, { recursive: true }, function (mkdirErr) {
+          if (mkdirErr) return reject(mkdirErr);
           zipfile.readEntry();
         });
       } else {
         // ensure parent directory exists
         const filePath = path.join(targetDir, entry.fileName);
         const parentPath = path.join(targetDir, path.dirname(entry.fileName));
-        fs.mkdir(parentPath, { recursive: true }, function () {
+        fs.mkdir(parentPath, { recursive: true }, function (mkdirErr) {
+          if (mkdirErr) return reject(mkdirErr);
           zipfile.openReadStream(entry, (err, readStream) => {
             if (err) {
-              throw err;
+              return reject(err);
             }
 
             const filter = new Transform();
