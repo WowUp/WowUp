@@ -33,17 +33,24 @@
   },
   "linux": {
     "icon": "electron-build/flatpak/",
-    "target": ["AppImage"]
+    "target": [
+      "AppImage",
+      {
+        "target": "flatpak",
+        "arch": ["x64"]  
+      }
+    ],
+    "asarUnpack": "**/*.node"
   },
   "flatpak": {
     "base": "org.electronjs.Electron2.BaseApp",
+    "baseVersion": "25.08",
     "runtime": "org.freedesktop.Platform",
-    "runtimeVersion": "21.08",
+    "runtimeVersion": "25.08",
     "sdk": "org.freedesktop.Sdk",
-    "baseVersion": "21.08",
     "finishArgs": [
       "--socket=wayland",
-      "--socket=x11",
+      "--socket=fallback-x11",
       "--socket=pulseaudio",
       "--socket=system-bus",
       "--socket=session-bus",
@@ -52,12 +59,15 @@
       "--device=dri",
       "--filesystem=xdg-config/WoWUp",
       "--filesystem=~/Games",
-      "--filesystem=~/.wine/drive_c",
+      "--filesystem=~/Bottles",
+      "--filesystem=~/Faugus",
+      "--filesystem=~/.wine",
+      "--filesystem=/mnt",
       "--talk-name=org.freedesktop.Notifications",
       "--talk-name=org.gtk.Notifications",
       "--talk-name=org.kde.StatusNotifierWatcher",
       "--env=APPIMAGE=true"
     ],
-    "useWaylandFlags": false
+    "useWaylandFlags": true
   }
 }
