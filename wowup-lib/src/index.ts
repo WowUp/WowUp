@@ -3,7 +3,6 @@ export * from './addon-providers';
 export * from './addons';
 export * from './toc';
 export * from './ipc';
-export * from './toc';
 export * from './types';
 export * from './utils';
 export * from './models';
