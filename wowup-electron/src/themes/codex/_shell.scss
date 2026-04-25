@@ -1,0 +1,152 @@
+.codex-theme {
+  // Frame: 1px hairline framing the active surface
+  .app {
+    > .gtitle,
+    > .gtabs,
+    > .gfooter,
+    > .content {
+      position: relative;
+      z-index: 1;
+    }
+  }
+
+  // Titlebar — strip with eyebrow label
+  app-titlebar {
+    background: linear-gradient(180deg, var(--cx-ink-1) 0%, var(--cx-ink-0) 100%);
+    border-bottom: 1px solid var(--cx-line);
+
+    .titlebar,
+    .title-bar {
+      background: transparent;
+      color: var(--cx-text-1);
+    }
+
+    .titlebar-title,
+    .app-title {
+      font-family: var(--cx-font-display);
+      font-variation-settings: "opsz" 60, "wght" 400, "SOFT" 30;
+      font-size: 13px;
+      letter-spacing: 0.04em;
+      color: var(--cx-text-0);
+    }
+
+    .titlebar-button,
+    .window-button {
+      transition: background-color 0.15s ease;
+
+      &:hover {
+        background-color: var(--cx-ink-2);
+      }
+    }
+  }
+
+  // Vertical tabs / sidenav
+  app-vertical-tabs {
+    background: var(--cx-ink-1);
+    border-right: 1px solid var(--cx-line);
+    color: var(--cx-text-1);
+
+    // Container
+    .vertical-tabs,
+    .nav-container,
+    nav {
+      padding-block: calc(var(--cx-grid) * 2);
+    }
+
+    // Each tab
+    .vtab,
+    a[mat-list-item],
+    .mat-list-item,
+    .tab-link,
+    .tab-button {
+      position: relative;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 10px 16px;
+      margin: 2px 8px;
+      border-radius: var(--cx-radius);
+      color: var(--cx-text-2);
+      font-family: var(--cx-font-ui);
+      font-size: 13px;
+      font-weight: 500;
+      letter-spacing: 0.01em;
+      transition:
+        background-color 0.18s ease,
+        color 0.18s ease;
+
+      &::before {
+        content: "";
+        position: absolute;
+        left: -8px;
+        top: 50%;
+        width: 2px;
+        height: 0;
+        background: var(--cx-arc);
+        transform: translateY(-50%);
+        transition: height 0.2s ease;
+      }
+
+      &:hover {
+        background-color: var(--cx-ink-2);
+        color: var(--cx-text-1);
+      }
+
+      &.active,
+      &.active-link,
+      &.mdc-list-item--activated,
+      &[aria-selected="true"] {
+        background-color: var(--cx-ink-3);
+        color: var(--cx-text-0);
+
+        &::before {
+          height: 60%;
+        }
+
+        mat-icon,
+        .mat-icon {
+          color: var(--cx-arc);
+        }
+      }
+
+      mat-icon,
+      .mat-icon {
+        color: var(--cx-text-3);
+        transition: color 0.18s ease;
+      }
+    }
+
+    // Collapse divider/toggle
+    .collapse-toggle {
+      color: var(--cx-text-3);
+    }
+  }
+
+  // Footer — version stamp / links
+  app-footer {
+    background: var(--cx-ink-1);
+    border-top: 1px solid var(--cx-line);
+    color: var(--cx-text-2);
+    font-family: var(--cx-font-mono);
+    font-size: 11px;
+
+    a {
+      color: var(--cx-text-1);
+      text-decoration: none;
+
+      &:hover {
+        color: var(--cx-arc);
+      }
+    }
+  }
+
+  // Main content area
+  .content {
+    background: transparent;
+    color: var(--cx-text-0);
+
+    .main {
+      background: transparent;
+    }
+  }
+}

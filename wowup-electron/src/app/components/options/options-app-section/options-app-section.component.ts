@@ -11,6 +11,7 @@ import {
   ALLIANCE_LIGHT_THEME,
   ALLIANCE_THEME,
   APP_PROTOCOL_NAME,
+  CODEX_THEME,
   CURSE_PROTOCOL_NAME,
   DEFAULT_LIGHT_THEME,
   DEFAULT_THEME,
@@ -86,6 +87,10 @@ export class OptionsAppSectionComponent implements OnInit {
         { display: "APP.THEME.ALLIANCE", class: ALLIANCE_LIGHT_THEME },
         { display: "APP.THEME.HORDE", class: HORDE_LIGHT_THEME },
       ],
+    },
+    {
+      name: "APP.THEME.GROUP_EXPERIMENTAL",
+      themes: [{ display: "APP.THEME.CODEX", class: CODEX_THEME }],
     },
   ];
 

@@ -1,0 +1,277 @@
+.codex-theme app-my-addons {
+  // Overall page chrome
+  .tab-container {
+    background: transparent;
+    color: var(--cx-text-0);
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+  }
+
+  // Top control bar — flatten the secondary panel into a hairline strip
+  .control-container {
+    background: transparent !important;
+    border-bottom: 1px solid var(--cx-line);
+    padding: 12px 24px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    flex-shrink: 0;
+
+    .select-container {
+      flex-shrink: 0;
+    }
+
+    .right-container {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-left: auto;
+    }
+
+    .filter-container {
+      flex-grow: 1;
+      max-width: 320px;
+      min-width: 220px;
+
+      .mat-mdc-form-field {
+        width: 100%;
+
+        .mat-mdc-form-field-infix {
+          padding: 6px 10px;
+          min-height: 28px;
+        }
+      }
+    }
+
+    .button-container {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    // Update-all split button — flatten the gap
+    .menu-button-divider {
+      width: 1px;
+      height: 20px;
+      background: rgba(0, 0, 0, 0.18);
+      margin-inline: 0;
+    }
+
+    .menu-button {
+      border-top-right-radius: 0;
+      border-bottom-right-radius: 0;
+      padding-right: 12px;
+    }
+
+    .menu-button + .menu-button-divider + div .wu-btn-primary {
+      border-top-left-radius: 0;
+      border-bottom-left-radius: 0;
+      border-left-color: rgba(0, 0, 0, 0.18);
+      padding-left: 8px;
+      padding-right: 8px;
+      min-width: 28px;
+    }
+  }
+
+  // ag-grid table — Linear-density data grid
+  ag-grid-angular,
+  .ag-root-wrapper,
+  .ag-theme-material,
+  .ag-theme-balham,
+  .ag-theme-material-dark {
+    --ag-background-color: transparent;
+    --ag-foreground-color: var(--cx-text-0);
+    --ag-secondary-foreground-color: var(--cx-text-2);
+    --ag-header-background-color: transparent;
+    --ag-header-foreground-color: var(--cx-text-2);
+    --ag-row-hover-color: var(--cx-ink-2);
+    --ag-selected-row-background-color: var(--cx-ink-3);
+    --ag-row-border-color: var(--cx-line-faint);
+    --ag-border-color: var(--cx-line);
+    --ag-control-panel-background-color: var(--cx-ink-1);
+    --ag-side-button-selected-background-color: var(--cx-ink-3);
+    --ag-modal-overlay-background-color: var(--cx-overlay);
+    --ag-input-focus-border-color: var(--cx-arc);
+    --ag-range-selection-border-color: var(--cx-arc);
+    --ag-checkbox-checked-color: var(--cx-arc);
+    --ag-row-height: 44px;
+    --ag-header-height: 32px;
+    --ag-list-item-height: 28px;
+    --ag-grid-size: 6px;
+    --ag-cell-horizontal-padding: 12px;
+    --ag-borders: solid 1px;
+    --ag-borders-row: solid 1px;
+    --ag-font-family: var(--cx-font-ui);
+    --ag-font-size: 13px;
+
+    background: transparent !important;
+    color: var(--cx-text-0);
+  }
+
+  // Header row — eyebrow style, all caps mono
+  .ag-header,
+  .ag-header-row {
+    background: transparent !important;
+    border-bottom: 1px solid var(--cx-line) !important;
+  }
+
+  .ag-header-cell,
+  .ag-header-cell-text {
+    font-family: var(--cx-font-mono);
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--cx-text-2);
+  }
+
+  .ag-header-cell::after,
+  .ag-header-cell-resize::after {
+    background-color: var(--cx-line) !important;
+  }
+
+  // Row hairlines + active state
+  .ag-row {
+    border-color: var(--cx-line-faint) !important;
+    transition: background-color 0.12s ease;
+  }
+
+  .ag-row-hover {
+    background-color: var(--cx-ink-2) !important;
+  }
+
+  .ag-row-selected {
+    background-color: var(--cx-ink-3) !important;
+
+    &::before {
+      content: "";
+      position: absolute;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      width: 2px;
+      background: var(--cx-arc);
+    }
+  }
+
+  .ag-cell {
+    font-family: var(--cx-font-ui);
+    font-size: 13px;
+    color: var(--cx-text-0);
+    border: none !important;
+    line-height: 1.5;
+    display: flex;
+    align-items: center;
+  }
+
+  // Numbers / versions / dates → monospace tabular
+  .ag-cell.version-cell,
+  .ag-cell.installed-version-cell,
+  .ag-cell.latest-version-cell,
+  .ag-cell.release-date-cell,
+  .ag-cell.download-count-cell,
+  .ag-cell[col-id="installedVersion"],
+  .ag-cell[col-id="latestVersion"],
+  .ag-cell[col-id="releaseDate"],
+  .ag-cell[col-id="downloadCount"],
+  .ag-cell[col-id="gameVersion"] {
+    font-family: var(--cx-font-mono);
+    font-size: 12px;
+    font-variant-numeric: tabular-nums;
+    color: var(--cx-text-1);
+    letter-spacing: 0;
+  }
+
+  // Provider name → eyebrow chip
+  .ag-cell[col-id="providerName"],
+  .ag-cell.provider-cell {
+    font-family: var(--cx-font-mono);
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+    color: var(--cx-text-2);
+  }
+
+  // Status chips inside cells
+  .ag-cell .status-pill,
+  .ag-cell .badge,
+  .ag-cell .chip {
+    height: 20px;
+    padding: 0 8px;
+    border-radius: var(--cx-radius-sm);
+    background: var(--cx-ink-3);
+    border: 1px solid var(--cx-line);
+    color: var(--cx-text-1);
+    font-family: var(--cx-font-mono);
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    line-height: 1;
+    display: inline-flex;
+    align-items: center;
+  }
+
+  // Update-available state → arcane gold accent
+  .ag-row.update-available,
+  .ag-row[data-update-available="true"] {
+    .ag-cell[col-id="latestVersion"] {
+      color: var(--cx-arc);
+      font-weight: 600;
+    }
+  }
+
+  // Empty state
+  .ag-overlay-no-rows-center {
+    color: var(--cx-text-2);
+    font-family: var(--cx-font-display);
+    font-variation-settings: "opsz" 48, "wght" 350, "SOFT" 50;
+    font-size: 18px;
+    font-style: italic;
+  }
+
+  // Row icons — addon thumbnails
+  .ag-cell img.addon-thumbnail,
+  .ag-cell .addon-thumbnail {
+    width: 28px;
+    height: 28px;
+    border-radius: var(--cx-radius-sm);
+    border: 1px solid var(--cx-line);
+    object-fit: cover;
+    background: var(--cx-ink-2);
+  }
+
+  // Addon name cell — display serif, soft weight
+  .ag-cell[col-id="name"],
+  .ag-cell.name-cell,
+  .ag-cell .addon-name {
+    font-family: var(--cx-font-display);
+    font-variation-settings: "opsz" 24, "wght" 450, "SOFT" 30;
+    font-size: 14px;
+    color: var(--cx-text-0);
+    letter-spacing: -0.005em;
+  }
+
+  // Author / sub-text
+  .ag-cell .addon-author,
+  .ag-cell .addon-subtitle {
+    color: var(--cx-text-2);
+    font-size: 11px;
+    font-family: var(--cx-font-ui);
+  }
+
+  // Selection checkbox column tweak
+  .ag-checkbox-input-wrapper {
+    background: var(--cx-ink-2);
+    border: 1px solid var(--cx-line-strong);
+    border-radius: var(--cx-radius-sm);
+    width: 14px;
+    height: 14px;
+
+    &.ag-checked {
+      background: var(--cx-arc);
+      border-color: var(--cx-arc);
+    }
+  }
+}

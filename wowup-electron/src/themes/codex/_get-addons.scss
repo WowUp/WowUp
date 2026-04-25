@@ -1,0 +1,100 @@
+.codex-theme app-get-addons {
+  // Same control bar treatment as my-addons
+  .control-container {
+    background: transparent !important;
+    border-bottom: 1px solid var(--cx-line);
+    padding: 12px 24px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    flex-shrink: 0;
+  }
+
+  // Search field — generous, mono input, hairline outlined
+  .search-container,
+  .search-form-field {
+    flex-grow: 1;
+    max-width: 480px;
+
+    .mat-mdc-form-field-infix {
+      padding: 8px 12px;
+      min-height: 32px;
+    }
+
+    input.mat-mdc-input-element {
+      font-family: var(--cx-font-mono);
+      font-size: 13px;
+      letter-spacing: 0;
+      color: var(--cx-text-0);
+
+      &::placeholder {
+        color: var(--cx-text-3);
+        font-family: var(--cx-font-mono);
+      }
+    }
+  }
+
+  // Addon result rows
+  ag-grid-angular,
+  .ag-root-wrapper {
+    --ag-row-height: 56px;
+  }
+
+  // Card-style results when present
+  .addon-result,
+  .addon-card {
+    background: var(--cx-ink-1);
+    border: 1px solid var(--cx-line);
+    border-radius: var(--cx-radius);
+    padding: 16px;
+    transition:
+      border-color 0.15s ease,
+      transform 0.15s ease;
+
+    &:hover {
+      border-color: var(--cx-line-strong);
+      transform: translateY(-1px);
+    }
+
+    .addon-name,
+    .addon-title {
+      font-family: var(--cx-font-display);
+      font-variation-settings: "opsz" 36, "wght" 450, "SOFT" 40;
+      font-size: 16px;
+      color: var(--cx-text-0);
+      margin-bottom: 4px;
+    }
+
+    .addon-summary,
+    .addon-description {
+      color: var(--cx-text-1);
+      font-size: 13px;
+      line-height: 1.5;
+    }
+
+    .addon-meta {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-top: 12px;
+      color: var(--cx-text-2);
+      font-family: var(--cx-font-mono);
+      font-size: 11px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+  }
+
+  .category-chip,
+  .tag-chip {
+    background: var(--cx-ink-2);
+    border: 1px solid var(--cx-line);
+    color: var(--cx-text-1);
+    font-family: var(--cx-font-mono);
+    font-size: 10px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    padding: 3px 8px;
+    border-radius: var(--cx-radius-sm);
+  }
+}

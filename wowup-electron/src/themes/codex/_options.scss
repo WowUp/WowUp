@@ -1,0 +1,126 @@
+.codex-theme app-options {
+  // Page padding + max-width for editorial feel
+  app-options-app-section,
+  app-options-addon-section,
+  app-options-debug-section,
+  app-options-wow-section {
+    display: block;
+    max-width: 880px;
+    margin: 0 auto;
+    padding: 32px 32px 64px;
+  }
+
+  // Section heading — editorial display + eyebrow
+  .options-section-title,
+  h1, h2 {
+    font-family: var(--cx-font-display);
+    font-variation-settings: "opsz" 96, "wght" 350, "SOFT" 50;
+    font-size: 32px;
+    line-height: 1.05;
+    letter-spacing: -0.02em;
+    color: var(--cx-text-0);
+    margin: 0 0 8px;
+  }
+
+  // Subtitle / description
+  .options-section-subtitle,
+  .section-description {
+    color: var(--cx-text-2);
+    font-family: var(--cx-font-ui);
+    font-size: 13px;
+    line-height: 1.5;
+    margin-bottom: 32px;
+    max-width: 60ch;
+  }
+
+  // Group block — hairline divider above
+  .options-group,
+  fieldset,
+  .form-group {
+    border: none;
+    padding: 24px 0;
+    border-top: 1px solid var(--cx-line);
+    margin: 0;
+    display: grid;
+    grid-template-columns: 240px 1fr;
+    gap: 32px;
+    align-items: start;
+
+    &:first-of-type {
+      border-top: none;
+      padding-top: 0;
+    }
+
+    legend,
+    .options-group-title {
+      font-family: var(--cx-font-mono);
+      font-size: 10px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--cx-text-2);
+      font-weight: 600;
+      padding: 0;
+    }
+
+    .options-group-body,
+    .form-group-body {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+  }
+
+  // Theme picker — distinctive
+  .theme-picker,
+  .theme-options {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    gap: 8px;
+  }
+
+  .theme-option {
+    position: relative;
+    display: block;
+    padding: 14px;
+    border: 1px solid var(--cx-line);
+    border-radius: var(--cx-radius);
+    background: var(--cx-ink-1);
+    cursor: pointer;
+    transition:
+      border-color 0.15s ease,
+      transform 0.12s ease;
+    color: var(--cx-text-1);
+    font-family: var(--cx-font-ui);
+    font-size: 12px;
+
+    &:hover {
+      border-color: var(--cx-line-strong);
+      transform: translateY(-1px);
+    }
+
+    &.active,
+    &[aria-checked="true"] {
+      border-color: var(--cx-arc);
+      box-shadow: 0 0 0 1px var(--cx-arc);
+
+      &::after {
+        content: "";
+        position: absolute;
+        top: 8px;
+        right: 8px;
+        width: 6px;
+        height: 6px;
+        background: var(--cx-arc);
+        border-radius: 50%;
+      }
+    }
+
+    .theme-name {
+      font-family: var(--cx-font-mono);
+      font-size: 10px;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--cx-text-2);
+    }
+  }
+}

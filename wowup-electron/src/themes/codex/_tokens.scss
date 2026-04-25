@@ -1,0 +1,39 @@
+.codex-theme {
+  --cx-ink-0: #0a0b0f;
+  --cx-ink-1: #101218;
+  --cx-ink-2: #161922;
+  --cx-ink-3: #1d2230;
+  --cx-ink-4: #262c3c;
+
+  --cx-line: rgba(232, 226, 210, 0.08);
+  --cx-line-strong: rgba(232, 226, 210, 0.16);
+  --cx-line-faint: rgba(232, 226, 210, 0.04);
+
+  --cx-text-0: #e8e2d2;
+  --cx-text-1: #b3ad9d;
+  --cx-text-2: #8a8678;
+  --cx-text-3: #5a5750;
+
+  --cx-arc: #e8b765;
+  --cx-arc-soft: rgba(232, 183, 101, 0.16);
+  --cx-arc-faint: rgba(232, 183, 101, 0.06);
+
+  --cx-ember: #d87b5c;
+  --cx-jade: #7fb88f;
+  --cx-frost: #6e9bb8;
+
+  --cx-overlay: rgba(10, 11, 15, 0.72);
+  --cx-shadow-1: 0 1px 0 rgba(232, 226, 210, 0.04) inset, 0 8px 24px -12px rgba(0, 0, 0, 0.6);
+  --cx-shadow-2: 0 1px 0 rgba(232, 226, 210, 0.06) inset, 0 24px 48px -16px rgba(0, 0, 0, 0.7);
+
+  --cx-font-display: "Codex Display", "New York", "Cambria", "PT Serif", Georgia, serif;
+  --cx-font-body: "Codex Display", "New York", "Cambria", Georgia, serif;
+  --cx-font-ui: -apple-system, "Segoe UI Variable Display", "Segoe UI", system-ui, sans-serif;
+  --cx-font-mono: "Codex Mono", "JetBrains Mono", "SF Mono", "Cascadia Code", "Menlo", monospace;
+
+  --cx-radius-sm: 2px;
+  --cx-radius: 4px;
+  --cx-radius-lg: 8px;
+
+  --cx-grid: 8px;
+}
