@@ -8,7 +8,7 @@ import { catchError, firstValueFrom, Observable, of } from "rxjs";
 import MessageFormat, { MessageFormatOptions } from "@messageformat/core";
 
 const LOCALES = ["cs", "de", "en", "es", "fr", "it", "ko", "nb", "pt", "ru", "zh-TW", "zh"];
-const LOCALE_DIR = path.join(__dirname, "..", "..", "..", "..", "..", "..", "src", "assets", "i18n");
+const LOCALE_DIR = path.resolve(process.cwd(), "src", "assets", "i18n");
 
 const LOCALE_SET = {};
 
