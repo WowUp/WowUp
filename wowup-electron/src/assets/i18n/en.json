@@ -24,7 +24,7 @@
     "IMPORT_TEXT_LABEL": "Import data",
     "IMPORT_TOTAL_COUNT": "Importing {count} {count, plural, =1{addon} other{addons}}",
     "INSTALL_BUTTON": "Install",
-    "INVALID_CLIENT_TYPE": "Import string did not match your selected client type",
+    "INVALID_CLIENT_TYPE": "Import is for client \"{importedClient}\", but the selected installation is \"{targetClient}\". Re-export from a current install if the export was made on an older version.",
     "MISSING_ADDON_PROVIDERS": "One or more addon providers were not available/enabled ({missingProviders})",
     "MISSING_CURSEFORGE_PROVIDER": "Addon list contains a CurseForge addon, you will need to install<br>\"WowUp with CurseForge\" from wowup.io",
     "MISSING_PROVIDER_MODAL_DOWNLOAD_BTN": "Download",
