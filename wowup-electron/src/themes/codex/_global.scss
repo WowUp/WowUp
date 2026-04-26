@@ -1,23 +1,12 @@
 .codex-theme {
   background:
-    radial-gradient(ellipse 80% 50% at 50% -10%, rgba(232, 183, 101, 0.06), transparent 60%),
-    radial-gradient(ellipse 60% 40% at 90% 100%, rgba(110, 155, 184, 0.04), transparent 60%),
+    radial-gradient(ellipse 80% 50% at 50% -10%, rgba(234, 191, 120, 0.05), transparent 60%),
+    radial-gradient(ellipse 60% 40% at 90% 100%, rgba(110, 155, 184, 0.03), transparent 60%),
     var(--cx-ink-0);
   color: var(--cx-text-0);
-  font-family: var(--cx-font-ui);
-  font-feature-settings: "ss01", "ss02", "cv11", "kern";
-  letter-spacing: -0.005em;
-
-  &::before {
-    content: "";
-    position: fixed;
-    inset: 0;
-    pointer-events: none;
-    z-index: 0;
-    background-image: radial-gradient(rgba(232, 226, 210, 0.012) 1px, transparent 1px);
-    background-size: 3px 3px;
-    mix-blend-mode: overlay;
-  }
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
 
   .app {
     background: transparent;
@@ -59,36 +48,52 @@
     color: var(--cx-text-0);
   }
 
-  h1, h2, h3, h4, h5, h6,
-  .text-h1, .text-h2, .text-h3 {
-    font-family: var(--cx-font-display);
-    font-feature-settings: "ss01", "kern", "liga";
-    font-weight: 350;
-    letter-spacing: -0.02em;
-    color: var(--cx-text-0);
+  // Headlines — Fraunces variable, opsz axis dialled to "soft" at large sizes.
+  // Scoped to page titles, dialog titles, options section headings — not
+  // every h1/h2 in the app, to avoid stomping on Material's internal type.
+  app-my-addons .control-container .filter-container,
+  app-get-addons .search-container {
+    // (kept clean — no headline rules here)
   }
 
-  h1, .text-h1 {
+  // Page header (rendered when present in My Addons / Get Addons)
+  .codex-page-header {
+    font-family: "Codex Display", "New York", "Cambria", Georgia, serif;
+    font-variation-settings: "opsz" 96, "wght" 400, "SOFT" 50;
     font-size: 32px;
     line-height: 1.05;
-    font-variation-settings: "opsz" 96, "wght" 350, "SOFT" 50;
+    letter-spacing: -0.02em;
+    color: var(--cx-text-0);
+    margin: 24px 24px 0;
   }
 
-  h2, .text-h2 {
+  // Dialog titles — h1/h2 inside dialogs get the editorial treatment
+  .mat-mdc-dialog-title,
+  .mdc-dialog__title {
+    font-family: "Codex Display", "New York", "Cambria", Georgia, serif !important;
+    font-variation-settings: "opsz" 60, "wght" 420, "SOFT" 30;
     font-size: 22px;
+    letter-spacing: -0.01em;
+    color: var(--cx-text-0) !important;
     line-height: 1.15;
-    font-variation-settings: "opsz" 60, "wght" 380, "SOFT" 40;
   }
 
-  h3, .text-h3 {
-    font-size: 16px;
-    line-height: 1.25;
-    font-variation-settings: "opsz" 24, "wght" 500, "SOFT" 30;
+  // Options section headings — within Options page
+  app-options h1,
+  app-options h2,
+  app-options .options-section-title {
+    font-family: "Codex Display", "New York", "Cambria", Georgia, serif;
+    font-variation-settings: "opsz" 72, "wght" 380, "SOFT" 40;
+    font-size: 24px;
+    line-height: 1.1;
+    letter-spacing: -0.015em;
+    color: var(--cx-text-0);
+    font-weight: normal;
   }
 
-  .label,
-  .text-eyebrow {
-    font-family: var(--cx-font-mono);
+  // Eyebrow utility — small mono caps label
+  .codex-eyebrow {
+    font-family: "Codex Mono", "JetBrains Mono", "SF Mono", "Cascadia Code", monospace;
     font-size: 10px;
     line-height: 1;
     letter-spacing: 0.18em;
@@ -97,34 +102,9 @@
     font-weight: 500;
   }
 
-  code, kbd, samp, .mono {
-    font-family: var(--cx-font-mono);
-    font-feature-settings: "cv11", "ss01", "ss02", "ss03";
-    font-variant-numeric: tabular-nums;
-  }
-
-  kbd {
-    display: inline-flex;
-    align-items: center;
-    padding: 1px 5px;
-    font-size: 10px;
-    line-height: 1.4;
-    border: 1px solid var(--cx-line-strong);
-    border-radius: var(--cx-radius-sm);
-    background: var(--cx-ink-2);
-    color: var(--cx-text-1);
-  }
-
-  // Tabular numerals everywhere a number lives
-  .version,
-  .version-cell,
-  .release-date,
-  .download-count,
-  .stat,
-  .num,
-  td,
+  // Tabular numerals on cells holding numbers (versions, counts, dates)
   .ag-cell,
-  .mat-mdc-table .mat-mdc-cell {
+  td.mat-mdc-cell {
     font-variant-numeric: tabular-nums;
   }
 }

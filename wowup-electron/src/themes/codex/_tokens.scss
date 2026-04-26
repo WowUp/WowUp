@@ -1,22 +1,25 @@
 .codex-theme {
   --cx-ink-0: #0a0b0f;
   --cx-ink-1: #101218;
-  --cx-ink-2: #161922;
-  --cx-ink-3: #1d2230;
-  --cx-ink-4: #262c3c;
+  --cx-ink-2: #181b25;
+  --cx-ink-3: #21263a;
+  --cx-ink-4: #2c324a;
 
-  --cx-line: rgba(232, 226, 210, 0.08);
-  --cx-line-strong: rgba(232, 226, 210, 0.16);
-  --cx-line-faint: rgba(232, 226, 210, 0.04);
+  --cx-line: rgba(232, 226, 210, 0.10);
+  --cx-line-strong: rgba(232, 226, 210, 0.20);
+  --cx-line-faint: rgba(232, 226, 210, 0.05);
 
-  --cx-text-0: #e8e2d2;
-  --cx-text-1: #b3ad9d;
-  --cx-text-2: #8a8678;
-  --cx-text-3: #5a5750;
+  // Text ramp — every step now passes WCAG AA (4.5:1) on --cx-ink-1.
+  --cx-text-0: #f1ece0; // ~14:1
+  --cx-text-1: #c2bcab; // ~10:1
+  --cx-text-2: #9b978a; // ~6.4:1
+  --cx-text-3: #7d7a6e; // ~4.6:1 — usable for small UI text, not just decoration
 
-  --cx-arc: #e8b765;
-  --cx-arc-soft: rgba(232, 183, 101, 0.16);
-  --cx-arc-faint: rgba(232, 183, 101, 0.06);
+  // Single accent — reserved for primary CTA + focus rings + a tiny leading
+  // dot for "update available." NOT used for sidenav active state.
+  --cx-arc: #eabf78;
+  --cx-arc-soft: rgba(234, 191, 120, 0.18);
+  --cx-arc-faint: rgba(234, 191, 120, 0.08);
 
   --cx-ember: #d87b5c;
   --cx-jade: #7fb88f;

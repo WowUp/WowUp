@@ -1,152 +1,108 @@
 .codex-theme {
-  // Frame: 1px hairline framing the active surface
-  .app {
-    > .gtitle,
-    > .gtabs,
-    > .gfooter,
-    > .content {
-      position: relative;
-      z-index: 1;
-    }
-  }
-
-  // Titlebar — strip with eyebrow label
+  // Titlebar — flat surface + hairline divider.
+  // Note: macOS users see the system stoplight controls overlaid here;
+  // keep the ink subtle so they read clearly.
   app-titlebar {
-    background: linear-gradient(180deg, var(--cx-ink-1) 0%, var(--cx-ink-0) 100%);
+    background: var(--cx-ink-1);
     border-bottom: 1px solid var(--cx-line);
+    color: var(--cx-text-1);
+    -webkit-app-region: drag;
 
-    .titlebar,
-    .title-bar {
-      background: transparent;
-      color: var(--cx-text-1);
-    }
-
-    .titlebar-title,
-    .app-title {
-      font-family: var(--cx-font-display);
-      font-variation-settings: "opsz" 60, "wght" 400, "SOFT" 30;
-      font-size: 13px;
-      letter-spacing: 0.04em;
-      color: var(--cx-text-0);
-    }
-
+    button,
     .titlebar-button,
     .window-button {
-      transition: background-color 0.15s ease;
-
-      &:hover {
-        background-color: var(--cx-ink-2);
-      }
+      -webkit-app-region: no-drag;
     }
   }
 
-  // Vertical tabs / sidenav
-  app-vertical-tabs {
-    background: var(--cx-ink-1);
+  // Vertical sidenav — selection is communicated by typography weight + an
+  // ink lift, not by colour. Keeps the gold accent rare and meaningful.
+  app-vertical-tabs .tab-strip {
+    background: var(--cx-ink-1) !important;
     border-right: 1px solid var(--cx-line);
     color: var(--cx-text-1);
 
-    // Container
-    .vertical-tabs,
-    .nav-container,
-    nav {
-      padding-block: calc(var(--cx-grid) * 2);
-    }
-
-    // Each tab
-    .vtab,
-    a[mat-list-item],
-    .mat-list-item,
-    .tab-link,
-    .tab-button {
-      position: relative;
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      padding: 10px 16px;
-      margin: 2px 8px;
+    .tab {
+      border-left: none !important;
+      border-right: none !important;
       border-radius: var(--cx-radius);
+      margin: 1px 6px;
+      padding: 0 10px;
+      height: 36px;
       color: var(--cx-text-2);
-      font-family: var(--cx-font-ui);
-      font-size: 13px;
-      font-weight: 500;
-      letter-spacing: 0.01em;
       transition:
-        background-color 0.18s ease,
-        color 0.18s ease;
+        background-color 0.15s ease,
+        color 0.15s ease;
 
-      &::before {
-        content: "";
-        position: absolute;
-        left: -8px;
-        top: 50%;
-        width: 2px;
-        height: 0;
-        background: var(--cx-arc);
-        transform: translateY(-50%);
-        transition: height 0.2s ease;
+      .tab-title {
+        color: var(--cx-text-2);
+        font-weight: 500;
+        letter-spacing: -0.005em;
       }
 
-      &:hover {
-        background-color: var(--cx-ink-2);
-        color: var(--cx-text-1);
-      }
-
-      &.active,
-      &.active-link,
-      &.mdc-list-item--activated,
-      &[aria-selected="true"] {
-        background-color: var(--cx-ink-3);
-        color: var(--cx-text-0);
-
-        &::before {
-          height: 60%;
-        }
-
-        mat-icon,
-        .mat-icon {
-          color: var(--cx-arc);
-        }
-      }
-
-      mat-icon,
-      .mat-icon {
+      .tab-icon {
         color: var(--cx-text-3);
-        transition: color 0.18s ease;
+        svg {
+          fill: currentColor !important;
+        }
+      }
+
+      &:hover:not(.selected) {
+        background-color: var(--cx-ink-2) !important;
+
+        .tab-title {
+          color: var(--cx-text-1);
+        }
+        .tab-icon {
+          color: var(--cx-text-1);
+        }
+      }
+
+      &.selected {
+        background-color: var(--cx-ink-3) !important;
+        border-left: none !important;
+
+        .tab-title {
+          color: var(--cx-text-0);
+          font-weight: 600;
+        }
+
+        .tab-icon,
+        .tab-icon-active {
+          color: var(--cx-text-0) !important;
+          svg {
+            fill: var(--cx-text-0) !important;
+          }
+        }
+      }
+
+      &.disabled {
+        opacity: 0.4;
       }
     }
 
-    // Collapse divider/toggle
-    .collapse-toggle {
-      color: var(--cx-text-3);
+    .theme-logo-glow {
+      background: radial-gradient(circle, var(--cx-arc-faint) 0%, transparent 70%) !important;
     }
   }
 
-  // Footer — version stamp / links
+  // Footer
   app-footer {
     background: var(--cx-ink-1);
     border-top: 1px solid var(--cx-line);
     color: var(--cx-text-2);
-    font-family: var(--cx-font-mono);
-    font-size: 11px;
 
     a {
       color: var(--cx-text-1);
-      text-decoration: none;
-
       &:hover {
         color: var(--cx-arc);
       }
     }
   }
 
-  // Main content area
-  .content {
+  .content,
+  .main {
     background: transparent;
     color: var(--cx-text-0);
-
-    .main {
-      background: transparent;
-    }
   }
 }
