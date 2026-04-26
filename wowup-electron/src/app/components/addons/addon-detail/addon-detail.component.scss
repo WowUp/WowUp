@@ -49,8 +49,37 @@
     max-height: 250px;
   }
 }
+// Stable, viewport-relative dialog dimensions so switching tabs or opening
+// different addons doesn't shuffle the dialog. Uses ::ng-deep because the
+// overlay pane lives outside this component's view-encapsulation scope; the
+// :has() discriminator keeps the rules confined to addon-detail dialogs.
+::ng-deep .cdk-overlay-pane:has(.addon-detail-view),
+::ng-deep .mat-mdc-dialog-panel:has(.addon-detail-view) {
+  width: clamp(560px, 78vw, 960px) !important;
+  max-width: 960px !important;
+  height: clamp(520px, 80vh, 760px) !important;
+  max-height: 80vh !important;
+}
+
+::ng-deep .mat-mdc-dialog-content:has(.addon-detail-view) {
+  overflow-x: hidden;
+  max-height: none;
+}
+
+// Description and changelog panels share the same scroll envelope so
+// switching between them is visually a no-op.
+.addon-summary,
+.addon-changelog {
+  min-height: 240px;
+  max-height: clamp(240px, 56vh, 440px);
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding-right: 8px;
+}
+
 .addon-detail-view {
-  min-width: 600px;
+  min-width: 0;
+  width: 100%;
 
   .icon-link {
     width: 24px;
