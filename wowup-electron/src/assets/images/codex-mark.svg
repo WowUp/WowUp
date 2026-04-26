@@ -1,0 +1,51 @@
+<svg width="96" height="96" viewBox="0 0 96 96" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="codex-gold" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#f0c884" />
+      <stop offset="55%" stop-color="#eabf78" />
+      <stop offset="100%" stop-color="#b88436" />
+    </linearGradient>
+    <radialGradient id="codex-glow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#eabf78" stop-opacity="0.18" />
+      <stop offset="70%" stop-color="#eabf78" stop-opacity="0.04" />
+      <stop offset="100%" stop-color="#eabf78" stop-opacity="0" />
+    </radialGradient>
+  </defs>
+
+  <!-- soft halo -->
+  <circle cx="48" cy="48" r="46" fill="url(#codex-glow)" />
+
+  <!-- outer hex seal -->
+  <polygon points="48,6 84,27 84,69 48,90 12,69 12,27"
+           fill="none"
+           stroke="url(#codex-gold)"
+           stroke-width="1.6"
+           stroke-linejoin="round" />
+
+  <!-- inner thin ring -->
+  <circle cx="48" cy="48" r="26"
+          fill="none"
+          stroke="#eabf78"
+          stroke-width="0.6"
+          stroke-opacity="0.55" />
+
+  <!-- codex glyph: stacked tome leaves with a central spine -->
+  <g stroke="url(#codex-gold)" stroke-linecap="round">
+    <!-- top leaf -->
+    <line x1="34" y1="36" x2="62" y2="36" stroke-width="2" />
+    <!-- spine -->
+    <line x1="48" y1="32" x2="48" y2="64" stroke-width="2.4" />
+    <!-- middle leaf -->
+    <line x1="36" y1="48" x2="60" y2="48" stroke-width="1.6" />
+    <!-- bottom leaf -->
+    <line x1="34" y1="60" x2="62" y2="60" stroke-width="2" />
+  </g>
+
+  <!-- hex vertex punctuation -->
+  <circle cx="48" cy="6" r="1.3" fill="#eabf78" />
+  <circle cx="48" cy="90" r="1.3" fill="#eabf78" />
+  <circle cx="84" cy="27" r="1" fill="#eabf78" opacity="0.65" />
+  <circle cx="84" cy="69" r="1" fill="#eabf78" opacity="0.65" />
+  <circle cx="12" cy="27" r="1" fill="#eabf78" opacity="0.65" />
+  <circle cx="12" cy="69" r="1" fill="#eabf78" opacity="0.65" />
+</svg>

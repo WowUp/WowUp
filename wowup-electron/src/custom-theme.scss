@@ -472,6 +472,37 @@ body {
   --mat-sidenav-container-background-color: rgba(0, 0, 0, 0);
 }
 
+.codex-theme {
+  --background-primary: #21263a;
+  --background-primary-2: #181b25;
+  --background-primary-3: #101218;
+  --background-secondary-1: rgba(33, 38, 58, 0.85);
+  --background-secondary-2: rgba(24, 27, 37, 0.9);
+  --background-secondary-2-fill: rgba(24, 27, 37, 1);
+  --background-secondary-3: rgba(16, 18, 24, 0.85);
+  --background-secondary-4: rgba(10, 11, 15, 0.85);
+  --background-secondary-5: rgba(0, 0, 0, 0.7);
+  --control-color: #eabf78;
+  --epic-color: #a335ee;
+  --rare-color: #0070dd;
+  --scrollbar-track-color: #181b25;
+  --text-1: #f1ece0;
+  --text-2: #c2bcab;
+  --text-3: #9b978a;
+  --text-4: #7d7a6e;
+  --warn-color: #d87b5c;
+  --tab-text: #f1ece0;
+  --tab-disabled: #7d7a6e;
+  --tab-inactive: #9b978a;
+  --divider-color: rgba(232, 226, 210, 0.10);
+  --grid-border: rgba(232, 226, 210, 0.10);
+
+  --title-logo: url("assets/images/codex-mark.svg");
+  --theme-logo: url("assets/images/codex-mark.svg");
+  --mat-sidenav-content-background-color: rgba(0, 0, 0, 0);
+  --mat-sidenav-container-background-color: rgba(0, 0, 0, 0);
+}
+
 .alliance-theme-light-theme {
   --background-primary: #162c57;
   --background-primary-2: #394c70;

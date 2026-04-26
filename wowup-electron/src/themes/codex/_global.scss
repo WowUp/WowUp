@@ -10,6 +10,16 @@
     var(--cx-ink-0);
 }
 
+// Subtle archival watermark on the main content area — a faded codex seal
+// pinned bottom-right, like a publisher's mark on a page. Sits behind all
+// content and doesn't bleed into overlays.
+.codex-theme.app .content {
+  background-image: url("../../assets/images/codex-watermark.svg");
+  background-repeat: no-repeat;
+  background-position: right -40px bottom -40px;
+  background-size: 360px;
+}
+
 .codex-theme {
   color: var(--cx-text-0);
   -webkit-font-smoothing: antialiased;
