@@ -1,16 +1,20 @@
-.codex-theme {
+// Page background — applied ONLY when .codex-theme is the .app shell.
+// The same .codex-theme class is also bolted onto the global .cdk-overlay-
+// container so descendant selectors reach into menus/dialogs/tooltips, and
+// that container is fixed 100vw × 100vh; if we let it inherit this paint,
+// every tooltip turns the entire page black.
+.codex-theme.app {
   background:
     radial-gradient(ellipse 80% 50% at 50% -10%, rgba(234, 191, 120, 0.05), transparent 60%),
     radial-gradient(ellipse 60% 40% at 90% 100%, rgba(110, 155, 184, 0.03), transparent 60%),
     var(--cx-ink-0);
+}
+
+.codex-theme {
   color: var(--cx-text-0);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-rendering: optimizeLegibility;
-
-  .app {
-    background: transparent;
-  }
 
   .bg-secondary,
   .bg-secondary-2,
