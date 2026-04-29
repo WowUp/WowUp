@@ -148,14 +148,18 @@
   }
 
   // Ad space — keep the slot at its reserved size so the layout below
-  // (collapse toggle, footer) doesn't jump when an ad eventually paints,
-  // but blend the empty frame into the sidenav surface so it doesn't
-  // look like a missing image. Same ink as the upper sidenav, no
-  // placeholder background, no border.
-  app-vertical-tabs .ad-space {
-    background-color: var(--cx-ink-1) !important;
-  }
-  app-vertical-tabs .ad-space .ad {
+  // doesn't jump when an ad finally paints, but blend the empty frame
+  // into the sidenav surface so it stops looking like a missing image.
+  // The "gray" comes from inside the Electron <webview> itself: it
+  // paints its own surface before any URL has loaded. We have to set
+  // the background on the webview element AND its container, not just
+  // on the host .ad div, because CSS on .ad doesn't reach the webview
+  // contents.
+  app-vertical-tabs .ad-space,
+  app-vertical-tabs .ad-space .ad,
+  app-vertical-tabs .ad-space app-webview,
+  app-vertical-tabs .ad-space .webview-container,
+  app-vertical-tabs .ad-space webview {
     background-color: var(--cx-ink-1) !important;
     background-image: none !important;
     border: none !important;
