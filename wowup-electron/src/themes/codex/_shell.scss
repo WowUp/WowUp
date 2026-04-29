@@ -34,25 +34,47 @@
     overflow: hidden;
     isolation: isolate;
 
-    // Large bleeding seal: anchored top-left, partially off the left edge,
-    // visibility fading from invisible-on-the-left to fully-visible-on-
-    // the-right. Behaves as a watermark that lives in the sidenav surface.
+    // Constellation dust + curved hairlines — sits behind the seal, drawn
+    // first so the seal can layer over it. Uses ::after but z-index 0,
+    // tabs go above via z-index:1.
+    &::after {
+      content: "";
+      position: absolute;
+      z-index: 0;
+      top: 0;
+      right: 0;
+      width: 320px;
+      height: 320px;
+      background-image: url("../../assets/images/codex-stardust.svg");
+      background-repeat: no-repeat;
+      background-size: contain;
+      background-position: top right;
+      pointer-events: none;
+      mask-image: linear-gradient(180deg, black 0%, rgba(0, 0, 0, 0.5) 70%, transparent 100%);
+      -webkit-mask-image: linear-gradient(180deg, black 0%, rgba(0, 0, 0, 0.5) 70%, transparent 100%);
+    }
+
+    // Bleeding seal: anchored top-left, partially off the left edge.
+    // Fully solid in the upper-left of the SVG box, fading to fully
+    // transparent toward the lower-right — the mark feels embossed into
+    // the corner of the sidenav and dissolves as it moves into the
+    // content area.
     &::before {
       content: "";
       position: absolute;
       z-index: 0;
-      top: -32px;
-      left: -110px;
+      top: -28px;
+      left: -90px;
       width: 280px;
       height: 280px;
       background-image: url("../../assets/images/codex-mark.svg");
       background-repeat: no-repeat;
       background-size: contain;
       background-position: center;
-      opacity: 0.55;
+      opacity: 0.7;
       pointer-events: none;
-      mask-image: linear-gradient(115deg, transparent 12%, rgba(0, 0, 0, 0.85) 55%, black 78%);
-      -webkit-mask-image: linear-gradient(115deg, transparent 12%, rgba(0, 0, 0, 0.85) 55%, black 78%);
+      mask-image: radial-gradient(circle at 28% 28%, black 0%, rgba(0, 0, 0, 0.7) 35%, rgba(0, 0, 0, 0.25) 60%, transparent 80%);
+      -webkit-mask-image: radial-gradient(circle at 28% 28%, black 0%, rgba(0, 0, 0, 0.7) 35%, rgba(0, 0, 0, 0.25) 60%, transparent 80%);
     }
 
     // Make sure tabs sit above the mark
@@ -125,17 +147,29 @@
     }
   }
 
-  // Ad space — collapse the reserved 300×250 / 400×300 box when no
-  // <app-webview> has actually rendered (ad blocked, server unreachable,
-  // CMP not consented). Otherwise the empty frame leaves a dead band of
-  // sidenav real estate.
-  app-vertical-tabs .ad-space:not(:has(app-webview)) {
-    display: none !important;
+  // Ad space — the surrounding component reserves a fixed 300×250 / 400×
+  // 300 box for the ad iframe, but when the ad doesn't load (CMP not
+  // consented, ad-server unreachable, plain ad-block), the <app-webview>
+  // exists in DOM yet renders nothing. CSS can't introspect into the
+  // webview to confirm content, so we drop the fixed dimensions and let
+  // the slot self-collapse based on whatever the webview's intrinsic
+  // size is. If a real ad loads, it sets its own size.
+  app-vertical-tabs .ad-space,
+  app-vertical-tabs.wago .ad-space,
+  app-vertical-tabs.curseforge .ad-space {
+    width: auto !important;
   }
-  app-vertical-tabs .ad-space .ad:not(:has(app-webview)) {
-    display: none !important;
-    width: 0 !important;
-    height: 0 !important;
+  app-vertical-tabs .ad-space .ad,
+  app-vertical-tabs.wago .ad-space .ad,
+  app-vertical-tabs.curseforge .ad-space .ad {
+    width: auto !important;
+    height: auto !important;
+    min-height: 0 !important;
+    background-image: none !important;
+  }
+  app-vertical-tabs .ad-space app-webview {
+    display: block;
+    line-height: 0;
   }
 
   // Footer
