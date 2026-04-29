@@ -147,29 +147,18 @@
     }
   }
 
-  // Ad space — the surrounding component reserves a fixed 300×250 / 400×
-  // 300 box for the ad iframe, but when the ad doesn't load (CMP not
-  // consented, ad-server unreachable, plain ad-block), the <app-webview>
-  // exists in DOM yet renders nothing. CSS can't introspect into the
-  // webview to confirm content, so we drop the fixed dimensions and let
-  // the slot self-collapse based on whatever the webview's intrinsic
-  // size is. If a real ad loads, it sets its own size.
-  app-vertical-tabs .ad-space,
-  app-vertical-tabs.wago .ad-space,
-  app-vertical-tabs.curseforge .ad-space {
-    width: auto !important;
+  // Ad space — keep the slot at its reserved size so the layout below
+  // (collapse toggle, footer) doesn't jump when an ad eventually paints,
+  // but blend the empty frame into the sidenav surface so it doesn't
+  // look like a missing image. Same ink as the upper sidenav, no
+  // placeholder background, no border.
+  app-vertical-tabs .ad-space {
+    background-color: var(--cx-ink-1) !important;
   }
-  app-vertical-tabs .ad-space .ad,
-  app-vertical-tabs.wago .ad-space .ad,
-  app-vertical-tabs.curseforge .ad-space .ad {
-    width: auto !important;
-    height: auto !important;
-    min-height: 0 !important;
+  app-vertical-tabs .ad-space .ad {
+    background-color: var(--cx-ink-1) !important;
     background-image: none !important;
-  }
-  app-vertical-tabs .ad-space app-webview {
-    display: block;
-    line-height: 0;
+    border: none !important;
   }
 
   // Footer
