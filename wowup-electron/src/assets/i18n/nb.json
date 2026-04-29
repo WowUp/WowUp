@@ -101,8 +101,10 @@
     },
     "THEME": {
       "ALLIANCE": "Alliansen",
+      "CODEX": "Codex",
       "DEFAULT": "Standard",
       "GROUP_DARK": "Mørk",
+      "GROUP_EXPERIMENTAL": "Experimental",
       "GROUP_LIGHT": "Lys",
       "HORDE": "Horde"
     },
@@ -310,6 +312,7 @@
         "FAILED_TO_CONNECT": "Kunne ikke koble til API-et. Vent litt og prøv igjen.",
         "INSTALL_FAILED": "Noe gikk galt under forsøket på å installere utvidelsen, vennligst prøv igjen.\n\nHvis du får denne meldingen gjentatte ganger kan du be om hjelp på vår Discord i kanalen #help-me",
         "INVALID_URL": "Den angitte nettadressen er ugyldig. Eksempler på gyldige nettadresser er:\n\t- https://github.com/WowUp/WowUp.Addon\n\t- https://www.wowinterface.com/downloads/info25610-8.3-014.html\n\t- https://www.curseforge.com/wow/addons/altoholic",
+        "MISTS_ASSET_NOT_FOUND": "No asset was found to download from {message}.\n\nA valid zip file ending with '-mists' is required in order for WowUp to download it.",
         "NO_ADDON_FOUND": "Ingen utvidelser ble funnet. Sørg for at URL-en går til riktig nettsted.\n\nHvis du prøver å installere en utvidelse fra GitHub, sørg for at repoet har Release-Tags med et Zip-arkiv som inneholder utvidelsen.",
         "NO_RELEASE_FOUND": "Ingen utgivelse ble funnet for {message}.\n\nEn gyldig utgivelse med Zip-fil-ressurser kreves for at WowUp skal kunne laste den ned.",
         "NO_SEARCH_RESULTS": "Ingen søkeresultater ble funnet",

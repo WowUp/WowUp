@@ -1,0 +1,318 @@
+.codex-theme {
+  // Buttons — colour only, leave Material sizing alone
+  .wu-btn,
+  button.wu-btn {
+    background: var(--cx-ink-2);
+    color: var(--cx-text-0);
+    border: 1px solid var(--cx-line-strong);
+    border-radius: var(--cx-radius);
+    transition:
+      background-color 0.15s ease,
+      border-color 0.15s ease,
+      color 0.15s ease;
+    box-shadow: none;
+
+    &:hover:not([disabled]) {
+      background: var(--cx-ink-3);
+      color: var(--cx-text-0);
+    }
+
+    &[disabled] {
+      opacity: 0.4;
+    }
+  }
+
+  // Primary button — the deliberate moment of arcane gold
+  .wu-btn-primary,
+  button.wu-btn-primary {
+    background: var(--cx-arc);
+    border-color: var(--cx-arc);
+    color: var(--cx-ink-0);
+    font-weight: 600;
+
+    &:hover:not([disabled]) {
+      background: #f0c884;
+      border-color: #f0c884;
+      color: var(--cx-ink-0);
+    }
+
+    &[disabled] {
+      background: var(--cx-ink-3);
+      border-color: var(--cx-line);
+      color: var(--cx-text-3);
+    }
+  }
+
+  // Flat / icon button
+  .wu-btn-flat,
+  .wu-btn-icon,
+  button.wu-btn-icon {
+    background: transparent;
+    border-color: transparent;
+    color: var(--cx-text-1);
+
+    &:hover:not([disabled]) {
+      background: var(--cx-ink-2);
+      color: var(--cx-text-0);
+    }
+  }
+
+  // Material primary button colour tokens
+  .mat-mdc-flat-button.mat-primary,
+  .mat-mdc-raised-button.mat-primary,
+  .mat-mdc-unelevated-button.mat-primary {
+    --mdc-filled-button-container-color: var(--cx-arc);
+    --mdc-filled-button-label-text-color: var(--cx-ink-0);
+    --mdc-protected-button-container-color: var(--cx-arc);
+    --mdc-protected-button-label-text-color: var(--cx-ink-0);
+  }
+
+  // Selects / menus / autocomplete
+  .mat-mdc-select-panel,
+  .mat-mdc-menu-panel,
+  .cdk-overlay-pane .mat-mdc-autocomplete-panel {
+    background: var(--cx-ink-2) !important;
+    border: 1px solid var(--cx-line-strong);
+    border-radius: var(--cx-radius);
+    box-shadow: var(--cx-shadow-2);
+  }
+
+  .mat-mdc-option,
+  .mat-mdc-menu-item {
+    color: var(--cx-text-1);
+
+    &:hover {
+      background: var(--cx-ink-3);
+      color: var(--cx-text-0);
+    }
+
+    // Active option = ink lift + bold, no gold tint
+    &.mat-mdc-option-active,
+    &.mdc-list-item--selected {
+      background: var(--cx-ink-3);
+      color: var(--cx-text-0);
+      font-weight: 600;
+    }
+  }
+
+  // Dialogs
+  .mat-mdc-dialog-container,
+  .mdc-dialog__surface {
+    background: var(--cx-ink-1) !important;
+    border: 1px solid var(--cx-line-strong);
+    border-radius: var(--cx-radius-lg);
+    box-shadow: var(--cx-shadow-2);
+    color: var(--cx-text-0);
+  }
+
+  // Snackbar
+  .mat-mdc-snack-bar-container {
+    --mdc-snackbar-container-color: var(--cx-ink-2);
+    --mdc-snackbar-supporting-text-color: var(--cx-text-0);
+
+    .mdc-snackbar__surface {
+      border: 1px solid var(--cx-line-strong);
+      border-radius: var(--cx-radius);
+      box-shadow: var(--cx-shadow-1);
+    }
+  }
+
+  // Tooltips
+  .mat-mdc-tooltip {
+    --mdc-plain-tooltip-container-color: var(--cx-ink-3);
+    --mdc-plain-tooltip-supporting-text-color: var(--cx-text-0);
+  }
+
+  // Cards
+  .mat-mdc-card {
+    background: var(--cx-ink-1);
+    border: 1px solid var(--cx-line);
+    border-radius: var(--cx-radius);
+    box-shadow: none;
+    color: var(--cx-text-0);
+  }
+
+  // Progress bar — accent for in-progress operations
+  .mat-mdc-progress-bar {
+    --mdc-linear-progress-active-indicator-color: var(--cx-arc);
+    --mdc-linear-progress-track-color: var(--cx-ink-3);
+  }
+
+  // Tab indicator stays accent — matches the "current view" idea
+  .mdc-tab-indicator__content--underline {
+    border-color: var(--cx-arc) !important;
+  }
+
+  // Form field — focus ring is the accent moment for inputs
+  .mat-mdc-form-field {
+    --mdc-filled-text-field-caret-color: var(--cx-arc);
+    --mdc-filled-text-field-focus-active-indicator-color: var(--cx-arc);
+    --mdc-filled-text-field-focus-label-text-color: var(--cx-arc);
+  }
+
+  // Checkbox & radio — Material pattern says checked state uses brand colour;
+  // keeping that keeps the theme readable to people who scan for the gold.
+  .mat-mdc-checkbox {
+    --mdc-checkbox-selected-checkmark-color: var(--cx-ink-0);
+    --mdc-checkbox-selected-focus-icon-color: var(--cx-arc);
+    --mdc-checkbox-selected-hover-icon-color: var(--cx-arc);
+    --mdc-checkbox-selected-icon-color: var(--cx-arc);
+    --mdc-checkbox-selected-pressed-icon-color: var(--cx-arc);
+  }
+
+  .mat-mdc-radio-button {
+    --mdc-radio-selected-focus-icon-color: var(--cx-arc);
+    --mdc-radio-selected-hover-icon-color: var(--cx-arc);
+    --mdc-radio-selected-icon-color: var(--cx-arc);
+    --mdc-radio-selected-pressed-icon-color: var(--cx-arc);
+  }
+
+  // Slide toggle
+  .mat-mdc-slide-toggle {
+    --mdc-switch-selected-track-color: var(--cx-arc);
+    --mdc-switch-selected-handle-color: var(--cx-ink-0);
+    --mdc-switch-selected-hover-track-color: #f0c884;
+    --mdc-switch-selected-focus-track-color: var(--cx-arc);
+  }
+
+  // Divider
+  .mat-divider,
+  hr {
+    border-top-color: var(--cx-line);
+  }
+
+  // Update button — three-state: idle (Update), in-flight (progress fill),
+  // completed (poofs out, "Up to date" pops in). The progress bar becomes
+  // the button's own background fill so the affordance is the action.
+  .progress-button {
+    position: relative;
+    overflow: hidden;
+    transition:
+      background-color 0.2s ease,
+      border-color 0.2s ease,
+      color 0.2s ease;
+
+    &.show-progress {
+      background: var(--cx-ink-3) !important;
+      border-color: rgba(110, 155, 184, 0.35) !important;
+      color: var(--cx-text-0) !important;
+
+      // The wrapper around <app-progress-bar> sits absolute behind the
+      // button label so the fill grows with the value attribute.
+      > div {
+        position: absolute;
+        inset: 0;
+        z-index: 0;
+        pointer-events: none;
+      }
+
+      app-progress-bar,
+      .progress-background {
+        width: 100%;
+        height: 100%;
+        background: transparent !important;
+        border-radius: 0 !important;
+        overflow: hidden;
+      }
+
+      .progress-value {
+        height: 100%;
+        background:
+          // technical hatch — subtle vertical hairlines inside the fill
+          repeating-linear-gradient(90deg, rgba(255, 255, 255, 0.06) 0 1px, transparent 1px 7px),
+          linear-gradient(90deg, var(--cx-frost) 0%, rgba(110, 155, 184, 0.65) 100%) !important;
+        transition: width 0.18s linear;
+        box-shadow: 1px 0 0 rgba(110, 155, 184, 0.4);
+      }
+    }
+  }
+
+  // Center whichever child is showing in the status cell — the button or
+  // the "Up to date" text — within its column.
+  app-my-addon-status-cell {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+
+    .row {
+      justify-content: center;
+      align-items: center;
+      width: 100%;
+    }
+  }
+
+  // Status text takes over once the install completes — "Up to date".
+  // Lands with a small scale+blur "poof" reveal and a gold check mark
+  // that pops a beat after, so the moment of completion reads.
+  app-my-addon-status-cell .status-text {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-family: var(--cx-font-mono);
+    font-size: 10px;
+    line-height: 1;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--cx-text-2);
+
+    &:not(.ignored) {
+      animation: codex-status-poof 360ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
+
+      &::before {
+        content: "✓";
+        display: inline-block;
+        color: var(--cx-arc);
+        font-size: 12px;
+        line-height: 1;
+        animation: codex-check-pop 420ms cubic-bezier(0.2, 0.8, 0.2, 1) 100ms both;
+      }
+    }
+
+    &.ignored {
+      color: var(--cx-text-3);
+
+      &::before {
+        content: "—";
+        display: inline-block;
+        color: var(--cx-text-3);
+        font-size: 12px;
+        line-height: 1;
+      }
+    }
+  }
+}
+
+@keyframes codex-status-poof {
+  0% {
+    opacity: 0;
+    transform: scale(0.72);
+    filter: blur(6px);
+  }
+  55% {
+    opacity: 1;
+    transform: scale(1.08);
+    filter: blur(0);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+    filter: blur(0);
+  }
+}
+
+@keyframes codex-check-pop {
+  0% {
+    opacity: 0;
+    transform: scale(0);
+  }
+  60% {
+    opacity: 1;
+    transform: scale(1.4);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}

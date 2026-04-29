@@ -1,0 +1,253 @@
+.codex-theme app-my-addons {
+  // Single scroll surface: the page chrome doesn't scroll, ag-grid scrolls
+  // internally inside the remaining vertical space.
+  .tab-container {
+    overflow: hidden !important;
+    display: flex !important;
+    flex-direction: column;
+
+    // Editorial page header — injected via ::before so we don't touch the
+    // component template. Sits above the existing control-container.
+    &::before {
+      content: "My Codex";
+      display: block;
+      flex: 0 0 auto;
+      padding: 24px 32px 4px;
+      font-family: var(--cx-font-display);
+      font-variation-settings: "opsz" 144, "wght" 360, "SOFT" 60;
+      font-size: 36px;
+      line-height: 1;
+      letter-spacing: -0.022em;
+      color: var(--cx-text-0);
+      animation: codex-page-reveal 520ms cubic-bezier(0.2, 0.8, 0.2, 1) 60ms both;
+    }
+  }
+
+  .control-container {
+    flex: 0 0 auto;
+    background: transparent !important;
+    border-top: 1px solid var(--cx-line);
+    border-bottom: 1px solid var(--cx-line);
+    position: relative;
+
+    // Tiny ornament centered on the upper rule — a faint dot, like a
+    // manuscript paragraph mark sitting between chapter title and body.
+    &::before {
+      content: "";
+      position: absolute;
+      top: -3px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 5px;
+      height: 5px;
+      border-radius: 50%;
+      background: var(--cx-arc);
+      opacity: 0.7;
+    }
+
+    animation: codex-page-reveal 520ms cubic-bezier(0.2, 0.8, 0.2, 1) 140ms both;
+  }
+
+  ag-grid-angular {
+    flex: 1 1 auto;
+    min-height: 0;
+    animation: codex-page-reveal 600ms cubic-bezier(0.2, 0.8, 0.2, 1) 220ms both;
+  }
+
+  ag-grid-angular,
+  .ag-root-wrapper,
+  .ag-theme-material,
+  .ag-theme-balham,
+  .ag-theme-material-dark {
+    // Compact ledger row + header so the table feels dense, not airy
+    --ag-row-height: 36px;
+    --ag-header-height: 30px;
+    --ag-list-item-height: 26px;
+    --ag-grid-size: 6px;
+    --ag-cell-horizontal-padding: 12px;
+    --ag-font-size: 13px;
+
+    --ag-background-color: transparent;
+    --ag-foreground-color: var(--cx-text-0);
+    --ag-secondary-foreground-color: var(--cx-text-2);
+    --ag-header-background-color: transparent;
+    --ag-header-foreground-color: var(--cx-text-2);
+    --ag-row-hover-color: rgba(232, 226, 210, 0.025);
+    --ag-selected-row-background-color: var(--cx-ink-3);
+    --ag-row-border-color: var(--cx-line-faint);
+    --ag-border-color: var(--cx-line);
+    --ag-control-panel-background-color: var(--cx-ink-1);
+    --ag-side-button-selected-background-color: var(--cx-ink-3);
+    --ag-modal-overlay-background-color: var(--cx-overlay);
+    --ag-input-focus-border-color: var(--cx-arc);
+    --ag-range-selection-border-color: var(--cx-arc);
+    --ag-checkbox-checked-color: var(--cx-arc);
+
+    background: transparent !important;
+    color: var(--cx-text-0);
+  }
+
+  .ag-header,
+  .ag-header-row {
+    background: transparent !important;
+    border-bottom: 1px solid var(--cx-line) !important;
+  }
+
+  // Eyebrow-style mono-caps column headers, like a ledger
+  .ag-header-cell-text {
+    font-family: var(--cx-font-mono);
+    font-size: 10px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--cx-text-2);
+  }
+
+  // Hairline vertical separator after each header cell — manuscript ledger
+  .ag-header-cell::after {
+    content: "";
+    position: absolute;
+    right: 0;
+    top: 25%;
+    height: 50%;
+    width: 1px;
+    background-color: var(--cx-line) !important;
+  }
+  .ag-header-cell:last-child::after {
+    display: none;
+  }
+
+  // Sliding gold rail on the row that you're hovering — replaces a flat
+  // tinted hover. The ::before rides along ag-grid's own .ag-row
+  // (which is already position:absolute for virtual scrolling), so we
+  // must NOT set position:relative on .ag-row — that would clobber the
+  // absolute positioning the grid drives via transform: translateY()
+  // and break virtualisation (rows go missing / scroll lags).
+  .ag-row::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 0;
+    background: var(--cx-arc);
+    opacity: 0;
+    transition:
+      width 0.18s cubic-bezier(0.2, 0.8, 0.2, 1),
+      opacity 0.18s ease;
+    pointer-events: none;
+  }
+
+  .ag-row.ag-row-hover::before {
+    width: 2px;
+    opacity: 0.45;
+  }
+
+  .ag-row.ag-row-selected::before {
+    width: 2px;
+    opacity: 1;
+  }
+
+  // Default cell — body font. Tabular numerals so any number that lands
+  // here aligns even without an explicit mono override.
+  .ag-cell {
+    font-family: var(--cx-font-ui);
+    font-variant-numeric: tabular-nums;
+    color: var(--cx-text-1);
+  }
+
+  // Data-shaped columns → Codex Mono. Versions, dates, counts, IDs,
+  // game-version tags, and provider names all read as ledger data.
+  .ag-cell[col-id="installedVersion"],
+  .ag-cell[col-id="latestVersion"],
+  .ag-cell[col-id="releaseDate"],
+  .ag-cell[col-id="downloadCount"],
+  .ag-cell[col-id="gameVersion"],
+  .ag-cell[col-id="externalChannel"],
+  .ag-cell[col-id="providerName"],
+  .ag-cell[col-id="author"] {
+    font-family: var(--cx-font-mono);
+    font-size: 12px;
+    color: var(--cx-text-2);
+    letter-spacing: 0;
+  }
+
+  // Provider name + channel feel like labels — give them eyebrow casing.
+  .ag-cell[col-id="providerName"],
+  .ag-cell[col-id="externalChannel"] {
+    font-size: 10px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+  }
+
+  // Addon name — display serif with soft optical sizing, the one place
+  // in the table where Fraunces earns its keep.
+  .ag-cell[col-id="name"] .ag-cell-value,
+  .ag-cell.name-cell {
+    font-family: var(--cx-font-display);
+    font-variation-settings: "opsz" 24, "wght" 460, "SOFT" 30;
+    font-size: 14px;
+    letter-spacing: -0.005em;
+    color: var(--cx-text-0);
+  }
+
+  // Inside the multi-line name cell, the secondary version row (rendered
+  // by my-addons-addon-cell) is data, not display — push it to mono.
+  app-my-addons-addon-cell {
+    .addon-title {
+      font-family: var(--cx-font-display);
+      font-variation-settings: "opsz" 24, "wght" 460, "SOFT" 30;
+      font-size: 14px;
+      letter-spacing: -0.005em;
+      color: var(--cx-text-0);
+    }
+
+    .addon-version,
+    .addon-version > * {
+      font-family: var(--cx-font-mono);
+      font-size: 11px;
+      font-variant-numeric: tabular-nums;
+      color: var(--cx-text-2);
+      letter-spacing: 0;
+    }
+
+    .channel {
+      font-family: var(--cx-font-mono);
+      font-size: 9px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+    }
+  }
+
+  // Empty state — a quiet editorial line, not a flat sentence
+  .ag-overlay-no-rows-center {
+    color: var(--cx-text-2);
+    font-family: var(--cx-font-display);
+    font-variation-settings: "opsz" 96, "wght" 360, "SOFT" 60;
+    font-style: italic;
+    font-size: 22px;
+    letter-spacing: -0.01em;
+    text-align: center;
+
+    &::after {
+      content: "·";
+      display: block;
+      color: var(--cx-arc);
+      font-size: 32px;
+      line-height: 0.4;
+      margin-top: 6px;
+      opacity: 0.7;
+    }
+  }
+}
+
+// Page-mount reveal — used for staggered chapter heading + chrome + table
+@keyframes codex-page-reveal {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

@@ -1,0 +1,24 @@
+.codex-theme app-options {
+  .tab-container {
+    &::before {
+      content: "Compendium";
+      display: block;
+      padding: 28px 32px 4px;
+      font-family: var(--cx-font-display);
+      font-variation-settings: "opsz" 144, "wght" 360, "SOFT" 60;
+      font-size: 40px;
+      line-height: 1;
+      letter-spacing: -0.022em;
+      color: var(--cx-text-0);
+      animation: codex-page-reveal 520ms cubic-bezier(0.2, 0.8, 0.2, 1) 60ms both;
+    }
+  }
+
+  app-options-app-section,
+  app-options-addon-section,
+  app-options-debug-section,
+  app-options-wow-section {
+    color: var(--cx-text-0);
+    animation: codex-page-reveal 520ms cubic-bezier(0.2, 0.8, 0.2, 1) 180ms both;
+  }
+}

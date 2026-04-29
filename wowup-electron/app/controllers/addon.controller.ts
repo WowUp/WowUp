@@ -116,13 +116,50 @@ export class AddonController implements IpcController {
       return;
     }
 
+    // Dedupe in-memory by (installationId, providerName, externalId) — guards
+    // against a parallel-rescan race where two scans each wrote a fresh UUID
+    // for the same logical addon and persisted both, leaving the user with
+    // every addon listed twice in My Addons.
+    const seen = new Map<string, Addon>();
     for (const addon of addons) {
       if (typeof addon.id !== "string") {
         log.warn("malformed addon not saved", addon);
         continue;
       }
+      const key = `${addon.installationId ?? ""}|${addon.providerName ?? ""}|${addon.externalId ?? ""}`;
+      seen.set(key, addon);
+    }
 
+    for (const addon of seen.values()) {
       this.addonStore.set(addon.id, addon);
+    }
+
+    // Scrub any pre-existing duplicates in the store that match the
+    // (installationId, providerName, externalId) of an addon we're saving but
+    // live under a stale UUID. One pass is enough — every save heals.
+    if (seen.size === 0) {
+      return;
+    }
+
+    const staleIds: string[] = [];
+    for (const [storedId, stored] of this.addonStore) {
+      const a = stored as Addon;
+      if (typeof a?.installationId !== "string" || typeof storedId !== "string") {
+        continue;
+      }
+      const key = `${a.installationId}|${a.providerName ?? ""}|${a.externalId ?? ""}`;
+      const winner = seen.get(key);
+      if (winner && winner.id !== storedId) {
+        staleIds.push(storedId);
+      }
+    }
+
+    for (const id of staleIds) {
+      this.addonStore.delete(id);
+    }
+
+    if (staleIds.length > 0) {
+      log.info(`[addon-controller] removed ${staleIds.length} duplicate addon record(s)`);
     }
   }
 }

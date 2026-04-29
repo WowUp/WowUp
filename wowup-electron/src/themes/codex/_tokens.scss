@@ -1,0 +1,45 @@
+.codex-theme {
+  --cx-ink-0: #0a0b0f;
+  --cx-ink-1: #101218;
+  --cx-ink-2: #181b25;
+  --cx-ink-3: #21263a;
+  --cx-ink-4: #2c324a;
+
+  --cx-line: rgba(232, 226, 210, 0.10);
+  --cx-line-strong: rgba(232, 226, 210, 0.20);
+  --cx-line-faint: rgba(232, 226, 210, 0.05);
+
+  // Text ramp — every step now passes WCAG AA (4.5:1) on --cx-ink-1.
+  --cx-text-0: #f1ece0; // ~14:1
+  --cx-text-1: #c2bcab; // ~10:1
+  --cx-text-2: #9b978a; // ~6.4:1
+  --cx-text-3: #7d7a6e; // ~4.6:1 — usable for small UI text, not just decoration
+
+  // Single accent — reserved for primary CTA + focus rings + a tiny leading
+  // dot for "update available." NOT used for sidenav active state.
+  --cx-arc: #eabf78;
+  --cx-arc-soft: rgba(234, 191, 120, 0.18);
+  --cx-arc-faint: rgba(234, 191, 120, 0.08);
+
+  --cx-ember: #d87b5c;
+  --cx-jade: #7fb88f;
+  --cx-frost: #6e9bb8;
+
+  --cx-overlay: rgba(10, 11, 15, 0.72);
+  --cx-shadow-1: 0 1px 0 rgba(232, 226, 210, 0.04) inset, 0 8px 24px -12px rgba(0, 0, 0, 0.6);
+  --cx-shadow-2: 0 1px 0 rgba(232, 226, 210, 0.06) inset, 0 24px 48px -16px rgba(0, 0, 0, 0.7);
+
+  // Three-font hierarchy — every text in Codex maps to exactly one of these.
+  // Display: identity moments only (chapter title, dialog title, addon name).
+  // Mono: data-shaped text (numbers, versions, dates, providers, eyebrows).
+  // UI: everything else — buttons, sidenav, body copy, inputs.
+  --cx-font-display: "Codex Display", "New York", "Cambria", "PT Serif", Georgia, serif;
+  --cx-font-mono: "Codex Mono", "JetBrains Mono", "SF Mono", "Cascadia Code", "Menlo", monospace;
+  --cx-font-ui: -apple-system, "Segoe UI Variable Display", "Segoe UI", system-ui, sans-serif;
+
+  --cx-radius-sm: 2px;
+  --cx-radius: 4px;
+  --cx-radius-lg: 8px;
+
+  --cx-grid: 8px;
+}

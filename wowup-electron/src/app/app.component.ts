@@ -22,6 +22,7 @@ import { TranslateService } from "@ngx-translate/core";
 import {
   ALLIANCE_LIGHT_THEME,
   ALLIANCE_THEME,
+  CODEX_THEME,
   CURRENT_THEME_KEY,
   DEFAULT_LIGHT_THEME,
   DEFAULT_THEME,
@@ -199,6 +200,7 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
           ALLIANCE_LIGHT_THEME,
           DEFAULT_THEME,
           DEFAULT_LIGHT_THEME,
+          CODEX_THEME,
         );
       this.overlayContainer.getContainerElement().classList.add(pref.value);
     });

@@ -122,6 +122,21 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
     map((wowInstall) => wowInstall !== undefined),
   );
 
+  // The default cell renderer is two-line (title + meta row), which suits a
+  // 63px row. The Codex theme is denser and only really needs ~48px to fit
+  // the same content; we react to theme changes and resize live.
+  public readonly rowHeight$ = this._sessionService.currentTheme$.pipe(
+    map((theme) => (theme === "codex-theme" ? 48 : 63)),
+    distinctUntilChanged(),
+    tap(() => {
+      if (this.gridApi) {
+        // Defer so the [rowHeight] binding has propagated before we tell
+        // ag-grid to recompute every row's height.
+        setTimeout(() => this.gridApi.resetRowHeights(), 0);
+      }
+    }),
+  );
+
   public readonly isBusy$ = combineLatest([this._isBusySrc, this._addonService.syncing$]).pipe(
     map((vals) => _.some(vals)),
   );

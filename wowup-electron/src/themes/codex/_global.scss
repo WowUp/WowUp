@@ -1,0 +1,129 @@
+// Page background — applied ONLY when .codex-theme is the .app shell.
+// The same .codex-theme class is also bolted onto the global .cdk-overlay-
+// container so descendant selectors reach into menus/dialogs/tooltips, and
+// that container is fixed 100vw × 100vh; if we let it inherit this paint,
+// every tooltip turns the entire page black.
+.codex-theme.app {
+  background:
+    radial-gradient(ellipse 80% 50% at 50% -10%, rgba(234, 191, 120, 0.05), transparent 60%),
+    radial-gradient(ellipse 60% 40% at 90% 100%, rgba(110, 155, 184, 0.03), transparent 60%),
+    var(--cx-ink-0);
+
+  // Single source of truth for the body font under Codex. Display and
+  // Mono are opt-in from here — everything else inherits this stack.
+  font-family: var(--cx-font-ui);
+  font-feature-settings: "kern", "liga", "calt";
+}
+
+// Subtle archival watermark on the main content area — a faded codex seal
+// pinned bottom-right, like a publisher's mark on a page. Sits behind all
+// content and doesn't bleed into overlays.
+.codex-theme.app .content {
+  background-image: url("../../assets/images/codex-watermark.svg");
+  background-repeat: no-repeat;
+  background-position: right -40px bottom -40px;
+  background-size: 360px;
+}
+
+.codex-theme {
+  color: var(--cx-text-0);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+
+  .bg-secondary,
+  .bg-secondary-2,
+  .bg-secondary-3,
+  .bg-secondary-4,
+  .bg-secondary-5 {
+    background-color: transparent !important;
+    background-image: none !important;
+  }
+
+  ::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+  }
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: var(--cx-ink-3);
+    border: 2px solid transparent;
+    background-clip: padding-box;
+    border-radius: 8px;
+
+    &:hover {
+      background: var(--cx-ink-4);
+      background-clip: padding-box;
+    }
+  }
+  ::-webkit-scrollbar-corner {
+    background: transparent;
+  }
+
+  ::selection {
+    background: var(--cx-arc-soft);
+    color: var(--cx-text-0);
+  }
+
+  // Headlines — Fraunces variable, opsz axis dialled to "soft" at large sizes.
+  // Scoped to page titles, dialog titles, options section headings — not
+  // every h1/h2 in the app, to avoid stomping on Material's internal type.
+  app-my-addons .control-container .filter-container,
+  app-get-addons .search-container {
+    // (kept clean — no headline rules here)
+  }
+
+  // Page header (rendered when present in My Addons / Get Addons)
+  .codex-page-header {
+    font-family: var(--cx-font-display);
+    font-variation-settings: "opsz" 96, "wght" 400, "SOFT" 50;
+    font-size: 32px;
+    line-height: 1.05;
+    letter-spacing: -0.02em;
+    color: var(--cx-text-0);
+    margin: 24px 24px 0;
+  }
+
+  // Dialog titles — h1/h2 inside dialogs get the editorial treatment
+  .mat-mdc-dialog-title,
+  .mdc-dialog__title {
+    font-family: var(--cx-font-display) !important;
+    font-variation-settings: "opsz" 60, "wght" 420, "SOFT" 30;
+    font-size: 22px;
+    letter-spacing: -0.01em;
+    color: var(--cx-text-0) !important;
+    line-height: 1.15;
+  }
+
+  // Options section headings — within Options page
+  app-options h1,
+  app-options h2,
+  app-options .options-section-title {
+    font-family: var(--cx-font-display);
+    font-variation-settings: "opsz" 72, "wght" 380, "SOFT" 40;
+    font-size: 24px;
+    line-height: 1.1;
+    letter-spacing: -0.015em;
+    color: var(--cx-text-0);
+    font-weight: normal;
+  }
+
+  // Eyebrow utility — small mono caps label
+  .codex-eyebrow {
+    font-family: var(--cx-font-mono);
+    font-size: 10px;
+    line-height: 1;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--cx-text-2);
+    font-weight: 500;
+  }
+
+  // Tabular numerals on cells holding numbers (versions, counts, dates)
+  .ag-cell,
+  td.mat-mdc-cell {
+    font-variant-numeric: tabular-nums;
+  }
+}

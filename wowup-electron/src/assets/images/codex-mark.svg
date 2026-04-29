@@ -1,0 +1,47 @@
+<svg width="96" height="96" viewBox="0 0 96 96" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="codex-gold" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#f0c884" />
+      <stop offset="55%" stop-color="#eabf78" />
+      <stop offset="100%" stop-color="#b88436" />
+    </linearGradient>
+    <radialGradient id="codex-glow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#eabf78" stop-opacity="0.18" />
+      <stop offset="70%" stop-color="#eabf78" stop-opacity="0.04" />
+      <stop offset="100%" stop-color="#eabf78" stop-opacity="0" />
+    </radialGradient>
+  </defs>
+
+  <!-- soft halo, well inside the viewBox so the .theme-logo overflow:hidden box never clips the seal -->
+  <circle cx="48" cy="48" r="36" fill="url(#codex-glow)" />
+
+  <!-- outer hex seal -->
+  <polygon points="48,18 75,33 75,63 48,78 21,63 21,33"
+           fill="none"
+           stroke="url(#codex-gold)"
+           stroke-width="1.6"
+           stroke-linejoin="round" />
+
+  <!-- inner thin ring -->
+  <circle cx="48" cy="48" r="20"
+          fill="none"
+          stroke="#eabf78"
+          stroke-width="0.6"
+          stroke-opacity="0.55" />
+
+  <!-- codex glyph: stacked tome leaves with a central spine -->
+  <g stroke="url(#codex-gold)" stroke-linecap="round">
+    <line x1="38" y1="40" x2="58" y2="40" stroke-width="1.8" />
+    <line x1="48" y1="36" x2="48" y2="60" stroke-width="2.2" />
+    <line x1="40" y1="48" x2="56" y2="48" stroke-width="1.4" />
+    <line x1="38" y1="56" x2="58" y2="56" stroke-width="1.8" />
+  </g>
+
+  <!-- hex vertex punctuation -->
+  <circle cx="48" cy="18" r="1.2" fill="#eabf78" />
+  <circle cx="48" cy="78" r="1.2" fill="#eabf78" />
+  <circle cx="75" cy="33" r="0.9" fill="#eabf78" opacity="0.65" />
+  <circle cx="75" cy="63" r="0.9" fill="#eabf78" opacity="0.65" />
+  <circle cx="21" cy="33" r="0.9" fill="#eabf78" opacity="0.65" />
+  <circle cx="21" cy="63" r="0.9" fill="#eabf78" opacity="0.65" />
+</svg>

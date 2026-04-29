@@ -1,0 +1,38 @@
+<svg width="320" height="320" viewBox="0 0 320 320" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <radialGradient id="dust-fade" cx="0%" cy="0%" r="100%">
+      <stop offset="0%" stop-color="#eabf78" stop-opacity="0.55" />
+      <stop offset="60%" stop-color="#eabf78" stop-opacity="0.18" />
+      <stop offset="100%" stop-color="#eabf78" stop-opacity="0" />
+    </radialGradient>
+  </defs>
+
+  <g fill="#eabf78">
+    <circle cx="195" cy="38" r="1.6" opacity="0.55" />
+    <circle cx="232" cy="64" r="1.0" opacity="0.40" />
+    <circle cx="265" cy="42" r="1.3" opacity="0.35" />
+    <circle cx="288" cy="92" r="0.8" opacity="0.45" />
+    <circle cx="208" cy="118" r="1.2" opacity="0.50" />
+    <circle cx="248" cy="152" r="0.9" opacity="0.35" />
+    <circle cx="296" cy="148" r="1.1" opacity="0.40" />
+    <circle cx="184" cy="180" r="0.7" opacity="0.30" />
+    <circle cx="226" cy="208" r="1.4" opacity="0.45" />
+    <circle cx="280" cy="224" r="0.9" opacity="0.30" />
+    <circle cx="158" cy="252" r="0.8" opacity="0.25" />
+    <circle cx="218" cy="272" r="1.0" opacity="0.30" />
+  </g>
+
+  <g stroke="#eabf78" stroke-linecap="round" fill="none">
+    <line x1="195" y1="38" x2="232" y2="64" stroke-width="0.4" stroke-opacity="0.32" />
+    <line x1="232" y1="64" x2="265" y2="42" stroke-width="0.4" stroke-opacity="0.30" />
+    <line x1="265" y1="42" x2="288" y2="92" stroke-width="0.4" stroke-opacity="0.28" />
+    <line x1="208" y1="118" x2="248" y2="152" stroke-width="0.4" stroke-opacity="0.25" />
+    <line x1="248" y1="152" x2="296" y2="148" stroke-width="0.4" stroke-opacity="0.22" />
+    <line x1="226" y1="208" x2="280" y2="224" stroke-width="0.4" stroke-opacity="0.22" />
+  </g>
+
+  <g stroke="#eabf78" stroke-opacity="0.10" fill="none">
+    <path d="M 70 30 Q 130 80 240 60" stroke-width="0.5" />
+    <path d="M 90 200 Q 180 230 290 200" stroke-width="0.4" />
+  </g>
+</svg>

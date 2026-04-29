@@ -1,0 +1,187 @@
+.codex-theme {
+  // Titlebar — flat surface + hairline divider.
+  // Note: macOS users see the system stoplight controls overlaid here;
+  // keep the ink subtle so they read clearly.
+  app-titlebar {
+    background: var(--cx-ink-1);
+    border-bottom: 1px solid var(--cx-line);
+    color: var(--cx-text-1);
+    -webkit-app-region: drag;
+
+    button,
+    .titlebar-button,
+    .window-button {
+      -webkit-app-region: no-drag;
+    }
+  }
+
+  // The default themes pin a 72×72 logo at top-left of the WINDOW. In
+  // Codex we replace that small chip with a large background mark that
+  // bleeds off the left edge of the sidenav and fades in toward the
+  // right — see the ::before below.
+  app-vertical-tabs .theme-logo,
+  app-vertical-tabs .theme-logo-glow {
+    display: none !important;
+  }
+
+  // Vertical sidenav — selection is communicated by typography weight + an
+  // ink lift, not by colour. Keeps the gold accent rare and meaningful.
+  app-vertical-tabs .tab-strip {
+    background: var(--cx-ink-1) !important;
+    border-right: 1px solid var(--cx-line);
+    color: var(--cx-text-1);
+    position: relative;
+    overflow: hidden;
+    isolation: isolate;
+
+    // Constellation dust + curved hairlines — sits behind the seal, drawn
+    // first so the seal can layer over it. Uses ::after but z-index 0,
+    // tabs go above via z-index:1.
+    &::after {
+      content: "";
+      position: absolute;
+      z-index: 0;
+      top: 0;
+      right: 0;
+      width: 320px;
+      height: 320px;
+      background-image: url("../../assets/images/codex-stardust.svg");
+      background-repeat: no-repeat;
+      background-size: contain;
+      background-position: top right;
+      pointer-events: none;
+      mask-image: linear-gradient(180deg, black 0%, rgba(0, 0, 0, 0.5) 70%, transparent 100%);
+      -webkit-mask-image: linear-gradient(180deg, black 0%, rgba(0, 0, 0, 0.5) 70%, transparent 100%);
+    }
+
+    // Bleeding seal: anchored top-left, partially off the left edge.
+    // Fully solid in the upper-left of the SVG box, fading to fully
+    // transparent toward the lower-right — the mark feels embossed into
+    // the corner of the sidenav and dissolves as it moves into the
+    // content area.
+    &::before {
+      content: "";
+      position: absolute;
+      z-index: 0;
+      top: -28px;
+      left: -90px;
+      width: 280px;
+      height: 280px;
+      background-image: url("../../assets/images/codex-mark.svg");
+      background-repeat: no-repeat;
+      background-size: contain;
+      background-position: center;
+      opacity: 0.7;
+      pointer-events: none;
+      mask-image: radial-gradient(circle at 28% 28%, black 0%, rgba(0, 0, 0, 0.7) 35%, rgba(0, 0, 0, 0.25) 60%, transparent 80%);
+      -webkit-mask-image: radial-gradient(circle at 28% 28%, black 0%, rgba(0, 0, 0, 0.7) 35%, rgba(0, 0, 0, 0.25) 60%, transparent 80%);
+    }
+
+    // Make sure tabs sit above the mark
+    > * {
+      position: relative;
+      z-index: 1;
+    }
+
+    .tab {
+      border-left: none !important;
+      border-right: none !important;
+      border-radius: var(--cx-radius);
+      margin: 1px 6px;
+      padding: 0 10px;
+      height: 36px;
+      color: var(--cx-text-2);
+      transition:
+        background-color 0.15s ease,
+        color 0.15s ease;
+
+      .tab-title {
+        color: var(--cx-text-2);
+        font-weight: 500;
+        letter-spacing: -0.005em;
+      }
+
+      .tab-icon {
+        color: var(--cx-text-3);
+        svg {
+          fill: currentColor !important;
+        }
+      }
+
+      &:hover:not(.selected) {
+        background-color: var(--cx-ink-2) !important;
+
+        .tab-title {
+          color: var(--cx-text-1);
+        }
+        .tab-icon {
+          color: var(--cx-text-1);
+        }
+      }
+
+      &.selected {
+        background-color: var(--cx-ink-3) !important;
+        border-left: none !important;
+
+        .tab-title {
+          color: var(--cx-text-0);
+          font-weight: 600;
+        }
+
+        .tab-icon,
+        .tab-icon-active {
+          color: var(--cx-text-0) !important;
+          svg {
+            fill: var(--cx-text-0) !important;
+          }
+        }
+      }
+
+      &.disabled {
+        opacity: 0.4;
+      }
+    }
+
+    .theme-logo-glow {
+      background: radial-gradient(circle, var(--cx-arc-faint) 0%, transparent 70%) !important;
+    }
+  }
+
+  // Ad space — keep the slot at its reserved size so the layout below
+  // doesn't jump when an ad finally paints, but blend the empty frame
+  // into the sidenav surface so it stops looking like a missing image.
+  // The "gray" comes from inside the Electron <webview> itself: it
+  // paints its own surface before any URL has loaded. We have to set
+  // the background on the webview element AND its container, not just
+  // on the host .ad div, because CSS on .ad doesn't reach the webview
+  // contents.
+  app-vertical-tabs .ad-space,
+  app-vertical-tabs .ad-space .ad,
+  app-vertical-tabs .ad-space app-webview,
+  app-vertical-tabs .ad-space .webview-container,
+  app-vertical-tabs .ad-space webview {
+    background-color: var(--cx-ink-1) !important;
+    background-image: none !important;
+    border: none !important;
+  }
+
+  // Footer
+  app-footer {
+    background: var(--cx-ink-1);
+    border-top: 1px solid var(--cx-line);
+    color: var(--cx-text-2);
+
+    a {
+      color: var(--cx-text-1);
+      &:hover {
+        color: var(--cx-arc);
+      }
+    }
+  }
+
+  .content,
+  .main {
+    background: transparent;
+    color: var(--cx-text-0);
+  }
+}
