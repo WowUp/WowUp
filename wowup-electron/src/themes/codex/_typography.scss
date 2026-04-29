@@ -1,0 +1,134 @@
+// Codex typography sweep.
+//
+// Three goals:
+//   1. Override every Angular Material / MDC font token (~40 of them) so
+//      buttons, dialogs, menus, snackbars, lists, paginator, chips, tabs,
+//      stepper, expansion panels, form fields, badges, etc. all stop
+//      defaulting to Roboto.
+//   2. Override ag-grid's --ag-font-family so the grid surface inherits
+//      our UI stack instead of the Material Roboto fallback.
+//   3. Defeat the leftover inline `font-family: Roboto, ...` declarations
+//      sprinkled through controls.scss, markdown.scss, and a handful of
+//      per-component .scss files. Those rules are scoped via Angular view
+//      encapsulation and won't budge for token overrides — they need
+//      targeted !important on a more specific Codex selector.
+//
+// The result: every text in the app maps to exactly one of three families
+// per the rule defined in _tokens.scss.
+
+.codex-theme {
+  // ── Material / MDC font tokens ──────────────────────────────────────────
+  --mdc-typography-body1-font: var(--cx-font-ui);
+  --mdc-typography-body2-font: var(--cx-font-ui);
+  --mdc-typography-button-font: var(--cx-font-ui);
+  --mdc-typography-headline1-font: var(--cx-font-display);
+  --mdc-typography-headline2-font: var(--cx-font-display);
+  --mdc-typography-headline3-font: var(--cx-font-display);
+  --mdc-typography-headline4-font: var(--cx-font-display);
+  --mdc-typography-headline5-font: var(--cx-font-display);
+  --mdc-typography-headline6-font: var(--cx-font-display);
+  --mdc-typography-subtitle1-font: var(--cx-font-ui);
+  --mdc-typography-subtitle2-font: var(--cx-font-ui);
+  --mdc-typography-caption-font: var(--cx-font-ui);
+  --mdc-typography-overline-font: var(--cx-font-mono);
+
+  --mdc-dialog-subhead-font: var(--cx-font-display);
+  --mdc-dialog-supporting-text-font: var(--cx-font-ui);
+  --mdc-snackbar-supporting-text-font: var(--cx-font-ui);
+  --mdc-plain-tooltip-supporting-text-font: var(--cx-font-mono);
+
+  --mdc-text-button-label-text-font: var(--cx-font-ui);
+  --mdc-filled-button-label-text-font: var(--cx-font-ui);
+  --mdc-protected-button-label-text-font: var(--cx-font-ui);
+  --mdc-outlined-button-label-text-font: var(--cx-font-ui);
+  --mdc-extended-fab-label-text-font: var(--cx-font-ui);
+
+  --mdc-filled-text-field-label-text-font: var(--cx-font-ui);
+  --mdc-outlined-text-field-label-text-font: var(--cx-font-ui);
+  --mdc-form-field-label-text-font: var(--cx-font-ui);
+
+  --mdc-list-list-item-label-text-font: var(--cx-font-ui);
+  --mdc-list-list-item-supporting-text-font: var(--cx-font-ui);
+  --mdc-list-list-item-trailing-supporting-text-font: var(--cx-font-mono);
+
+  --mdc-chip-label-text-font: var(--cx-font-mono);
+  --mdc-slider-label-label-text-font: var(--cx-font-mono);
+
+  --mat-badge-text-font: var(--cx-font-mono);
+  --mat-bottom-sheet-container-text-font: var(--cx-font-ui);
+  --mat-card-title-text-font: var(--cx-font-display);
+  --mat-card-subtitle-text-font: var(--cx-font-ui);
+  --mat-datepicker-calendar-text-font: var(--cx-font-mono);
+  --mat-expansion-container-text-font: var(--cx-font-ui);
+  --mat-expansion-header-text-font: var(--cx-font-display);
+  --mat-form-field-container-text-font: var(--cx-font-ui);
+  --mat-form-field-subscript-text-font: var(--cx-font-ui);
+  --mat-legacy-button-toggle-label-text-font: var(--cx-font-ui);
+  --mat-menu-item-label-text-font: var(--cx-font-ui);
+  --mat-optgroup-label-text-font: var(--cx-font-mono);
+  --mat-option-label-text-font: var(--cx-font-ui);
+  --mat-paginator-container-text-font: var(--cx-font-mono);
+  --mat-select-trigger-text-font: var(--cx-font-ui);
+  --mat-standard-button-toggle-label-text-font: var(--cx-font-ui);
+  --mat-stepper-container-text-font: var(--cx-font-ui);
+  --mat-stepper-header-label-text-font: var(--cx-font-display);
+  --mat-tab-header-label-text-font: var(--cx-font-ui);
+  --mat-table-footer-supporting-text-font: var(--cx-font-mono);
+  --mat-table-header-headline-font: var(--cx-font-mono);
+  --mat-table-row-item-label-text-font: var(--cx-font-ui);
+  --mat-toolbar-title-text-font: var(--cx-font-display);
+  --mat-tree-node-text-font: var(--cx-font-ui);
+
+  // ── ag-grid ──────────────────────────────────────────────────────────────
+  --ag-font-family: var(--cx-font-ui);
+
+  // ── Per-component Roboto overrides ───────────────────────────────────────
+  // Every .wu-btn in controls.scss declares Roboto inline. Override.
+  .wu-btn,
+  button.wu-btn {
+    font-family: var(--cx-font-ui) !important;
+  }
+
+  // Alert / confirm / external-url-confirmation dialogs share the .message
+  // class with `font-family: Roboto, ...` declared inline.
+  .mat-mdc-dialog-container .message,
+  .mdc-dialog__container .message,
+  .mdc-dialog__surface .message {
+    font-family: var(--cx-font-ui) !important;
+  }
+
+  // progress-spinner busy <pre> uses Roboto.
+  app-progress-spinner pre,
+  .busy-container pre {
+    font-family: var(--cx-font-ui) !important;
+  }
+
+  // table-context-header-cell sets Roboto on the label container; we want
+  // mono there since it's a header label.
+  .ag-cell-label-container {
+    font-family: var(--cx-font-mono) !important;
+  }
+
+  // markdown body — used in addon-detail Description / Changelog panes,
+  // also in the news panel. Roboto declared inline. Push body to UI and
+  // code/pre to mono.
+  .markdown-body,
+  .markdown-body * {
+    font-family: var(--cx-font-ui);
+  }
+  .markdown-body h1,
+  .markdown-body h2,
+  .markdown-body h3 {
+    font-family: var(--cx-font-display);
+  }
+  .markdown-body code,
+  .markdown-body pre,
+  .markdown-body kbd,
+  .markdown-body samp,
+  .markdown-body tt {
+    font-family: var(--cx-font-mono);
+  }
+  .markdown-body th {
+    font-family: var(--cx-font-mono) !important;
+  }
+}
