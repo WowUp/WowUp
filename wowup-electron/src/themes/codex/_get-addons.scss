@@ -1,10 +1,41 @@
 .codex-theme app-get-addons {
-  .control-container {
-    background: transparent !important;
-    border-bottom: 1px solid var(--cx-line);
+  .tab-container {
+    &::before {
+      content: "The Library";
+      display: block;
+      padding: 28px 32px 4px;
+      font-family: "Codex Display", "New York", "Cambria", Georgia, serif;
+      font-variation-settings: "opsz" 144, "wght" 360, "SOFT" 60;
+      font-size: 40px;
+      line-height: 1;
+      letter-spacing: -0.022em;
+      color: var(--cx-text-0);
+      animation: codex-page-reveal 520ms cubic-bezier(0.2, 0.8, 0.2, 1) 60ms both;
+    }
   }
 
-  // Color/border tokens only, no padding overrides
+  .control-container {
+    background: transparent !important;
+    border-top: 1px solid var(--cx-line);
+    border-bottom: 1px solid var(--cx-line);
+    position: relative;
+
+    &::before {
+      content: "";
+      position: absolute;
+      top: -3px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 5px;
+      height: 5px;
+      border-radius: 50%;
+      background: var(--cx-arc);
+      opacity: 0.7;
+    }
+
+    animation: codex-page-reveal 520ms cubic-bezier(0.2, 0.8, 0.2, 1) 140ms both;
+  }
+
   ag-grid-angular,
   .ag-root-wrapper,
   .ag-theme-material,
@@ -12,7 +43,7 @@
   .ag-theme-material-dark {
     --ag-background-color: transparent;
     --ag-foreground-color: var(--cx-text-0);
-    --ag-row-hover-color: var(--cx-ink-2);
+    --ag-row-hover-color: rgba(232, 226, 210, 0.025);
     --ag-selected-row-background-color: var(--cx-ink-3);
     --ag-row-border-color: var(--cx-line-faint);
     --ag-border-color: var(--cx-line);
@@ -21,13 +52,50 @@
 
     background: transparent !important;
     color: var(--cx-text-0);
+    animation: codex-page-reveal 600ms cubic-bezier(0.2, 0.8, 0.2, 1) 220ms both;
   }
 
   .ag-header-cell-text {
-    font-family: var(--cx-font-mono);
+    font-family: "Codex Mono", "JetBrains Mono", "SF Mono", "Cascadia Code", monospace;
     font-size: 10px;
     letter-spacing: 0.16em;
     text-transform: uppercase;
     color: var(--cx-text-2);
+  }
+
+  .ag-header-cell::after {
+    content: "";
+    position: absolute;
+    right: 0;
+    top: 25%;
+    height: 50%;
+    width: 1px;
+    background-color: var(--cx-line) !important;
+  }
+  .ag-header-cell:last-child::after {
+    display: none;
+  }
+
+  // Bigger search field — this is the "scriptorium" search, the page's
+  // primary affordance. Swap stock Material into a serif-with-mono input.
+  .filter-container,
+  .search-container,
+  .search-form-field {
+    flex-grow: 1;
+    max-width: 560px;
+
+    input.mat-mdc-input-element {
+      font-family: "Codex Mono", "JetBrains Mono", "SF Mono", "Cascadia Code", monospace;
+      font-size: 13px;
+      letter-spacing: 0;
+      color: var(--cx-text-0);
+
+      &::placeholder {
+        color: var(--cx-text-3);
+        font-family: "Codex Display", "New York", "Cambria", Georgia, serif;
+        font-style: italic;
+        font-size: 14px;
+      }
+    }
   }
 }

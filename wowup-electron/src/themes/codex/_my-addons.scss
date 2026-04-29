@@ -1,10 +1,49 @@
 .codex-theme app-my-addons {
-  .control-container {
-    background: transparent !important;
-    border-bottom: 1px solid var(--cx-line);
+  .tab-container {
+    // Editorial page header — injected via ::before so we don't touch the
+    // component template. Sits above the existing control-container.
+    &::before {
+      content: "My Codex";
+      display: block;
+      padding: 28px 32px 4px;
+      font-family: "Codex Display", "New York", "Cambria", Georgia, serif;
+      font-variation-settings: "opsz" 144, "wght" 360, "SOFT" 60;
+      font-size: 40px;
+      line-height: 1;
+      letter-spacing: -0.022em;
+      color: var(--cx-text-0);
+      animation: codex-page-reveal 520ms cubic-bezier(0.2, 0.8, 0.2, 1) 60ms both;
+    }
   }
 
-  // ag-grid — colour tokens only, leave row heights / paddings alone
+  .control-container {
+    background: transparent !important;
+    border-top: 1px solid var(--cx-line);
+    border-bottom: 1px solid var(--cx-line);
+    position: relative;
+
+    // Tiny ornament centered on the upper rule — a faint dot, like a
+    // manuscript paragraph mark sitting between chapter title and body.
+    &::before {
+      content: "";
+      position: absolute;
+      top: -3px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 5px;
+      height: 5px;
+      border-radius: 50%;
+      background: var(--cx-arc);
+      opacity: 0.7;
+    }
+
+    animation: codex-page-reveal 520ms cubic-bezier(0.2, 0.8, 0.2, 1) 140ms both;
+  }
+
+  ag-grid-angular {
+    animation: codex-page-reveal 600ms cubic-bezier(0.2, 0.8, 0.2, 1) 220ms both;
+  }
+
   ag-grid-angular,
   .ag-root-wrapper,
   .ag-theme-material,
@@ -15,7 +54,7 @@
     --ag-secondary-foreground-color: var(--cx-text-2);
     --ag-header-background-color: transparent;
     --ag-header-foreground-color: var(--cx-text-2);
-    --ag-row-hover-color: var(--cx-ink-2);
+    --ag-row-hover-color: rgba(232, 226, 210, 0.025);
     --ag-selected-row-background-color: var(--cx-ink-3);
     --ag-row-border-color: var(--cx-line-faint);
     --ag-border-color: var(--cx-line);
@@ -36,7 +75,7 @@
     border-bottom: 1px solid var(--cx-line) !important;
   }
 
-  // Header text — eyebrow-style mono caps
+  // Eyebrow-style mono-caps column headers, like a ledger
   .ag-header-cell-text {
     font-family: "Codex Mono", "JetBrains Mono", "SF Mono", "Cascadia Code", monospace;
     font-size: 10px;
@@ -45,30 +84,57 @@
     color: var(--cx-text-2);
   }
 
+  // Hairline vertical separator after each header cell — manuscript ledger
+  .ag-header-cell::after {
+    content: "";
+    position: absolute;
+    right: 0;
+    top: 25%;
+    height: 50%;
+    width: 1px;
+    background-color: var(--cx-line) !important;
+  }
+  .ag-header-cell:last-child::after {
+    display: none;
+  }
+
+  // Sliding gold rail on the row that you're hovering — replaces a flat
+  // tinted hover, much more "selected" feeling without changing colours.
+  .ag-row {
+    position: relative;
+
+    &::before {
+      content: "";
+      position: absolute;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      width: 0;
+      background: var(--cx-arc);
+      opacity: 0;
+      transition:
+        width 0.18s cubic-bezier(0.2, 0.8, 0.2, 1),
+        opacity 0.18s ease;
+    }
+  }
+
+  .ag-row.ag-row-hover::before {
+    width: 2px;
+    opacity: 0.45;
+  }
+
+  .ag-row.ag-row-selected::before {
+    width: 2px;
+    opacity: 1;
+  }
+
   // Tabular numerals on data
   .ag-cell {
     font-variant-numeric: tabular-nums;
   }
 
-  // "Update available" — small leading gold dot, not a row tint.
-  // ag-grid puts a class on the row when the addon has an update available;
-  // we attach the dot to the first cell so it lives outside the data area.
-  .ag-row.update-available .ag-cell:first-of-type::before,
-  .ag-row[row-index] .ag-cell:first-of-type[data-update-available="true"]::before {
-    content: "";
-    display: inline-block;
-    width: 6px;
-    height: 6px;
-    border-radius: 50%;
-    background: var(--cx-arc);
-    margin-right: 8px;
-    vertical-align: middle;
-    flex-shrink: 0;
-  }
-
-  // Addon name — display serif at body-text size, picks up Fraunces' soft
-  // optical-size flexion. This is where the editorial typography earns its
-  // 67KB.
+  // Addon name — display serif with soft optical sizing, the place where
+  // the bundled font earns its keep
   .ag-cell[col-id="name"] .ag-cell-value,
   .ag-cell.name-cell {
     font-family: "Codex Display", "New York", "Cambria", Georgia, serif;
@@ -76,5 +142,38 @@
     font-size: 14px;
     letter-spacing: -0.005em;
     color: var(--cx-text-0);
+  }
+
+  // Empty state — a quiet editorial line, not a flat sentence
+  .ag-overlay-no-rows-center {
+    color: var(--cx-text-2);
+    font-family: "Codex Display", "New York", "Cambria", Georgia, serif;
+    font-variation-settings: "opsz" 96, "wght" 360, "SOFT" 60;
+    font-style: italic;
+    font-size: 22px;
+    letter-spacing: -0.01em;
+    text-align: center;
+
+    &::after {
+      content: "·";
+      display: block;
+      color: var(--cx-arc);
+      font-size: 32px;
+      line-height: 0.4;
+      margin-top: 6px;
+      opacity: 0.7;
+    }
+  }
+}
+
+// Page-mount reveal — used for staggered chapter heading + chrome + table
+@keyframes codex-page-reveal {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
   }
 }
