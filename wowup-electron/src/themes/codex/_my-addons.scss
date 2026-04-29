@@ -117,23 +117,24 @@
   }
 
   // Sliding gold rail on the row that you're hovering — replaces a flat
-  // tinted hover, much more "selected" feeling without changing colours.
-  .ag-row {
-    position: relative;
-
-    &::before {
-      content: "";
-      position: absolute;
-      left: 0;
-      top: 0;
-      bottom: 0;
-      width: 0;
-      background: var(--cx-arc);
-      opacity: 0;
-      transition:
-        width 0.18s cubic-bezier(0.2, 0.8, 0.2, 1),
-        opacity 0.18s ease;
-    }
+  // tinted hover. The ::before rides along ag-grid's own .ag-row
+  // (which is already position:absolute for virtual scrolling), so we
+  // must NOT set position:relative on .ag-row — that would clobber the
+  // absolute positioning the grid drives via transform: translateY()
+  // and break virtualisation (rows go missing / scroll lags).
+  .ag-row::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 0;
+    background: var(--cx-arc);
+    opacity: 0;
+    transition:
+      width 0.18s cubic-bezier(0.2, 0.8, 0.2, 1),
+      opacity 0.18s ease;
+    pointer-events: none;
   }
 
   .ag-row.ag-row-hover::before {

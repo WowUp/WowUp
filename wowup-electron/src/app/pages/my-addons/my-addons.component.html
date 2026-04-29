@@ -95,7 +95,7 @@
     [columnDefs]="columnDefs$ | async"
     [rowSelection]="'multiple'"
     [getRowId]="getRowNodeId"
-    [rowHeight]="63"
+    [rowHeight]="rowHeight$ | async"
     [rowClassRules]="rowClassRules"
     [suppressMultiSort]="true"
     [overlayNoRowsTemplate]="overlayNoRowsTemplate"
