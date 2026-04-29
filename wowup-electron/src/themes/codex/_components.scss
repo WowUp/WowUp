@@ -227,6 +227,22 @@
     }
   }
 
+  // Center whichever child is showing in the status cell — the button or
+  // the "Up to date" text — within its column.
+  app-my-addon-status-cell {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+
+    .row {
+      justify-content: center;
+      align-items: center;
+      width: 100%;
+    }
+  }
+
   // Status text takes over once the install completes — "Up to date".
   // Lands with a small scale+blur "poof" reveal and a gold check mark
   // that pops a beat after, so the moment of completion reads.
