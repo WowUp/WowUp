@@ -1,12 +1,17 @@
 .codex-theme app-get-addons {
   .tab-container {
+    overflow: hidden !important;
+    display: flex !important;
+    flex-direction: column;
+
     &::before {
       content: "The Library";
       display: block;
-      padding: 28px 32px 4px;
+      flex: 0 0 auto;
+      padding: 24px 32px 4px;
       font-family: "Codex Display", "New York", "Cambria", Georgia, serif;
       font-variation-settings: "opsz" 144, "wght" 360, "SOFT" 60;
-      font-size: 40px;
+      font-size: 36px;
       line-height: 1;
       letter-spacing: -0.022em;
       color: var(--cx-text-0);
@@ -15,6 +20,7 @@
   }
 
   .control-container {
+    flex: 0 0 auto;
     background: transparent !important;
     border-top: 1px solid var(--cx-line);
     border-bottom: 1px solid var(--cx-line);
@@ -36,11 +42,21 @@
     animation: codex-page-reveal 520ms cubic-bezier(0.2, 0.8, 0.2, 1) 140ms both;
   }
 
+  ag-grid-angular {
+    flex: 1 1 auto;
+    min-height: 0;
+  }
+
   ag-grid-angular,
   .ag-root-wrapper,
   .ag-theme-material,
   .ag-theme-balham,
   .ag-theme-material-dark {
+    --ag-row-height: 56px;
+    --ag-header-height: 30px;
+    --ag-cell-horizontal-padding: 12px;
+    --ag-font-size: 13px;
+
     --ag-background-color: transparent;
     --ag-foreground-color: var(--cx-text-0);
     --ag-row-hover-color: rgba(232, 226, 210, 0.025);

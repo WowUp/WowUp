@@ -15,12 +15,51 @@
     }
   }
 
+  // The default themes pin a 72×72 logo at top-left of the WINDOW. In
+  // Codex we replace that small chip with a large background mark that
+  // bleeds off the left edge of the sidenav and fades in toward the
+  // right — see the ::before below.
+  app-vertical-tabs .theme-logo,
+  app-vertical-tabs .theme-logo-glow {
+    display: none !important;
+  }
+
   // Vertical sidenav — selection is communicated by typography weight + an
   // ink lift, not by colour. Keeps the gold accent rare and meaningful.
   app-vertical-tabs .tab-strip {
     background: var(--cx-ink-1) !important;
     border-right: 1px solid var(--cx-line);
     color: var(--cx-text-1);
+    position: relative;
+    overflow: hidden;
+    isolation: isolate;
+
+    // Large bleeding seal: anchored top-left, partially off the left edge,
+    // visibility fading from invisible-on-the-left to fully-visible-on-
+    // the-right. Behaves as a watermark that lives in the sidenav surface.
+    &::before {
+      content: "";
+      position: absolute;
+      z-index: 0;
+      top: -32px;
+      left: -110px;
+      width: 280px;
+      height: 280px;
+      background-image: url("../../assets/images/codex-mark.svg");
+      background-repeat: no-repeat;
+      background-size: contain;
+      background-position: center;
+      opacity: 0.55;
+      pointer-events: none;
+      mask-image: linear-gradient(115deg, transparent 12%, rgba(0, 0, 0, 0.85) 55%, black 78%);
+      -webkit-mask-image: linear-gradient(115deg, transparent 12%, rgba(0, 0, 0, 0.85) 55%, black 78%);
+    }
+
+    // Make sure tabs sit above the mark
+    > * {
+      position: relative;
+      z-index: 1;
+    }
 
     .tab {
       border-left: none !important;
@@ -84,6 +123,19 @@
     .theme-logo-glow {
       background: radial-gradient(circle, var(--cx-arc-faint) 0%, transparent 70%) !important;
     }
+  }
+
+  // Ad space — collapse the reserved 300×250 / 400×300 box when no
+  // <app-webview> has actually rendered (ad blocked, server unreachable,
+  // CMP not consented). Otherwise the empty frame leaves a dead band of
+  // sidenav real estate.
+  app-vertical-tabs .ad-space:not(:has(app-webview)) {
+    display: none !important;
+  }
+  app-vertical-tabs .ad-space .ad:not(:has(app-webview)) {
+    display: none !important;
+    width: 0 !important;
+    height: 0 !important;
   }
 
   // Footer
