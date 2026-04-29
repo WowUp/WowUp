@@ -8,6 +8,11 @@
     radial-gradient(ellipse 80% 50% at 50% -10%, rgba(234, 191, 120, 0.05), transparent 60%),
     radial-gradient(ellipse 60% 40% at 90% 100%, rgba(110, 155, 184, 0.03), transparent 60%),
     var(--cx-ink-0);
+
+  // Single source of truth for the body font under Codex. Display and
+  // Mono are opt-in from here — everything else inherits this stack.
+  font-family: var(--cx-font-ui);
+  font-feature-settings: "kern", "liga", "calt";
 }
 
 // Subtle archival watermark on the main content area — a faded codex seal
@@ -72,7 +77,7 @@
 
   // Page header (rendered when present in My Addons / Get Addons)
   .codex-page-header {
-    font-family: "Codex Display", "New York", "Cambria", Georgia, serif;
+    font-family: var(--cx-font-display);
     font-variation-settings: "opsz" 96, "wght" 400, "SOFT" 50;
     font-size: 32px;
     line-height: 1.05;
@@ -84,7 +89,7 @@
   // Dialog titles — h1/h2 inside dialogs get the editorial treatment
   .mat-mdc-dialog-title,
   .mdc-dialog__title {
-    font-family: "Codex Display", "New York", "Cambria", Georgia, serif !important;
+    font-family: var(--cx-font-display) !important;
     font-variation-settings: "opsz" 60, "wght" 420, "SOFT" 30;
     font-size: 22px;
     letter-spacing: -0.01em;
@@ -96,7 +101,7 @@
   app-options h1,
   app-options h2,
   app-options .options-section-title {
-    font-family: "Codex Display", "New York", "Cambria", Georgia, serif;
+    font-family: var(--cx-font-display);
     font-variation-settings: "opsz" 72, "wght" 380, "SOFT" 40;
     font-size: 24px;
     line-height: 1.1;
@@ -107,7 +112,7 @@
 
   // Eyebrow utility — small mono caps label
   .codex-eyebrow {
-    font-family: "Codex Mono", "JetBrains Mono", "SF Mono", "Cascadia Code", monospace;
+    font-family: var(--cx-font-mono);
     font-size: 10px;
     line-height: 1;
     letter-spacing: 0.18em;

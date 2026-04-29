@@ -29,10 +29,13 @@
   --cx-shadow-1: 0 1px 0 rgba(232, 226, 210, 0.04) inset, 0 8px 24px -12px rgba(0, 0, 0, 0.6);
   --cx-shadow-2: 0 1px 0 rgba(232, 226, 210, 0.06) inset, 0 24px 48px -16px rgba(0, 0, 0, 0.7);
 
+  // Three-font hierarchy — every text in Codex maps to exactly one of these.
+  // Display: identity moments only (chapter title, dialog title, addon name).
+  // Mono: data-shaped text (numbers, versions, dates, providers, eyebrows).
+  // UI: everything else — buttons, sidenav, body copy, inputs.
   --cx-font-display: "Codex Display", "New York", "Cambria", "PT Serif", Georgia, serif;
-  --cx-font-body: "Codex Display", "New York", "Cambria", Georgia, serif;
-  --cx-font-ui: -apple-system, "Segoe UI Variable Display", "Segoe UI", system-ui, sans-serif;
   --cx-font-mono: "Codex Mono", "JetBrains Mono", "SF Mono", "Cascadia Code", "Menlo", monospace;
+  --cx-font-ui: -apple-system, "Segoe UI Variable Display", "Segoe UI", system-ui, sans-serif;
 
   --cx-radius-sm: 2px;
   --cx-radius: 4px;

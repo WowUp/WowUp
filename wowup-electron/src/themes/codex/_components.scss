@@ -250,7 +250,7 @@
     display: inline-flex;
     align-items: center;
     gap: 4px;
-    font-family: "Codex Mono", "JetBrains Mono", "SF Mono", "Cascadia Code", monospace;
+    font-family: var(--cx-font-mono);
     font-size: 10px;
     line-height: 1;
     letter-spacing: 0.14em;

@@ -13,7 +13,7 @@
       display: block;
       flex: 0 0 auto;
       padding: 24px 32px 4px;
-      font-family: "Codex Display", "New York", "Cambria", Georgia, serif;
+      font-family: var(--cx-font-display);
       font-variation-settings: "opsz" 144, "wght" 360, "SOFT" 60;
       font-size: 36px;
       line-height: 1;
@@ -95,7 +95,7 @@
 
   // Eyebrow-style mono-caps column headers, like a ledger
   .ag-header-cell-text {
-    font-family: "Codex Mono", "JetBrains Mono", "SF Mono", "Cascadia Code", monospace;
+    font-family: var(--cx-font-mono);
     font-size: 10px;
     letter-spacing: 0.16em;
     text-transform: uppercase;
@@ -147,26 +147,81 @@
     opacity: 1;
   }
 
-  // Tabular numerals on data
+  // Default cell — body font. Tabular numerals so any number that lands
+  // here aligns even without an explicit mono override.
   .ag-cell {
+    font-family: var(--cx-font-ui);
     font-variant-numeric: tabular-nums;
+    color: var(--cx-text-1);
   }
 
-  // Addon name — display serif with soft optical sizing, the place where
-  // the bundled font earns its keep
+  // Data-shaped columns → Codex Mono. Versions, dates, counts, IDs,
+  // game-version tags, and provider names all read as ledger data.
+  .ag-cell[col-id="installedVersion"],
+  .ag-cell[col-id="latestVersion"],
+  .ag-cell[col-id="releaseDate"],
+  .ag-cell[col-id="downloadCount"],
+  .ag-cell[col-id="gameVersion"],
+  .ag-cell[col-id="externalChannel"],
+  .ag-cell[col-id="providerName"],
+  .ag-cell[col-id="author"] {
+    font-family: var(--cx-font-mono);
+    font-size: 12px;
+    color: var(--cx-text-2);
+    letter-spacing: 0;
+  }
+
+  // Provider name + channel feel like labels — give them eyebrow casing.
+  .ag-cell[col-id="providerName"],
+  .ag-cell[col-id="externalChannel"] {
+    font-size: 10px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+  }
+
+  // Addon name — display serif with soft optical sizing, the one place
+  // in the table where Fraunces earns its keep.
   .ag-cell[col-id="name"] .ag-cell-value,
   .ag-cell.name-cell {
-    font-family: "Codex Display", "New York", "Cambria", Georgia, serif;
+    font-family: var(--cx-font-display);
     font-variation-settings: "opsz" 24, "wght" 460, "SOFT" 30;
     font-size: 14px;
     letter-spacing: -0.005em;
     color: var(--cx-text-0);
   }
 
+  // Inside the multi-line name cell, the secondary version row (rendered
+  // by my-addons-addon-cell) is data, not display — push it to mono.
+  app-my-addons-addon-cell {
+    .addon-title {
+      font-family: var(--cx-font-display);
+      font-variation-settings: "opsz" 24, "wght" 460, "SOFT" 30;
+      font-size: 14px;
+      letter-spacing: -0.005em;
+      color: var(--cx-text-0);
+    }
+
+    .addon-version,
+    .addon-version > * {
+      font-family: var(--cx-font-mono);
+      font-size: 11px;
+      font-variant-numeric: tabular-nums;
+      color: var(--cx-text-2);
+      letter-spacing: 0;
+    }
+
+    .channel {
+      font-family: var(--cx-font-mono);
+      font-size: 9px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+    }
+  }
+
   // Empty state — a quiet editorial line, not a flat sentence
   .ag-overlay-no-rows-center {
     color: var(--cx-text-2);
-    font-family: "Codex Display", "New York", "Cambria", Georgia, serif;
+    font-family: var(--cx-font-display);
     font-variation-settings: "opsz" 96, "wght" 360, "SOFT" 60;
     font-style: italic;
     font-size: 22px;

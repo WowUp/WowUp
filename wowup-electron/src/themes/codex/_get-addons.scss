@@ -9,7 +9,7 @@
       display: block;
       flex: 0 0 auto;
       padding: 24px 32px 4px;
-      font-family: "Codex Display", "New York", "Cambria", Georgia, serif;
+      font-family: var(--cx-font-display);
       font-variation-settings: "opsz" 144, "wght" 360, "SOFT" 60;
       font-size: 36px;
       line-height: 1;
@@ -72,7 +72,7 @@
   }
 
   .ag-header-cell-text {
-    font-family: "Codex Mono", "JetBrains Mono", "SF Mono", "Cascadia Code", monospace;
+    font-family: var(--cx-font-mono);
     font-size: 10px;
     letter-spacing: 0.16em;
     text-transform: uppercase;
@@ -92,6 +92,42 @@
     display: none;
   }
 
+  // Default cell — body font, tabular nums.
+  .ag-cell {
+    font-family: var(--cx-font-ui);
+    font-variant-numeric: tabular-nums;
+    color: var(--cx-text-1);
+  }
+
+  // Discovery-page data columns → Codex Mono.
+  .ag-cell[col-id="version"],
+  .ag-cell[col-id="latestVersion"],
+  .ag-cell[col-id="releaseDate"],
+  .ag-cell[col-id="downloadCount"],
+  .ag-cell[col-id="providerName"],
+  .ag-cell[col-id="author"],
+  .ag-cell[col-id="gameVersion"] {
+    font-family: var(--cx-font-mono);
+    font-size: 12px;
+    color: var(--cx-text-2);
+    letter-spacing: 0;
+  }
+
+  .ag-cell[col-id="providerName"] {
+    font-size: 10px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+  }
+
+  // Discovery title — display serif.
+  .ag-cell[col-id="name"] .ag-cell-value {
+    font-family: var(--cx-font-display);
+    font-variation-settings: "opsz" 24, "wght" 460, "SOFT" 30;
+    font-size: 14px;
+    letter-spacing: -0.005em;
+    color: var(--cx-text-0);
+  }
+
   // Bigger search field — this is the "scriptorium" search, the page's
   // primary affordance. Swap stock Material into a serif-with-mono input.
   .filter-container,
@@ -101,14 +137,14 @@
     max-width: 560px;
 
     input.mat-mdc-input-element {
-      font-family: "Codex Mono", "JetBrains Mono", "SF Mono", "Cascadia Code", monospace;
+      font-family: var(--cx-font-mono);
       font-size: 13px;
       letter-spacing: 0;
       color: var(--cx-text-0);
 
       &::placeholder {
         color: var(--cx-text-3);
-        font-family: "Codex Display", "New York", "Cambria", Georgia, serif;
+        font-family: var(--cx-font-display);
         font-style: italic;
         font-size: 14px;
       }
