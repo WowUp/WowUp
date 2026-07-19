@@ -104,8 +104,8 @@ jobs:
           cd ./wowup-electron/electron-build
           mkdir code_signer
           cd ./code_signer
-          Write-Host "Downloading CodeSignTool from ssl.com..."
-          powershell -Command "Invoke-WebRequest -Uri 'https://www.ssl.com/download/codesigntool-for-windows' -OutFile 'out.zip' -Verbose"
+          Write-Host "Downloading CodeSignTool from GitHub releases..."
+          powershell -Command "Invoke-WebRequest -Uri 'https://github.com/SSLcom/CodeSignTool/releases/download/v1.3.2/CodeSignTool-v1.3.2-windows.zip' -OutFile 'out.zip' -Verbose"
           Write-Host "Expanding CodeSignTool archive..."
           powershell -Command "Expand-Archive -Path 'out.zip' -DestinationPath '.' -Force -Verbose"
           Write-Host "Done extracting CodeSignTool."
