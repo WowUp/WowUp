@@ -14,6 +14,7 @@ import {
   AddonSearchResultFile,
   AddonWarningType,
   AdPageOptions,
+  DownloadAuth,
   GetAllBatchResult,
   GetAllResult,
   getEnumName,
@@ -95,6 +96,7 @@ const GAME_TYPE_LISTS = [
 export class CurseAddonProvider extends AddonProvider {
   private readonly _circuitBreaker: CircuitBreakerWrapper;
   private readonly _cf2Client: cfv2.CFV2Client;
+  private readonly _cf2ApiKey = AppConfig.curseforge.apiKey;
 
   public readonly name = ADDON_PROVIDER_CURSEFORGE;
   public readonly forceIgnore = false;
@@ -120,7 +122,7 @@ export class CurseAddonProvider extends AddonProvider {
     );
 
     this._cf2Client = new cfv2.CFV2Client({
-      apiKey: AppConfig.curseforge.apiKey,
+      apiKey: this._cf2ApiKey,
     });
   }
 
@@ -486,6 +488,14 @@ export class CurseAddonProvider extends AddonProvider {
     return {
       pageUrl: "",
     };
+  }
+
+  public override getDownloadAuth(): Promise<DownloadAuth | undefined> {
+    return Promise.resolve({
+      headers: {
+        "X-Api-Key": this._cf2ApiKey,
+      },
+    });
   }
 
   private isCfFileCompatible(clientType: WowClientType, file: cfv2.CF2File): boolean {

@@ -1,7 +1,7 @@
 {
-  "name": "wowup",
-  "productName": "WowUp",
-  "version": "2.22.1-beta.3",
+  "name": "wowup-cf",
+  "productName": "WowUpCf",
+  "version": "2.23.0-beta.1",
   "private": true,
   "description": "World of Warcraft addon updater",
   "keywords": [
@@ -11,7 +11,7 @@
   "homepage": "https://wowup.io",
   "repository": {
     "type": "git",
-    "url": "https://github.com/WowUp/WowUp.git"
+    "url": "https://github.com/WowUp/WowUp.CF.git"
   },
   "author": {
     "name": "WowUp LLC",
@@ -73,9 +73,9 @@
   "dependencies": {
     "adm-zip": "0.5.12",
     "auto-launch": "5.0.6",
-    "electron-log": "5.4.3",
+    "electron-log": "5.4.4",
     "electron-store": "8.2.0",
-    "electron-updater": "6.8.3",
+    "electron-updater": "6.8.9",
     "globrex": "0.1.2",
     "handlebars": "4.7.8",
     "lodash": "4.17.21",
@@ -87,8 +87,9 @@
     "rxjs": "7.8.1",
     "win-ca": "3.5.1",
     "wowup-lib-core": "file:../wowup-lib",
-    "yauzl": "2.10.0"
+    "yauzl": "3.4.0"
   },
+  "overrides": {},
   "devDependencies": {
     "@angular-builders/custom-webpack": "17.0.2",
     "@angular-devkit/build-angular": "17.3.4",
@@ -119,8 +120,8 @@
     "@microsoft/applicationinsights-web": "3.0.5",
     "@ngx-translate/core": "15.0.0",
     "@ngx-translate/http-loader": "8.0.0",
-    "@overwolf/ow-electron": "37.10.3",
-    "@overwolf/ow-electron-builder": "26.0.12",
+    "@overwolf/ow-electron": "39.8.10",
+    "@overwolf/ow-electron-builder": "26.9.0",
     "@types/adm-zip": "0.5.1",
     "@types/flat": "5.0.2",
     "@types/globrex": "0.1.2",
@@ -142,11 +143,11 @@
     "chai": "4.3.8",
     "core-js": "3.38.1",
     "cross-env": "7.0.3",
-    "curseforge-v2": "1.4.0",
+    "curseforge-v2": "1.5.0",
     "del": "7.1.0",
     "dotenv": "16.4.5",
-    "electron": "40.6.0",
-    "electron-builder": "26.8.1",
+    "electron": "43.1.1",
+    "electron-builder": "26.15.3",
     "electron-notarize": "1.2.2",
     "electron-reload": "2.0.0-alpha.1",
     "eslint": "^8.57.0",

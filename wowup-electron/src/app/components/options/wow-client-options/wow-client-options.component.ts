@@ -1,5 +1,5 @@
 import { dirname } from "path";
-import { BehaviorSubject, from, of, Subscription } from "rxjs";
+import { BehaviorSubject, from, Observable, of, Subscription } from "rxjs";
 import { filter, map, switchMap } from "rxjs/operators";
 
 import { Component, Input, OnDestroy, OnInit } from "@angular/core";
@@ -43,11 +43,10 @@ export class WowClientOptionsComponent implements OnInit, OnDestroy {
   public selectedAddonChannelType: AddonChannelType = AddonChannelType.Stable;
   public editMode$ = this._editModeSrc.asObservable();
   public isBusy$ = this._isBusySrc.asObservable();
-  public installationCount$ = this._warcraftInstallationService.wowInstallations$.pipe(
-    map((installations) => installations.length),
-  );
+  public installationCount$: Observable<number>;
 
   public clientAutoUpdate = false;
+  public executableName = "";
 
   public set isBusy(enabled: boolean) {
     this._isBusySrc.next(enabled);
@@ -61,14 +60,6 @@ export class WowClientOptionsComponent implements OnInit, OnDestroy {
     if (this.installation) {
       this.installation.label = input;
     }
-  }
-
-  public get executableName(): string {
-    if (!this.installation) {
-      return "";
-    }
-
-    return this._warcraftService.getExecutableName(this.installation.clientType);
   }
 
   public get wowLogoImage(): string {
@@ -106,6 +97,7 @@ export class WowClientOptionsComponent implements OnInit, OnDestroy {
     private _electronService: ElectronService,
   ) {
     this.addonChannelInfos = this.getAddonChannelInfos();
+    this.installationCount$ = this._warcraftInstallationService.wowInstallations$.pipe(map((i) => i.length));
 
     const editingSub = this._sessionService.editingWowInstallationId$
       .pipe(filter((installationId) => this.installationId !== installationId))
@@ -121,6 +113,11 @@ export class WowClientOptionsComponent implements OnInit, OnDestroy {
     if (!this.installation) {
       throw new Error(`Failed to find installation: ${this.installationId}`);
     }
+
+    this._warcraftService
+      .getExecutableName(this.installation.clientType)
+      .then((name) => (this.executableName = name))
+      .catch(console.error);
 
     this.resetInstallationModel();
 
@@ -231,6 +228,8 @@ export class WowClientOptionsComponent implements OnInit, OnDestroy {
           if (this.installation) {
             return from(this._warcraftInstallationService.removeWowInstallation(this.installation));
           }
+
+          return of(undefined);
         }),
       )
       .subscribe();

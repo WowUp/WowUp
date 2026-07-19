@@ -110,6 +110,14 @@ export const IPC_PUSH_UNREGISTER = "push-unregister";
 export const IPC_PUSH_SUBSCRIBE = "push-subscribe";
 export const IPC_PUSH_NOTIFICATION = "push-notification";
 
+// WARCRAFT CONTROLLER
+export const IPC_WARCRAFT_GET_BLIZZARD_AGENT_PATH = "warcraft-get-blizzard-agent-path";
+export const IPC_WARCRAFT_GET_INSTALLED_PRODUCTS = "warcraft-get-installed-products";
+export const IPC_WARCRAFT_GET_EXECUTABLE_NAME = "warcraft-get-executable-name";
+export const IPC_WARCRAFT_GET_CLIENT_TYPE_FOR_BINARY = "warcraft-get-client-type-for-binary";
+export const IPC_WARCRAFT_IS_WOW_APPLICATION = "warcraft-is-wow-application";
+export const IPC_WARCRAFT_GET_EXECUTABLE_EXTENSION = "warcraft-get-executable-extension";
+
 // IPC STORAGE
 export const IPC_STORE_GET_OBJECT = "store-get-object";
 export const IPC_STORE_GET_OBJECT_SYNC = "store-get-object-sync";

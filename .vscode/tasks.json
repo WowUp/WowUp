@@ -110,7 +110,7 @@
           "endsPattern": "^.*Terminal will be reused by tasks, press any key to close it.*"
         }
       },
-      "dependsOn": ["Build.Lib"]
+      "dependsOn": ["Build.Lib", "Build.Main.OW.Simple"]
     },
     {
       "label": "Build.Renderer",

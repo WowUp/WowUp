@@ -325,7 +325,7 @@ function createWindow(): BrowserWindow {
 
   initializeIpcHandlers(win);
   initializeStoreIpcHandlers();
-  registerControllers({ window: win, addonStore: getAddonStore() });
+  registerControllers({ window: win, addonStore: getAddonStore(), preferenceStore: getPreferenceStore() });
 
   if (AppEnv.buildFlavor === "wago") {
     wagoHandler.initialize(win);

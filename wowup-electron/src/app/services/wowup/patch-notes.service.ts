@@ -16,6 +16,16 @@ export class PatchNotesService {
 
 const CHANGELOGS: ChangeLog[] = [
   {
+    Version: "2.23.0",
+    html: `
+    <h4>Fixes</h4>
+    <ul>
+    <li>Add support for CurseForge download authentication</li>
+    <li>Various bug fixes and improvements</li>
+    </ul>
+    `,
+  },
+  {
     Version: "2.22.1",
     html: `
     <h4>Fixes</h4>

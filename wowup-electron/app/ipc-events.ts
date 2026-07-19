@@ -12,7 +12,7 @@ import {
   systemPreferences,
 } from "electron";
 import * as log from "electron-log/main";
-import * as globrex from "globrex";
+import globrex = require("globrex");
 import * as _ from "lodash";
 import { nanoid } from "nanoid";
 import * as nodeDiskInfo from "node-disk-info";
@@ -110,7 +110,6 @@ import { createTray } from "./system-tray";
 import { WowUpFolderScanner } from "./wowup-folder-scanner";
 import * as push from "./push";
 import { GetDirectoryTreeRequest } from "../src/common/models/ipc-request";
-import { ProductDb } from "../src/common/wowup/product-db";
 import { restoreWindow } from "./window-state";
 import { firstValueFrom, from, mergeMap, toArray } from "rxjs";
 import { CurseFolderScanner } from "./curse-folder-scanner";
@@ -475,15 +474,6 @@ export function initializeIpcHandlers(window: BrowserWindow): void {
     return await fsp.readFile(filePath);
   });
 
-  handle("decode-product-db", async (evt, filePath: string) => {
-    const productDbData = await fsp.readFile(filePath);
-    const productDb = ProductDb.decode(productDbData);
-    setTimeout(() => {
-      console.log("productDb", JSON.stringify(productDb));
-    },1);
-
-    return productDb;
-  });
 
   handle(IPC_WRITE_FILE_CHANNEL, async (evt, filePath: string, contents: string) => {
     return await fsp.writeFile(filePath, contents, { encoding: "utf-8", mode: DEFAULT_FILE_MODE });

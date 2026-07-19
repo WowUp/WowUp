@@ -89,7 +89,7 @@ export interface AddonActionEvent {
 
 const IGNORED_FOLDER_NAMES = ["__MACOSX"];
 
-const ADDON_PROVIDER_TOC_EXTERNAL_ID_MAP = {
+const ADDON_PROVIDER_TOC_EXTERNAL_ID_MAP: Record<string, keyof Toc> = {
   [ADDON_PROVIDER_WOWINTERFACE]: "wowInterfaceId",
   [ADDON_PROVIDER_TUKUI]: "tukUiProjectId",
   [ADDON_PROVIDER_CURSEFORGE]: "curseProjectId",
