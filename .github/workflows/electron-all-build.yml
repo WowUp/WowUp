@@ -24,7 +24,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [ubuntu-latest, windows-latest,"macos-latest"]
+        os: [ubuntu-latest, windows-2022,"macos-latest"]
         node-version: [22.x]
 
     steps:
@@ -76,7 +76,7 @@ jobs:
           npm run electron:publish
 
       - name: Get ssl.com esigner zip file and unzip
-        if: matrix.os == 'windows-latest'
+        if: matrix.os == 'windows-2022'
         run: |
           cd ./wowup-electron/electron-build
           mkdir code_signer
@@ -89,7 +89,7 @@ jobs:
           cd ../../..
 
       - name: Build Windows App
-        if: matrix.os == 'windows-latest'
+        if: matrix.os == 'windows-2022'
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token
           WINDOWS_SIGN_USER_NAME: ${{ secrets.WINDOWS_SIGN_USER_NAME }}
