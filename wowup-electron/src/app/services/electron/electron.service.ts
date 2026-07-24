@@ -3,7 +3,7 @@
 import { IpcRendererEvent, OpenDialogOptions, OpenDialogReturnValue, OpenExternalOptions, Settings } from "electron";
 import { LoginItemSettings } from "electron/main";
 import { find } from "lodash";
-import * as minimist from "minimist";
+import minimist from "minimist";
 import { BehaviorSubject, ReplaySubject, Subject } from "rxjs";
 import { v4 as uuidv4 } from "uuid";
 
@@ -74,6 +74,7 @@ export class ElectronService {
   public readonly isMac = process.platform === "darwin";
   public readonly isLinux = process.platform === "linux";
   public readonly isPortable = !!process.env.PORTABLE_EXECUTABLE_DIR;
+  public readonly isArm64 = process.arch === "arm64";
 
   public get isElectron(): boolean {
     return !!(window && window.process && window.process.type);

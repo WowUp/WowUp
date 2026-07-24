@@ -2,12 +2,18 @@ import { Injectable } from "@angular/core";
 import { Addon } from "wowup-lib-core";
 
 import {
+  IPC_ADDONS_GET_ALL,
+  IPC_ADDONS_GET_ALL_FOR_INSTALLATION,
+  IPC_ADDONS_GET_ALL_FOR_PROVIDER,
+  IPC_ADDONS_GET_AUTO_UPDATE_ENABLED,
+  IPC_ADDONS_GET_AVAILABLE_FOR_UPDATE,
+  IPC_ADDONS_GET_BY_EXTERNAL_ID,
+  IPC_ADDONS_GET_BY_EXTERNAL_IDS,
   IPC_ADDONS_SAVE_ALL,
   ADDON_STORE_NAME,
   IPC_STORE_SET_OBJECT,
   IPC_STORE_GET_OBJECT,
   IPC_STORE_REMOVE_OBJECT,
-  IPC_STORE_GET_ALL,
 } from "../../../common/constants";
 import { ElectronService } from "../electron/electron.service";
 
@@ -16,30 +22,10 @@ import { ElectronService } from "../electron/electron.service";
 })
 export class AddonStorageService {
   public constructor(private _electronService: ElectronService) {}
-  private async getStore(): Promise<Addon[]> {
-    return await this._electronService.invoke(IPC_STORE_GET_ALL, ADDON_STORE_NAME);
-  }
 
-  public async queryAsync<T>(action: (store: Addon[]) => T): Promise<T> {
-    const store = await this.getStore();
-    return action(store);
-  }
-
-  public async queryAllAsync(action: (item: Addon) => boolean): Promise<Addon[]> {
-    const addons: Addon[] = [];
-    const store = await this.getStore();
-    for (const addon of store) {
-      if (action(addon)) {
-        addons.push(addon);
-      }
-    }
-
-    return addons;
-  }
-
-  public async saveAll(addons: Addon[]): Promise<void> {
+  public saveAll(addons: Addon[]): Promise<void> {
     console.debug(`[addon-storage] save all: ${addons?.length ?? 0}`);
-    await this._electronService.invoke(IPC_ADDONS_SAVE_ALL, addons);
+    return this._electronService.invoke(IPC_ADDONS_SAVE_ALL, addons);
   }
 
   public setAsync(key: string | undefined, value: Addon): Promise<void> {
@@ -71,58 +57,31 @@ export class AddonStorageService {
     await this.removeAllAsync(...addons);
   }
 
-  public async getByExternalIdAsync(
-    externalId: string,
-    providerName: string,
-    installationId: string
-  ): Promise<Addon | undefined> {
-    const addons: Addon[] = [];
-    const store = await this.getStore();
-
-    for (const addon of store) {
-      if (
-        addon.installationId === installationId &&
-        addon.externalId === externalId &&
-        addon.providerName === providerName
-      ) {
-        addons.push(addon);
-        break;
-      }
-    }
-
-    return addons[0];
+  public getAll(): Promise<Addon[]> {
+    return this._electronService.invoke(IPC_ADDONS_GET_ALL);
   }
 
-  public async getAll(): Promise<Addon[]> {
-    return await this.getStore();
+  public getAllForInstallationIdAsync(installationId: string): Promise<Addon[]> {
+    return this._electronService.invoke(IPC_ADDONS_GET_ALL_FOR_INSTALLATION, installationId);
   }
 
-  public async getAllForInstallationIdAsync(
-    installationId: string,
-    validator?: (addon: Addon) => boolean
-  ): Promise<Addon[]> {
-    const addons: Addon[] = [];
-    const store = await this.getStore();
-
-    for (const addon of store) {
-      if (addon.installationId === installationId && (!validator || validator(addon))) {
-        addons.push(addon);
-      }
-    }
-
-    return addons;
+  public getAllForProviderAsync(providerName: string): Promise<Addon[]> {
+    return this._electronService.invoke(IPC_ADDONS_GET_ALL_FOR_PROVIDER, providerName);
   }
 
-  public async getAllForProviderAsync(providerName: string, validator?: (addon: Addon) => boolean): Promise<Addon[]> {
-    const addons: Addon[] = [];
-    const store = await this.getStore();
+  public getByExternalIdAsync(externalId: string, providerName: string, installationId: string): Promise<Addon | undefined> {
+    return this._electronService.invoke(IPC_ADDONS_GET_BY_EXTERNAL_ID, externalId, providerName, installationId);
+  }
 
-    for (const addon of store) {
-      if (addon.providerName === providerName && (!validator || validator(addon))) {
-        addons.push(addon);
-      }
-    }
+  public getByExternalIds(externalIds: string[]): Promise<Addon[]> {
+    return this._electronService.invoke(IPC_ADDONS_GET_BY_EXTERNAL_IDS, externalIds);
+  }
 
-    return addons;
+  public getAvailableForUpdate(installationId?: string): Promise<Addon[]> {
+    return this._electronService.invoke(IPC_ADDONS_GET_AVAILABLE_FOR_UPDATE, installationId);
+  }
+
+  public getAutoUpdateEnabled(): Promise<Addon[]> {
+    return this._electronService.invoke(IPC_ADDONS_GET_AUTO_UPDATE_ENABLED);
   }
 }

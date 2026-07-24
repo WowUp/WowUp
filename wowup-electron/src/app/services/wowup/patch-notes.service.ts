@@ -16,6 +16,48 @@ export class PatchNotesService {
 
 const CHANGELOGS: ChangeLog[] = [
   {
+    Version: "2.23.0",
+    html: `
+    <h4>Fixes</h4>
+    <ul>
+    <li>Add support for CurseForge download authentication</li>
+    <li>Various bug fixes and improvements</li>
+    </ul>
+    `,
+  },
+  {
+    Version: "2.22.1",
+    html: `
+    <h4>Fixes</h4>
+    <ul>
+    <li>Update electron versions</li>
+    <li>Various bug fixes</li>
+    </ul>
+    `,
+  },
+  {
+    Version: "2.22.0",
+    html: `
+    <h4>Features</h4>
+    <ul>
+    <li>Add Burning Crusade Anniversary support</li>
+    </ul>
+    <h4>Fixes</h4>
+    <ul>
+    <li>Fix an issue with the CurseForge search results</li>
+    </ul>
+    `,
+  },
+  {
+    Version: "2.21.0",
+    html: `
+    <h4>Features</h4>
+    <ul>
+    <li>Add Mists of Pandaria Classic support</li>
+    </ul>
+    `,
+  },
+  {
     Version: "2.20.0",
     html: `
     <h4>Features</h4>

@@ -160,7 +160,7 @@ export class WarcraftInstallationService {
 
   public async selectWowClientPath(): Promise<string> {
     const selectionName = this._translateService.instant("COMMON.WOW_EXE_SELECTION_NAME");
-    const extensionFilter = this._warcraftService.getExecutableExtension();
+    const extensionFilter = await this._warcraftService.getExecutableExtension();
     let dialogResult: Electron.OpenDialogReturnValue;
     if (extensionFilter) {
       dialogResult = await this._electronService.showOpenDialog({
@@ -217,7 +217,7 @@ export class WarcraftInstallationService {
   }
 
   public async createWowInstallationForPath(applicationPath: string): Promise<WowInstallation> {
-    const clientType = this._warcraftService.getClientTypeForBinary(applicationPath);
+    const clientType = await this._warcraftService.getClientTypeForBinary(applicationPath);
     const typeName = getEnumName(WowClientType, clientType);
     const currentInstallations = await this.getWowInstallationsByClientType(clientType);
 
@@ -260,7 +260,7 @@ export class WarcraftInstallationService {
         : DEFAULT_NAME_TOKEN;
       const displayName = await this.getDisplayName(label, typeName);
 
-      const fullProductPath = this.getFullProductPath(product.location, product.clientType);
+      const fullProductPath = await this.getFullProductPath(product.location, product.clientType);
 
       if (currentInstallations.some((inst) => inst.location === fullProductPath)) {
         continue;
@@ -292,7 +292,6 @@ export class WarcraftInstallationService {
     const defaultName: string = await firstValueFrom(
       this._translateService.get(`COMMON.CLIENT_TYPES.${typeName.toUpperCase()}`),
     );
-    console.debug("getDisplayName", defaultName, label, typeName);
     const finalLabel = label.replace(DEFAULT_NAME_TOKEN, defaultName);
 
     if (finalLabel.includes(DEFAULT_NAME_TOKEN)) {
@@ -302,9 +301,9 @@ export class WarcraftInstallationService {
     return finalLabel;
   }
 
-  private getFullProductPath(location: string, clientType: WowClientType): string {
+  private async getFullProductPath(location: string, clientType: WowClientType): Promise<string> {
     const clientFolderName = getWowClientFolderName(clientType);
-    const executableName = this._warcraftService.getExecutableName(clientType);
+    const executableName = await this._warcraftService.getExecutableName(clientType);
     return path.join(location, clientFolderName, executableName);
   }
 }

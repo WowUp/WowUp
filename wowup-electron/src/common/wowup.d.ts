@@ -25,6 +25,13 @@ declare type MainChannels =
 
 // Events that can be sent from renderer to main
 declare type RendererChannels =
+  | "addons-get-all"
+  | "addons-get-all-for-installation"
+  | "addons-get-all-for-provider"
+  | "addons-get-auto-update-enabled"
+  | "addons-get-available-for-update"
+  | "addons-get-by-external-id"
+  | "addons-get-by-external-ids"
   | "addons-save-all"
   | "app-install-update"
   | "app-update-check-for-update"

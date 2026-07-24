@@ -86,6 +86,13 @@ export const IPC_REMOVE_AS_DEFAULT_PROTOCOL_CLIENT = "remove-as-default-protocol
 export const IPC_REQUEST_INSTALL_FROM_URL = "request-install-from-url";
 export const IPC_CUSTOM_PROTOCOL_RECEIVED = "custom-protocol-received";
 export const IPC_ADDONS_SAVE_ALL = "addons-save-all";
+export const IPC_ADDONS_GET_ALL_FOR_INSTALLATION = "addons-get-all-for-installation";
+export const IPC_ADDONS_GET_ALL_FOR_PROVIDER = "addons-get-all-for-provider";
+export const IPC_ADDONS_GET_ALL = "addons-get-all";
+export const IPC_ADDONS_GET_BY_EXTERNAL_ID = "addons-get-by-external-id";
+export const IPC_ADDONS_GET_BY_EXTERNAL_IDS = "addons-get-by-external-ids";
+export const IPC_ADDONS_GET_AVAILABLE_FOR_UPDATE = "addons-get-available-for-update";
+export const IPC_ADDONS_GET_AUTO_UPDATE_ENABLED = "addons-get-auto-update-enabled";
 export const IPC_GET_PENDING_OPEN_URLS = "get-pending-open-urls";
 export const IPC_GET_LATEST_DIR_UPDATE_TIME = "get-latest-dir-update-time";
 export const IPC_LIST_DIR_RECURSIVE = "list-dir-recursive";
@@ -102,6 +109,14 @@ export const IPC_PUSH_REGISTER = "push-register";
 export const IPC_PUSH_UNREGISTER = "push-unregister";
 export const IPC_PUSH_SUBSCRIBE = "push-subscribe";
 export const IPC_PUSH_NOTIFICATION = "push-notification";
+
+// WARCRAFT CONTROLLER
+export const IPC_WARCRAFT_GET_BLIZZARD_AGENT_PATH = "warcraft-get-blizzard-agent-path";
+export const IPC_WARCRAFT_GET_INSTALLED_PRODUCTS = "warcraft-get-installed-products";
+export const IPC_WARCRAFT_GET_EXECUTABLE_NAME = "warcraft-get-executable-name";
+export const IPC_WARCRAFT_GET_CLIENT_TYPE_FOR_BINARY = "warcraft-get-client-type-for-binary";
+export const IPC_WARCRAFT_IS_WOW_APPLICATION = "warcraft-is-wow-application";
+export const IPC_WARCRAFT_GET_EXECUTABLE_EXTENSION = "warcraft-get-executable-extension";
 
 // IPC STORAGE
 export const IPC_STORE_GET_OBJECT = "store-get-object";
@@ -201,6 +216,7 @@ export const WOW_CLASSIC_PTR_FOLDER = "_classic_ptr_";
 export const WOW_RETAIL_PTR_FOLDER = "_ptr_";
 export const WOW_RETAIL_XPTR_FOLDER = "_xptr_";
 export const WOW_RETAIL_FOLDER = "_retail_";
+export const WOW_ANNIVERSARY_FOLDER = "_anniversary_";
 export const WOW_ADDON_FOLDER_NAME = "AddOns";
 export const WOW_INTERFACE_FOLDER_NAME = "Interface";
 

@@ -43,7 +43,7 @@ export interface InstallQueueItem {
 
 const IGNORED_FOLDER_NAMES = ["__MACOSX"];
 
-const ADDON_PROVIDER_TOC_EXTERNAL_ID_MAP = {
+const ADDON_PROVIDER_TOC_EXTERNAL_ID_MAP: Record<string, keyof Toc> = {
   [ADDON_PROVIDER_WOWINTERFACE]: "wowInterfaceId",
   [ADDON_PROVIDER_TUKUI]: "tukUiProjectId",
   [ADDON_PROVIDER_WAGO]: "wagoAddonId",
@@ -123,6 +123,7 @@ export class AddonInstallService {
 
     try {
       const downloadAuth = await addonProvider.getDownloadAuth();
+      console.debug(`Download auth for ${addon.name}:`, downloadAuth);
 
       let retryCt = 0;
       while (downloadedFilePath.length === 0) {
@@ -479,7 +480,7 @@ export class AddonInstallService {
     // Remove external ids that are not valid that we may have saved previously
     _.remove(
       newAddon.externalIds ?? [],
-      (extId) => !this._addonProviderService.getProvider(extId.providerName)?.isValidAddonId(extId.id) ?? false,
+      (extId) => !this._addonProviderService.getProvider(extId.providerName)?.isValidAddonId(extId.id),
     );
 
     await this.saveAddon(newAddon);

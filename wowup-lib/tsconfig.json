@@ -1,0 +1,15 @@
+{
+  "compilerOptions": {
+    "target": "es6",
+    "module": "commonjs",
+    "declaration": true,
+    "outDir": "./lib",
+    "strict": true,
+    "lib": ["DOM", "ES2021"],
+    "baseUrl": "./src",
+    "incremental": true,
+    "allowJs": true
+  },
+  "include": ["src/"],
+  "exclude": ["!src/", "**/__tests__/*"]
+}

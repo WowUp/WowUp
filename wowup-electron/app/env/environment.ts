@@ -1,3 +1,5 @@
 export const AppEnv = {
-  buildFlavor: "wago",
+  buildFlavor: "ow",
 };
+
+
