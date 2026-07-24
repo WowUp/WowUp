@@ -8,12 +8,14 @@
   "generateUpdatesFilesForAllChannels": true,
   "publish": ["github"],
   "nodeGypRebuild": true,
-  "files": ["dist/**/*.*", "assets/**/*.*", "app/**/*.js", "src/common/**/*.js", "build/Release/*.node"],
+  "files": ["dist/**/*.*", "assets/**/*.*", "app-build/**/*.js", "src/common/**/*.js", "build/Release/*.node"],
   "win": {
     "icon": "electron-build/icon.ico",
     "target": ["nsis", "portable"],
-    "forceCodeSigning": false,
-    "publisherName": "WowUp LLC"
+    "signtoolOptions": {
+      "sign": "./electron-build/sign-windows.js",
+      "signingHashAlgorithms": ["sha256"]
+    }
   },
   "nsis": {
     "deleteAppDataOnUninstall": true,

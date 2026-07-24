@@ -14,6 +14,7 @@ import {
   AddonSearchResultFile,
   AddonWarningType,
   AdPageOptions,
+  DownloadAuth,
   GetAllBatchResult,
   GetAllResult,
   getEnumName,
@@ -71,15 +72,31 @@ const GAME_TYPE_LISTS = [
     matches: [WowClientType.Retail, WowClientType.RetailPtr, WowClientType.Beta, WowClientType.RetailXPtr],
   },
   {
+    flavor: "wow-burning-crusade-classic",
+    typeId: 73246,
+    matches: [WowClientType.Anniversary],
+  },
+  {
     flavor: "wow-cataclysm-classic",
     typeId: 77522,
+    matches: [],
+  },
+  {
+    flavor: "wow-mists-of-pandaria-classic",
+    typeId: 79434,
     matches: [WowClientType.Classic, WowClientType.ClassicPtr, WowClientType.ClassicBeta],
+  },
+  {
+    flavor: "wow-wrath-titan",
+    typeId: 81212,
+    matches: [],
   },
 ];
 
 export class CurseAddonProvider extends AddonProvider {
   private readonly _circuitBreaker: CircuitBreakerWrapper;
   private readonly _cf2Client: cfv2.CFV2Client;
+  private readonly _cf2ApiKey = AppConfig.curseforge.apiKey;
 
   public readonly name = ADDON_PROVIDER_CURSEFORGE;
   public readonly forceIgnore = false;
@@ -105,7 +122,7 @@ export class CurseAddonProvider extends AddonProvider {
     );
 
     this._cf2Client = new cfv2.CFV2Client({
-      apiKey: AppConfig.curseforge.apiKey,
+      apiKey: this._cf2ApiKey,
     });
   }
 
@@ -473,6 +490,14 @@ export class CurseAddonProvider extends AddonProvider {
     };
   }
 
+  public override getDownloadAuth(): Promise<DownloadAuth | undefined> {
+    return Promise.resolve({
+      headers: {
+        "X-Api-Key": this._cf2ApiKey,
+      },
+    });
+  }
+
   private isCfFileCompatible(clientType: WowClientType, file: cfv2.CF2File): boolean {
     if (Array.isArray(file.sortableGameVersions) && file.sortableGameVersions.length > 0) {
       const gameVersionTypeId = this.getGameVersionTypeId(clientType);
@@ -522,7 +547,7 @@ export class CurseAddonProvider extends AddonProvider {
 
     const targetToc = this._tocService.getTocForGameType2(addonFolder.name, addonFolder.tocs, installation.clientType);
     if (!targetToc) {
-      console.error('targetToc undefined', cfAddon.name, addonFolder.tocs);
+      console.error("targetToc undefined", cfAddon.name, addonFolder.tocs);
       throw new TocNotFoundError("Target toc not found");
     }
 
@@ -696,6 +721,8 @@ export class CurseAddonProvider extends AddonProvider {
         return cfv2.CF2WowGameVersionType.Classic;
       case WowClientGroup.Retail:
         return cfv2.CF2WowGameVersionType.Retail;
+      case WowClientGroup.Mists:
+        return cfv2.CF2WowGameVersionType.Mists;
       default:
         throw new Error(`invalid game type: ${clientGroup as string}`);
     }
@@ -860,9 +887,10 @@ export class CurseAddonProvider extends AddonProvider {
   private async getSearchResults(query: string, clientType: WowClientType): Promise<cfv2.CF2Addon[]> {
     const request: cfv2.CF2SearchModsParams = {
       gameId: 1,
-      categoryId: 0,
+      // categoryId: 0, // setting 0 now returns no results
       searchFilter: query,
-      sortField: 2,
+      // sortField: 2, // Popularity
+      sortField: 1, // Featured
       sortOrder: "desc",
       index: 0,
       gameVersionTypeId: this.getCFGameVersionType(clientType),

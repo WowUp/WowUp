@@ -4,18 +4,12 @@ import { filter, map } from "rxjs/operators";
 
 import { Injectable } from "@angular/core";
 
-import { ElectronService } from "../electron/electron.service";
 import * as constants from "../../../common/constants";
 import { SelectItem } from "../../models/wowup/select-item";
 import { getEnumName, getEnumList } from "wowup-lib-core";
 import { FileService } from "../files/file.service";
-import { PreferenceStorageService } from "../storage/preference-storage.service";
 import { TocService } from "../toc/toc.service";
-import { WarcraftServiceImpl } from "./warcraft.service.impl";
-import { WarcraftServiceLinux } from "./warcraft.service.linux";
-import { WarcraftServiceMac } from "./warcraft.service.mac";
-import { WarcraftServiceWin } from "./warcraft.service.win";
-import { ProductDb } from "../../../common/wowup/product-db";
+import { WarcraftApiService } from "../api/warcraft-api.service";
 import { AddonFolder, Toc, WowClientType } from "wowup-lib-core";
 import { InstalledProduct, WowInstallation } from "wowup-lib-core";
 
@@ -23,18 +17,16 @@ import { InstalledProduct, WowInstallation } from "wowup-lib-core";
   providedIn: "root",
 })
 export class WarcraftService {
-  private readonly _impl: WarcraftServiceImpl;
   private readonly _productsSrc = new BehaviorSubject<InstalledProduct[]>([]);
   private readonly _installedClientTypesSrc = new BehaviorSubject<WowClientType[] | undefined>(undefined);
   private readonly _allClientTypes = getEnumList<WowClientType>(WowClientType).filter(
-    (clientType) => clientType !== WowClientType.None
+    (clientType) => clientType !== WowClientType.None,
   );
 
   public readonly products$ = this._productsSrc.asObservable();
   public readonly productsReady$ = this.products$.pipe(filter((products) => Array.isArray(products)));
   public readonly installedClientTypes$ = this._installedClientTypesSrc.asObservable();
 
-  // Map the client types so that we can localize them
   public installedClientTypesSelectItems$ = this._installedClientTypesSrc.pipe(
     filter((clientTypes) => clientTypes !== undefined),
     map((clientTypes) => {
@@ -49,24 +41,21 @@ export class WarcraftService {
           value: ct,
         };
       });
-    })
+    }),
   );
 
   public constructor(
-    private _electronService: ElectronService,
-    private _fileService: FileService,
-    private _preferenceStorageService: PreferenceStorageService,
-    private _tocService: TocService
-  ) {
-    this._impl = this.getImplementation();
+    private readonly _warcraftApiService: WarcraftApiService,
+    private readonly _fileService: FileService,
+    private readonly _tocService: TocService,
+  ) {}
+
+  public getExecutableName(clientType: WowClientType): Promise<string> {
+    return this._warcraftApiService.getExecutableName(clientType);
   }
 
-  public getExecutableName(clientType: WowClientType): string {
-    return this._impl.getExecutableName(clientType);
-  }
-
-  public getExecutableExtension(): string {
-    return this._impl.getExecutableExtension();
+  public getExecutableExtension(): Promise<string> {
+    return this._warcraftApiService.getExecutableExtension();
   }
 
   public async isWowApplication(appPath: string): Promise<boolean> {
@@ -76,7 +65,7 @@ export class WarcraftService {
     }
 
     const fileName = path.basename(appPath);
-    return this._impl.isWowApplication(fileName);
+    return this._warcraftApiService.isWowApplication(fileName);
   }
 
   public getAllClientTypes(): WowClientType[] {
@@ -85,25 +74,14 @@ export class WarcraftService {
 
   public getProductLocation(
     clientType: WowClientType,
-    installedProducts: Map<WowClientType, InstalledProduct>
+    installedProducts: Map<WowClientType, InstalledProduct>,
   ): string {
     const clientLocation = installedProducts.get(clientType);
     return clientLocation?.location ?? "";
   }
 
-  /**
-   * Scan the local blizzard product db for install WoW instances
-   */
-  public async getInstalledProducts(blizzardAgentPath: string): Promise<Map<WowClientType, InstalledProduct>> {
-    const decodedProducts = await this.decodeProducts(blizzardAgentPath);
-    const resolvedProducts = this._impl.resolveProducts(decodedProducts, blizzardAgentPath);
-    const dictionary = new Map<WowClientType, InstalledProduct>();
-
-    for (const product of resolvedProducts) {
-      dictionary.set(product.clientType, product);
-    }
-
-    return dictionary;
+  public getInstalledProducts(blizzardAgentPath: string): Promise<Map<WowClientType, InstalledProduct>> {
+    return this._warcraftApiService.getInstalledProducts(blizzardAgentPath);
   }
 
   public getAddonFolderPath(installation: WowInstallation): string {
@@ -119,7 +97,6 @@ export class WarcraftService {
 
     const addonFolderPath = this.getAddonFolderPath(installation);
 
-    // Folder may not exist if no addons have been installed
     const addonFolderExists = await this._fileService.pathExists(addonFolderPath);
     if (!addonFolderExists) {
       return addonFolders;
@@ -129,8 +106,7 @@ export class WarcraftService {
     const dirPaths = directories.map((dir) => path.join(addonFolderPath, dir));
     const dirStats = await this._fileService.statFiles(dirPaths);
 
-    for (let i = 0; i < directories.length; i += 1) {
-      const dir = directories[i];
+    for (const dir of directories) {
       const addonFolder = await this.getAddonFolder(addonFolderPath, dir);
       if (!addonFolder) {
         console.warn(`Failed to get addonFolder, no toc found: ${dir}`);
@@ -138,9 +114,7 @@ export class WarcraftService {
       }
 
       addonFolder.fileStats = dirStats[path.join(addonFolderPath, dir)];
-      if (addonFolder) {
-        addonFolders.push(addonFolder);
-      }
+      addonFolders.push(addonFolder);
     }
 
     return addonFolders;
@@ -174,24 +148,15 @@ export class WarcraftService {
     }
   }
 
-  public async getBlizzardAgentPath(): Promise<string> {
-    const storedAgentPath = await this._preferenceStorageService.getAsync(constants.BLIZZARD_AGENT_PATH_KEY);
-    if (storedAgentPath) {
-      return storedAgentPath;
-    }
-
-    const agentPath = await this._impl.getBlizzardAgentPath();
-    await this._preferenceStorageService.setAsync(constants.BLIZZARD_AGENT_PATH_KEY, agentPath);
-
-    return agentPath;
+  public getBlizzardAgentPath(): Promise<string> {
+    return this._warcraftApiService.getBlizzardAgentPath();
   }
 
-  public getClientTypeForBinary(binaryPath: string): WowClientType {
-    return this._impl.getClientType(binaryPath);
+  public getClientTypeForBinary(binaryPath: string): Promise<WowClientType> {
+    return this._warcraftApiService.getClientTypeForBinary(binaryPath);
   }
 
   /**
-   * Get the old style preference key for a WoW client type
    * @deprecated
    */
   public getLegacyClientLocationKey(clientType: WowClientType): string {
@@ -210,82 +175,6 @@ export class WarcraftService {
         return constants.BETA_LOCATION_KEY;
       default:
         throw new Error(`Failed to get client location key: ${clientType}, ${getEnumName(WowClientType, clientType)}`);
-    }
-  }
-
-  private async decodeProducts(productDbPath: string) {
-    if (!productDbPath) {
-      return [];
-    }
-
-    try {
-      const productDb = await this._electronService.invoke<ProductDb>("decode-product-db", productDbPath);
-      console.log("productDb", productDb);
-
-      let wowProducts: InstalledProduct[] = productDb.products
-        .filter((p) => p.family === "wow")
-        .map((p) => ({
-          location: p.client.location,
-          name: p.client.name,
-          clientType: this.getClientTypeForFolderName(p.client.name),
-        }));
-
-      wowProducts = wowProducts.filter((wp) => {
-        const hasClientType = wp.clientType != WowClientType.None;
-        if (!hasClientType) {
-          console.warn("Invalid client type detected", wp);
-        }
-        return hasClientType;
-      });
-
-      console.log("wowProducts", wowProducts);
-
-      return wowProducts;
-    } catch (e) {
-      console.error(`failed to decode product db at ${productDbPath}`);
-      console.error(e);
-      return [];
-    }
-  }
-
-  private getImplementation(): WarcraftServiceImpl {
-    if (this._electronService.isWin) {
-      return new WarcraftServiceWin(this._electronService, this._fileService);
-    }
-
-    if (this._electronService.isMac) {
-      return new WarcraftServiceMac(this._fileService);
-    }
-
-    if (this._electronService.isLinux) {
-      return new WarcraftServiceLinux(this._electronService, this._fileService);
-    }
-
-    throw new Error("No warcraft service implementation found");
-  }
-
-  private getClientTypeForFolderName(folderName: string): WowClientType {
-    switch (folderName) {
-      case constants.WOW_RETAIL_FOLDER:
-        return WowClientType.Retail;
-      case constants.WOW_RETAIL_PTR_FOLDER:
-        return WowClientType.RetailPtr;
-      case constants.WOW_RETAIL_XPTR_FOLDER:
-        return WowClientType.RetailXPtr;
-      case constants.WOW_CLASSIC_ERA_FOLDER:
-        return WowClientType.ClassicEra;
-      case constants.WOW_CLASSIC_FOLDER:
-        return WowClientType.Classic;
-      case constants.WOW_CLASSIC_PTR_FOLDER:
-        return WowClientType.ClassicPtr;
-      case constants.WOW_BETA_FOLDER:
-        return WowClientType.Beta;
-      case constants.WOW_CLASSIC_BETA_FOLDER:
-        return WowClientType.ClassicBeta;
-      case constants.WOW_CLASSIC_ERA_PTR_FOLDER:
-        return WowClientType.ClassicEraPtr;
-      default:
-        return WowClientType.None;
     }
   }
 }

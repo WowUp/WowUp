@@ -24,8 +24,8 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [windows-latest]
-        node-version: [16.x]
+        os: [windows-2022]
+        node-version: [24.x]
 
     steps:
       - name: Checkout
@@ -42,7 +42,7 @@ jobs:
         run: npm install -g @angular/cli
 
       - name: Build Windows App
-        if: matrix.os == 'windows-latest'
+        if: matrix.os == 'windows-2022'
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token
           CSC_LINK: ${{ secrets.WINDOWS_CSC_LINK }}

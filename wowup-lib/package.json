@@ -1,0 +1,61 @@
+{
+  "name": "wowup-lib-core",
+  "version": "1.2.0",
+  "description": "",
+  "main": "lib/index.js",
+  "types": "lib/index.d.ts",
+  "source": "src/index.ts",
+  "scripts": {
+    "build": "cross-env TEMP=D:\\Temp parcel build",
+    "format": "prettier --write \"src/**/*.ts\" \"src/**/*.js\"",
+    "lint": "eslint .",
+    "postversion": "git push && git push --tags",
+    "prepare": "npm run build",
+    "prepublishOnly": "npm test && npm run lint",
+    "preversion": "npm run lint",
+    "test": "jest --config jestconfig.json --silent=false",
+    "version": "npm run format && git add -A src"
+  },
+  "author": "WowUp LLC",
+  "license": "ISC",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/WowUp/WowUp.Lib"
+  },
+  "keywords": [
+    "WowUp",
+    "WoW"
+  ],
+  "files": [
+    "lib/**/*"
+  ],
+  "devDependencies": {
+    "@parcel/packager-ts": "^2.15.2",
+    "@parcel/transformer-typescript-types": "^2.15.2",
+    "@types/jest": "^29.5.12",
+    "@types/lodash": "^4.17.0",
+    "@types/markdown-it": "^12.2.3",
+    "@types/node": "^22.15.31",
+    "@types/string-similarity": "^4.0.2",
+    "@types/uuid": "^9.0.8",
+    "@typescript-eslint/eslint-plugin": "^8.34.0",
+    "@typescript-eslint/parser": "^8.34.0",
+    "cross-env": "^7.0.3",
+    "eslint": "^9.28.0",
+    "jest": "^29.7.0",
+    "jest-environment-jsdom": "^29.7.0",
+    "jest-fetch-mock": "^3.0.3",
+    "parcel": "^2.15.2",
+    "prettier": "^3.2.5",
+    "ts-jest": "^29.1.2",
+    "typescript": "^5.8.3",
+    "typescript-eslint": "^8.34.0"
+  },
+  "dependencies": {
+    "lodash": "^4.17.21",
+    "markdown-it": "^13.0.1",
+    "string-similarity": "^4.0.4",
+    "ts-custom-error": "^3.3.1",
+    "uuid": "^11.1.0"
+  }
+}

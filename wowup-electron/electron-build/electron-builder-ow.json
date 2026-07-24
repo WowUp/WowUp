@@ -6,14 +6,24 @@
   },
   "afterSign": "./electron-build/after-sign-ow.js",
   "generateUpdatesFilesForAllChannels": true,
-  "publish": ["github"],
+  "publish": [
+    {
+      "provider": "github",
+      "owner": "WowUp",
+      "repo": "WowUp.CF"
+    }
+  ],
   "nodeGypRebuild": true,
-  "files": ["dist/**/*.*", "assets/**/*.*", "app/**/*.js", "src/common/**/*.js", "build/Release/*.node"],
+  "files": ["dist/**/*.*", "assets/**/*.*", "app-build/**/*.js", "src/common/**/*.js", "build/Release/*.node"],
   "win": {
     "icon": "electron-build/icon-cf.ico",
     "target": ["nsis", "portable"],
-    "forceCodeSigning": true,
-    "publisherName": "WowUp LLC"
+    "forceCodeSigning": false,
+    "signtoolOptions": {
+      "sign": "./electron-build/sign-windows.js",
+      "signingHashAlgorithms": ["sha256"],
+      "publisherName": "WowUp LLC"
+    }
   },
   "nsis": {
     "deleteAppDataOnUninstall": true

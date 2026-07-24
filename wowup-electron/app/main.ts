@@ -45,8 +45,10 @@ import { initializeIpcHandlers, setPendingOpenUrl } from "./ipc-events";
 import * as platform from "./platform";
 import { initializeDefaultPreferences } from "./preferences";
 import { PUSH_NOTIFICATION_EVENT, pushEvents } from "./push";
-import { getPreferenceStore, initializeStoreIpcHandlers } from "./stores";
+import { getAddonStore, getPreferenceStore, initializeStoreIpcHandlers } from "./stores";
+import { registerControllers } from "./controllers";
 import * as windowState from "./window-state";
+
 import { validateGpuCache } from "./utils/gpu-cache-buster";
 import { AppEnv } from "./env/environment";
 
@@ -64,6 +66,7 @@ log.info(`BinaryPath: ${app.getPath("exe")}`);
 log.info("ExecPath", process.execPath);
 log.info("Args", process.argv);
 log.info(`Log path: ${LOG_PATH}`);
+log.info(`App flavor: ${AppEnv.buildFlavor}`);
 
 // ERROR HANDLING SETUP
 process.on("uncaughtException", (error) => {
@@ -97,26 +100,6 @@ let loadFailCount = 0;
 
 initializeDefaultPreferences();
 
-// APP MENU SETUP
-createAppMenu(win);
-
-// WowUp Protocol Handler
-app.setAsDefaultProtocolClient(APP_PROTOCOL_NAME);
-
-// Set the app ID so that our notifications work correctly on Windows
-app.setAppUserModelId(AppEnv.buildFlavor === "ow" ? APP_USER_MODEL_ID_CF : APP_USER_MODEL_ID);
-
-// HARDWARE ACCELERATION SETUP
-if (getPreferenceStore().get(USE_HARDWARE_ACCELERATION_PREFERENCE_KEY) === "false") {
-  log.info("Hardware acceleration disabled");
-  app.disableHardwareAcceleration();
-} else {
-  log.info("Hardware acceleration enabled");
-}
-
-// Some servers don't supply good CORS headers for us, so we ignore them.
-app.commandLine.appendSwitch("disable-features", "HardwareMediaKeyHandling,OutOfBlinkCors");
-
 // Only allow one instance of the app to run at a time, focus running window if user opens a 2nd time
 // Adapted from https://github.com/electron/electron/blob/master/docs/api/app.md#apprequestsingleinstancelock
 const singleInstanceLock = app.requestSingleInstanceLock();
@@ -146,6 +129,26 @@ if (!singleInstanceLock) {
     }
   });
 }
+
+// APP MENU SETUP
+createAppMenu(win);
+
+// WowUp Protocol Handler
+app.setAsDefaultProtocolClient(APP_PROTOCOL_NAME);
+
+// Set the app ID so that our notifications work correctly on Windows
+app.setAppUserModelId(AppEnv.buildFlavor === "ow" ? APP_USER_MODEL_ID_CF : APP_USER_MODEL_ID);
+
+// HARDWARE ACCELERATION SETUP
+if (getPreferenceStore().get(USE_HARDWARE_ACCELERATION_PREFERENCE_KEY) === "false") {
+  log.info("Hardware acceleration disabled");
+  app.disableHardwareAcceleration();
+} else {
+  log.info("Hardware acceleration enabled");
+}
+
+// Some servers don't supply good CORS headers for us, so we ignore them.
+app.commandLine.appendSwitch("disable-features", "HardwareMediaKeyHandling,OutOfBlinkCors");
 
 function isProtocol(arg: string) {
   return getProtocol(arg) != null;
@@ -276,7 +279,7 @@ function createWindow(): BrowserWindow {
     transparent: false,
     resizable: true,
     backgroundColor: getBackgroundColor(),
-    title: "WowUp" + AppEnv.buildFlavor === "ow" ? " CF" : "",
+    title: "WowUp" + (AppEnv.buildFlavor === "ow" ? " CF" : ""),
     titleBarStyle: "hidden",
     webPreferences: {
       preload: join(__dirname, "preload.js"),
@@ -301,7 +304,7 @@ function createWindow(): BrowserWindow {
   // Attempt to fix the missing icon issue on Ubuntu
   if (platform.isLinux) {
     windowOptions.icon = join(
-      __dirname,
+      app.getAppPath(),
       "assets",
       AppEnv.buildFlavor === "ow" ? WOWUP_LOGO_FILENAME_CF : WOWUP_LOGO_FILENAME,
     );
@@ -322,6 +325,7 @@ function createWindow(): BrowserWindow {
 
   initializeIpcHandlers(win);
   initializeStoreIpcHandlers();
+  registerControllers({ window: win, addonStore: getAddonStore(), preferenceStore: getPreferenceStore() });
 
   if (AppEnv.buildFlavor === "wago") {
     wagoHandler.initialize(win);
@@ -367,12 +371,10 @@ function createWindow(): BrowserWindow {
       return callback(false);
     });
 
-    webContents.session.setPermissionCheckHandler((contents, permission, origin) => {
+    webContents.session.setPermissionCheckHandler((contents, permission) => {
       if (["background-sync"].includes(permission)) {
         return true;
       }
-
-      log.warn("[webview] setPermissionCheckHandler", permission, origin);
       return false;
     });
 
@@ -439,12 +441,10 @@ function createWindow(): BrowserWindow {
     }
 
     win?.webContents.session.setPermissionRequestHandler((contents, permission, callback) => {
-      log.warn("win setPermissionRequestHandler", permission);
       return callback(false);
     });
 
-    win?.webContents.session.setPermissionCheckHandler((contents, permission, origin) => {
-      log.warn("win setPermissionCheckHandler", permission, origin);
+    win?.webContents.session.setPermissionCheckHandler(() => {
       return false;
     });
 
@@ -482,7 +482,7 @@ function createWindow(): BrowserWindow {
 
     if (platform.isMac) {
       app.setBadgeCount(0);
-      app.dock.hide();
+      app.dock?.hide();
     }
   });
 
@@ -525,7 +525,7 @@ function createWindow(): BrowserWindow {
   log.info(`Loading app URL: ${Date.now() - startedAt}ms`);
   if (argv.serve) {
     require("electron-reload")(__dirname, {
-      electron: require(join(__dirname, "..", "node_modules", "electron")),
+      electron: require(join(app.getAppPath(), "node_modules", "electron")),
     });
     win.loadURL("http://localhost:4200").catch((e) => log.error(e));
   } else {
@@ -540,7 +540,7 @@ async function loadMainUrl(window: BrowserWindow | null): Promise<void> {
     return;
   }
 
-  const url = pathToFileURL(join(__dirname, "..", "dist", "index.html"));
+  const url = pathToFileURL(join(app.getAppPath(), "dist", "index.html"));
   return await window?.loadURL(url.toString());
 }
 
@@ -548,7 +548,7 @@ async function onActivate() {
   // On OS X it's common to re-create a window in the app when the
   // dock icon is clicked and there are no other windows open.
   if (platform.isMac) {
-    await app.dock.show();
+    await app.dock?.show();
     win?.show();
   }
 

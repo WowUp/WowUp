@@ -5,18 +5,12 @@
 /dist
 /tmp
 /out-tsc
-/app-builds
+/app-build
 /release
 /build
-/app/utils/*.js
-main.js
-ipc-events.js
-app-updater.js
-window-state.js
 src/**/*.js
 !src/karma.conf.js
 *.js.map
-app/*.js
 !electron-build/*.js
 
 # dependencies
@@ -56,3 +50,5 @@ testem.log
 # System Files
 .DS_Store
 Thumbs.db
+electron-build/code_signer
+**/*.log

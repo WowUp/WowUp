@@ -4,9 +4,10 @@ import * as log from "electron-log/main";
 import { exists, readDirRecursive } from "./file.utils";
 import * as fsp from "fs/promises";
 import { firstValueFrom, from, mergeMap, toArray } from "rxjs";
+import { app } from "electron";
 import { AddonScanResult } from "wowup-lib-core";
 
-const nativeAddon = require("../build/Release/addon.node");
+const nativeAddon = require(path.join(app.getAppPath(), "build/Release/addon.node"));
 
 const INVALID_PATH_CHARS = [
   "|",
@@ -56,7 +57,7 @@ export class CurseFolderScanner {
   }
 
   private get tocFileRegex() {
-    return /^([^/]+)[\\/]\1([-|_](mainline|bcc|tbc|classic|vanilla|wrath|wotlkc|cata))?\.toc$/i;
+    return /^([^/]+)[\\/]\1([-|_](mainline|bcc|tbc|classic|vanilla|wrath|wotlkc|cata|mists))?\.toc$/i;
   }
 
   private get bindingsXmlRegex() {

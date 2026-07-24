@@ -24,8 +24,8 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [ubuntu-latest, windows-latest,"macos-latest"]
-        node-version: [20.x]
+        os: [ubuntu-latest, windows-2022,"macos-latest"]
+        node-version: [24.x]
 
     steps:
       - name: Checkout
@@ -37,6 +37,11 @@ jobs:
         uses: actions/setup-node@v2
         with:
           node-version: ${{ matrix.node-version }}
+
+      - name: Install lib dependencies
+        run: |
+          cd ./wowup-lib
+          npm install
 
       - name: Install Angular CLI
         run: npm install -g @angular/cli
@@ -70,10 +75,29 @@ jobs:
           npm i
           npm run electron:publish
 
+      - name: Get ssl.com esigner zip file and unzip
+        if: matrix.os == 'windows-2022'
+        run: |
+          cd ./wowup-electron/electron-build
+          mkdir code_signer
+          cd ./code_signer
+          Write-Host "Downloading CodeSignTool from GitHub releases..."
+          powershell -Command "Invoke-WebRequest -Uri 'https://github.com/SSLcom/CodeSignTool/releases/download/v1.3.2/CodeSignTool-v1.3.2-windows.zip' -OutFile 'out.zip' -Verbose"
+          Write-Host "Expanding CodeSignTool archive..."
+          powershell -Command "Expand-Archive -Path 'out.zip' -DestinationPath '.' -Force -Verbose"
+          Write-Host "Done extracting CodeSignTool."
+          cd ../../..
+
       - name: Build Windows App
-        if: matrix.os == 'windows-latest'
+        if: matrix.os == 'windows-2022'
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token
-          CSC_LINK: ${{ secrets.WINDOWS_CSC_LINK }}
-          CSC_KEY_PASSWORD: ${{ secrets.WINDOWS_CSC_KEY_PASSWORD }}
+          WINDOWS_SIGN_USER_NAME: ${{ secrets.WINDOWS_SIGN_USER_NAME }}
+          WINDOWS_SIGN_USER_PASSWORD: ${{ secrets.WINDOWS_SIGN_USER_PASSWORD }}
+          WINDOWS_SIGN_CREDENTIAL_ID_PROD: ${{ secrets.WINDOWS_SIGN_CREDENTIAL_ID_PROD }}
+          WINDOWS_SIGN_CREDENTIAL_ID_NONPROD: ${{ secrets.WINDOWS_SIGN_CREDENTIAL_ID_NONPROD }}
+          WINDOWS_SIGN_USER_TOTP_PROD: ${{ secrets.WINDOWS_SIGN_USER_TOTP_PROD }}
+          WINDOWS_SIGN_USER_TOTP_NONPROD: ${{ secrets.WINDOWS_SIGN_USER_TOTP_NONPROD }}
+          # CSC_LINK: ${{ secrets.WINDOWS_CSC_LINK }}
+          # CSC_KEY_PASSWORD: ${{ secrets.WINDOWS_CSC_KEY_PASSWORD }}
         run: cd ./wowup-electron && npm i && npm run electron:publish

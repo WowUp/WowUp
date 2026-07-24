@@ -29,9 +29,10 @@ export class AnalyticsService {
   }
 
   public async getTelemetryEnabled(): Promise<boolean> {
-    const enabled = await this._preferenceStorageService.getBool(TELEMETRY_ENABLED_KEY);
-    this.configureAppInsights(enabled);
-    return enabled;
+    return Promise.resolve(false);
+    // const enabled = await this._preferenceStorageService.getBool(TELEMETRY_ENABLED_KEY);
+    // this.configureAppInsights(enabled);
+    // return enabled;
   }
 
   public async setTelemetryEnabled(value: boolean) {
@@ -46,7 +47,7 @@ export class AnalyticsService {
   public constructor(
     private _preferenceStorageService: PreferenceStorageService,
     private _electronService: ElectronService,
-    private _wowUpService: WowUpService
+    private _wowUpService: WowUpService,
   ) {
     this._installId = this.loadInstallId();
 
