@@ -690,6 +690,10 @@ export function initializeIpcHandlers(window: BrowserWindow): void {
             req.followRedirect();
           });
 
+          req.on("error", (err) => {
+            return reject(err);
+          });
+
           req.on("response", (response) => {
             const fileLength = parseInt((response.headers["content-length"] as string) ?? "0", 10);
 
