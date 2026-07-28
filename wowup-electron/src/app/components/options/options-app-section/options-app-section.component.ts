@@ -66,6 +66,7 @@ export class OptionsAppSectionComponent implements OnInit {
     { localeId: "nb", label: "Norsk Bokmål" },
     { localeId: "pt", label: "Português" },
     { localeId: "ru", label: "русский" },
+    { localeId: "tr", label: "Türkçe" },
     { localeId: "zh", label: "简体中文" },
     { localeId: "zh-TW", label: "繁體中文" },
   ];
