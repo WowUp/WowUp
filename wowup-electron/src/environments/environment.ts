@@ -20,6 +20,10 @@ export const AppConfig = {
     httpTimeoutMs: 60000,
     apiKey: "{{CURSEFORGE_API_KEY}}",
   },
+  ascension: {
+    catalogUrl: "https://api.dev.wowup.io/v1/ascension",
+    websiteUrl: "https://dev.wowup.io/ascension",
+  },
   autoUpdateIntervalMs: 3600000, // 1 hour
   appUpdateIntervalMs: 3600000, // 1 hour
   defaultHttpTimeoutMs: 10000,

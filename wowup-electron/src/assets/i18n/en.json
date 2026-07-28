@@ -191,6 +191,7 @@
       "TOC_NAME_MISMATCH_TOOLTIP": "This addon's folder does not match the toc"
     },
     "CLIENT_TYPES": {
+      "ASCENSION": "Project Ascension",
       "ANNIVERSARY": "Burning Crusade Anniversary",
       "BETA": "The War Within Beta",
       "CLASSIC": "Mists of Pandaria Classic",

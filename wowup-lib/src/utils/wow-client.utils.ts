@@ -33,6 +33,8 @@ export function getWowGameType(clientType: WowClientType): WowGameType {
       return WowGameType.Mists;
     case WowClientType.Anniversary:
       return WowGameType.BurningCrusade;
+    case WowClientType.Ascension:
+      return WowGameType.WOTLK;
     case WowClientType.Retail:
     case WowClientType.RetailPtr:
     case WowClientType.RetailXPtr:
@@ -53,6 +55,8 @@ export function getWowMajorVersion(clientType: WowClientType): number {
       return WowMajorVersion.Mists;
     case WowClientType.Anniversary:
       return WowMajorVersion.BurningCrusade;
+    case WowClientType.Ascension:
+      return WowMajorVersion.Wrath;
     case WowClientType.Beta:
     case WowClientType.RetailPtr:
     case WowClientType.RetailXPtr:

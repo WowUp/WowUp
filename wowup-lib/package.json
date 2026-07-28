@@ -6,7 +6,7 @@
   "types": "lib/index.d.ts",
   "source": "src/index.ts",
   "scripts": {
-    "build": "cross-env TEMP=D:\\Temp parcel build",
+    "build": "tsc",
     "format": "prettier --write \"src/**/*.ts\" \"src/**/*.js\"",
     "lint": "eslint .",
     "postversion": "git push && git push --tags",

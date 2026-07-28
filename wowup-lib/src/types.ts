@@ -9,7 +9,8 @@ export type AddonProviderType =
   | 'RaiderIO'
   | 'Zip'
   | 'WowUpCompanion'
-  | 'Wago';
+  | 'Wago'
+  | 'Ascension';
 
 export type AddonScanType = 'wowup' | 'curseforge';
 
@@ -78,6 +79,7 @@ export enum WowClientType {
   ClassicEraPtr,
   RetailXPtr,
   Anniversary,
+  Ascension,
   None,
 }
 

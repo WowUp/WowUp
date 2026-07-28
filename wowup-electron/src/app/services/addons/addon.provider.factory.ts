@@ -19,7 +19,7 @@ import { PreferenceStorageService } from "../storage/preference-storage.service"
 import { SensitiveStorageService } from "../storage/sensitive-storage.service";
 import { UiMessageService } from "../ui-message/ui-message.service";
 import { CurseAddonProvider } from "../../addon-providers/curse-addon-provider";
-import { WowUpAddonProvider, WowInterfaceAddonProvider, TukUiAddonProvider } from "wowup-lib-core";
+import { AscensionAddonProvider, WowUpAddonProvider, WowInterfaceAddonProvider, TukUiAddonProvider } from "wowup-lib-core";
 import { AppConfig } from "../../../environments/environment";
 import { GenericNetworkInterface } from "../../business-objects/generic-network-interface";
 import { WagoAddonProvider } from "../../addon-providers/wago-addon-provider";
@@ -37,6 +37,7 @@ export class AddonProviderFactory {
   private _wowupNetworkInterface: GenericNetworkInterface;
   private _wowInterfaceNetworkInterface: GenericNetworkInterface;
   private _tukuiNetworkInterface: GenericNetworkInterface;
+  private _ascensionNetworkInterface: GenericNetworkInterface;
 
   public constructor(
     private _cachingService: CachingService,
@@ -75,6 +76,14 @@ export class AddonProviderFactory {
         AppConfig.wowUpHubHttpTimeoutMs,
       ),
     );
+
+    this._ascensionNetworkInterface = new GenericNetworkInterface(
+      this._networkService.getCircuitBreaker(
+        "ascension_addon_provider",
+        AppConfig.defaultHttpResetTimeoutMs,
+        AppConfig.defaultHttpTimeoutMs,
+      ),
+    );
   }
 
   /** This is part of the APP_INITIALIZER and called before the app is bootstrapped */
@@ -87,6 +96,7 @@ export class AddonProviderFactory {
       this.createRaiderIoAddonProvider(),
       this.createWowUpCompanionAddonProvider(),
       this.createWowUpAddonProvider(),
+      this.createAscensionAddonProvider(),
     ];
 
     if (AppConfig.wago.enabled) {
@@ -178,6 +188,14 @@ export class AddonProviderFactory {
 
   public createWowUpAddonProvider(): WowUpAddonProvider {
     return new WowUpAddonProvider(AppConfig.wowUpHubUrl, AppConfig.wowUpWebsiteUrl, this._wowupNetworkInterface);
+  }
+
+  public createAscensionAddonProvider(): AscensionAddonProvider {
+    return new AscensionAddonProvider(
+      AppConfig.ascension.catalogUrl,
+      AppConfig.ascension.websiteUrl,
+      this._ascensionNetworkInterface,
+    );
   }
 
   public createZipAddonProvider(): ZipAddonProvider {

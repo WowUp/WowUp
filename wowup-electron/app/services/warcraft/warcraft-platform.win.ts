@@ -18,6 +18,7 @@ const WOW_RETAIL_BETA_NAME = "WowB.exe";
 const WOW_CLASSIC_NAME = "WowClassic.exe";
 const WOW_CLASSIC_PTR_NAME = "WowClassicT.exe";
 const WOW_CLASSIC_BETA_NAME = "WowClassicB.exe";
+const ASCENSION_NAME = "Ascension.exe";
 
 const WOW_RETAIL_NAME_ARM64 = "Wow-arm64.exe";
 const WOW_RETAIL_PTR_NAME_ARM64 = "WowT-arm64.exe";
@@ -25,6 +26,7 @@ const WOW_RETAIL_BETA_NAME_ARM64 = "WowB-arm64.exe";
 const WOW_CLASSIC_NAME_ARM64 = "WowClassic-arm64.exe";
 const WOW_CLASSIC_PTR_NAME_ARM64 = "WowClassicT-arm64.exe";
 const WOW_CLASSIC_BETA_NAME_ARM64 = "WowClassicB-arm64.exe";
+const ASCENSION_PATH_MARKER = "ascension";
 
 const WOW_APP_NAMES = [
   WOW_RETAIL_NAME,
@@ -33,6 +35,7 @@ const WOW_APP_NAMES = [
   WOW_CLASSIC_NAME,
   WOW_CLASSIC_PTR_NAME,
   WOW_CLASSIC_BETA_NAME,
+  ASCENSION_NAME,
 ];
 
 const WOW_APP_NAMES_ARM64 = [
@@ -82,6 +85,8 @@ export class WarcraftPlatformWin implements WarcraftPlatform {
     switch (clientType) {
       case WowClientType.Retail:
         return this.isArm64 ? WOW_RETAIL_NAME_ARM64 : WOW_RETAIL_NAME;
+      case WowClientType.Ascension:
+        return ASCENSION_NAME;
       case WowClientType.ClassicEra:
       case WowClientType.Classic:
       case WowClientType.Anniversary:
@@ -103,6 +108,17 @@ export class WarcraftPlatformWin implements WarcraftPlatform {
 
   public getClientType(binaryPath: string): WowClientType {
     const binaryName = path.basename(binaryPath);
+    if (binaryName === ASCENSION_NAME) {
+      return WowClientType.Ascension;
+    }
+
+    if (
+      (binaryName === WOW_RETAIL_NAME || binaryName === WOW_RETAIL_NAME_ARM64) &&
+      binaryPath.toLowerCase().includes(ASCENSION_PATH_MARKER)
+    ) {
+      return WowClientType.Ascension;
+    }
+
     let clientType: WowClientType = WowClientType.None;
     switch (binaryName) {
       case WOW_RETAIL_NAME:

@@ -29,6 +29,9 @@ export function getTocForGameType(tocFileNames: string[], clientType: WowClientT
     case WowClientType.Anniversary:
       matchedToc = tocFileNames.find((tfn) => /.*[-_](tbc|bcc)\.toc$/gi.test(tfn)) || '';
       break;
+    case WowClientType.Ascension:
+      matchedToc = tocFileNames.find((tfn) => /.*[-_](wrath|wotlkc)\.toc$/gi.test(tfn)) || '';
+      break;
     default:
       break;
   }

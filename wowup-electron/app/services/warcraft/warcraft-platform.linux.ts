@@ -18,6 +18,8 @@ const WOW_RETAIL_BETA_NAME = "WowB.exe";
 const WOW_CLASSIC_NAME = "WowClassic.exe";
 const WOW_CLASSIC_PTR_NAME = "WowClassicT.exe";
 const WOW_CLASSIC_BETA_NAME = "WowClassicB.exe";
+const ASCENSION_NAME = "Ascension.exe";
+const ASCENSION_PATH_MARKER = "ascension";
 
 const WOW_APP_NAMES = [
   WOW_RETAIL_NAME,
@@ -26,6 +28,7 @@ const WOW_APP_NAMES = [
   WOW_CLASSIC_NAME,
   WOW_CLASSIC_PTR_NAME,
   WOW_CLASSIC_BETA_NAME,
+  ASCENSION_NAME,
 ];
 
 const LUTRIS_CONFIG_PATH = "/.config/lutris/system.yml";
@@ -66,6 +69,8 @@ export class WarcraftPlatformLinux implements WarcraftPlatform {
     switch (clientType) {
       case WowClientType.Retail:
         return WOW_RETAIL_NAME;
+      case WowClientType.Ascension:
+        return ASCENSION_NAME;
       case WowClientType.ClassicEra:
       case WowClientType.Classic:
       case WowClientType.Anniversary:
@@ -87,6 +92,14 @@ export class WarcraftPlatformLinux implements WarcraftPlatform {
 
   public getClientType(binaryPath: string): WowClientType {
     const binaryName = path.basename(binaryPath);
+    if (binaryName === ASCENSION_NAME) {
+      return WowClientType.Ascension;
+    }
+
+    if (binaryName === WOW_RETAIL_NAME && binaryPath.toLowerCase().includes(ASCENSION_PATH_MARKER)) {
+      return WowClientType.Ascension;
+    }
+
     switch (binaryName) {
       case WOW_RETAIL_NAME:
         return WowClientType.Retail;
