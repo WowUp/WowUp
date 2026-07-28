@@ -7,6 +7,7 @@ export const TOC_TITLE = 'Title';
 export const TOC_VERSION = 'Version';
 export const TOC_WEBSITE = 'Website';
 export const TOC_X_ADDON_PROVIDER = 'X-AddonProvider'; // Raider.IO
+export const TOC_X_ASCENSION_ADDON_ID = 'X-WowUp-Ascension-ID';
 export const TOC_X_CATEGORY = 'X-Category';
 export const TOC_X_CURSE_PROJECT_ID = 'X-Curse-Project-ID'; // CurseForge
 export const TOC_X_LOADONDEMAND = 'LoadOnDemand';
@@ -38,5 +39,6 @@ export interface Toc {
   loadOnDemand?: string;
   dependencyList: string[];
   addonProvider?: string;
+  ascensionAddonId?: string;
   notes?: string;
 }

@@ -508,6 +508,12 @@
     "OPTIONS": {
       "ADDON": {
         "AD_REQUIRED_HINT": "Ad required",
+        "ASCENSION": {
+          "CLEAR_BUTTON": "Clear Assignments",
+          "CLEAR_DESCRIPTION": "Removes stored Ascension provider assignments only. Addon folders and files are not deleted.",
+          "CLEAR_MESSAGE": "Remove all stored Ascension provider assignments? Your addon files will remain installed.",
+          "CLEAR_TITLE": "Clear Ascension Assignments"
+        },
         "CURSE_FORGE_V2": {
           "API_KEY_DESCRIPTION": "If you have requested a CurseForge API key you can input it here to connect to their API.",
           "API_KEY_TITLE": "CurseForge API Key",

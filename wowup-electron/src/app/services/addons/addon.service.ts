@@ -10,6 +10,7 @@ import { Injectable } from "@angular/core";
 import {
   ADDON_PROVIDER_CURSEFORGE,
   ADDON_PROVIDER_CURSEFORGEV2,
+  ADDON_PROVIDER_ASCENSION,
   ADDON_PROVIDER_HUB,
   ADDON_PROVIDER_HUB_LEGACY,
   ADDON_PROVIDER_RAIDERIO,
@@ -90,6 +91,7 @@ export interface AddonActionEvent {
 const IGNORED_FOLDER_NAMES = ["__MACOSX"];
 
 const ADDON_PROVIDER_TOC_EXTERNAL_ID_MAP: Record<string, keyof Toc> = {
+  [ADDON_PROVIDER_ASCENSION]: "ascensionAddonId",
   [ADDON_PROVIDER_WOWINTERFACE]: "wowInterfaceId",
   [ADDON_PROVIDER_TUKUI]: "tukUiProjectId",
   [ADDON_PROVIDER_CURSEFORGE]: "curseProjectId",
@@ -997,7 +999,9 @@ export class AddonService {
 
       newAddon.autoUpdateEnabled = existingAddon.autoUpdateEnabled;
       newAddon.isIgnored = existingAddon.isIgnored;
-      newAddon.installedAt = existingAddon.installedAt;
+      if (existingAddon.installedAt) {
+        newAddon.installedAt = existingAddon.installedAt;
+      }
       newAddon.channelType = Math.max(existingAddon.channelType, newAddon.channelType);
     }
 

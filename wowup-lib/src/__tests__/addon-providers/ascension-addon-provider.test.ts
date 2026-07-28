@@ -3,6 +3,7 @@ import { AddonFolder } from '../../addons';
 import { createMockWowInstallation } from '../../mocks/mock-wow-installation';
 import { WowInstallation } from '../../models';
 import { AddonChannelType, WowClientType } from '../../types';
+import { Toc } from '../../toc';
 import { NetworkInterface, PostConfig } from '../../utils';
 
 const CATALOG_URL = 'https://api.example.test/v1/ascension';
@@ -91,6 +92,14 @@ test('AscensionAddonProvider does not query non-WoTLK installations', async () =
   expect(network.urls).toEqual([]);
 });
 
+test('AscensionAddonProvider lists all catalog addons in the initial view', async () => {
+  const network = new CatalogNetworkInterface();
+  const results = await createProvider(network).getFeaturedAddons(createWotlkInstallation());
+
+  expect(results).toHaveLength(1);
+  expect(network.urls).toEqual([`${CATALOG_URL}/addons`]);
+});
+
 test('AscensionAddonProvider reports missing and invalid addons during sync', async () => {
   const results = await createProvider().getAll(createWotlkInstallation(), ['ascension-ui', '']);
 
@@ -107,19 +116,37 @@ test('AscensionAddonProvider reads metadata from the addon detail endpoint', asy
   await expect(provider.getChangelog(installation, 'ascension-ui', 'release-1')).resolves.toBe('Initial release.');
 });
 
-test('AscensionAddonProvider scans only unambiguous folder matches', async () => {
+test('AscensionAddonProvider scans only folders with an explicit catalog ID', async () => {
+  const provider = createProvider();
+  const toc: Toc = {
+    dependencyList: [],
+    fileName: 'AscensionUI.toc',
+    filePath: '/Interface/AddOns/AscensionUI/AscensionUI.toc',
+    interface: ['30300'],
+    version: '1.0.0',
+  };
   const addonFolder: AddonFolder = {
     name: 'AscensionUI',
     path: '/Interface/AddOns/AscensionUI',
     status: '',
-    tocs: [],
+    tocs: [toc],
   };
 
-  await createProvider().scan(createWotlkInstallation(), AddonChannelType.Stable, [addonFolder]);
+  await provider.scan(createWotlkInstallation(), AddonChannelType.Stable, [addonFolder]);
+  expect(addonFolder.matchingAddon).toBeUndefined();
 
+  toc.ascensionAddonId = 'ascension-ui';
+  await provider.scan(createWotlkInstallation(), AddonChannelType.Stable, [addonFolder]);
+
+  expect(provider.allowReScan).toBe(true);
   expect(addonFolder.matchingAddon).toMatchObject({
     externalId: 'ascension-ui',
+    installationId: 'test-install',
+    installedAt: expect.any(Date),
     installedFolderList: ['AscensionUI'],
+    installedVersion: '1.0.0',
     providerName: 'Ascension',
+    releasedAt: new Date('2026-07-01T00:00:00.000Z'),
+    updatedAt: new Date('2026-07-01T00:00:00.000Z'),
   });
 });

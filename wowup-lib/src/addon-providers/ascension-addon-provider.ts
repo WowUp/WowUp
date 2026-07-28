@@ -1,10 +1,12 @@
+import { v4 as uuidv4 } from 'uuid';
+
 import { AddonProvider, GetAllResult } from '../addon-provider';
 import { Addon, AddonFolder, AddonSearchResult, AddonSearchResultFile } from '../addons';
 import { ADDON_PROVIDER_ASCENSION } from '../constants';
 import { SourceRemovedAddonError } from '../errors';
 import { WowInstallation } from '../models';
 import { AddonChannelType, WowClientType } from '../types';
-import { getEnumName, NetworkInterface } from '../utils';
+import { getEnumName, getGameVersionList, getTocForGameType2, NetworkInterface } from '../utils';
 
 export interface AscensionCatalogRelease {
   id: string;
@@ -34,6 +36,7 @@ export class AscensionAddonProvider extends AddonProvider {
   public readonly allowReinstall = true;
   public readonly allowChannelChange = true;
   public readonly allowEdit = true;
+  public readonly allowReScan = true;
   public enabled = false;
   public providerNote = 'Community addons for Project Ascension (WoTLK 3.3.5).';
 
@@ -80,7 +83,8 @@ export class AscensionAddonProvider extends AddonProvider {
       return [];
     }
 
-    return await this.getCatalogAddons(installation, 'featured=true');
+    // Community catalog entries are not curated yet, so the initial view lists every available addon.
+    return await this.getCatalogAddons(installation);
   }
 
   public override async searchByQuery(query: string, installation: WowInstallation): Promise<AddonSearchResult[]> {
@@ -129,14 +133,31 @@ export class AscensionAddonProvider extends AddonProvider {
 
     const addons = await this.getCatalogAddons(installation);
     for (const addonFolder of addonFolders) {
-      const matchingAddons = addons.filter((result) =>
-        result.files?.some((file) => file.folders.includes(addonFolder.name)),
-      );
-      if (matchingAddons.length !== 1) {
+      const toc = getTocForGameType2(addonFolder, installation.clientType);
+      if (!toc?.ascensionAddonId) {
         continue;
       }
 
-      addonFolder.matchingAddon = this.toAddon(matchingAddons[0], installation, addonChannelType, addonFolder);
+      const addon = addons.find((candidate) => candidate.externalId === toc.ascensionAddonId);
+      if (!addon) {
+        continue;
+      }
+
+      const file = addon.files?.find(
+        (candidate) => candidate.channelType === addonChannelType && candidate.folders.includes(addonFolder.name),
+      );
+      if (!file) {
+        continue;
+      }
+
+      addonFolder.matchingAddon = this.toAddon(
+        addon,
+        file,
+        installation,
+        toc.version,
+        toc.interface,
+        addonFolder.name,
+      );
     }
   }
 
@@ -205,37 +226,40 @@ export class AscensionAddonProvider extends AddonProvider {
 
   private toAddon(
     result: AddonSearchResult,
+    file: AddonSearchResultFile,
     installation: WowInstallation,
-    addonChannelType: AddonChannelType,
-    addonFolder: AddonFolder,
+    installedVersion: string | undefined,
+    interfaceVersions: string[],
+    folderName: string,
   ): Addon {
-    const files = result.files ?? [];
-    const file =
-      files.find((candidate) => candidate.channelType === addonChannelType && candidate.folders.includes(addonFolder.name)) ??
-      files.find((candidate) => candidate.folders.includes(addonFolder.name));
-
     return {
       author: result.author,
       autoUpdateEnabled: installation.defaultAutoUpdate,
       autoUpdateNotificationsEnabled: true,
-      channelType: file?.channelType ?? AddonChannelType.Stable,
+      channelType: file.channelType,
       clientType: installation.clientType,
-      downloadUrl: file?.downloadUrl,
-      externalChannel: getEnumName(AddonChannelType, file?.channelType ?? AddonChannelType.Stable),
+      downloadUrl: file.downloadUrl,
+      externalChannel: getEnumName(AddonChannelType, file.channelType),
       externalId: result.externalId,
-      externalLatestReleaseId: file?.externalId,
+      externalLatestReleaseId: file.externalId,
       externalUrl: result.externalUrl,
-      gameVersion: file ? [file.gameVersion] : [],
+      gameVersion: getGameVersionList(interfaceVersions),
+      id: uuidv4(),
       installationId: installation.id,
-      installedFolderList: [addonFolder.name],
-      installedFolders: addonFolder.name,
+      installedExternalReleaseId: file.externalId,
+      installedFolderList: [folderName],
+      installedFolders: folderName,
+      installedVersion: installedVersion ?? file.version,
+      installedAt: new Date(),
       isIgnored: false,
       isLoadOnDemand: false,
-      latestVersion: file?.version,
+      latestVersion: file.version,
       name: result.name,
       providerName: this.name,
+      releasedAt: file.releaseDate,
       summary: result.summary,
       thumbnailUrl: result.thumbnailUrl,
+      updatedAt: file.releaseDate,
     };
   }
 

@@ -43,6 +43,7 @@ export class TocService {
       tukUiProjectFolders: this.getValue(tocModels.TOC_X_TUKUI_PROJECTFOLDERS, tocText),
       loadOnDemand: this.getValue(tocModels.TOC_X_LOADONDEMAND, tocText),
       addonProvider: this.getValue(tocModels.TOC_X_ADDON_PROVIDER, tocText),
+      ascensionAddonId: this.getValue(tocModels.TOC_X_ASCENSION_ADDON_ID, tocText),
       notes: this.getValue(tocModels.TOC_NOTES, tocText),
     };
   }

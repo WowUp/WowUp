@@ -4,6 +4,7 @@ import {
   debounceTime,
   first,
   from,
+  firstValueFrom,
   Observable,
   of,
   Subject,
@@ -28,6 +29,7 @@ import { AddonProviderState } from "../../../models/wowup/addon-provider-state";
 import { AddonProviderFactory } from "../../../services/addons/addon.provider.factory";
 import { DialogFactory } from "../../../services/dialog/dialog.factory";
 import { SensitiveStorageService } from "../../../services/storage/sensitive-storage.service";
+import { AddonStorageService } from "../../../services/storage/addon-storage.service";
 import { AppConfig } from "../../../../environments/environment";
 
 interface AddonProviderStateModel extends AddonProviderState {
@@ -57,6 +59,7 @@ export class OptionsAddonSectionComponent implements OnInit, OnDestroy {
   public constructor(
     private _addonProviderService: AddonProviderFactory,
     private _sensitiveStorageService: SensitiveStorageService,
+    private _addonStorageService: AddonStorageService,
     private _translateService: TranslateService,
     private _dialogFactory: DialogFactory,
   ) {
@@ -111,6 +114,19 @@ export class OptionsAddonSectionComponent implements OnInit, OnDestroy {
         await this._addonProviderService.setProviderEnabled(providerName, option.selected);
       }
     }
+  }
+
+  public async onClearAscensionAssignments(): Promise<void> {
+    const title = this._translateService.instant("PAGES.OPTIONS.ADDON.ASCENSION.CLEAR_TITLE");
+    const message = this._translateService.instant("PAGES.OPTIONS.ADDON.ASCENSION.CLEAR_MESSAGE");
+    const confirmed = await firstValueFrom(this._dialogFactory.getConfirmDialog(title, message).afterClosed());
+    if (!confirmed) {
+      return;
+    }
+
+    const addons = await this._addonStorageService.getAllForProviderAsync("Ascension");
+    await this._addonStorageService.removeAllAsync(...addons);
+    window.location.reload();
   }
 
   private onWagoEnable(option: MatListOption) {

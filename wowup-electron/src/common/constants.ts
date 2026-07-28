@@ -16,6 +16,7 @@ export const ADDON_PROVIDER_HUB = "WowUpHub";
 export const ADDON_PROVIDER_WAGO = "Wago";
 export const ADDON_PROVIDER_WOWUP_COMPANION = "WowUpCompanion";
 export const ADDON_PROVIDER_ZIP = "Zip";
+export const ADDON_PROVIDER_ASCENSION = "Ascension";
 
 export const APP_PROTOCOL_NAME = "wowup";
 export const CURSE_PROTOCOL_NAME = "curseforge";
