@@ -9,6 +9,8 @@ import { AddonUpdateEvent } from "../../../models/wowup/addon-update-event";
 import { AddonService } from "../../../services/addons/addon.service";
 import { SessionService } from "../../../services/session/session.service";
 import { AddonSearchResult } from "wowup-lib-core";
+import { Addon } from "wowup-lib-core";
+import * as AddonUtils from "../../../utils/addon.utils";
 
 @Component({
   selector: "app-addon-install-button",
@@ -27,6 +29,7 @@ export class AddonInstallButtonComponent implements OnInit, OnDestroy {
   public unavailable$ = new BehaviorSubject<boolean>(false);
   public progressValue$ = new BehaviorSubject<number>(0);
   public buttonText$ = new BehaviorSubject<string>("");
+  private _installedAddon: Addon | undefined;
 
   public constructor(
     private _addonService: AddonService,
@@ -49,15 +52,19 @@ export class AddonInstallButtonComponent implements OnInit, OnDestroy {
     this.unavailable$.next(this.addonSearchResult.externallyBlocked);
 
     this._addonService
-      .isInstalled(this.addonSearchResult.externalId, this.addonSearchResult.providerName, selectedInstallation)
-      .then((isInstalled) => {
-        this.disableButton$.next(this.addonSearchResult.externallyBlocked || isInstalled);
+      .getByExternalId(this.addonSearchResult.externalId, this.addonSearchResult.providerName, selectedInstallation.id)
+      .then((installedAddon) => {
+        this._installedAddon = installedAddon;
+        const hasUpdate = AddonUtils.needsUpdate(installedAddon);
+        this.disableButton$.next(this.addonSearchResult.externallyBlocked || (!!installedAddon && !hasUpdate));
 
         if (this.addonSearchResult.externallyBlocked) {
           this.buttonText$.next(this._translate.instant("COMMON.ADDON_STATE.UNAVAILABLE") as string);
+        } else if (hasUpdate) {
+          this.buttonText$.next(this._translate.instant("COMMON.ADDON_STATE.UPDATE") as string);
         } else {
           this.buttonText$.next(
-            this.getButtonText(isInstalled ? AddonInstallState.Complete : AddonInstallState.Unknown)
+            this.getButtonText(installedAddon ? AddonInstallState.Complete : AddonInstallState.Unknown)
           );
         }
       })
@@ -110,7 +117,11 @@ export class AddonInstallButtonComponent implements OnInit, OnDestroy {
 
     this.disableButton$.next(true);
     try {
-      await this._addonService.installPotentialAddon(this.addonSearchResult, selectedInstallation);
+      if (this._installedAddon) {
+        await this._addonService.updateAddon(this._installedAddon);
+      } else {
+        await this._addonService.installPotentialAddon(this.addonSearchResult, selectedInstallation);
+      }
     } catch (e) {
       console.error("onInstallUpdateClick failed", e);
       console.error(this.addonSearchResult);
