@@ -55,6 +55,89 @@ You can also install the latest version via Chocolatey package manager:
 choco install wowup
 ```
 
+## Ascension Addon Authors
+
+### Make an addon recognizable by WowUp
+
+WowUp matches Ascension addons only by an explicit ID in a `.toc` file. To make an installed addon recognizable:
+
+1. Add the following metadata line to the primary `.toc` file in each addon folder that should be recognized. Use the catalog addon's `id` as the value.
+
+```text
+## X-WowUp-Ascension-ID: elvui-ascension
+```
+
+2. Ensure the value exactly matches the catalog record's top-level `id`, such as `"id": "elvui-ascension"`. It is not the release `id`, version, folder name, or display name.
+3. Publish the changed `.toc` file in every release ZIP. The `.toc` file must remain inside its addon directory at the ZIP root.
+4. In WowUp, rescan the Ascension installation after replacing an existing addon. If it was previously assigned incorrectly, clear its Ascension assignments in Options and rescan.
+
+For multi-folder addons, add the same metadata line to the primary `.toc` file in every folder listed in the release's `folders` field. The folder name must also be listed in that field so WowUp can associate it with the release.
+
+Folder names, titles, authors, and versions are never used to identify Ascension addons. The metadata key must be written exactly as `X-WowUp-Ascension-ID`; shortened keys such as `X-WowUp-Asc` are not recognized.
+
+### Publish addon ZIPs from GitHub
+
+WowUp downloads and extracts the ZIP at a release's `downloadUrl`. Publish a GitHub Release asset rather than using GitHub's automatically generated source-code ZIP: a source archive usually adds a repository-name wrapper folder and includes files that are not part of the addon.
+
+The release ZIP must contain each addon directory at its root, with its `.toc` file inside that directory. For example, `MyAscensionAddon-1.0.0.zip` should contain:
+
+```text
+MyAscensionAddon/
+MyAscensionAddon/MyAscensionAddon.toc
+MyAscensionAddon/...
+```
+
+Do not wrap the addon directory in another directory such as `my-repository-1.0.0/`. If an addon contains multiple folders, include each folder at the ZIP root and list every folder in the catalog release's `folders` field.
+
+Create `.github/workflows/release.yml` in the addon repository. Replace `MyAscensionAddon` with the directory or directories that should be installed. This workflow runs only for `v*` Git tags, creates the correctly structured ZIP, and uploads it as a GitHub Release asset:
+
+```yaml
+name: Release addon
+
+on:
+  push:
+    tags:
+      - "v*"
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build release ZIP
+        env:
+          VERSION: ${{ github.ref_name }}
+        run: |
+          VERSION="${VERSION#v}"
+          mkdir dist
+          zip -r "dist/MyAscensionAddon-${VERSION}.zip" MyAscensionAddon
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          generate_release_notes: true
+          files: dist/*.zip
+```
+
+Tag and push a release after committing the workflow and addon changes. The tag version and catalog `version` should match; the leading `v` is optional in the tag but is removed from the ZIP name above.
+
+```bash
+git tag -a v1.0.0 -m "Release 1.0.0"
+git push origin v1.0.0
+```
+
+After the workflow completes, use the uploaded asset URL in the catalog. With an owner of `example`, repository `my-ascension-addon`, tag `v1.0.0`, and the workflow above, the URL is:
+
+```text
+https://github.com/example/my-ascension-addon/releases/download/v1.0.0/MyAscensionAddon-1.0.0.zip
+```
+
+Set that URL as `downloadUrl`, set `version` to `1.0.0`, and set `folders` to `["MyAscensionAddon"]`. Test the URL in a private browser window before publishing the catalog record; it must download the ZIP without GitHub authentication.
+
 ## Contributing
 
 We welcome any and all contributions from translations to feature pull requests.
