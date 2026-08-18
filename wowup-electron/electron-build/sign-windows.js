@@ -35,23 +35,25 @@ TSA_URL=http://ts.ssl.com
 
 console.log(`SIGNING FOR WINDOWS ${isNonProd ? "NON-PROD" : "PROD"} BUILD`);
 function sign(configuration) {
-  if (isNonProd) {
-    setNonProdConfig();
-  }
+  // if (isNonProd) {
+  //   setNonProdConfig();
+  // }
 
-  const credentialId = isNonProd
-    ? process.env.WINDOWS_SIGN_CREDENTIAL_ID_NONPROD
-    : process.env.WINDOWS_SIGN_CREDENTIAL_ID_PROD;
+  const credentialId = process.env.WINDOWS_SIGN_CREDENTIAL_ID_PROD;
+  // const credentialId = isNonProd
+  //   ? process.env.WINDOWS_SIGN_CREDENTIAL_ID_NONPROD
+  //   : process.env.WINDOWS_SIGN_CREDENTIAL_ID_PROD;
 
   const username = process.env.WINDOWS_SIGN_USER_NAME;
   const password = process.env.WINDOWS_SIGN_USER_PASSWORD;
-  const totpSecret = isNonProd ? process.env.WINDOWS_SIGN_USER_TOTP_NONPROD : process.env.WINDOWS_SIGN_USER_TOTP_PROD;
+  const totpSecret = process.env.WINDOWS_SIGN_USER_TOTP_PROD;
+  // const totpSecret = isNonProd ? process.env.WINDOWS_SIGN_USER_TOTP_NONPROD : process.env.WINDOWS_SIGN_USER_TOTP_PROD;
 
   console.debug(`Signing file ${configuration.path}`);
-  console.debug(`Using credential ID: ${credentialId}`);
-  console.debug(`Using username: ${username}`);
-  console.debug(`Using password ${password}`);
-  console.debug(`Using TOTP secret: ${totpSecret}`);
+  console.debug(`Using credential ID: ${credentialId} (${credentialId.length})`);
+  console.debug(`Using username: ${username} (${username.length})`);
+  console.debug(`Using password ${password} (${password.length})`);
+  console.debug(`Using TOTP secret: ${totpSecret} (${totpSecret.length})`);
 
   // we move signed files to a file named tmp.exe because our product name
   // contains a space, meaning our .exe contains a space, which CodeSignTool

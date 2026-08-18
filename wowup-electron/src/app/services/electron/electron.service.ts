@@ -3,7 +3,7 @@
 import { IpcRendererEvent, OpenDialogOptions, OpenDialogReturnValue, OpenExternalOptions, Settings } from "electron";
 import { LoginItemSettings } from "electron/main";
 import { find } from "lodash";
-import * as minimist from "minimist";
+import minimist from "minimist";
 import { BehaviorSubject, ReplaySubject, Subject } from "rxjs";
 import { v4 as uuidv4 } from "uuid";
 

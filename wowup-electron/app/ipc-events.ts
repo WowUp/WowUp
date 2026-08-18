@@ -12,7 +12,7 @@ import {
   systemPreferences,
 } from "electron";
 import * as log from "electron-log/main";
-import * as globrex from "globrex";
+import globrex = require("globrex");
 import * as _ from "lodash";
 import { nanoid } from "nanoid";
 import * as nodeDiskInfo from "node-disk-info";
@@ -23,7 +23,6 @@ import * as fs from "fs";
 import * as os from "os";
 
 import {
-  IPC_ADDONS_SAVE_ALL,
   IPC_CLOSE_WINDOW,
   IPC_COPY_FILE_CHANNEL,
   IPC_CREATE_APP_MENU_CHANNEL,
@@ -106,16 +105,15 @@ import {
   remove,
   zipFile,
 } from "./file.utils";
-import { getAddonStore, getPreferenceStore } from "./stores";
+import { getPreferenceStore } from "./stores";
 import { createTray } from "./system-tray";
 import { WowUpFolderScanner } from "./wowup-folder-scanner";
 import * as push from "./push";
 import { GetDirectoryTreeRequest } from "../src/common/models/ipc-request";
-import { ProductDb } from "../src/common/wowup/product-db";
 import { restoreWindow } from "./window-state";
 import { firstValueFrom, from, mergeMap, toArray } from "rxjs";
 import { CurseFolderScanner } from "./curse-folder-scanner";
-import { Addon, AddonScanResult, FsStats } from "wowup-lib-core";
+import { AddonScanResult, FsStats } from "wowup-lib-core";
 
 let PENDING_OPEN_URLS: string[] = [];
 
@@ -214,7 +212,7 @@ export function initializeIpcHandlers(window: BrowserWindow): void {
   });
 
   handle(IPC_GET_ASSET_FILE_PATH, (evt, fileName: string) => {
-    return path.join(__dirname, "..", "assets", fileName);
+    return path.join(app.getAppPath(), "assets", fileName);
   });
 
   handle(IPC_CREATE_DIRECTORY_CHANNEL, async (evt, directoryPath: string): Promise<boolean> => {
@@ -265,27 +263,6 @@ export function initializeIpcHandlers(window: BrowserWindow): void {
       log.warn("could not set zoom factor, no web contents");
     }
     getPreferenceStore().set(ZOOM_FACTOR_KEY, zoomFactor);
-  });
-
-  handle(IPC_ADDONS_SAVE_ALL, (evt, addons: Addon[]) => {
-    if (!Array.isArray(addons)) {
-      return;
-    }
-
-    const addonStore = getAddonStore();
-    if (addonStore === undefined) {
-      log.warn("IPC_ADDONS_SAVE_ALL failed, addon store undefined");
-      return;
-    }
-
-    for (const addon of addons) {
-      if (typeof addon.id !== "string") {
-        log.warn("malformed addon not saved", addon);
-        continue;
-      }
-
-      addonStore?.set(addon.id, addon);
-    }
   });
 
   handle(IPC_GET_APP_VERSION, () => {
@@ -392,7 +369,7 @@ export function initializeIpcHandlers(window: BrowserWindow): void {
     try {
       await fsp.access(filePath);
     } catch (e) {
-      if (e.code !== "ENOENT") {
+      if ((e as NodeJS.ErrnoException).code !== "ENOENT") {
         log.error(e);
       }
       return false;
@@ -497,15 +474,6 @@ export function initializeIpcHandlers(window: BrowserWindow): void {
     return await fsp.readFile(filePath);
   });
 
-  handle("decode-product-db", async (evt, filePath: string) => {
-    const productDbData = await fsp.readFile(filePath);
-    const productDb = ProductDb.decode(productDbData);
-    setTimeout(() => {
-      console.log("productDb", JSON.stringify(productDb));
-    },1);
-
-    return productDb;
-  });
 
   handle(IPC_WRITE_FILE_CHANNEL, async (evt, filePath: string, contents: string) => {
     return await fsp.writeFile(filePath, contents, { encoding: "utf-8", mode: DEFAULT_FILE_MODE });
@@ -761,7 +729,7 @@ export function initializeIpcHandlers(window: BrowserWindow): void {
     } catch (err) {
       log.error(err);
       status.type = DownloadStatusType.Error;
-      status.error = err;
+      status.error = err instanceof Error ? err : undefined;
       window.webContents.send(arg.responseKey, status);
     }
   }
@@ -787,18 +755,19 @@ function handleZipFile(err: Error | null, zipfile: yauzl.ZipFile, targetDir: str
       if (/\/$/.test(entry.fileName)) {
         // directory file names end with '/'
         const dirPath = path.join(targetDir, entry.fileName);
-        fs.mkdir(dirPath, { recursive: true }, function () {
-          if (err) throw err;
+        fs.mkdir(dirPath, { recursive: true }, function (mkdirErr) {
+          if (mkdirErr) return reject(mkdirErr);
           zipfile.readEntry();
         });
       } else {
         // ensure parent directory exists
         const filePath = path.join(targetDir, entry.fileName);
         const parentPath = path.join(targetDir, path.dirname(entry.fileName));
-        fs.mkdir(parentPath, { recursive: true }, function () {
+        fs.mkdir(parentPath, { recursive: true }, function (mkdirErr) {
+          if (mkdirErr) return reject(mkdirErr);
           zipfile.openReadStream(entry, (err, readStream) => {
             if (err) {
-              throw err;
+              return reject(err);
             }
 
             const filter = new Transform();

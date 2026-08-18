@@ -14,7 +14,7 @@
     }
   ],
   "nodeGypRebuild": true,
-  "files": ["dist/**/*.*", "assets/**/*.*", "app/**/*.js", "src/common/**/*.js", "build/Release/*.node"],
+  "files": ["dist/**/*.*", "assets/**/*.*", "app-build/**/*.js", "src/common/**/*.js", "build/Release/*.node"],
   "win": {
     "icon": "electron-build/icon-cf.ico",
     "target": ["nsis", "portable"],
