@@ -7,6 +7,7 @@ import { MatDialog } from "@angular/material/dialog";
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 
 import { ElectronService } from "../../../services";
+import { AdService } from "../../../services/ads/ad.service";
 import { AddonService } from "../../../services/addons/addon.service";
 import { AnalyticsService } from "../../../services/analytics/analytics.service";
 import { FileService } from "../../../services/files/file.service";
@@ -27,11 +28,18 @@ describe("OptionsAppSectionComponent", () => {
   let analyticsServiceSpy: any;
   let addonService: any;
   let zoomService: ZoomService;
+  let adServiceSpy: any;
 
   beforeEach(async () => {
     addonService = jasmine.createSpyObj("AddonService", [""], {});
 
-    sessionServiceSpy = jasmine.createSpyObj("SessionService", [""], {});
+    sessionServiceSpy = jasmine.createSpyObj("SessionService", [""], {
+      adSpace$: new BehaviorSubject(false).asObservable(),
+    });
+
+    adServiceSpy = jasmine.createSpyObj("AdService", {
+      resurfaceCmp: Promise.resolve(),
+    });
 
     analyticsServiceSpy = jasmine.createSpyObj("AnalyticsService", [""], {
       telemetryEnabled$: new BehaviorSubject(false).asObservable(),
@@ -91,6 +99,7 @@ describe("OptionsAppSectionComponent", () => {
             { provide: AnalyticsService, useValue: analyticsServiceSpy },
             { provide: ZoomService, useValue: zoomService },
             { provide: AddonService, useValue: addonService },
+            { provide: AdService, useValue: adServiceSpy },
           ],
         },
       })

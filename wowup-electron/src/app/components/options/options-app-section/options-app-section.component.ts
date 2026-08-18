@@ -26,6 +26,7 @@ import { WowUpService } from "../../../services/wowup/wowup.service";
 import { ZOOM_SCALE } from "../../../utils/zoom.utils";
 import { ConfirmDialogComponent } from "../../common/confirm-dialog/confirm-dialog.component";
 import { ZoomService } from "../../../services/zoom/zoom.service";
+import { AdService } from "../../../services/ads/ad.service";
 import { AddonService } from "../../../services/addons/addon.service";
 import { WowUpReleaseChannelType } from "../../../../common/wowup/wowup-release-channel-type";
 import { AppConfig } from "../../../../environments/environment";
@@ -52,6 +53,7 @@ export class OptionsAppSectionComponent implements OnInit {
   public minimizeOnCloseDescription = "";
   public protocolRegistered = false;
   public isCurseForge = AppConfig.curseforge.enabled;
+  public isWago = AppConfig.wago.enabled;
   public zoomScale = ZOOM_SCALE;
   public currentScale = 1;
   public languages: LocaleListItem[] = [
@@ -131,6 +133,7 @@ export class OptionsAppSectionComponent implements OnInit {
     private _cdRef: ChangeDetectorRef,
     private _zoomService: ZoomService,
     private _addonService: AddonService,
+    private _adService: AdService,
     public electronService: ElectronService,
     public sessionService: SessionService,
     public wowupService: WowUpService,
@@ -296,6 +299,12 @@ export class OptionsAppSectionComponent implements OnInit {
     await this.wowupService.setKeepLastAddonDetailTab(evt.checked);
     this.keepAddonDetailTab$.next(evt.checked);
   };
+
+  public onClickManageAdConsent(evt: MouseEvent): void {
+    evt.preventDefault();
+
+    this._adService.resurfaceCmp().catch((e) => console.error("onClickManageAdConsent failed", e));
+  }
 
   public onProtocolHandlerChange = (evt: MatSlideToggleChange, protocol: string): void => {
     // If this is already enabled and the user wants to disable it, don't prompt

@@ -343,7 +343,7 @@
       },
       "TITLE": "WowUp Konfiguracja uprawnień",
       "WAGO": {
-        "DESCRIPTION": "Włącz dostawcę addonu Wago.io aby pomóc twórcom twojego ulubionego addonu! Spowoduje to wyświetlenie panelu promocyjnego wymaganego do korzystania z ich usług.\nDecydując się na udział w programie wyrażasz zgodę na ich <a appExternalLink href=\"{termsUrl}\" >Warunki świadczenia usług/a> oraz <a appExternalLink href=\"{dataUrl}\" >Zgodę na przetwarzanie danych</a>.",
+        "DESCRIPTION": "Włącz dostawcę addonu Wago.io aby pomóc twórcom twojego ulubionego addonu! Spowoduje to wyświetlenie panelu promocyjnego wymaganego do korzystania z ich usług.\nDecydując się na udział w programie wyrażasz zgodę na ich <a appExternalLink href=\"{termsUrl}\" >Warunki świadczenia usług</a>.",
         "TOGGLE_LABEL": "Włącz dostawcę Wago.io"
       }
     },

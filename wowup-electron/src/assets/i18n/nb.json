@@ -343,7 +343,7 @@
       },
       "TITLE": "Sett opp tillatelser for WowUp",
       "WAGO": {
-        "DESCRIPTION": "Aktiver Wago.io som utvidelsesleverandør for å hjelpe til med å støtte forfatterene av favorittutvidelsene dine! Dette vil vise et kampanjepanel som kreves for å bruke tjenesten deres.\nVed å registrere deg godtar du <a appExternalLink href=\"{termsUrl}\" >vilkårene for bruk</a> og <a appExternalLink href=\"{dataUrl}\" >Datasamtykke</a>.",
+        "DESCRIPTION": "Aktiver Wago.io som utvidelsesleverandør for å hjelpe til med å støtte forfatterene av favorittutvidelsene dine! Dette vil vise et kampanjepanel som kreves for å bruke tjenesten deres.\nVed å registrere deg godtar du <a appExternalLink href=\"{termsUrl}\" >vilkårene for bruk</a>.",
         "TOGGLE_LABEL": "Aktiver leverandøren Wago.io"
       }
     },

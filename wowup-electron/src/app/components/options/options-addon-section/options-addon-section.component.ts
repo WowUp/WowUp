@@ -118,7 +118,6 @@ export class OptionsAddonSectionComponent implements OnInit, OnDestroy {
     const title: string = this._translateService.instant("DIALOGS.PERMISSIONS.WAGO.TOGGLE_LABEL");
     const message: string = this._translateService.instant("DIALOGS.PERMISSIONS.WAGO.DESCRIPTION", {
       termsUrl: AppConfig.wago.termsUrl,
-      dataUrl: AppConfig.wago.dataConsentUrl,
     });
 
     const dialogRef = this._dialogFactory.getConfirmDialog(title, message);

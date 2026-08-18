@@ -378,15 +378,6 @@ function createWindow(): BrowserWindow {
       return false;
     });
 
-    if (AppEnv.buildFlavor === "wago") {
-      webContents.on("did-start-navigation", (evt, url) => {
-        if (url === "https://addons.wago.io/wowup_ad") {
-          log.debug("[webview] did-start-navigation", url);
-          wagoHandler.initializeWebContents(webContents);
-        }
-      });
-    }
-
     // webview allowpopups must be enabled for any link to work
     // https://www.electronjs.org/docs/latest/api/webview-tag#allowpopups
     webContents.setWindowOpenHandler((details) => {

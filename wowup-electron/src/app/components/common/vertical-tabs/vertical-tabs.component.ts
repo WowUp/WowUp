@@ -1,7 +1,7 @@
 import { BehaviorSubject, combineLatest, Observable, Subject } from "rxjs";
 import { map, takeUntil } from "rxjs/operators";
 
-import { Component, OnDestroy, OnInit } from "@angular/core";
+import { Component, ElementRef, OnDestroy, OnInit, ViewChild } from "@angular/core";
 
 import {
   FEATURE_ACCOUNTS_ENABLED,
@@ -22,6 +22,7 @@ import { MatDialog } from "@angular/material/dialog";
 import { AlertDialogComponent } from "../alert-dialog/alert-dialog.component";
 import { TranslateService } from "@ngx-translate/core";
 import { PreferenceStorageService } from "../../../services/storage/preference-storage.service";
+import { AdService } from "../../../services/ads/ad.service";
 import { AdPageOptions } from "wowup-lib-core";
 
 interface Tab {
@@ -41,6 +42,15 @@ interface Tab {
 })
 export class VerticalTabsComponent implements OnInit, OnDestroy {
   private readonly destroy$: Subject<boolean> = new Subject<boolean>();
+
+  /**
+   * The hole reserved for the ad. On the wago flavor the main process positions a native view over
+   * it, so the ad service needs to know where it is and when it goes away.
+   */
+  @ViewChild("adHost")
+  public set adHost(host: ElementRef<HTMLElement> | undefined) {
+    this._adService.setHostElement(host?.nativeElement);
+  }
 
   public wowUpWebsiteUrl = AppConfig.wowUpWebsiteUrl;
   public isWago = AppConfig.wago.enabled;
@@ -135,7 +145,13 @@ export class VerticalTabsComponent implements OnInit, OnDestroy {
     private _addonProviderService: AddonProviderFactory,
     private _warcraftInstallationService: WarcraftInstallationService,
     private _preferences: PreferenceStorageService,
+    private _adService: AdService,
   ) {
+    // Only the overwolf flavor hosts its ad in an in page webview.
+    if (!this.isCurseForge) {
+      return;
+    }
+
     this.sessionService.adSpace$.pipe(takeUntil(this.destroy$)).subscribe((enabled) => {
       if (enabled) {
         const providers = this._addonProviderService.getAdRequiredProviders();
