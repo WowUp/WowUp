@@ -135,7 +135,9 @@
           "beginsPattern": "^.*",
           "endsPattern": "^.*Compiled successfully.*"
         }
-      }
+      },
+      "dependsOn": ["Build.Lib"],
+      "dependsOrder": "sequence"
     },
     {
       "label": "Build.Renderer.OW",
@@ -160,7 +162,9 @@
           "beginsPattern": "^.*",
           "endsPattern": "^.*Compiled successfully.*"
         }
-      }
+      },
+      "dependsOn": ["Build.Lib"],
+      "dependsOrder": "sequence"
     }
   ]
 }
