@@ -15,6 +15,7 @@ import {
   DEFAULT_CHANNEL_PREFERENCE_KEY_SUFFIX,
   DEFAULT_THEME,
   DEFAULT_TRUSTED_DOMAINS,
+  DISABLE_IPV6_PREFERENCE_KEY,
   ENABLE_APP_BADGE_KEY,
   ENABLE_SYSTEM_NOTIFICATIONS_PREFERENCE_KEY,
   GET_ADDONS_HIDDEN_COLUMNS_KEY,
@@ -146,6 +147,17 @@ export class WowUpService {
 
   public async setUseHardwareAcceleration(value: boolean) {
     const key = USE_HARDWARE_ACCELERATION_PREFERENCE_KEY;
+    await this._preferenceStorageService.setAsync(key, value);
+    this._preferenceChangeSrc.next({ key, value: value.toString() });
+  }
+
+  public async getDisableIpv6(): Promise<boolean> {
+    const preference = await this._preferenceStorageService.getAsync(DISABLE_IPV6_PREFERENCE_KEY);
+    return preference === "true";
+  }
+
+  public async setDisableIpv6(value: boolean): Promise<void> {
+    const key = DISABLE_IPV6_PREFERENCE_KEY;
     await this._preferenceStorageService.setAsync(key, value);
     this._preferenceChangeSrc.next({ key, value: value.toString() });
   }

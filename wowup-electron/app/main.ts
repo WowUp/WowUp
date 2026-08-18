@@ -16,6 +16,7 @@ import {
   CURRENT_THEME_KEY,
   DEFAULT_BG_COLOR,
   DEFAULT_LIGHT_BG_COLOR,
+  DISABLE_IPV6_PREFERENCE_KEY,
   IPC_CUSTOM_PROTOCOL_RECEIVED,
   IPC_POWER_MONITOR_LOCK,
   IPC_POWER_MONITOR_RESUME,
@@ -149,6 +150,14 @@ if (getPreferenceStore().get(USE_HARDWARE_ACCELERATION_PREFERENCE_KEY) === "fals
 
 // Some servers don't supply good CORS headers for us, so we ignore them.
 app.commandLine.appendSwitch("disable-features", "HardwareMediaKeyHandling,OutOfBlinkCors");
+
+// NETWORK SETUP
+// Some networks have a broken/black-holed IPv6 path that causes addon downloads to fail
+// with net::ERR_FAILED even though IPv4 works fine. Let users force IPv4-only networking.
+if (getPreferenceStore().get(DISABLE_IPV6_PREFERENCE_KEY) === "true") {
+  log.info("IPv6 disabled");
+  app.commandLine.appendSwitch("disable-ipv6");
+}
 
 function isProtocol(arg: string) {
   return getProtocol(arg) != null;

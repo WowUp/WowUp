@@ -115,6 +115,7 @@ export class OptionsAppSectionComponent implements OnInit {
   public currentLanguage$ = new BehaviorSubject("");
   public useSymlinkMode$ = new BehaviorSubject(false);
   public useHardwareAcceleration$ = new BehaviorSubject(false);
+  public disableIpv6$ = new BehaviorSubject(false);
   public telemetryEnabled$ = new BehaviorSubject(false);
   public collapseToTray$ = new BehaviorSubject(false);
   public enableAppBadge$ = new BehaviorSubject(false);
@@ -198,6 +199,13 @@ export class OptionsAppSectionComponent implements OnInit {
       .getUseHardwareAcceleration()
       .then((useHwAccel) => {
         this.useHardwareAcceleration$.next(useHwAccel);
+      })
+      .catch(console.error);
+
+    this.wowupService
+      .getDisableIpv6()
+      .then((disableIpv6) => {
+        this.disableIpv6$.next(disableIpv6);
       })
       .catch(console.error);
 
@@ -362,6 +370,37 @@ export class OptionsAppSectionComponent implements OnInit {
           }
 
           return from(this.wowupService.setUseHardwareAcceleration(evt.checked)).pipe(
+            switchMap(() => from(this.electronService.restartApplication())),
+          );
+        }),
+        catchError((error) => {
+          console.error(error);
+          return of(undefined);
+        }),
+      )
+      .subscribe();
+  };
+
+  public onDisableIpv6Change = (evt: MatSlideToggleChange): void => {
+    const title: string = this._translateService.instant("PAGES.OPTIONS.APPLICATION.DISABLE_IPV6_CONFIRMATION_LABEL");
+    const message: string = this._translateService.instant(
+      evt.checked
+        ? "PAGES.OPTIONS.APPLICATION.DISABLE_IPV6_ENABLE_CONFIRMATION_DESCRIPTION"
+        : "PAGES.OPTIONS.APPLICATION.DISABLE_IPV6_DISABLE_CONFIRMATION_DESCRIPTION",
+    );
+
+    const dialogRef = this._dialogFactory.getConfirmDialog(title, message);
+
+    dialogRef
+      .afterClosed()
+      .pipe(
+        switchMap((result) => {
+          if (!result) {
+            evt.source.checked = !evt.source.checked;
+            return of(undefined);
+          }
+
+          return from(this.wowupService.setDisableIpv6(evt.checked)).pipe(
             switchMap(() => from(this.electronService.restartApplication())),
           );
         }),

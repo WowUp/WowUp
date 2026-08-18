@@ -5,4 +5,5 @@ export interface AddonUpdateEvent {
   addon: Addon;
   installState: AddonInstallState;
   progress: number;
+  error?: Error;
 }

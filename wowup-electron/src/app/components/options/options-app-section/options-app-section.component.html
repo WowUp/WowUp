@@ -121,6 +121,19 @@
     ></small>
     <div class="divider"></div>
   </div>
+  <!-- DISABLE IPV6 -->
+  <div class="toggle">
+    <div class="row align-items-center">
+      <div class="flex-grow-1">
+        <div>
+          {{ "PAGES.OPTIONS.APPLICATION.DISABLE_IPV6_LABEL" | translate }}
+        </div>
+      </div>
+      <mat-slide-toggle [checked]="disableIpv6$ | async" (change)="onDisableIpv6Change($event)"> </mat-slide-toggle>
+    </div>
+    <small class="text-2" [innerHTML]="'PAGES.OPTIONS.APPLICATION.DISABLE_IPV6_DESCRIPTION' | translate"></small>
+    <div class="divider"></div>
+  </div>
   <!-- SYMLINK SUPPORT -->
   <div class="toggle">
     <div class="row align-items-center">

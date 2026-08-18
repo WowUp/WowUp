@@ -7,6 +7,7 @@ import { Addon, AddonExternalId, getGameVersionList, Toc, WowClientType } from "
 import { AddonInstallState } from "../../models/wowup/addon-install-state";
 import { AddonUpdateEvent } from "../../models/wowup/addon-update-event";
 import { capitalizeString } from "../../utils/string.utils";
+import { delayMs } from "../../utils/time.utils";
 import { DownloadOptions, DownloadService } from "../download/download.service";
 import { WarcraftInstallationService } from "../warcraft/warcraft-installation.service";
 import { WarcraftService } from "../warcraft/warcraft.service";
@@ -141,7 +142,8 @@ export class AddonInstallService {
             throw e;
           }
           retryCt += 1;
-          console.log(`install download failed, retry ${retryCt}`);
+          const backoffMs = 1000 * Math.pow(2, retryCt - 1);
+          console.log(`install download failed, retry ${retryCt} in ${backoffMs}ms`);
 
           this._addonInstalledSrc.next({
             addon,
@@ -149,6 +151,7 @@ export class AddonInstallService {
             progress: 0,
           });
           await onUpdate?.call(this, AddonInstallState.Retry, 0);
+          await delayMs(backoffMs);
         }
       }
 
@@ -262,6 +265,7 @@ export class AddonInstallService {
         addon,
         installState: AddonInstallState.Error,
         progress: 100,
+        error: err instanceof Error ? err : undefined,
       });
     } finally {
       const unzippedDirectoryExists = await this._fileService.pathExists(unzippedDirectory);

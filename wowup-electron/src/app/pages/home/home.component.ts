@@ -240,10 +240,22 @@ export class HomeComponent implements AfterViewInit, OnDestroy {
       return;
     }
 
-    this._snackBarService.showErrorSnackbar("COMMON.ERRORS.ADDON_INSTALL_ERROR", {
+    const localeKey = isNetworkError(evt.error)
+      ? "COMMON.ERRORS.ADDON_INSTALL_NETWORK_ERROR"
+      : "COMMON.ERRORS.ADDON_INSTALL_ERROR";
+
+    this._snackBarService.showErrorSnackbar(localeKey, {
       localeArgs: {
         addonName: evt.addon.name,
       },
     });
   };
+}
+
+// Chromium/Node network-layer failures (bad DNS, dropped connections, broken IPv6 routes, etc.)
+// are worth calling out separately since "try again later" isn't the right advice for them.
+const NETWORK_ERROR_PATTERN = /net::ERR_|ENOTFOUND|ECONNRESET|ECONNREFUSED|ETIMEDOUT|EAI_AGAIN/;
+
+function isNetworkError(error: Error | undefined): boolean {
+  return typeof error?.message === "string" && NETWORK_ERROR_PATTERN.test(error.message);
 }
