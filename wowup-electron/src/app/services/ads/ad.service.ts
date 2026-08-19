@@ -29,6 +29,7 @@ import { ZoomService } from "../zoom/zoom.service";
 })
 export class AdService {
   private readonly _destroy$ = new Subject<boolean>();
+  private readonly _resize$ = new Subject<void>();
 
   private _hostElement: HTMLElement | undefined;
   private _resizeObserver: ResizeObserver | undefined;
@@ -65,6 +66,8 @@ export class AdService {
       .pipe(takeUntil(this._destroy$), auditTime(16))
       .subscribe(() => this.reportBounds());
 
+    this._resize$.pipe(takeUntil(this._destroy$), auditTime(16)).subscribe(() => this.reportBounds());
+
     this._uiMessageService.message$
       .pipe(
         takeUntil(this._destroy$),
@@ -97,7 +100,7 @@ export class AdService {
       return;
     }
 
-    this._resizeObserver = new ResizeObserver(() => this.reportBounds());
+    this._resizeObserver = new ResizeObserver(() => this._resize$.next());
     this._resizeObserver.observe(element);
     this.reportBounds();
   }
