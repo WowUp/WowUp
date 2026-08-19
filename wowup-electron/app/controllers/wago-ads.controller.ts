@@ -14,7 +14,7 @@ import { WagoAdViewService } from "../services/ads/wago-ad-view.service";
 import { CmpWindowService } from "../services/ads/cmp-window.service";
 import { ipcHandle, IpcController } from "./ipc-controller";
 
-export class AdsController implements IpcController {
+export class WagoAdsController implements IpcController {
   private readonly _adView: WagoAdViewService;
   private readonly _cmpWindow: CmpWindowService;
 
