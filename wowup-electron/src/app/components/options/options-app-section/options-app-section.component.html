@@ -226,21 +226,6 @@
     </div>
     <div class="divider"></div>
   </div>
-  <!-- AD CONSENT -->
-  <div *ngIf="isWago && (sessionService.adSpace$ | async)" class="toggle">
-    <div class="row align-items-center">
-      <div class="flex-grow-1">
-        <div>
-          {{ "PAGES.OPTIONS.WAGO.AD_CONSENT_LABEL" | translate }}
-        </div>
-        <small class="text-2">{{ "PAGES.OPTIONS.WAGO.AD_CONSENT_DESCRIPTION" | translate }}</small>
-      </div>
-      <button mat-raised-button color="primary" type="button" (click)="onClickManageAdConsent($event)">
-        {{ "PAGES.OPTIONS.WAGO.AD_CONSENT_MANAGE" | translate }}
-      </button>
-    </div>
-    <div class="divider"></div>
-  </div>
   <!-- RELEASE CHANNEL -->
   <div class="toggle">
     <div class="row align-items-center">

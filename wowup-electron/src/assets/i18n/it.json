@@ -580,7 +580,7 @@
       },
       "CURSEFORGE": {
         "ADS_OPTION_DESCRIPTION": "View and manage how CurseForge advertisers may use your data for ad personalization",
-        "ADS_OPTION_LABEL": "Ads Personalization & Data",
+        "ADS_OPTION_LABEL": "Wago Ads Personalization & Data",
         "ADS_OPTION_MANAGE": "Manage",
         "TITLE": "CurseForge"
       },
@@ -606,8 +606,8 @@
         "WTF_EXPLORER": "WTF Explorer"
       },
       "WAGO": {
-        "AD_CONSENT_DESCRIPTION": "View and manage how ad partners may use your data for ad personalization",
-        "AD_CONSENT_LABEL": "Ads Personalization & Data",
+        "AD_CONSENT_DESCRIPTION": "View and manage how Wago ad partners may use your data for ad personalization",
+        "AD_CONSENT_LABEL": "Wago Ads Personalization & Data",
         "AD_CONSENT_MANAGE": "Manage"
       },
       "WOW": {

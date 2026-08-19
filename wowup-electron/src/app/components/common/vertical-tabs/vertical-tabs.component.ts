@@ -49,7 +49,7 @@ export class VerticalTabsComponent implements OnInit, OnDestroy {
    */
   @ViewChild("adHost")
   public set adHost(host: ElementRef<HTMLElement> | undefined) {
-    this._adService.setHostElement(host?.nativeElement);
+    this._wagoAdService.setHostElement(host?.nativeElement);
   }
 
   public wowUpWebsiteUrl = AppConfig.wowUpWebsiteUrl;
@@ -145,7 +145,7 @@ export class VerticalTabsComponent implements OnInit, OnDestroy {
     private _addonProviderService: AddonProviderFactory,
     private _warcraftInstallationService: WarcraftInstallationService,
     private _preferences: PreferenceStorageService,
-    private _adService: WagoAdService,
+    private _wagoAdService: WagoAdService,
   ) {
     // Only the overwolf flavor hosts its ad in an in page webview.
     if (!this.isCurseForge) {

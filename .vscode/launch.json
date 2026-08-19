@@ -34,6 +34,7 @@
       "cwd": "${workspaceFolder}/wowup-electron",
       "runtimeExecutable": "${workspaceFolder}/wowup-electron/node_modules/.bin/electron",
       "trace": "verbose",
+      "outputCapture": "std",
       "runtimeArgs": ["--serve", ".", "--remote-debugging-port=9876"],
       "windows": {
         "runtimeExecutable": "${workspaceFolder}/wowup-electron/node_modules/.bin/electron.cmd"
@@ -62,6 +63,7 @@
       "cwd": "${workspaceFolder}/wowup-electron",
       "runtimeExecutable": "${workspaceFolder}/wowup-electron/node_modules/.bin/ow-electron",
       "trace": "verbose",
+      "outputCapture": "std",
       "runtimeArgs": ["--force-cmp", "--serve", ".", "--remote-debugging-port=9876"],
       "windows": {
         "runtimeExecutable": "${workspaceFolder}/wowup-electron/node_modules/.bin/ow-electron.cmd"
