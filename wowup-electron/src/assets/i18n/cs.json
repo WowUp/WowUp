@@ -310,6 +310,7 @@
         "FAILED_TO_CONNECT": "Nemohu se připojit k API. Chvíli počkejte a pak to zkuste znovu.",
         "INSTALL_FAILED": "Něco se nepovedlo při instalaci addonu, zkuste to prosím znovu.\n\nPokud se tato zpráva opakuje, kontaktujte nás na Discordu na kanále #help-me.",
         "INVALID_URL": "Zadaná hodnota není platná URL adresa. Příklady platných URL adres jsou:\n\t- https://github.com/WowUp/WowUp.Addon\n\t- https://www.wowinterface.com/downloads/info25610-8.3-014.html\n\t- https://www.curseforge.com/wow/addons/altoholic",
+        "MISTS_ASSET_NOT_FOUND": "No asset was found to download from {message}.\n\nA valid zip file ending with '-mists' is required in order for WowUp to download it.",
         "NO_ADDON_FOUND": "Žádný addon na zadané URL adrese nebyl nalezen. Ujistěte se, že URL adresa odkazuje na správnou stránku.\n\nPři instalaci z GitHubu se ujistěte, že repozitář obsahuje release tag s zipem obsahujícím addon.",
         "NO_RELEASE_FOUND": "Nebyl nalezen žádný soubor ke stažení {message}.\n\nPlatný zip soubor musí být k dispozici, aby ho WowUp mohl stáhnout.",
         "NO_SEARCH_RESULTS": "Hledání neodpovídá žádný addon.",
@@ -603,6 +604,11 @@
         "CURSEFORGE": "CurseForge",
         "DEBUG": "Debug aplikace",
         "WTF_EXPLORER": "WTF Explorer"
+      },
+      "WAGO": {
+        "AD_CONSENT_DESCRIPTION": "View and manage how Wago ad partners may use your data for ad personalization",
+        "AD_CONSENT_LABEL": "Wago Ads Personalization & Data",
+        "AD_CONSENT_MANAGE": "Manage"
       },
       "WOW": {
         "ADD_CLIENT_BUTTON": "Add New",

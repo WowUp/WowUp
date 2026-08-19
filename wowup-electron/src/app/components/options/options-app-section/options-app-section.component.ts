@@ -52,6 +52,7 @@ export class OptionsAppSectionComponent implements OnInit {
   public minimizeOnCloseDescription = "";
   public protocolRegistered = false;
   public isCurseForge = AppConfig.curseforge.enabled;
+  public isWago = AppConfig.wago.enabled;
   public zoomScale = ZOOM_SCALE;
   public currentScale = 1;
   public languages: LocaleListItem[] = [

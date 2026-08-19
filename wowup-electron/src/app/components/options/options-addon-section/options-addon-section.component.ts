@@ -26,7 +26,9 @@ import {
 } from "../../../../common/constants";
 import { AddonProviderState } from "../../../models/wowup/addon-provider-state";
 import { AddonProviderFactory } from "../../../services/addons/addon.provider.factory";
+import { WagoAdService } from "../../../services/ads/wago-ad.service";
 import { DialogFactory } from "../../../services/dialog/dialog.factory";
+import { SessionService } from "../../../services/session/session.service";
 import { SensitiveStorageService } from "../../../services/storage/sensitive-storage.service";
 import { AppConfig } from "../../../../environments/environment";
 
@@ -59,6 +61,8 @@ export class OptionsAddonSectionComponent implements OnInit, OnDestroy {
     private _sensitiveStorageService: SensitiveStorageService,
     private _translateService: TranslateService,
     private _dialogFactory: DialogFactory,
+    private _wagoAdService: WagoAdService,
+    public sessionService: SessionService,
   ) {
     this._addonProviderService.addonProviderChange$.subscribe(() => {
       this.loadProviderStates();
@@ -101,6 +105,12 @@ export class OptionsAddonSectionComponent implements OnInit, OnDestroy {
     this.destroy$.unsubscribe();
   }
 
+  public onClickManageWagoAdConsent(evt: MouseEvent): void {
+    evt.preventDefault();
+
+    this._wagoAdService.resurfaceCmp().catch((e) => console.error("onClickManageWagoAdConsent failed", e));
+  }
+
   public async onProviderStateSelectionChange(event: MatSelectionListChange): Promise<void> {
     for (const option of event.options) {
       const providerName: AddonProviderType = option.value;
@@ -118,7 +128,6 @@ export class OptionsAddonSectionComponent implements OnInit, OnDestroy {
     const title: string = this._translateService.instant("DIALOGS.PERMISSIONS.WAGO.TOGGLE_LABEL");
     const message: string = this._translateService.instant("DIALOGS.PERMISSIONS.WAGO.DESCRIPTION", {
       termsUrl: AppConfig.wago.termsUrl,
-      dataUrl: AppConfig.wago.dataConsentUrl,
     });
 
     const dialogRef = this._dialogFactory.getConfirmDialog(title, message);
