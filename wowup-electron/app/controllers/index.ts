@@ -2,7 +2,7 @@ import { BrowserWindow } from "electron";
 import * as Store from "electron-store";
 
 import { AddonController } from "./addon.controller";
-import { AdsController } from "./ads.controller";
+import { WagoAdsController } from "./wago-ads.controller";
 import { IpcController } from "./ipc-controller";
 import { WarcraftController } from "./warcraft/warcraft.controller";
 import { WarcraftPlatformWin } from "../services/warcraft/warcraft-platform.win";
@@ -33,7 +33,7 @@ export function registerControllers(deps: ControllerDeps): void {
 
   // The overwolf flavor renders its ad through the overwolf sdk.
   if (AppEnv.buildFlavor === "wago") {
-    controllers.push(new AdsController(deps.window));
+    controllers.push(new WagoAdsController(deps.window));
   }
 
   for (const controller of controllers) {
