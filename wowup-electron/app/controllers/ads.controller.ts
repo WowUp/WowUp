@@ -10,16 +10,16 @@ import {
   IPC_ADS_SET_BOUNDS,
   IPC_ADS_SHOW_CMP,
 } from "../../src/common/constants";
-import { AdViewService } from "../services/ads/ad-view.service";
+import { WagoAdViewService } from "../services/ads/wago-ad-view.service";
 import { CmpWindowService } from "../services/ads/cmp-window.service";
 import { ipcHandle, IpcController } from "./ipc-controller";
 
 export class AdsController implements IpcController {
-  private readonly _adView: AdViewService;
+  private readonly _adView: WagoAdViewService;
   private readonly _cmpWindow: CmpWindowService;
 
   public constructor(private readonly _window: BrowserWindow) {
-    this._adView = new AdViewService(this._window);
+    this._adView = new WagoAdViewService(this._window);
     this._cmpWindow = new CmpWindowService(this._window, (visible) => this._adView.setCmpOpen(visible));
   }
 

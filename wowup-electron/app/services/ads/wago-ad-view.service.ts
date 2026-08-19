@@ -21,7 +21,7 @@ const HIDDEN_BOUNDS: Rectangle = { x: 0, y: 0, width: 0, height: 0 };
  * advertise Electron. The renderer reserves a hole in its layout and reports that rect over ipc;
  * everything else about the view is decided here.
  */
-export class AdViewService {
+export class WagoAdViewService {
   private _view: WebContentsView | undefined;
   private _attached = false;
 

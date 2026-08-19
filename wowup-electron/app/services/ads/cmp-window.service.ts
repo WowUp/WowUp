@@ -3,7 +3,7 @@ import * as log from "electron-log";
 import { join } from "path";
 
 import { IPC_ADS_CMP_CLOSE } from "../../../src/common/constants";
-import { AD_PARTITION } from "./ad-view.service";
+import { AD_PARTITION } from "./wago-ad-view.service";
 
 const CMP_URL = "https://addons.wago.io/app-cmp.html";
 const CMP_WINDOW_WIDTH = 1120;
