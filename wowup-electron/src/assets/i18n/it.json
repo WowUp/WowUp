@@ -530,9 +530,6 @@
         }
       },
       "APPLICATION": {
-        "AD_CONSENT_DESCRIPTION": "View and manage how ad partners may use your data for ad personalization",
-        "AD_CONSENT_LABEL": "Ads Personalization & Data",
-        "AD_CONSENT_MANAGE": "Manage",
         "APP_RELEASE_CHANNEL_CONFIRMATION_DESCRIPTION_BETA": "Switching to the Beta channel will allow you to receive experimental builds that contain bug fixes, as well as new and upcoming features. you may only go back to the current stable version by uninstalling your existing app and re-installing from wowup.io.\n\nWhile the Beta channel is functional, use at your own risk.",
         "APP_RELEASE_CHANNEL_CONFIRMATION_DESCRIPTION_STABLE": "Switching to the Stable channel for the app will prevent you from receiving more Beta builds, the next update will be the next Stable release.",
         "APP_RELEASE_CHANNEL_CONFIRMATION_LABEL": "Setting the app release channel",
@@ -607,6 +604,11 @@
         "CURSEFORGE": "CurseForge",
         "DEBUG": "Debug",
         "WTF_EXPLORER": "WTF Explorer"
+      },
+      "WAGO": {
+        "AD_CONSENT_DESCRIPTION": "View and manage how ad partners may use your data for ad personalization",
+        "AD_CONSENT_LABEL": "Ads Personalization & Data",
+        "AD_CONSENT_MANAGE": "Manage"
       },
       "WOW": {
         "ADD_CLIENT_BUTTON": "Aggiungi Nuovo",

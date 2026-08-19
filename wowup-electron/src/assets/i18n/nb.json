@@ -530,9 +530,6 @@
         }
       },
       "APPLICATION": {
-        "AD_CONSENT_DESCRIPTION": "View and manage how ad partners may use your data for ad personalization",
-        "AD_CONSENT_LABEL": "Ads Personalization & Data",
-        "AD_CONSENT_MANAGE": "Manage",
         "APP_RELEASE_CHANNEL_CONFIRMATION_DESCRIPTION_BETA": "Ved å bytte til betakanalen kan du motta eksperimentelle bygg som inneholder feilrettinger, samt nye og kommende funksjoner. Du kan bare gå tilbake til den nåværende stabile versjonen ved å avinstallere den eksisterende appen din og installere på nytt fra wowup.io.\n\nSå lenge betakanalen er funksjonell, bruk den på egen risiko.",
         "APP_RELEASE_CHANNEL_CONFIRMATION_DESCRIPTION_STABLE": "Hvis du bytter til applikasjonens stabile kanal, vil du ikke lenger motta beta-bygg. Den neste oppdateringen vil være den neste stabile versjonen.",
         "APP_RELEASE_CHANNEL_CONFIRMATION_LABEL": "Konfigurer apputgivelseskanalen",
@@ -607,6 +604,11 @@
         "CURSEFORGE": "CurseForge",
         "DEBUG": "Debug",
         "WTF_EXPLORER": "WTF Explorer"
+      },
+      "WAGO": {
+        "AD_CONSENT_DESCRIPTION": "View and manage how ad partners may use your data for ad personalization",
+        "AD_CONSENT_LABEL": "Ads Personalization & Data",
+        "AD_CONSENT_MANAGE": "Manage"
       },
       "WOW": {
         "ADD_CLIENT_BUTTON": "Legg til ny",

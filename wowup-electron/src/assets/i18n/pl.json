@@ -530,9 +530,6 @@
         }
       },
       "APPLICATION": {
-        "AD_CONSENT_DESCRIPTION": "View and manage how ad partners may use your data for ad personalization",
-        "AD_CONSENT_LABEL": "Ads Personalization & Data",
-        "AD_CONSENT_MANAGE": "Manage",
         "APP_RELEASE_CHANNEL_CONFIRMATION_DESCRIPTION_BETA": "Przełączenie na kanał Beta pozwoli Ci otrzymywać eksperymentalne wersje, które zawierają poprawki błędów, jak również nowe i nadchodzące funkcje. Możesz powrócić do aktualnej stabilnej wersji tylko poprzez odinstalowanie istniejącej aplikacji i ponowną instalację z wowup.io.\n\nChociaż kanał Beta jest funkcjonalny, korzystasz z niego na własne ryzyko.",
         "APP_RELEASE_CHANNEL_CONFIRMATION_DESCRIPTION_STABLE": "Przełączenie się na kanał Stabilny uniemożliwi Ci otrzymywanie kolejnych wersji Beta, następna aktualizacja będzie następną wersją Stabilną.",
         "APP_RELEASE_CHANNEL_CONFIRMATION_LABEL": "Ustawianie kanału wydania aplikacji",
@@ -607,6 +604,11 @@
         "CURSEFORGE": "CurseForge",
         "DEBUG": "Debugowanie",
         "WTF_EXPLORER": "WTF Explorer"
+      },
+      "WAGO": {
+        "AD_CONSENT_DESCRIPTION": "View and manage how ad partners may use your data for ad personalization",
+        "AD_CONSENT_LABEL": "Ads Personalization & Data",
+        "AD_CONSENT_MANAGE": "Manage"
       },
       "WOW": {
         "ADD_CLIENT_BUTTON": "Dodaj nowy",

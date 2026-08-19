@@ -530,9 +530,6 @@
         }
       },
       "APPLICATION": {
-        "AD_CONSENT_DESCRIPTION": "View and manage how ad partners may use your data for ad personalization",
-        "AD_CONSENT_LABEL": "Ads Personalization & Data",
-        "AD_CONSENT_MANAGE": "Manage",
         "APP_RELEASE_CHANNEL_CONFIRMATION_DESCRIPTION_BETA": "切換到 Beta 通道後，將會收到包含最新的錯誤修正和功能的版本。要切換回穩定版本，只能解除安裝 WowUp 並重新安裝。\n\n儘管 Beta 通道通常能正常工作，但仍需自擔風險。",
         "APP_RELEASE_CHANNEL_CONFIRMATION_DESCRIPTION_STABLE": "切換到穩定版通道後，將會停止接受 Beta 版本。切換到穩定版通道不會回退到上一個穩定版，而是在下一個穩定版釋出後更新到穩定版。",
         "APP_RELEASE_CHANNEL_CONFIRMATION_LABEL": "設定應用程式更新通道",
@@ -607,6 +604,11 @@
         "CURSEFORGE": "CurseForge",
         "DEBUG": "除錯",
         "WTF_EXPLORER": "WTF Explorer"
+      },
+      "WAGO": {
+        "AD_CONSENT_DESCRIPTION": "View and manage how ad partners may use your data for ad personalization",
+        "AD_CONSENT_LABEL": "Ads Personalization & Data",
+        "AD_CONSENT_MANAGE": "Manage"
       },
       "WOW": {
         "ADD_CLIENT_BUTTON": "新增",
