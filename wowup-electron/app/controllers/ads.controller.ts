@@ -1,4 +1,4 @@
-import { BrowserWindow, ipcMain, IpcMainInvokeEvent, Rectangle } from "electron";
+import { BrowserWindow, Rectangle } from "electron";
 import { AdPageOptions } from "wowup-lib-core";
 
 import {
@@ -12,7 +12,7 @@ import {
 } from "../../src/common/constants";
 import { AdViewService } from "../services/ads/ad-view.service";
 import { CmpWindowService } from "../services/ads/cmp-window.service";
-import { IpcController } from "./ipc-controller";
+import { ipcHandle, IpcController } from "./ipc-controller";
 
 export class AdsController implements IpcController {
   private readonly _adView: AdViewService;
@@ -26,15 +26,13 @@ export class AdsController implements IpcController {
   public register(): void {
     this._cmpWindow.initialize();
 
-    // The main window can be recreated (macos activate with no window), which registers controllers
-    // a second time, so replace any handler from a previous window instead of throwing.
-    this.handle(IPC_ADS_LOAD, (_evt, options: AdPageOptions) => this._adView.load(options));
-    this.handle(IPC_ADS_DISABLE, () => this._adView.disable());
-    this.handle(IPC_ADS_SET_BOUNDS, (_evt, rect?: Rectangle) => this._adView.setHostRect(rect));
-    this.handle(IPC_ADS_RELOAD, () => this._adView.reload());
-    this.handle(IPC_ADS_OPEN_DEV_TOOLS, () => this._adView.openDevTools());
-    this.handle(IPC_ADS_SHOW_CMP, () => this._cmpWindow.show());
-    this.handle(IPC_ADS_RESURFACE_CMP, () => this._cmpWindow.resurface());
+    ipcHandle(IPC_ADS_LOAD, (_evt, options: AdPageOptions) => this._adView.load(options));
+    ipcHandle(IPC_ADS_DISABLE, () => this._adView.disable());
+    ipcHandle(IPC_ADS_SET_BOUNDS, (_evt, rect?: Rectangle) => this._adView.setHostRect(rect));
+    ipcHandle(IPC_ADS_RELOAD, () => this._adView.reload());
+    ipcHandle(IPC_ADS_OPEN_DEV_TOOLS, () => this._adView.openDevTools());
+    ipcHandle(IPC_ADS_SHOW_CMP, () => this._cmpWindow.show());
+    ipcHandle(IPC_ADS_RESURFACE_CMP, () => this._cmpWindow.resurface());
 
     // The renderer re-reports its rect when the layout or the zoom factor changes, but a window
     // resize can move the ad without resizing anything the renderer observes, so keep the view
@@ -43,11 +41,6 @@ export class AdsController implements IpcController {
     this._window.on("enter-full-screen", this.onWindowBoundsChanged);
     this._window.on("leave-full-screen", this.onWindowBoundsChanged);
     this._window.once("closed", this.onWindowClosed);
-  }
-
-  private handle(channel: string, listener: (evt: IpcMainInvokeEvent, ...args: any[]) => unknown): void {
-    ipcMain.removeHandler(channel);
-    ipcMain.handle(channel, listener);
   }
 
   private readonly onWindowBoundsChanged = () => {
