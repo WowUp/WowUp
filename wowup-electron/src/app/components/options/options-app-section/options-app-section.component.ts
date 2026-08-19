@@ -26,7 +26,7 @@ import { WowUpService } from "../../../services/wowup/wowup.service";
 import { ZOOM_SCALE } from "../../../utils/zoom.utils";
 import { ConfirmDialogComponent } from "../../common/confirm-dialog/confirm-dialog.component";
 import { ZoomService } from "../../../services/zoom/zoom.service";
-import { AdService } from "../../../services/ads/ad.service";
+import { WagoAdService } from "../../../services/ads/wago-ad.service";
 import { AddonService } from "../../../services/addons/addon.service";
 import { WowUpReleaseChannelType } from "../../../../common/wowup/wowup-release-channel-type";
 import { AppConfig } from "../../../../environments/environment";
@@ -133,7 +133,7 @@ export class OptionsAppSectionComponent implements OnInit {
     private _cdRef: ChangeDetectorRef,
     private _zoomService: ZoomService,
     private _addonService: AddonService,
-    private _adService: AdService,
+    private _adService: WagoAdService,
     public electronService: ElectronService,
     public sessionService: SessionService,
     public wowupService: WowUpService,

@@ -2,7 +2,7 @@ import { app, BrowserWindow, ipcMain } from "electron";
 import * as log from "electron-log";
 import { join } from "path";
 
-import { IPC_ADS_CMP_CLOSE } from "../../../src/common/constants";
+import { IPC_WAGO_ADS_CMP_CLOSE } from "../../../src/common/constants";
 import { AD_PARTITION } from "./wago-ad-view.service";
 
 const CMP_URL = "https://addons.wago.io/app-cmp.html";
@@ -46,8 +46,8 @@ export class CmpWindowService {
   public initialize(): void {
     // The consent page asks to be closed over ipc, since a frameless window has no close button
     // and is not always permitted to close itself.
-    ipcMain.removeAllListeners(IPC_ADS_CMP_CLOSE);
-    ipcMain.on(IPC_ADS_CMP_CLOSE, (evt) => {
+    ipcMain.removeAllListeners(IPC_WAGO_ADS_CMP_CLOSE);
+    ipcMain.on(IPC_WAGO_ADS_CMP_CLOSE, (evt) => {
       if (this._window === undefined || evt.sender !== this._window.webContents) {
         return;
       }
@@ -77,7 +77,7 @@ export class CmpWindowService {
   }
 
   public dispose(): void {
-    ipcMain.removeAllListeners(IPC_ADS_CMP_CLOSE);
+    ipcMain.removeAllListeners(IPC_WAGO_ADS_CMP_CLOSE);
     this.close();
     // Nobody is left to close the window, so release anyone waiting on it.
     this.settleClosed();

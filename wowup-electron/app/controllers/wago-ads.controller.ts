@@ -2,13 +2,13 @@ import { BrowserWindow, Rectangle } from "electron";
 import { AdPageOptions } from "wowup-lib-core";
 
 import {
-  IPC_ADS_DISABLE,
-  IPC_ADS_LOAD,
-  IPC_ADS_OPEN_DEV_TOOLS,
-  IPC_ADS_RELOAD,
-  IPC_ADS_RESURFACE_CMP,
-  IPC_ADS_SET_BOUNDS,
-  IPC_ADS_SHOW_CMP,
+  IPC_WAGO_ADS_DISABLE,
+  IPC_WAGO_ADS_LOAD,
+  IPC_WAGO_ADS_OPEN_DEV_TOOLS,
+  IPC_WAGO_ADS_RELOAD,
+  IPC_WAGO_ADS_RESURFACE_CMP,
+  IPC_WAGO_ADS_SET_BOUNDS,
+  IPC_WAGO_ADS_SHOW_CMP,
 } from "../../src/common/constants";
 import { WagoAdViewService } from "../services/ads/wago-ad-view.service";
 import { CmpWindowService } from "../services/ads/cmp-window.service";
@@ -26,13 +26,13 @@ export class WagoAdsController implements IpcController {
   public register(): void {
     this._cmpWindow.initialize();
 
-    ipcHandle(IPC_ADS_LOAD, (_evt, options: AdPageOptions) => this._adView.load(options));
-    ipcHandle(IPC_ADS_DISABLE, () => this._adView.disable());
-    ipcHandle(IPC_ADS_SET_BOUNDS, (_evt, rect?: Rectangle) => this._adView.setHostRect(rect));
-    ipcHandle(IPC_ADS_RELOAD, () => this._adView.reload());
-    ipcHandle(IPC_ADS_OPEN_DEV_TOOLS, () => this._adView.openDevTools());
-    ipcHandle(IPC_ADS_SHOW_CMP, () => this._cmpWindow.show());
-    ipcHandle(IPC_ADS_RESURFACE_CMP, () => this._cmpWindow.resurface());
+    ipcHandle(IPC_WAGO_ADS_LOAD, (_evt, options: AdPageOptions) => this._adView.load(options));
+    ipcHandle(IPC_WAGO_ADS_DISABLE, () => this._adView.disable());
+    ipcHandle(IPC_WAGO_ADS_SET_BOUNDS, (_evt, rect?: Rectangle) => this._adView.setHostRect(rect));
+    ipcHandle(IPC_WAGO_ADS_RELOAD, () => this._adView.reload());
+    ipcHandle(IPC_WAGO_ADS_OPEN_DEV_TOOLS, () => this._adView.openDevTools());
+    ipcHandle(IPC_WAGO_ADS_SHOW_CMP, () => this._cmpWindow.show());
+    ipcHandle(IPC_WAGO_ADS_RESURFACE_CMP, () => this._cmpWindow.resurface());
 
     // The renderer re-reports its rect when the layout or the zoom factor changes, but a window
     // resize can move the ad without resizing anything the renderer observes, so keep the view

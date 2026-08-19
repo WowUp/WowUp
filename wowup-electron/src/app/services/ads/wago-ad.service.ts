@@ -6,7 +6,7 @@ import { AdPageOptions } from "wowup-lib-core";
 
 import { AppConfig } from "../../../environments/environment";
 import { AddonProviderFactory } from "../addons/addon.provider.factory";
-import { AdsApiService } from "../api/ads-api.service";
+import { WagoAdsApiService } from "../api/wago-ads-api.service";
 import { SessionService } from "../session/session.service";
 import { UiMessageService } from "../ui-message/ui-message.service";
 import { ZoomService } from "../zoom/zoom.service";
@@ -27,7 +27,7 @@ import { ZoomService } from "../zoom/zoom.service";
 @Injectable({
   providedIn: "root",
 })
-export class AdService {
+export class WagoAdService {
   private readonly _destroy$ = new Subject<boolean>();
   private readonly _resize$ = new Subject<void>();
 
@@ -38,7 +38,7 @@ export class AdService {
   private _consentWindowRun: Promise<void> | undefined;
 
   public constructor(
-    private readonly _adsApi: AdsApiService,
+    private readonly _adsApi: WagoAdsApiService,
     private readonly _sessionService: SessionService,
     private readonly _addonProviderService: AddonProviderFactory,
     private readonly _uiMessageService: UiMessageService,

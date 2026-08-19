@@ -22,7 +22,7 @@ import { MatDialog } from "@angular/material/dialog";
 import { AlertDialogComponent } from "../alert-dialog/alert-dialog.component";
 import { TranslateService } from "@ngx-translate/core";
 import { PreferenceStorageService } from "../../../services/storage/preference-storage.service";
-import { AdService } from "../../../services/ads/ad.service";
+import { WagoAdService } from "../../../services/ads/wago-ad.service";
 import { AdPageOptions } from "wowup-lib-core";
 
 interface Tab {
@@ -145,7 +145,7 @@ export class VerticalTabsComponent implements OnInit, OnDestroy {
     private _addonProviderService: AddonProviderFactory,
     private _warcraftInstallationService: WarcraftInstallationService,
     private _preferences: PreferenceStorageService,
-    private _adService: AdService,
+    private _adService: WagoAdService,
   ) {
     // Only the overwolf flavor hosts its ad in an in page webview.
     if (!this.isCurseForge) {
