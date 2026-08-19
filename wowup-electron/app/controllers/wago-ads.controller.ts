@@ -11,16 +11,16 @@ import {
   IPC_WAGO_ADS_SHOW_CMP,
 } from "../../src/common/constants";
 import { WagoAdViewService } from "../services/ads/wago-ad-view.service";
-import { CmpWindowService } from "../services/ads/cmp-window.service";
+import { WagoCmpWindowService } from "../services/ads/wago-cmp-window.service";
 import { ipcHandle, IpcController } from "./ipc-controller";
 
 export class WagoAdsController implements IpcController {
   private readonly _adView: WagoAdViewService;
-  private readonly _cmpWindow: CmpWindowService;
+  private readonly _cmpWindow: WagoCmpWindowService;
 
   public constructor(private readonly _window: BrowserWindow) {
     this._adView = new WagoAdViewService(this._window);
-    this._cmpWindow = new CmpWindowService(this._window, (visible) => this._adView.setCmpOpen(visible));
+    this._cmpWindow = new WagoCmpWindowService(this._window, (visible) => this._adView.setCmpOpen(visible));
   }
 
   public register(): void {

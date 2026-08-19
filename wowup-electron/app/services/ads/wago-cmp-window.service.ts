@@ -27,7 +27,7 @@ const CMP_SHOW_DELAY_MS = 2500;
  * The page has to run on every launch, not just the first: it is what establishes the consent state
  * the ad page reads, and it decides for itself whether a ui is needed, closing itself when it is not.
  */
-export class CmpWindowService {
+export class WagoCmpWindowService {
   private _window: BrowserWindow | undefined;
 
   /** Resolves when the consent window closes. Ads must not load before that happens. */
@@ -112,7 +112,7 @@ export class CmpWindowService {
       skipTaskbar: true,
       webPreferences: {
         partition: AD_PARTITION,
-        preload: join(app.getAppPath(), "assets", "preload", "cmp.js"),
+        preload: join(app.getAppPath(), "assets", "preload", "wago-cmp.js"),
         contextIsolation: true,
         nodeIntegration: false,
         sandbox: true,

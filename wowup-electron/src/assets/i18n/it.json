@@ -580,7 +580,7 @@
       },
       "CURSEFORGE": {
         "ADS_OPTION_DESCRIPTION": "View and manage how CurseForge advertisers may use your data for ad personalization",
-        "ADS_OPTION_LABEL": "Wago Ads Personalization & Data",
+        "ADS_OPTION_LABEL": "Ads Personalization & Data",
         "ADS_OPTION_MANAGE": "Manage",
         "TITLE": "CurseForge"
       },
