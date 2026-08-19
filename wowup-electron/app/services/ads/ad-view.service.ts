@@ -71,7 +71,11 @@ export class AdViewService {
         httpReferrer: options.referrer,
       })
       .catch((e) => {
-        this._loadedUrl = undefined;
+        // A torn-down or superseded view's rejection can arrive after a newer load already took
+        // over, so only clear the state if this load is still the current one.
+        if (this._view === view && this._loadedUrl === url) {
+          this._loadedUrl = undefined;
+        }
         log.error("[ad-view] failed to load ad page", e);
       });
   }
@@ -89,6 +93,7 @@ export class AdViewService {
     this._view = undefined;
     this._hostRect = undefined;
     this._loadedUrl = undefined;
+    this._deferredLoad = undefined;
 
     if (view === undefined) {
       return;
@@ -275,11 +280,14 @@ export class AdViewService {
       return HIDDEN_BOUNDS;
     }
 
+    const clampedX = Math.max(x, 0);
+    const clampedY = Math.max(y, 0);
+
     return {
-      x: Math.max(x, 0),
-      y: Math.max(y, 0),
-      width: Math.min(width, windowWidth - x),
-      height: Math.min(height, windowHeight - y),
+      x: clampedX,
+      y: clampedY,
+      width: Math.min(width, windowWidth - clampedX),
+      height: Math.min(height, windowHeight - clampedY),
     };
   }
 
