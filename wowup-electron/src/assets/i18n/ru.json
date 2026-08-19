@@ -310,6 +310,7 @@
         "FAILED_TO_CONNECT": "Не удается подключиться к API, подождите немного и повторите попытку.",
         "INSTALL_FAILED": "Что-то пошло не так при попытке установить модификацию, попытайтесь снова.\n\nЕсли это сообщение продолжает появляться, Вы можете получить помощь в канале #help-me нашего Discord сообщества.",
         "INVALID_URL": "Введённое значение не является правильной ссылкой. Примеры правильных ссылок для модификаций:\n\t- https://github.com/WowUp/WowUp.Addon\n\t- https://www.wowinterface.com/downloads/info25610-8.3-014.html\n\t- https://www.curseforge.com/wow/addons/altoholic",
+        "MISTS_ASSET_NOT_FOUND": "No asset was found to download from {message}.\n\nA valid zip file ending with '-mists' is required in order for WowUp to download it.",
         "NO_ADDON_FOUND": "Модификация не была найдена, убедитесь, что Ваша ссылка указывает на правильную страницу.\n\nПри установке с GitHub, убедитесь, что в репозитории есть тег выпуска с zip-архивом, содержащим модификацию.",
         "NO_RELEASE_FOUND": "Не найдено выпусков для {message}.\n\nНеобходим верный выпуск с ресурсами в .zip файле, чтобы WowUp мог загрузить его.",
         "NO_SEARCH_RESULTS": "Поиск не дал результатов.",
@@ -529,6 +530,9 @@
         }
       },
       "APPLICATION": {
+        "AD_CONSENT_DESCRIPTION": "View and manage how ad partners may use your data for ad personalization",
+        "AD_CONSENT_LABEL": "Ads Personalization & Data",
+        "AD_CONSENT_MANAGE": "Manage",
         "APP_RELEASE_CHANNEL_CONFIRMATION_DESCRIPTION_BETA": "Переключение на канал Бета позволит Вам получать экспериментальные сборки, которые содержат исправления неполадок, а также новые и грядущие возможности. Вы сможете вернуться к текущей стабильной версии лишь удалив Ваше существующее приложение и переустановив его с wowup.io.\n\nПоскольку канал Бета содержит версии, находящиеся в разработке, используйте его на свой страх и риск.",
         "APP_RELEASE_CHANNEL_CONFIRMATION_DESCRIPTION_STABLE": "Переключение на канал Стабильная запретит приложению получать бета-сборки, следующим обновлением будет следующая стабильная версия.",
         "APP_RELEASE_CHANNEL_CONFIRMATION_LABEL": "Установка канала выпуска приложения",

@@ -310,6 +310,7 @@
         "FAILED_TO_CONNECT": "No se pudo conectar con la API. Por favor, espere un momento y vuelva a intentarlo.",
         "INSTALL_FAILED": "Ocurrió un error al intentar instalar el addon. Por favor, inténtelo de nuevo.\n\nSi se sigue mostrando este mensaje, puede obtener ayuda en Discord en el canal #help-me.",
         "INVALID_URL": "El valor introducido no es una URL válida. Ejemplos de URLs válidas:\n\t- https://github.com/WowUp/WowUp.Addon\n\t- https://www.wowinterface.com/downloads/info25610-8.3-014.html\n\t- https://www.curseforge.com/wow/addons/altoholic",
+        "MISTS_ASSET_NOT_FOUND": "No asset was found to download from {message}.\n\nA valid zip file ending with '-mists' is required in order for WowUp to download it.",
         "NO_ADDON_FOUND": "No se encontró el addon, asegúrese de que la URL apunta a la página correcta.\n\nSi está instalando desde GitHub, asegúrese de que el repositorio tiene una release tag con un archivo zip conteniendo el addon.",
         "NO_RELEASE_FOUND": "No se encontraron publicaciones para {message}.\n\nSe requiere una versión válida con los recursos contenidos en un archivo zip para que WowUp pueda descargarla.",
         "NO_SEARCH_RESULTS": "No se encontraron resultados.",
@@ -529,6 +530,9 @@
         }
       },
       "APPLICATION": {
+        "AD_CONSENT_DESCRIPTION": "View and manage how ad partners may use your data for ad personalization",
+        "AD_CONSENT_LABEL": "Ads Personalization & Data",
+        "AD_CONSENT_MANAGE": "Manage",
         "APP_RELEASE_CHANNEL_CONFIRMATION_DESCRIPTION_BETA": "Cambiar al canal Beta permitirá que reciba versiones experimentales que contienen correcciones de fallos, así como nuevas funciones en desarrollo. Solo podrá volver a la versión estable desinstalando la aplicación y volviéndola a instalar desde wowup.io\n\nAunque el canal Beta es funcional, su uso será bajo su propia responsabilidad.",
         "APP_RELEASE_CHANNEL_CONFIRMATION_DESCRIPTION_STABLE": "Cambiar al canal Estable evitará que reciba más versiones Beta. La próxima actualización de la aplicación se realizará cuando se lance la siguiente versión Estable.",
         "APP_RELEASE_CHANNEL_CONFIRMATION_LABEL": "Configuración del canal de publicación de WowUp",

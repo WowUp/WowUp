@@ -310,6 +310,7 @@
         "FAILED_TO_CONNECT": "Keine Verbindung mit der API möglich, warte ein wenig und versuche es erneut.",
         "INSTALL_FAILED": "Beim Versuch das Addon zu installieren ist etwas schief gelaufen, bitte versuche es erneut.\n\nWenn diese Nachricht weiterhin erscheint, kannst Du auf unserem Discord im Kanal #help-me nach Hilfe fragen.",
         "INVALID_URL": "Die eingetragene URL ist ungültig. Beispiele für gültige URLs sind:\n\t- https://github.com/WowUp/WowUp.Addon\n\t- https://www.wowinterface.com/downloads/info25610-8.3-014.html\n\t- https://www.curseforge.com/wow/addons/altoholic",
+        "MISTS_ASSET_NOT_FOUND": "No asset was found to download from {message}.\n\nA valid zip file ending with '-mists' is required in order for WowUp to download it.",
         "NO_ADDON_FOUND": "Es wurde kein Addon gefunden. Stelle sicher, dass die URL zur richtigen Website führt.\n\nSolltest Du versuchen ein Addon von GitHub zu installieren, stelle sicher, dass das Repository Release-Tags mit einem ZIP-Archiv, welches das Addon enthält, besitzt.",
         "NO_RELEASE_FOUND": "Es wurde kein Release für {message} gefunden.\n\nEin gültiges Release mit Zip-Datei-Assets ist erforderlich, damit WowUp sie herunterladen kann.",
         "NO_SEARCH_RESULTS": "Es wurden keine Suchergebnisse gefunden.",
@@ -529,6 +530,9 @@
         }
       },
       "APPLICATION": {
+        "AD_CONSENT_DESCRIPTION": "View and manage how ad partners may use your data for ad personalization",
+        "AD_CONSENT_LABEL": "Ads Personalization & Data",
+        "AD_CONSENT_MANAGE": "Manage",
         "APP_RELEASE_CHANNEL_CONFIRMATION_DESCRIPTION_BETA": "Wenn du zum Beta-Kanal wechseln, erhälst du experimentelle Builds, die Fehlerbehebungen sowie neue und kommende Funktionen enthalten. Du kannst nur zur aktuellen stabilen Version zurückkehren, indem du deine vorhandene Anwendung deinstallierst und von wowup.io neu installierst.\n\nSolange der Beta-Kanal funktionsfähig ist, verwende ihn auf eigene Gefahr.",
         "APP_RELEASE_CHANNEL_CONFIRMATION_DESCRIPTION_STABLE": "Wenn du zum Stabilen-Kanal der Anwendung wechselst, erhältst du keine weiteren Beta-Builds. Das nächste Update wird die nächste Stabile-Version sein.",
         "APP_RELEASE_CHANNEL_CONFIRMATION_LABEL": "Einstellen des App-Release-Kanals",
