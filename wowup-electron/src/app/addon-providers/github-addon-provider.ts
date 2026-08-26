@@ -249,7 +249,7 @@ export class GitHubAddonProvider extends AddonProvider {
 
     const searchResultFile: AddonSearchResultFile = {
       channelType: AddonChannelType.Stable,
-      downloadUrl: asset?.url ?? "",
+      downloadUrl: asset?.browser_download_url || asset?.url || "",
       folders: [addonName],
       gameVersion: "",
       version: asset?.name ?? "",
