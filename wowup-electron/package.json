@@ -1,7 +1,7 @@
 {
   "name": "wowup-cf",
   "productName": "WowUpCf",
-  "version": "2.23.1-beta.1",
+  "version": "2.23.1",
   "private": true,
   "description": "World of Warcraft addon updater",
   "keywords": [
