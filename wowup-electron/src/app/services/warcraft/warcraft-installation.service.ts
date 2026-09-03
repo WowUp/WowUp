@@ -7,12 +7,11 @@ import { v4 as uuidv4 } from "uuid";
 import { Injectable } from "@angular/core";
 import { TranslateService } from "@ngx-translate/core";
 
-import { WOW_INSTALLATIONS_KEY } from "../../../common/constants";
 import { getWowClientFolderName } from "../../../common/warcraft";
 import { getEnumName, getWowClientGroupForType } from "wowup-lib-core";
 import { ElectronService } from "../electron/electron.service";
 import { FileService } from "../files/file.service";
-import { PreferenceStorageService } from "../storage/preference-storage.service";
+import { WarcraftInstallationApiService } from "../api/warcraft-installation-api.service";
 import { WarcraftService } from "./warcraft.service";
 import { AddonChannelType, WowClientGroup, WowClientType } from "wowup-lib-core";
 import { WowInstallation } from "wowup-lib-core";
@@ -37,7 +36,7 @@ export class WarcraftInstallationService {
   }
 
   public constructor(
-    private _preferenceStorageService: PreferenceStorageService,
+    private _installationApiService: WarcraftInstallationApiService,
     private _warcraftService: WarcraftService,
     private _translateService: TranslateService,
     private _fileService: FileService,
@@ -67,32 +66,12 @@ export class WarcraftInstallationService {
   }
 
   public async reOrderInstallation(installationId: string, direction: number): Promise<void> {
-    const originIndex = this._wowInstallations.findIndex((installation) => installation.id === installationId);
-    if (originIndex === -1) {
-      console.warn("Installation not found to re-order", installationId);
-      return;
-    }
-
-    const newIndex = originIndex + direction;
-    if (newIndex < 0 || newIndex >= this._wowInstallations.length) {
-      console.warn("New index was out of bounds");
-      return;
-    }
-
-    const installationCpy = [...this._wowInstallations];
-
-    [installationCpy[newIndex], installationCpy[originIndex]] = [
-      installationCpy[originIndex],
-      installationCpy[newIndex],
-    ];
-
-    await this.setWowInstallations(installationCpy);
-    this._wowInstallationsSrc.next(installationCpy);
+    const installations = await this._installationApiService.reorder(installationId, direction);
+    this._wowInstallationsSrc.next(installations);
   }
 
   public async getWowInstallationsAsync(): Promise<WowInstallation[]> {
-    const results = await this._preferenceStorageService.getObjectAsync<WowInstallation[]>(WOW_INSTALLATIONS_KEY);
-    return results || [];
+    return await this._installationApiService.getAll();
   }
 
   public getWowInstallation(installationId: string | undefined): WowInstallation | undefined {
@@ -124,16 +103,11 @@ export class WarcraftInstallationService {
 
   public async setWowInstallations(wowInstallations: WowInstallation[]): Promise<void> {
     console.log(`Setting wow installations: ${wowInstallations.length}`);
-    await this._preferenceStorageService.setAsync(WOW_INSTALLATIONS_KEY, wowInstallations);
+    await this._installationApiService.setAll(wowInstallations);
   }
 
   public async setSelectedWowInstallation(wowInstallation: WowInstallation): Promise<void> {
-    const allInstallations = await this.getWowInstallationsAsync();
-    _.forEach(allInstallations, (installation) => {
-      installation.selected = installation.id === wowInstallation.id;
-    });
-
-    await this.setWowInstallations(allInstallations);
+    await this._installationApiService.setSelected(wowInstallation.id);
   }
 
   public async getInstallationDisplayName(wowInstallation: WowInstallation): Promise<string> {
@@ -145,16 +119,7 @@ export class WarcraftInstallationService {
     const typeName = getEnumName(WowClientType, wowInstallation.clientType);
     wowInstallation.displayName = await this.getDisplayName(wowInstallation.label, typeName);
 
-    const storedInstallations = await this.getWowInstallationsAsync();
-    const matchIndex = _.findIndex(storedInstallations, (installation) => installation.id === wowInstallation.id);
-
-    if (matchIndex === -1) {
-      throw new Error("No installation to update");
-    }
-
-    storedInstallations.splice(matchIndex, 1, wowInstallation);
-
-    await this.setWowInstallations(storedInstallations);
+    const storedInstallations = await this._installationApiService.update(wowInstallation);
     this._wowInstallationsSrc.next(storedInstallations);
   }
 
@@ -188,31 +153,15 @@ export class WarcraftInstallationService {
   }
 
   public async addInstallation(installation: WowInstallation, notify = true): Promise<void> {
-    const existingInstallations = await this.getWowInstallationsAsync();
-    const exists = _.findIndex(existingInstallations, (inst) => inst.location === installation.location) !== -1;
-    if (exists) {
-      throw new Error(`Installation already exists: ${installation.location}`);
-    }
-
-    existingInstallations.push(installation);
-
-    await this.setWowInstallations(existingInstallations);
+    const installations = await this._installationApiService.add(installation);
 
     if (notify) {
-      this._wowInstallationsSrc.next(existingInstallations);
+      this._wowInstallationsSrc.next(installations);
     }
   }
 
   public async removeWowInstallation(installation: WowInstallation): Promise<void> {
-    const installations = await this.getWowInstallationsAsync();
-    const installationExists = _.findIndex(installations, (inst) => inst.id === installation.id) !== -1;
-    if (!installationExists) {
-      throw new Error(`Installation does not exist: ${installation.id}`);
-    }
-
-    _.remove(installations, (inst) => inst.id === installation.id);
-
-    await this.setWowInstallations(installations);
+    const installations = await this._installationApiService.remove(installation.id);
     this._wowInstallationsSrc.next(installations);
   }
 

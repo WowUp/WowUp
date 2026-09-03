@@ -118,6 +118,15 @@ export const IPC_WARCRAFT_GET_CLIENT_TYPE_FOR_BINARY = "warcraft-get-client-type
 export const IPC_WARCRAFT_IS_WOW_APPLICATION = "warcraft-is-wow-application";
 export const IPC_WARCRAFT_GET_EXECUTABLE_EXTENSION = "warcraft-get-executable-extension";
 
+// WARCRAFT INSTALLATION CONTROLLER
+export const IPC_WARCRAFT_INSTALLATIONS_GET_ALL = "warcraft-installations-get-all";
+export const IPC_WARCRAFT_INSTALLATIONS_SET_ALL = "warcraft-installations-set-all";
+export const IPC_WARCRAFT_INSTALLATIONS_ADD = "warcraft-installations-add";
+export const IPC_WARCRAFT_INSTALLATIONS_REMOVE = "warcraft-installations-remove";
+export const IPC_WARCRAFT_INSTALLATIONS_UPDATE = "warcraft-installations-update";
+export const IPC_WARCRAFT_INSTALLATIONS_REORDER = "warcraft-installations-reorder";
+export const IPC_WARCRAFT_INSTALLATIONS_SET_SELECTED = "warcraft-installations-set-selected";
+
 // IPC STORAGE
 export const IPC_STORE_GET_OBJECT = "store-get-object";
 export const IPC_STORE_GET_OBJECT_SYNC = "store-get-object-sync";

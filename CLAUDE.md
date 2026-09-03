@@ -21,7 +21,7 @@ The application still runs a **coupled renderer architecture** where Node capabi
 - **Node Integration Enabled**: `nodeIntegration: true` and `contextIsolation: false` are configured in `app/main.ts`. The Angular UI imports Node native APIs (`fs`, `path`, etc.) directly.
 - **Business Logic in Renderer (not yet migrated)**:
   - Addon Providers (`src/app/addon-providers/`) execute all HTTP calls and metadata scraping in the browser context.
-  - Warcraft installation CRUD, TOC parsing, addon scan/sync, and install/remove (`src/app/services/warcraft/`, `src/app/services/addons/`) still run on the Angular side.
+  - TOC parsing, addon scan/sync, and install/remove (`src/app/services/addons/`) still run on the Angular side.
 - **Main Process (`app/`)**: Was a thin window manager routed through the legacy [`app/ipc-events.ts`](file:///d:/GitHub/WowUp-Dev/wowup-electron/app/ipc-events.ts) registry; now also hosts a growing set of **Controllers** (`app/controllers/`, implementing `IpcController`, registered in `app/controllers/index.ts`) and main-process **services** (`app/services/`) for logic that has already been migrated — e.g. Warcraft platform/executable detection (`WarcraftController`).
 - **Renderer API wrappers**: Migrated domains get a thin Angular service under `src/app/services/api/` (e.g. `warcraft-api.service.ts`) that just wraps `ipcRenderer.invoke()` for the new IPC channels — no business logic.
 
@@ -35,7 +35,7 @@ Full phase-by-phase checklist: [`wowup-electron/UI_DECOUPLING_PLAN.md`](file:///
 
 Status snapshot:
 1. **Phase 1 — Warcraft Platform Detection**: ✅ done. `WarcraftPlatform` (`app/services/warcraft/`) + `WarcraftController` + `warcraft-api.service.ts`; old `warcraft.service.{impl,win,mac,linux}.ts` deleted from the renderer.
-2. **Phase 2 — Warcraft Installation CRUD**: 🚧 in progress.
+2. **Phase 2 — Warcraft Installation CRUD**: ✅ done. `WarcraftInstallationController` (`app/controllers/warcraft/`) + `warcraft-installation-api.service.ts`; `WarcraftInstallationService` now delegates CRUD/storage to the controller and only keeps Angular-specific state (RxJS broadcast, `TranslateService` display names).
 3. **Phases 3–6 — TOC parsing/addon folder listing, addon scan/sync, install/remove pipeline, `ipc-events.ts` cleanup**: ⏳ not started.
 
 Note: there is no `Procedure<I, O>` / `EventChannel<P>` primitive layer — the actual pattern is the simpler `IpcController` interface + per-channel `ipcMain.handle()` calls, wired up in `registerControllers()`.
