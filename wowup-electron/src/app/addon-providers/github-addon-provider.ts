@@ -83,17 +83,17 @@ export class GitHubAddonProvider extends AddonProvider {
   }
 
   public async getDownloadAuth(): Promise<DownloadAuth | undefined> {
-    const hasPat = await this.hasPersonalAccessKey();
-    if (hasPat) {
-      const headers = await this.getAuthorizationHeader();
-      headers.Accept = "application/octet-stream";
+    // The GitHub REST API asset endpoint (asset.url) only streams the binary when the
+    // request carries Accept: application/octet-stream; without it, it returns 200 with a
+    // small JSON metadata payload that then gets saved as the addon zip and fails to unzip.
+    // Send the header unconditionally so anonymous/public-repo downloads work, and add the
+    // PAT Authorization header on top when one is configured (required for private repos).
+    const headers = await this.getAuthorizationHeader();
+    headers.Accept = "application/octet-stream";
 
-      return {
-        headers,
-      };
-    } else {
-      return undefined;
-    }
+    return {
+      headers,
+    };
   }
 
   public async getAll(installation: WowInstallation, addonIds: string[]): Promise<GetAllResult> {
@@ -186,7 +186,9 @@ export class GitHubAddonProvider extends AddonProvider {
         files: [
           {
             channelType: result.release?.prerelease ? AddonChannelType.Beta : AddonChannelType.Stable,
-            downloadUrl: asset?.browser_download_url || asset?.url || "",
+            // See getByIdAsync: asset.url + Accept: application/octet-stream works both
+            // anonymously and with a PAT; keep it consistent so updates don't rewrite the URL.
+            downloadUrl: asset?.url ?? "",
             folders: [],
             gameVersion: "",
             releaseDate: new Date(result.release?.published_at ?? ""),
@@ -249,7 +251,10 @@ export class GitHubAddonProvider extends AddonProvider {
 
     const searchResultFile: AddonSearchResultFile = {
       channelType: AddonChannelType.Stable,
-      downloadUrl: asset?.browser_download_url || asset?.url || "",
+      // Use the REST API asset endpoint rather than browser_download_url: combined with the
+      // Accept: application/octet-stream header from getDownloadAuth() it works both
+      // anonymously and with a PAT, whereas browser_download_url 404s on private repos.
+      downloadUrl: asset?.url ?? "",
       folders: [addonName],
       gameVersion: "",
       version: asset?.name ?? "",
