@@ -23,7 +23,7 @@
   },
   "mac": {
     "icon": "electron-build/icon.icns",
-    "category": "public.app-category.games",
+    "category": "public.app-category.utilities",
     "target": [
       {
         "target": "default",
