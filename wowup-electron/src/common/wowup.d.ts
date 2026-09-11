@@ -17,6 +17,7 @@ declare type MainChannels =
   | "power-monitor-unlock"
   | "push-notification"
   | "request-install-from-url"
+  | "theme-native-updated"
   | "window-maximized"
   | "window-minimized"
   | "window-unmaximized"

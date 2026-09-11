@@ -11,8 +11,10 @@ import {
   ADDON_PROVIDERS_KEY,
   COLLAPSE_TO_TRAY_PREFERENCE_KEY,
   CURRENT_THEME_KEY,
+  DARK_THEME_KEY,
   DEFAULT_AUTO_UPDATE_PREFERENCE_KEY_SUFFIX,
   DEFAULT_CHANNEL_PREFERENCE_KEY_SUFFIX,
+  DEFAULT_LIGHT_THEME,
   DEFAULT_THEME,
   DEFAULT_TRUSTED_DOMAINS,
   ENABLE_APP_BADGE_KEY,
@@ -24,11 +26,13 @@ import {
   IPC_GET_APP_VERSION,
   IPC_UPDATE_APP_BADGE,
   KEEP_ADDON_DETAIL_TAB_PREFERENCE_KEY,
+  LIGHT_THEME_KEY,
   MY_ADDONS_HIDDEN_COLUMNS_KEY,
   MY_ADDONS_SORT_ORDER,
   SELECTED_LANGUAGE_PREFERENCE_KEY,
   START_MINIMIZED_PREFERENCE_KEY,
   START_WITH_SYSTEM_PREFERENCE_KEY,
+  THEME_SYNC_ENABLED_KEY,
   TRUSTED_DOMAINS_KEY,
   UPDATE_NOTES_POPUP_VERSION_KEY,
   USE_HARDWARE_ACCELERATION_PREFERENCE_KEY,
@@ -137,6 +141,38 @@ export class WowUpService {
     const key = CURRENT_THEME_KEY;
     await this._preferenceStorageService.setAsync(key, value);
     this._preferenceChangeSrc.next({ key, value: value });
+  }
+
+  public async getThemeSyncEnabled(): Promise<boolean> {
+    return (await this._preferenceStorageService.getAsync(THEME_SYNC_ENABLED_KEY)) === "true";
+  }
+
+  public async setThemeSyncEnabled(value: boolean): Promise<void> {
+    const key = THEME_SYNC_ENABLED_KEY;
+    await this._preferenceStorageService.setAsync(key, value);
+    this._preferenceChangeSrc.next({ key, value: value.toString() });
+  }
+
+  public async getLightTheme(): Promise<string> {
+    const theme = await this._preferenceStorageService.getAsync(LIGHT_THEME_KEY);
+    return theme || DEFAULT_LIGHT_THEME;
+  }
+
+  public async setLightTheme(value: string): Promise<void> {
+    const key = LIGHT_THEME_KEY;
+    await this._preferenceStorageService.setAsync(key, value);
+    this._preferenceChangeSrc.next({ key, value });
+  }
+
+  public async getDarkTheme(): Promise<string> {
+    const theme = await this._preferenceStorageService.getAsync(DARK_THEME_KEY);
+    return theme || DEFAULT_THEME;
+  }
+
+  public async setDarkTheme(value: string): Promise<void> {
+    const key = DARK_THEME_KEY;
+    await this._preferenceStorageService.setAsync(key, value);
+    this._preferenceChangeSrc.next({ key, value });
   }
 
   public async getUseHardwareAcceleration(): Promise<boolean> {

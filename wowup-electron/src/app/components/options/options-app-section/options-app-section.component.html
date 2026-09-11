@@ -32,7 +32,8 @@
         </div>
         <small class="text-2">{{ "PAGES.OPTIONS.APPLICATION.THEME_DESCRIPTION" | translate }}</small>
       </div>
-      <mat-form-field class="">
+
+      <mat-form-field *ngIf="(themeSyncEnabled$ | async) === false">
         <mat-label>{{ "PAGES.OPTIONS.APPLICATION.THEME_LABEL" | translate }}</mat-label>
         <mat-select [(value)]="currentTheme">
           <mat-optgroup *ngFor="let themeGroup of themeGroups" [label]="themeGroup.name | translate">
@@ -42,7 +43,40 @@
           </mat-optgroup>
         </mat-select>
       </mat-form-field>
+
+      <div class="inline-fields" *ngIf="themeSyncEnabled$ | async">
+        <mat-form-field>
+          <mat-label>{{ "PAGES.OPTIONS.APPLICATION.THEME_LIGHT_LABEL" | translate }}</mat-label>
+          <mat-select [(value)]="lightTheme">
+            <mat-option *ngFor="let theme of lightThemes" [value]="theme.class">
+              {{ theme.display | translate }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+        <mat-form-field>
+          <mat-label>{{ "PAGES.OPTIONS.APPLICATION.THEME_DARK_LABEL" | translate }}</mat-label>
+          <mat-select [(value)]="darkTheme">
+            <mat-option *ngFor="let theme of darkThemes" [value]="theme.class">
+              {{ theme.display | translate }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
     </div>
+
+    <div class="spacer"></div>
+    <!-- THEME SYNC -->
+    <div class="row align-items-center">
+      <div class="flex-grow-1">
+        <div class="label">
+          {{ "PAGES.OPTIONS.APPLICATION.THEME_SYNC_LABEL" | translate }}
+        </div>
+      </div>
+      <mat-slide-toggle [checked]="themeSyncEnabled$ | async" (change)="onThemeSyncChange($event)"></mat-slide-toggle>
+    </div>
+    <small class="text-2">
+      {{ "PAGES.OPTIONS.APPLICATION.THEME_SYNC_DESCRIPTION" | translate }}
+    </small>
     <div class="divider"></div>
   </div>
   <!-- TELEMETRY -->

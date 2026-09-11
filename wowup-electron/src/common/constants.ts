@@ -118,6 +118,10 @@ export const IPC_WARCRAFT_GET_CLIENT_TYPE_FOR_BINARY = "warcraft-get-client-type
 export const IPC_WARCRAFT_IS_WOW_APPLICATION = "warcraft-is-wow-application";
 export const IPC_WARCRAFT_GET_EXECUTABLE_EXTENSION = "warcraft-get-executable-extension";
 
+// THEME CONTROLLER
+export const IPC_THEME_SHOULD_USE_DARK_COLORS = "theme-should-use-dark-colors";
+export const IPC_THEME_NATIVE_UPDATED = "theme-native-updated";
+
 // IPC STORAGE
 export const IPC_STORE_GET_OBJECT = "store-get-object";
 export const IPC_STORE_GET_OBJECT_SYNC = "store-get-object-sync";
@@ -151,6 +155,9 @@ export const GET_ADDONS_SORT_ORDER = "get_addons_sort_order";
 export const ADDON_PROVIDERS_KEY = "addon_providers";
 export const WOW_INSTALLATIONS_KEY = "wow_installations";
 export const CURRENT_THEME_KEY = "current_theme";
+export const THEME_SYNC_ENABLED_KEY = "theme_sync_enabled";
+export const LIGHT_THEME_KEY = "light_theme";
+export const DARK_THEME_KEY = "dark_theme";
 export const TELEMETRY_ENABLED_KEY = "telemetry_enabled";
 export const BLIZZARD_AGENT_PATH_KEY = "blizzard_agent_path";
 export const ZOOM_FACTOR_KEY = "zoom_factor";

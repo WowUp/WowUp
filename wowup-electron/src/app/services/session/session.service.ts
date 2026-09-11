@@ -3,7 +3,16 @@ import { BehaviorSubject, combineLatest, from, Subject } from "rxjs";
 
 import { Injectable } from "@angular/core";
 
-import { CURRENT_THEME_KEY, SELECTED_DETAILS_TAB_KEY, TAB_INDEX_SETTINGS } from "../../../common/constants";
+import {
+  CURRENT_THEME_KEY,
+  DARK_THEME_KEY,
+  DEFAULT_LIGHT_THEME,
+  DEFAULT_THEME,
+  LIGHT_THEME_KEY,
+  SELECTED_DETAILS_TAB_KEY,
+  TAB_INDEX_SETTINGS,
+  THEME_SYNC_ENABLED_KEY,
+} from "../../../common/constants";
 import { PreferenceStorageService } from "../storage/preference-storage.service";
 import { WarcraftInstallationService } from "../warcraft/warcraft-installation.service";
 import { ColumnState } from "../../models/wowup/column-state";
@@ -12,6 +21,7 @@ import { WowUpAccountService } from "../wowup/wowup-account.service";
 import { AddonService } from "../addons/addon.service";
 import { AddonProviderFactory } from "../addons/addon.provider.factory";
 import { WowUpService } from "../wowup/wowup.service";
+import { ThemeApiService } from "../api/theme-api.service";
 import { WowInstallation } from "wowup-lib-core";
 
 @Injectable({
@@ -31,6 +41,11 @@ export class SessionService {
   private readonly _enableControlsSrc = new BehaviorSubject<boolean>(false);
   private readonly _getAddonsColumnsSrc = new Subject<ColumnState>();
   private readonly _currentThemeSrc = new BehaviorSubject<string>("default-theme");
+  private readonly _defaultThemeSrc = new BehaviorSubject<string>(DEFAULT_THEME);
+  private readonly _themeSyncEnabledSrc = new BehaviorSubject<boolean>(false);
+  private readonly _lightThemeSrc = new BehaviorSubject<string>(DEFAULT_LIGHT_THEME);
+  private readonly _darkThemeSrc = new BehaviorSubject<string>(DEFAULT_THEME);
+  private readonly _osShouldUseDarkColorsSrc = new BehaviorSubject<boolean>(true);
   private readonly _rescanCompleteSrc = new Subject<boolean>();
 
   private _selectedDetailTabType: DetailsTabType;
@@ -68,6 +83,7 @@ export class SessionService {
     private _preferenceStorageService: PreferenceStorageService,
     private _wowUpAccountService: WowUpAccountService,
     private _wowUpService: WowUpService,
+    private _themeApiService: ThemeApiService,
     private _addonService: AddonService,
     private _addonProviderService: AddonProviderFactory
   ) {
@@ -82,18 +98,72 @@ export class SessionService {
       .pipe(switchMap((installations) => from(this.onWowInstallationsChange(installations))))
       .subscribe();
 
+    combineLatest([
+      this._themeSyncEnabledSrc,
+      this._lightThemeSrc,
+      this._darkThemeSrc,
+      this._osShouldUseDarkColorsSrc,
+      this._defaultThemeSrc,
+    ]).subscribe(([syncEnabled, lightTheme, darkTheme, osShouldUseDarkColors, defaultTheme]) => {
+      const effectiveTheme = syncEnabled ? (osShouldUseDarkColors ? darkTheme : lightTheme) : defaultTheme;
+      this._currentThemeSrc.next(effectiveTheme);
+    });
+
     this._wowUpService.preferenceChange$.subscribe((change) => {
-      if (change.key === CURRENT_THEME_KEY) {
-        this._currentThemeSrc.next(change.value);
+      switch (change.key) {
+        case CURRENT_THEME_KEY:
+          this._defaultThemeSrc.next(change.value);
+          break;
+        case THEME_SYNC_ENABLED_KEY:
+          this._themeSyncEnabledSrc.next(change.value === "true");
+          break;
+        case LIGHT_THEME_KEY:
+          this._lightThemeSrc.next(change.value);
+          break;
+        case DARK_THEME_KEY:
+          this._darkThemeSrc.next(change.value);
+          break;
       }
     });
 
     this._wowUpService
       .getCurrentTheme()
       .then((theme) => {
-        this._currentThemeSrc.next(theme);
+        this._defaultThemeSrc.next(theme);
       })
       .catch(console.error);
+
+    this._wowUpService
+      .getThemeSyncEnabled()
+      .then((enabled) => {
+        this._themeSyncEnabledSrc.next(enabled);
+      })
+      .catch(console.error);
+
+    this._wowUpService
+      .getLightTheme()
+      .then((theme) => {
+        this._lightThemeSrc.next(theme);
+      })
+      .catch(console.error);
+
+    this._wowUpService
+      .getDarkTheme()
+      .then((theme) => {
+        this._darkThemeSrc.next(theme);
+      })
+      .catch(console.error);
+
+    this._themeApiService
+      .getShouldUseDarkColors()
+      .then((shouldUseDarkColors) => {
+        this._osShouldUseDarkColorsSrc.next(shouldUseDarkColors);
+      })
+      .catch(console.error);
+
+    this._themeApiService.onShouldUseDarkColorsChanged((shouldUseDarkColors) => {
+      this._osShouldUseDarkColorsSrc.next(shouldUseDarkColors);
+    });
 
     this._addonProviderService.addonProviderChange$.subscribe(() => {
       this.updateAdSpace();

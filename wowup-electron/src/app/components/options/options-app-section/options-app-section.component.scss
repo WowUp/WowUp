@@ -16,4 +16,13 @@
     height: 1px;
     border-top: thin solid var(--divider-color);
   }
+  .spacer {
+    margin-top: 20px;
+    height: 1px;
+  }
+}
+
+.inline-fields {
+  display: flex;
+  gap: 12px;
 }
