@@ -1,5 +1,5 @@
 import { dialog } from "electron";
-import { app, BrowserWindow, BrowserWindowConstructorOptions, powerMonitor } from "electron";
+import { app, BrowserWindow, BrowserWindowConstructorOptions, nativeTheme, powerMonitor } from "electron";
 import * as log from "electron-log/main";
 import { find } from "lodash";
 import * as minimist from "minimist";
@@ -14,9 +14,11 @@ import {
   APP_USER_MODEL_ID_CF,
   COLLAPSE_TO_TRAY_PREFERENCE_KEY,
   CURRENT_THEME_KEY,
+  DARK_THEME_KEY,
   DEFAULT_BG_COLOR,
   DEFAULT_LIGHT_BG_COLOR,
   IPC_CUSTOM_PROTOCOL_RECEIVED,
+  LIGHT_THEME_KEY,
   IPC_POWER_MONITOR_LOCK,
   IPC_POWER_MONITOR_RESUME,
   IPC_POWER_MONITOR_SUSPEND,
@@ -29,6 +31,7 @@ import {
   IPC_WINDOW_UNMAXIMIZED,
   START_MINIMIZED_PREFERENCE_KEY,
   START_WITH_SYSTEM_PREFERENCE_KEY,
+  THEME_SYNC_ENABLED_KEY,
   USE_HARDWARE_ACCELERATION_PREFERENCE_KEY,
   WINDOW_DEFAULT_HEIGHT,
   WINDOW_DEFAULT_WIDTH,
@@ -558,7 +561,18 @@ async function onActivate() {
 }
 
 function getBackgroundColor() {
-  const savedTheme = getPreferenceStore().get(CURRENT_THEME_KEY) as string | undefined;
+  const prefStore = getPreferenceStore();
+  const syncEnabled = prefStore.get(THEME_SYNC_ENABLED_KEY) as boolean | undefined;
+
+  let savedTheme: string | undefined;
+  if (syncEnabled) {
+    savedTheme = prefStore.get(nativeTheme.shouldUseDarkColors ? DARK_THEME_KEY : LIGHT_THEME_KEY) as
+      | string
+      | undefined;
+  } else {
+    savedTheme = prefStore.get(CURRENT_THEME_KEY) as string | undefined;
+  }
+
   return savedTheme && savedTheme.indexOf("light") !== -1 ? DEFAULT_LIGHT_BG_COLOR : DEFAULT_BG_COLOR;
 }
 

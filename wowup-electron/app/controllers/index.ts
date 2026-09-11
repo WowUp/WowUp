@@ -3,6 +3,7 @@ import * as Store from "electron-store";
 
 import { AddonController } from "./addon.controller";
 import { IpcController } from "./ipc-controller";
+import { ThemeController } from "./theme/theme.controller";
 import { WarcraftController } from "./warcraft/warcraft.controller";
 import { WarcraftPlatformWin } from "../services/warcraft/warcraft-platform.win";
 import { WarcraftPlatformMac } from "../services/warcraft/warcraft-platform.mac";
@@ -27,6 +28,7 @@ export function registerControllers(deps: ControllerDeps): void {
   const controllers: IpcController[] = [
     new AddonController(deps.addonStore),
     new WarcraftController(getPlatformImpl(), deps.preferenceStore),
+    new ThemeController(deps.window),
   ];
 
   for (const controller of controllers) {

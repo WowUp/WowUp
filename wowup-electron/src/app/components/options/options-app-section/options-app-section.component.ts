@@ -89,6 +89,9 @@ export class OptionsAppSectionComponent implements OnInit {
     },
   ];
 
+  public readonly darkThemes = this.themeGroups[0].themes;
+  public readonly lightThemes = this.themeGroups[1].themes;
+
   public releaseChannels: ReleaseChannelViewModel[] = [
     { value: WowUpReleaseChannelType.Stable, labelKey: "COMMON.ENUM.ADDON_CHANNEL_TYPE.STABLE" },
     { value: WowUpReleaseChannelType.Beta, labelKey: "COMMON.ENUM.ADDON_CHANNEL_TYPE.BETA" },
@@ -111,6 +114,35 @@ export class OptionsAppSectionComponent implements OnInit {
       .catch(console.error);
   }
 
+  private _lightTheme: string;
+  public get lightTheme() {
+    return this._lightTheme;
+  }
+
+  public set lightTheme(theme: string) {
+    this.wowupService
+      .setLightTheme(theme)
+      .then(() => {
+        this._lightTheme = theme;
+      })
+      .catch(console.error);
+  }
+
+  private _darkTheme: string;
+  public get darkTheme() {
+    return this._darkTheme;
+  }
+
+  public set darkTheme(theme: string) {
+    this.wowupService
+      .setDarkTheme(theme)
+      .then(() => {
+        this._darkTheme = theme;
+      })
+      .catch(console.error);
+  }
+
+  public themeSyncEnabled$ = new BehaviorSubject(false);
   public enableSystemNotifications$ = new BehaviorSubject(false);
   public currentLanguage$ = new BehaviorSubject("");
   public useSymlinkMode$ = new BehaviorSubject(false);
@@ -138,6 +170,27 @@ export class OptionsAppSectionComponent implements OnInit {
 
   public ngOnInit(): void {
     this.currentTheme = this.sessionService.currentTheme;
+
+    this.wowupService
+      .getThemeSyncEnabled()
+      .then((enabled) => {
+        this.themeSyncEnabled$.next(enabled);
+      })
+      .catch(console.error);
+
+    this.wowupService
+      .getLightTheme()
+      .then((theme) => {
+        this._lightTheme = theme;
+      })
+      .catch(console.error);
+
+    this.wowupService
+      .getDarkTheme()
+      .then((theme) => {
+        this._darkTheme = theme;
+      })
+      .catch(console.error);
 
     this.wowupService
       .getWowUpReleaseChannel()
@@ -280,6 +333,11 @@ export class OptionsAppSectionComponent implements OnInit {
   public onCollapseChange = async (evt: MatSlideToggleChange): Promise<void> => {
     await this.wowupService.setCollapseToTray(evt.checked);
     this.collapseToTray$.next(evt.checked);
+  };
+
+  public onThemeSyncChange = async (evt: MatSlideToggleChange): Promise<void> => {
+    await this.wowupService.setThemeSyncEnabled(evt.checked);
+    this.themeSyncEnabled$.next(evt.checked);
   };
 
   public onStartWithSystemChange = async (evt: MatSlideToggleChange): Promise<void> => {
