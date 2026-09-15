@@ -158,10 +158,8 @@ interface WagoRecentsResponse {
 }
 
 const WAGO_BASE_URL = "https://addons.wago.io/api/external";
-const WAGO_AD_URL = "https://addons.wago.io/wowup_ad";
+const WAGO_AD_URL = "https://addons.wago.io/wowup_ad_nitro";
 const WAGO_AD_REFERRER = "https://wago.io";
-const WAGO_AD_USER_AGENT =
-  "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.100 Safari/537.36"; // the ad requires a normal looking user agent
 const WAGO_AD_PRELOAD = "preload/wago.js";
 const WAGO_SEARCH_CACHE_TIME_SEC = 60;
 const WAGO_DETAILS_CACHE_TIME_SEC = 60;
@@ -437,11 +435,14 @@ export class WagoAddonProvider extends AddonProvider {
     }
   }
 
+  /**
+   * The page behind this url serves the ad and hands us the public api key through the preload
+   * bridge. The session partition and user agent are decided by the native ad view in main.
+   */
   public getAdPageParams(): AdPageOptions {
     return {
       pageUrl: WAGO_AD_URL,
       referrer: WAGO_AD_REFERRER,
-      userAgent: WAGO_AD_USER_AGENT,
       preloadFilePath: WAGO_AD_PRELOAD,
     };
   }

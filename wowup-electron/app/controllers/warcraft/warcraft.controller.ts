@@ -1,4 +1,3 @@
-import { ipcMain } from "electron";
 import * as Store from "electron-store";
 import * as log from "electron-log/main";
 import * as fs from "fs";
@@ -19,7 +18,7 @@ import {
 import { AddonFolder, FsStats, InstalledProduct, Toc, WowClientType } from "wowup-lib-core";
 
 import { exists } from "../../file.utils";
-import { IpcController } from "../ipc-controller";
+import { ipcHandle, IpcController } from "../ipc-controller";
 import { TocService } from "../../services/toc/toc.service";
 import { decodeProducts, WarcraftPlatform } from "../../services/warcraft/warcraft-platform.service";
 
@@ -31,22 +30,20 @@ export class WarcraftController implements IpcController {
   ) {}
 
   public register(): void {
-    ipcMain.handle(IPC_WARCRAFT_GET_BLIZZARD_AGENT_PATH, () => this.getBlizzardAgentPath());
-    ipcMain.handle(IPC_WARCRAFT_GET_INSTALLED_PRODUCTS, (_evt, agentPath: string) =>
-      this.getInstalledProducts(agentPath),
-    );
-    ipcMain.handle(IPC_WARCRAFT_GET_EXECUTABLE_NAME, (_evt, clientType: WowClientType) =>
+    ipcHandle(IPC_WARCRAFT_GET_BLIZZARD_AGENT_PATH, () => this.getBlizzardAgentPath());
+    ipcHandle(IPC_WARCRAFT_GET_INSTALLED_PRODUCTS, (_evt, agentPath: string) => this.getInstalledProducts(agentPath));
+    ipcHandle(IPC_WARCRAFT_GET_EXECUTABLE_NAME, (_evt, clientType: WowClientType) =>
       this.platform.getExecutableName(clientType),
     );
-    ipcMain.handle(IPC_WARCRAFT_GET_CLIENT_TYPE_FOR_BINARY, (_evt, binaryPath: string) =>
+    ipcHandle(IPC_WARCRAFT_GET_CLIENT_TYPE_FOR_BINARY, (_evt, binaryPath: string) =>
       this.platform.getClientType(binaryPath),
     );
-    ipcMain.handle(IPC_WARCRAFT_IS_WOW_APPLICATION, (_evt, appName: string) => this.platform.isWowApplication(appName));
-    ipcMain.handle(IPC_WARCRAFT_GET_EXECUTABLE_EXTENSION, () => this.platform.getExecutableExtension());
-    ipcMain.handle(IPC_WARCRAFT_LIST_ADDONS, (_evt, addonFolderPath: string, scanSymlinks: boolean) =>
+    ipcHandle(IPC_WARCRAFT_IS_WOW_APPLICATION, (_evt, appName: string) => this.platform.isWowApplication(appName));
+    ipcHandle(IPC_WARCRAFT_GET_EXECUTABLE_EXTENSION, () => this.platform.getExecutableExtension());
+    ipcHandle(IPC_WARCRAFT_LIST_ADDONS, (_evt, addonFolderPath: string, scanSymlinks: boolean) =>
       this.listAddons(addonFolderPath, scanSymlinks),
     );
-    ipcMain.handle(IPC_WARCRAFT_GET_ADDON_FOLDER, (_evt, addonFolderPath: string, dir: string) =>
+    ipcHandle(IPC_WARCRAFT_GET_ADDON_FOLDER, (_evt, addonFolderPath: string, dir: string) =>
       this.getAddonFolder(addonFolderPath, dir),
     );
   }
