@@ -1,4 +1,3 @@
-import { ipcMain } from "electron";
 import * as Store from "electron-store";
 
 import { WowInstallation } from "wowup-lib-core";
@@ -13,25 +12,23 @@ import {
   IPC_WARCRAFT_INSTALLATIONS_UPDATE,
   WOW_INSTALLATIONS_KEY,
 } from "../../../src/common/constants";
-import { IpcController } from "../ipc-controller";
+import { ipcHandle, IpcController } from "../ipc-controller";
 
 export class WarcraftInstallationController implements IpcController {
   public constructor(private readonly preferenceStore: Store) {}
 
   public register(): void {
-    ipcMain.handle(IPC_WARCRAFT_INSTALLATIONS_GET_ALL, () => this.getAll());
-    ipcMain.handle(IPC_WARCRAFT_INSTALLATIONS_SET_ALL, (_evt, installations: WowInstallation[]) =>
+    ipcHandle(IPC_WARCRAFT_INSTALLATIONS_GET_ALL, () => this.getAll());
+    ipcHandle(IPC_WARCRAFT_INSTALLATIONS_SET_ALL, (_evt, installations: WowInstallation[]) =>
       this.setAll(installations),
     );
-    ipcMain.handle(IPC_WARCRAFT_INSTALLATIONS_ADD, (_evt, installation: WowInstallation) => this.add(installation));
-    ipcMain.handle(IPC_WARCRAFT_INSTALLATIONS_REMOVE, (_evt, installationId: string) => this.remove(installationId));
-    ipcMain.handle(IPC_WARCRAFT_INSTALLATIONS_UPDATE, (_evt, installation: WowInstallation) =>
-      this.update(installation),
-    );
-    ipcMain.handle(IPC_WARCRAFT_INSTALLATIONS_REORDER, (_evt, installationId: string, direction: number) =>
+    ipcHandle(IPC_WARCRAFT_INSTALLATIONS_ADD, (_evt, installation: WowInstallation) => this.add(installation));
+    ipcHandle(IPC_WARCRAFT_INSTALLATIONS_REMOVE, (_evt, installationId: string) => this.remove(installationId));
+    ipcHandle(IPC_WARCRAFT_INSTALLATIONS_UPDATE, (_evt, installation: WowInstallation) => this.update(installation));
+    ipcHandle(IPC_WARCRAFT_INSTALLATIONS_REORDER, (_evt, installationId: string, direction: number) =>
       this.reorder(installationId, direction),
     );
-    ipcMain.handle(IPC_WARCRAFT_INSTALLATIONS_SET_SELECTED, (_evt, installationId: string) =>
+    ipcHandle(IPC_WARCRAFT_INSTALLATIONS_SET_SELECTED, (_evt, installationId: string) =>
       this.setSelected(installationId),
     );
   }
