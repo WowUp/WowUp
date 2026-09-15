@@ -16,6 +16,15 @@ export class PatchNotesService {
 
 const CHANGELOGS: ChangeLog[] = [
   {
+    Version: "2.23.1",
+    html: `
+    <h4>Fixes</h4>
+    <ul>
+    <li>Fix the Windows cert</li>
+    </ul>
+    `,
+  },
+  {
     Version: "2.23.0",
     html: `
     <h4>Fixes</h4>
