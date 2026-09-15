@@ -3,8 +3,10 @@ import * as Store from "electron-store";
 
 import { AddonController } from "./addon.controller";
 import { IpcController } from "./ipc-controller";
+import { TocController } from "./toc/toc.controller";
 import { WarcraftController } from "./warcraft/warcraft.controller";
 import { WarcraftInstallationController } from "./warcraft/warcraft-installation.controller";
+import { TocService } from "../services/toc/toc.service";
 import { WarcraftPlatformWin } from "../services/warcraft/warcraft-platform.win";
 import { WarcraftPlatformMac } from "../services/warcraft/warcraft-platform.mac";
 import { WarcraftPlatformLinux } from "../services/warcraft/warcraft-platform.linux";
@@ -25,10 +27,13 @@ function getPlatformImpl(): WarcraftPlatform {
 }
 
 export function registerControllers(deps: ControllerDeps): void {
+  const tocService = new TocService();
+
   const controllers: IpcController[] = [
     new AddonController(deps.addonStore),
-    new WarcraftController(getPlatformImpl(), deps.preferenceStore),
+    new WarcraftController(getPlatformImpl(), deps.preferenceStore, tocService),
     new WarcraftInstallationController(deps.preferenceStore),
+    new TocController(tocService),
   ];
 
   for (const controller of controllers) {
