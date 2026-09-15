@@ -1,4 +1,3 @@
-import { ipcMain } from "electron";
 import * as Store from "electron-store";
 
 import {
@@ -12,7 +11,7 @@ import {
 } from "../../../src/common/constants";
 import { InstalledProduct, WowClientType } from "wowup-lib-core";
 
-import { IpcController } from "../ipc-controller";
+import { ipcHandle, IpcController } from "../ipc-controller";
 import { decodeProducts, WarcraftPlatform } from "../../services/warcraft/warcraft-platform.service";
 
 export class WarcraftController implements IpcController {
@@ -22,12 +21,12 @@ export class WarcraftController implements IpcController {
   ) {}
 
   public register(): void {
-    ipcMain.handle(IPC_WARCRAFT_GET_BLIZZARD_AGENT_PATH, () => this.getBlizzardAgentPath());
-    ipcMain.handle(IPC_WARCRAFT_GET_INSTALLED_PRODUCTS, (_evt, agentPath: string) => this.getInstalledProducts(agentPath));
-    ipcMain.handle(IPC_WARCRAFT_GET_EXECUTABLE_NAME, (_evt, clientType: WowClientType) => this.platform.getExecutableName(clientType));
-    ipcMain.handle(IPC_WARCRAFT_GET_CLIENT_TYPE_FOR_BINARY, (_evt, binaryPath: string) => this.platform.getClientType(binaryPath));
-    ipcMain.handle(IPC_WARCRAFT_IS_WOW_APPLICATION, (_evt, appName: string) => this.platform.isWowApplication(appName));
-    ipcMain.handle(IPC_WARCRAFT_GET_EXECUTABLE_EXTENSION, () => this.platform.getExecutableExtension());
+    ipcHandle(IPC_WARCRAFT_GET_BLIZZARD_AGENT_PATH, () => this.getBlizzardAgentPath());
+    ipcHandle(IPC_WARCRAFT_GET_INSTALLED_PRODUCTS, (_evt, agentPath: string) => this.getInstalledProducts(agentPath));
+    ipcHandle(IPC_WARCRAFT_GET_EXECUTABLE_NAME, (_evt, clientType: WowClientType) => this.platform.getExecutableName(clientType));
+    ipcHandle(IPC_WARCRAFT_GET_CLIENT_TYPE_FOR_BINARY, (_evt, binaryPath: string) => this.platform.getClientType(binaryPath));
+    ipcHandle(IPC_WARCRAFT_IS_WOW_APPLICATION, (_evt, appName: string) => this.platform.isWowApplication(appName));
+    ipcHandle(IPC_WARCRAFT_GET_EXECUTABLE_EXTENSION, () => this.platform.getExecutableExtension());
   }
 
   public async getBlizzardAgentPath(): Promise<string> {

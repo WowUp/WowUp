@@ -133,7 +133,8 @@
     <div class="tab hover-bg-secondary-4 addon-info-btn" (click)="onClickAdExplainer()">
       {{ "ADS.AD_EXPLAINER_BUTTON" | translate }}
     </div>
-    <div class="ad">
+    <!-- Stays empty on the wago flavor: the main process positions a native ad view over it. -->
+    <div class="ad" #adHost>
       <app-webview *ngFor="let params of adPageParams$ | async" [options]="params"></app-webview>
     </div>
   </div>

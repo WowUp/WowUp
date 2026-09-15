@@ -2,6 +2,7 @@ import { BrowserWindow } from "electron";
 import * as Store from "electron-store";
 
 import { AddonController } from "./addon.controller";
+import { WagoAdsController } from "./wago-ads.controller";
 import { IpcController } from "./ipc-controller";
 import { WarcraftController } from "./warcraft/warcraft.controller";
 import { WarcraftInstallationController } from "./warcraft/warcraft-installation.controller";
@@ -9,6 +10,7 @@ import { WarcraftPlatformWin } from "../services/warcraft/warcraft-platform.win"
 import { WarcraftPlatformMac } from "../services/warcraft/warcraft-platform.mac";
 import { WarcraftPlatformLinux } from "../services/warcraft/warcraft-platform.linux";
 import { WarcraftPlatform } from "../services/warcraft/warcraft-platform.service";
+import { AppEnv } from "../env/environment";
 import * as platform from "../platform";
 
 export interface ControllerDeps {
@@ -30,6 +32,11 @@ export function registerControllers(deps: ControllerDeps): void {
     new WarcraftController(getPlatformImpl(), deps.preferenceStore),
     new WarcraftInstallationController(deps.preferenceStore),
   ];
+
+  // The overwolf flavor renders its ad through the overwolf sdk.
+  if (AppEnv.buildFlavor === "wago") {
+    controllers.push(new WagoAdsController(deps.window));
+  }
 
   for (const controller of controllers) {
     controller.register();

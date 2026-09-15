@@ -13,7 +13,6 @@ export const AppConfig = {
   wago: {
     enabled: true,
     termsUrl: "https://addons.wago.io/agreements/terms-of-service",
-    dataConsentUrl: "https://addons.wago.io/agreements/wowup-data-consent",
   },
   curseforge: {
     enabled: false,
