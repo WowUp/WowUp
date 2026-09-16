@@ -100,6 +100,18 @@ Unsure where to begin contributing to WowUp? You can start by looking through th
 
 WowUp can be developed locally. For instructions on how to do this, see the following sections in the [README](wowup-electron/README.md):
 
+#### Git hooks
+
+This repository ships a pre-commit hook that blocks credentials from being committed by accident. It is opt-in, so enable it once per clone:
+
+```bash
+git config core.hooksPath .githooks
+```
+
+The build injects credentials into `wowup-electron/src/environments` by replacing placeholder tokens in place, so a local packaging run can leave real values sitting in tracked files. The hook refuses a commit when a staged file in that directory has an `apiKey` set to anything other than its placeholder, or when any newly added line contains a bcrypt-shaped string.
+
+If you ever need to bypass it, use `git commit --no-verify`.
+
 ### Pull Requests
 
 The process described here has several goals:
