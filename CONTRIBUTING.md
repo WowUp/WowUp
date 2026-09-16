@@ -22,21 +22,21 @@ This project and everyone participating in it is governed by the [WowUp Code of 
 
 We have an official discord with a detailed FAQ and where the community chimes in with helpful advice if you have questions.
 
-* [WowUp FAQ](https://wowup.io/faq)
+- [WowUp FAQ](https://wowup.io/faq)
 
 If chat is more your speed, you can join the WowUp Discord channel:
 
-* [Join the WowUp Discord channel](https://discord.gg/rk4F5aD)
-    * Even though Discord is a chat service, sometimes it takes several hours for community members to respond &mdash; please be patient!
-    * Use the `#wowup-support` channel for general questions or help with WowUp
-    * Use the `#suggestions` channel for feature suggestions
-    * There are many other channels available, check the channel list
+- [Join the WowUp Discord channel](https://discord.gg/rk4F5aD)
+  - Even though Discord is a chat service, sometimes it takes several hours for community members to respond &mdash; please be patient!
+  - Use the `#wowup-support` channel for general questions or help with WowUp
+  - Use the `#suggestions` channel for feature suggestions
+  - There are many other channels available, check the channel list
 
 ## What should I know before I get started?
 
 WowUp is currently split into two code bases, the legacy 1.x C# client and the 2.x Electron/Angular client that we're moving forward with.
 
-We are no longer adding features to the 1.x client as it will be sunset in favor of 2.x. 
+We are no longer adding features to the 1.x client as it will be sunset in favor of 2.x.
 
 ## How Can I Contribute?
 
@@ -54,24 +54,23 @@ Bugs are tracked as [GitHub issues](https://guides.github.com/features/issues/).
 
 Explain the problem and include additional details to help maintainers reproduce the problem:
 
-* **Use a clear and descriptive title** for the issue to identify the problem.
-* **Describe the exact steps which reproduce the problem** in as many details as possible. For example, start by explaining how you started WowUp. When listing steps, **don't just say what you did, but explain how you did it**.
-* **Describe the behavior you observed after following the steps** and point out what exactly is the problem with that behavior.
-* **Explain which behavior you expected to see instead and why.**
-* **Include screenshots and animated GIFs** which show you following the described steps and clearly demonstrate the problem. If you use the keyboard while following the steps. You can use [this tool](https://www.cockos.com/licecap/) to record GIFs on macOS and Windows, and [this tool](https://github.com/colinkeenan/silentcast) or [this tool](https://github.com/GNOME/byzanz) on Linux.
-* **If the problem wasn't triggered by a specific action**, describe what you were doing before the problem happened and share more information using the guidelines below.
+- **Use a clear and descriptive title** for the issue to identify the problem.
+- **Describe the exact steps which reproduce the problem** in as many details as possible. For example, start by explaining how you started WowUp. When listing steps, **don't just say what you did, but explain how you did it**.
+- **Describe the behavior you observed after following the steps** and point out what exactly is the problem with that behavior.
+- **Explain which behavior you expected to see instead and why.**
+- **Include screenshots and animated GIFs** which show you following the described steps and clearly demonstrate the problem. If you use the keyboard while following the steps. You can use [this tool](https://www.cockos.com/licecap/) to record GIFs on macOS and Windows, and [this tool](https://github.com/colinkeenan/silentcast) or [this tool](https://github.com/GNOME/byzanz) on Linux.
+- **If the problem wasn't triggered by a specific action**, describe what you were doing before the problem happened and share more information using the guidelines below.
 
 Provide more context by answering these questions:
 
-* **Did the problem start happening recently** (e.g. after updating to a new version of WowUp) or was this always a problem?
-* If the problem started happening recently, **can you reproduce the problem in an older version of WowUp?** What's the most recent version in which the problem doesn't happen? You can download older versions of WowUp from [the releases page](https://github.com/wowup/wowup/releases).
-* **Can you reliably reproduce the issue?** If not, provide details about how often the problem happens and under which conditions it normally happens.
+- **Did the problem start happening recently** (e.g. after updating to a new version of WowUp) or was this always a problem?
+- If the problem started happening recently, **can you reproduce the problem in an older version of WowUp?** What's the most recent version in which the problem doesn't happen? You can download older versions of WowUp from [the releases page](https://github.com/wowup/wowup/releases).
+- **Can you reliably reproduce the issue?** If not, provide details about how often the problem happens and under which conditions it normally happens.
 
 Include details about your configuration and environment:
 
-* **Which version of WowUp are you using?** You can get the exact version by looking in the right hand corder of the application.
-* **What's the name and version of the OS you're using**?
-
+- **Which version of WowUp are you using?** You can get the exact version by looking in the right hand corder of the application.
+- **What's the name and version of the OS you're using**?
 
 ### Suggesting Enhancements
 
@@ -83,18 +82,18 @@ Before creating enhancement suggestions, please check the existing feature reque
 
 Enhancement suggestions are tracked as [GitHub issues](https://guides.github.com/features/issues/). Create an issue and provide the following information:
 
-* **Use a clear and descriptive title** for the issue to identify the suggestion.
-* **Provide a step-by-step description of the suggested enhancement** in as many details as possible.
-* **Provide specific examples to demonstrate the steps**. Include copy/pasteable snippets which you use in those examples, as [Markdown code blocks](https://help.github.com/articles/markdown-basics/#multiple-lines).
-* **Describe the current behavior** and **explain which behavior you expected to see instead** and why.
-* **Include screenshots and animated GIFs** which help you demonstrate the steps or point out the part of WowUp which the suggestion is related to. You can use [this tool](https://www.cockos.com/licecap/) to record GIFs on macOS and Windows, and [this tool](https://github.com/colinkeenan/silentcast) or [this tool](https://github.com/GNOME/byzanz) on Linux.
-* **Explain why this enhancement would be useful** to most WowUp users.
+- **Use a clear and descriptive title** for the issue to identify the suggestion.
+- **Provide a step-by-step description of the suggested enhancement** in as many details as possible.
+- **Provide specific examples to demonstrate the steps**. Include copy/pasteable snippets which you use in those examples, as [Markdown code blocks](https://help.github.com/articles/markdown-basics/#multiple-lines).
+- **Describe the current behavior** and **explain which behavior you expected to see instead** and why.
+- **Include screenshots and animated GIFs** which help you demonstrate the steps or point out the part of WowUp which the suggestion is related to. You can use [this tool](https://www.cockos.com/licecap/) to record GIFs on macOS and Windows, and [this tool](https://github.com/colinkeenan/silentcast) or [this tool](https://github.com/GNOME/byzanz) on Linux.
+- **Explain why this enhancement would be useful** to most WowUp users.
 
 ### Your First Code Contribution
 
 Unsure where to begin contributing to WowUp? You can start by looking through these `help-wanted` issues:
 
-* [Help wanted issues][help-wanted] - issues which should be a bit more involved than `beginner` issues.
+- [Help wanted issues][help-wanted] - issues which should be a bit more involved than `beginner` issues.
 
 #### Local development
 
@@ -133,23 +132,23 @@ While the prerequisites above must be satisfied prior to having your pull reques
 
 ### Git Commit Messages
 
-* Use the present tense ("Add feature" not "Added feature")
-* Use the imperative mood ("Move cursor to..." not "Moves cursor to...")
-* Limit the first line to 72 characters or less
-* Reference issues and pull requests liberally after the first line
+- Use the present tense ("Add feature" not "Added feature")
+- Use the imperative mood ("Move cursor to..." not "Moves cursor to...")
+- Limit the first line to 72 characters or less
+- Reference issues and pull requests liberally after the first line
 
 ### TypeScript Styleguide
 
 All TypeScript code is linted with [Prettier](https://prettier.io/).
 
-* Prefer the object spread operator (`{...anotherObj}`) to `Object.assign()`
-* Place requires in the following order:
-    * Built in Node Modules (such as `path`)
-    * Built in Electron Modules (such as `remote`)
-    * Local Modules (using relative paths)
-* Place class properties in the following order:
-    * Class methods and properties (methods starting with `static`)
-    * Instance methods and properties
+- Prefer the object spread operator (`{...anotherObj}`) to `Object.assign()`
+- Place requires in the following order:
+  - Built in Node Modules (such as `path`)
+  - Built in Electron Modules (such as `remote`)
+  - Local Modules (using relative paths)
+- Place class properties in the following order:
+  - Class methods and properties (methods starting with `static`)
+  - Instance methods and properties
 
 ## Additional Notes
 
