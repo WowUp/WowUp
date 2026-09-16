@@ -73,9 +73,13 @@ npm run ow:start   # Serve Overwolf flavor (ow)
 ## 📝 Branching & Style Guidelines
 
 - **Branching Policy**:
-  - Primary development branch: `master`.
-  - Release branches: `release/X.Y.Z`.
-  - Target all PRs at `master` unless explicitly working on a specific release.
+  - Primary development branch: `develop` — all feature and fix work integrates here.
+  - **Target all PRs at `develop`.** GitHub's default branch is still `master`, so the
+    base has to be changed manually when opening a PR (`gh pr create --base develop`);
+    PRs that arrive against `master` normally just need retargeting.
+  - `master` is the release/stable branch. Only `release/X.Y.Z` branches merge into it,
+    and `master` is merged back into `develop` afterwards.
+  - Release branches: `release/X.Y.Z`, cut from `develop`.
 - **Code Formatting**:
   - TypeScript strictly throughout the workspace.
   - Formatted via Prettier (`npx prettier --write .`).
