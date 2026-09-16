@@ -1,45 +1,45 @@
 {
   "ADDON_IMPORT": {
-    "ACTIVE_ADDON_COUNT": "當前插件數：{count}",
-    "ADDED_BADGE_TOOLTIP": "嘗試安裝此插件",
-    "CONFLICT_BADGE_TOOLTIP": "不會修改衝突的插件",
+    "ACTIVE_ADDON_COUNT": "當前套件數：{count}",
+    "ADDED_BADGE_TOOLTIP": "嘗試安裝此套件",
+    "CONFLICT_BADGE_TOOLTIP": "不會修改衝突的套件",
     "COPY_BUTTON": "複製",
-    "DIALOG_TITLE": "匯入/匯出插件：{clientType}",
+    "DIALOG_TITLE": "匯入/匯出套件：{clientType}",
     "EXPORT_STRING_COPIED": "匯出字串已複製到剪貼簿",
     "EXPORT_STRING_PASTED": "剪貼簿內容已插入",
     "EXPORT_TAB_LABEL": "匯出",
-    "EXPORT_TEXT_LABEL": "插件匯出資料",
+    "EXPORT_TEXT_LABEL": "套件匯出資料",
     "GENERIC_IMPORT_ERROR": "匯入時發生錯誤",
-    "IGNORED_ADDON_COUNT": "忽略的插件數：{count}",
-    "IMPORT_ADDED_COUNT": "增加了 {count} 個插件",
+    "IGNORED_ADDON_COUNT": "忽略的套件數：{count}",
+    "IMPORT_ADDED_COUNT": "增加了 {count} 個套件",
     "IMPORT_BADGE_ADDED": "新增",
     "IMPORT_BADGE_CONFLICT": "衝突",
     "IMPORT_BADGE_NO_CHANGE": "無變化",
     "IMPORT_BUTTON": "匯入",
-    "IMPORT_CONFLICT_COUNT": "有 {count} 個插件存在衝突",
+    "IMPORT_CONFLICT_COUNT": "有 {count} 個套件存在衝突",
     "IMPORT_NO_CHANGE_COUNT": "{count} 個無變化",
     "IMPORT_STRING_INVALID": "匯入字串無效",
     "IMPORT_TAB_LABEL": "匯入",
     "IMPORT_TEXT_INSTRUCTIONS": "把 WowUp 匯出字串貼上到下方以開始匯入",
     "IMPORT_TEXT_LABEL": "匯入資料",
-    "IMPORT_TOTAL_COUNT": "正在匯入 {count} 個插件",
+    "IMPORT_TOTAL_COUNT": "正在匯入 {count} 個套件",
     "INSTALL_BUTTON": "安裝",
-    "INVALID_CLIENT_TYPE": "匯入字串和客戶端型別不匹配",
-    "MISSING_ADDON_PROVIDERS": "一個或多個插件提供者無法使用/啟用 ({missingProviders})",
-    "MISSING_CURSEFORGE_PROVIDER": "插件列表中包含 CurseForge 插件，您需要從 wowup.io 安裝<br>\"WowUp with CurseForge\"",
+    "INVALID_CLIENT_TYPE": "匯入字串和用戶端型別無法配對",
+    "MISSING_ADDON_PROVIDERS": "一個或多個套件提供者無法使用/啟用 ({missingProviders})",
+    "MISSING_CURSEFORGE_PROVIDER": "套件列表中包含 CurseForge 套件，您需要從 wowup.io 安裝<br>\"WowUp with CurseForge\"",
     "MISSING_PROVIDER_MODAL_DOWNLOAD_BTN": "下載",
-    "MISSING_PROVIDER_MODAL_TITLE": "缺少插件提供者",
-    "MISSING_WAGO_PROVIDER": "插件列表中包含 Wago 插件，您需要從 wowup.io 安裝<br>\"WowUp with Wago\"",
-    "NO_CHANGE_BADGE_TOOLTIP": "此插件已安裝",
+    "MISSING_PROVIDER_MODAL_TITLE": "缺少套件提供者",
+    "MISSING_WAGO_PROVIDER": "套件列表中包含 Wago 套件，您需要從 wowup.io 安裝<br>\"WowUp with Wago\"",
+    "NO_CHANGE_BADGE_TOOLTIP": "此套件已安裝",
     "PASTE_BUTTON": "貼上",
-    "PROVIDER_MISMATCH": "插件安裝源不匹配",
+    "PROVIDER_MISMATCH": "套件安裝來源無法配對",
     "RESET_BUTTON": "重置",
-    "VERSION_MISMATCH": "版本號不匹配"
+    "VERSION_MISMATCH": "版本號無法配對"
   },
   "ADS": {
     "AD_EXPLAINER_BUTTON": "This ad supports addon creators ❤",
     "AD_EXPLAINER_DIALOG": {
-      "MESSAGE": "顯示此廣告是為了支援 <a appExternalLink href=\"https://addons.wago.io/\">wago.io</a> 上辛勤工作、開發出優秀插件的作者們。如果不想看到此廣告，可以在「選項」中禁用 Wago.io 安裝源。",
+      "MESSAGE": "顯示此廣告是為了支援 <a appExternalLink href=\"https://addons.wago.io/\">wago.io</a> 上辛勤工作、開發出優秀套件的作者們。如果不想看到此廣告，可以在「選項」中禁用 Wago.io 安裝來源。",
       "TITLE": "為什麼會看見廣告？"
     },
     "AD_EXPLAINER_DIALOG_CF": {
@@ -56,7 +56,7 @@
         "PASTE": "貼上",
         "REDO": "重做",
         "SELECT_ALL": "全選",
-        "UNDO": "撤銷"
+        "UNDO": "上一步"
       },
       "QUIT": "退出",
       "VIEW": {
@@ -75,7 +75,7 @@
       }
     },
     "AUTO_UPDATE_FEW_NOTIFICATION_BODY": "{addonNames}\r\n已自動更新",
-    "AUTO_UPDATE_NOTIFICATION_BODY": "自動更新了 {count} 個插件。",
+    "AUTO_UPDATE_NOTIFICATION_BODY": "自動更新了 {count} 個套件。",
     "AUTO_UPDATE_NOTIFICATION_TITLE": "自動更新",
     "CLOSE_FULLSCREEN_BUTTON_TOOLTIP": "退出全螢幕模式",
     "FULLSCREEN_SNACKBAR": {
@@ -90,8 +90,8 @@
       "UNKNOWN": "未知"
     },
     "STATUS_TEXT": {
-      "ADDON_SCAN_COMPLETED": "插件掃描完成...",
-      "ADDON_SCAN_STARTED": "開始插件掃描...",
+      "ADDON_SCAN_COMPLETED": "套件掃描完成...",
+      "ADDON_SCAN_STARTED": "開始套件掃描...",
       "ADDON_SCAN_UPDATE": "正在掃描 {count} 個資料夾..."
     },
     "SYSTEM_TRAY": {
@@ -116,7 +116,7 @@
       "INSTALL_MESSAGE": "是否重新啟動 WowUp 以完成更新？",
       "INSTALL_TITLE": "WowUp 更新已準備就緒",
       "NOT_AVAILABLE": "已安裝最新版 WowUp",
-      "PORTABLE_DOWNLOAD_MESSAGE": "是否手動下載最新綠色版？\n\n下載完成後請關閉本應用程式，然後用新版本覆蓋。",
+      "PORTABLE_DOWNLOAD_MESSAGE": "是否手動下載最新免安裝版？\n\n下載完成後請關閉本應用程式，然後用新版本覆蓋。",
       "PORTABLE_DOWNLOAD_TITLE": "需要手動下載",
       "SNACKBAR_ACTION": "更新並重啟",
       "SNACKBAR_TEXT": "新版本 WowUp 可用",
@@ -129,12 +129,12 @@
     "ADDON_CATEGORIES": {
       "ACHIEVEMENTS": "成就",
       "ACTION_BARS": "快捷列",
-      "ALL_ADDONS": "全部插件",
+      "ALL_ADDONS": "全部套件",
       "AUCTION_ECONOMY": "拍賣和經濟",
       "BAGS_INVENTORY": "背包和物品欄",
       "BOSS_ENCOUNTERS": "首領戰",
       "BUFFS_DEBUFFS": "增益和減益",
-      "BUNDLES": "整合插件",
+      "BUNDLES": "整合套件",
       "CHAT_COMMUNICATION": "聊天和社交",
       "CLASS": "職業",
       "COMBAT": "戰鬥",
@@ -160,7 +160,7 @@
       "INSTALL": "安裝",
       "PENDING": "等待中",
       "UNAVAILABLE": "不可用",
-      "UNAVAILABLE_TOOLTIP": "插件作者或安裝源將該插件的狀態設為不可用",
+      "UNAVAILABLE_TOOLTIP": "套件作者或安裝來源將該套件的狀態設為不可用",
       "UNINSTALL": "解除安裝",
       "UNKNOWN": "未知",
       "UPDATE": "更新",
@@ -171,7 +171,7 @@
       "BACKINGUP": "正在備份",
       "COMPLETE": "已安裝",
       "DOWNLOADING": "正在下載",
-      "ERROR": "错误",
+      "ERROR": "錯誤",
       "INSTALLING": "正在安裝",
       "PENDING": "等待中",
       "RETRY": "Retrying...",
@@ -181,14 +181,14 @@
     "ADDON_WARNING": {
       "GAME_VERSION_TOC_MISSING_DESCRIPTION": "This addon or its children have one or more missing toc files for this game version",
       "GAME_VERSION_TOC_MISSING_TOOLTIP": "One or more missing toc files for this game version",
-      "GENERIC_DESCRIPTION": "WowUp 檢測到此插件存在問題，無法更新此插件或提供詳細資訊。",
-      "GENERIC_TOOLTIP": "檢測到此插件存在問題",
-      "MISSING_ON_PROVIDER_DESCRIPTION": "此插件可能已被作者或安裝源移除。<br>WowUp 無法更新此插件或提供詳細資訊。",
-      "MISSING_ON_PROVIDER_TOOLTIP": "此插件可能已被安裝源移除",
-      "NO_PROVIDER_FILES_DESCRIPTION": "{providerName} 返回了該插件的相關資訊，但不包含匹配當前遊戲版本的檔案。<br>一旦有匹配該遊戲版本的更新，此提示資訊將會消失。",
-      "NO_PROVIDER_FILES_TOOLTIP": "{providerName} 沒有匹配該遊戲版本的檔案",
-      "TOC_NAME_MISMATCH_DESCRIPTION": "此插件的資料夾名字和 TOC 檔案中記錄的名字不匹配，遊戲中可能會出現一些問題。",
-      "TOC_NAME_MISMATCH_TOOLTIP": "插件資料夾和 TOC 不匹配"
+      "GENERIC_DESCRIPTION": "WowUp 檢測到此套件存在問題，無法更新此套件或提供詳細資訊。",
+      "GENERIC_TOOLTIP": "檢測到此套件存在問題",
+      "MISSING_ON_PROVIDER_DESCRIPTION": "此套件可能已被作者或安裝來源移除。<br>WowUp 無法更新此套件或提供詳細資訊。",
+      "MISSING_ON_PROVIDER_TOOLTIP": "此套件可能已被安裝來源移除",
+      "NO_PROVIDER_FILES_DESCRIPTION": "{providerName} 返回了該套件的相關資訊，但不包含配對當前遊戲版本的檔案。<br>一旦有配對該遊戲版本的更新，此提示資訊將會消失。",
+      "NO_PROVIDER_FILES_TOOLTIP": "{providerName} 沒有配對該遊戲版本的檔案",
+      "TOC_NAME_MISMATCH_DESCRIPTION": "此套件的資料夾名字和 TOC 檔案中記錄的名字無法配對，遊戲中可能會出現一些問題。",
+      "TOC_NAME_MISMATCH_TOOLTIP": "套件資料夾和 TOC 無法配對"
     },
     "CLIENT_TYPES": {
       "ANNIVERSARY": "Burning Crusade Anniversary",
@@ -211,7 +211,7 @@
       "YESTERDAY": "昨天"
     },
     "DEPENDENCY": {
-      "TOOLTIP": "{dependencyCount} 個依賴項"
+      "TOOLTIP": "{dependencyCount} 個依賴項目"
     },
     "DOWNLOAD_COUNT": {
       "e+0": "{myriadCount}",
@@ -233,37 +233,37 @@
       }
     },
     "ERRORS": {
-      "ACCOUNT_PUSH_TOGGLE_FAILED_ERROR": "無法為戰網賬戶啟用實時更新。請稍後再試，或者到 Discord 上尋求幫助。",
-      "ADDON_INSTALL_ERROR": "安裝插件 {addonName} 失敗。請稍後再試。",
-      "ADDON_SCAN_ERROR": "在與 {providerName} 匹配插件資料夾時出現錯誤，請稍後再試。",
+      "ACCOUNT_PUSH_TOGGLE_FAILED_ERROR": "無法為戰網帳號啟用即時更新。請稍後再試，或者到 Discord 上尋求幫助。",
+      "ADDON_INSTALL_ERROR": "安裝套件 {addonName} 失敗。請稍後再試。",
+      "ADDON_SCAN_ERROR": "在與 {providerName} 配對套件資料夾時出現錯誤，請稍後再試。",
       "ADDON_SYNC_ERROR": "從 {providerName} 上檢查更新時出現錯誤。",
       "ADDON_SYNC_FULL_ERROR": "[{installationName}]: 從 {providerName} 上檢查 {addonName} 的更新時出現錯誤，請稍後再試。",
-      "CHANGE_PROVIDER_ERROR": "無法將 {addonName} 的安裝源修改為 {providerName}",
+      "CHANGE_PROVIDER_ERROR": "無法將 {addonName} 的安裝來源修改為 {providerName}",
       "GITHUB_LIMIT_ERROR": "GitHub API 請求次數達到 {max} 次的上限。\n請等到 {reset} 再試。",
-      "GITHUB_REPOSITORY_FETCH_ERROR": "檢查 {addonName} 的更新失敗。\n請檢查更新源是否正確，或者忽略此插件。"
+      "GITHUB_REPOSITORY_FETCH_ERROR": "檢查 {addonName} 的更新失敗。\n請檢查更新源是否正確，或者忽略此套件。"
     },
     "PROGRESS_SPINNER": {
       "LOADING": "正在載入..."
     },
     "PROVIDER_ERROR": "連線 {providerName} 時發生錯誤",
     "SEARCH": {
-      "NO_ADDONS": "未找到插件"
+      "NO_ADDONS": "未找到套件"
     },
     "WOW_EXE_SELECTION_NAME": "WoW 可執行檔案"
   },
   "DIALOGS": {
     "ADDON_DETAILS": {
-      "ADDON_ID_PREFIX": "插件 ID：",
+      "ADDON_ID_PREFIX": "套件 ID：",
       "BY_AUTHOR": "By {authorName}",
       "CHANGELOG_TAB": "更新記錄",
-      "COPY_ADDON_ID_SNACKBAR": "插件 ID 已複製到剪貼簿",
-      "COPY_ADDON_ID_TOOLTIP": "複製插件 ID",
-      "DEPENDENCY_TEXT": "此插件有 {dependencyCount} 個依賴項",
+      "COPY_ADDON_ID_SNACKBAR": "套件 ID 已複製到剪貼簿",
+      "COPY_ADDON_ID_TOOLTIP": "複製套件 ID",
+      "DEPENDENCY_TEXT": "此套件有 {dependencyCount} 個依賴項目",
       "DESCRIPTION_NOT_FOUND": "未找到描述",
       "DESCRIPTION_TAB": "描述",
-      "FUNDING_LINK_TITLE": "支援插件作者",
+      "FUNDING_LINK_TITLE": "支援套件作者",
       "IMAGES_TAB": "預覽",
-      "MISSING_DEPENDENCIES": "缺失的依賴項",
+      "MISSING_DEPENDENCIES": "遺失的依賴項目",
       "NO_CHANGELOG_TEXT": "更新記錄不可用",
       "VIEW_IN_BROWSER_BUTTON": "在瀏覽器中檢視",
       "VIEW_ON_PROVIDER_PREFIX": "在該網站上檢視："
@@ -277,7 +277,7 @@
       "POSITIVE_BUTTON": "是"
     },
     "CURSE_MIGRATION": {
-      "MESSAGE": "CurseForge API 已經關閉，因此 WowUp 不能再從此處獲取插件。<br/>不幸的是，這意味著 CurseForge 安裝源已經被移除，且從此處安裝的插件再也不會更新了。<br/>推薦進行重新掃描以檢查插件是否能從其他安裝源獲取。<br/>重新掃描將會消耗一些時間。<br/><a appExternalLink href=\"https://wowup.io/guide/wowup/curseforge-migration\">閱讀詳細資訊（英語）。</a>",
+      "MESSAGE": "CurseForge API 已經關閉，因此 WowUp 不能再從此處獲取套件。<br/>不幸的是，這意味著 CurseForge 安裝來源已經被移除，且從此處安裝的套件再也不會更新了。<br/>推薦進行重新掃描以檢查套件是否能從其他安裝來源獲取。<br/>重新掃描將會消耗一些時間。<br/><a appExternalLink href=\"https://wowup.io/guide/wowup/curseforge-migration\">閱讀詳細資訊（英語）。</a>",
       "NEGATIVE_BUTTON": "稍後手動重新掃描",
       "POSITIVE_BUTTON": "自動重新掃描",
       "RE_SCAN_ERROR": "自動重新掃描失敗，請嘗試手動掃描。",
@@ -285,40 +285,40 @@
       "TITLE": "CurseForge 遷移"
     },
     "INSTALL_FROM_PROTOCOL": {
-      "ADDON_INSTALLED": "插件已安裝！",
-      "ADDON_INSTALLING": "正在安裝插件",
+      "ADDON_INSTALLED": "套件已安裝！",
+      "ADDON_INSTALLING": "正在安裝套件",
       "CANCEL_BUTTON": "關閉",
       "ERRORS": {
-        "ADDON_NOT_FOUND": "在 {protocol} 協議下未找到插件",
+        "ADDON_NOT_FOUND": "在 {protocol} 協議下未找到套件",
         "GENERIC": "在 {protocol} 協議下獲取資料失敗",
-        "NO_VALID_WOW_INSTALLATIONS": "在 {protocol} 協議下沒有《魔獸世界》客戶端"
+        "NO_VALID_WOW_INSTALLATIONS": "在 {protocol} 協議下未安裝《魔獸世界》"
       },
       "INSTALL_BUTTON": "安裝",
-      "TITLE": "從 {providerName} 處安裝插件"
+      "TITLE": "從 {providerName} 處安裝套件"
     },
     "INSTALL_FROM_URL": {
-      "ADDON_URL_INPUT_LABEL": "插件 URL",
+      "ADDON_URL_INPUT_LABEL": "套件 URL",
       "ADDON_URL_INPUT_PLACEHOLDER": "例如，GitHub 或 WowInterface URL",
       "CLOSE_BUTTON": "關閉",
-      "DESCRIPTION": "如需直接從某 URL 安裝插件，請將其貼上到下面以開始安裝。",
+      "DESCRIPTION": "如需直接從某 URL 安裝套件，請將其貼上到下面以開始安裝。",
       "DOWNLOAD_COUNT": "在 {provider} 上有 {textCount} 次下載",
       "ERROR": {
-        "ASSET_NOT_FOUND": "未找到可下載的附件 {message}。\n\n要通過 WowUp 下載插件，釋出頁面（Releases）上需要有效的 zip 檔案。",
-        "BURNING_CRUSADE_ASSET_NOT_FOUND": "未找到可下載的附件 {message}。\n\n要通過 WowUp 下載插件，釋出頁面（Releases）上需要檔名以「-bc」結尾的有效的 zip 檔案。",
+        "ASSET_NOT_FOUND": "未找到可下載的附件 {message}。\n\n要通過 WowUp 下載套件，釋出頁面（Releases）上需要有效的 zip 檔案。",
+        "BURNING_CRUSADE_ASSET_NOT_FOUND": "未找到可下載的附件 {message}。\n\n要通過 WowUp 下載套件，釋出頁面（Releases）上需要檔名以「-bc」結尾的有效的 zip 檔案。",
         "CATACLYSM_ASSET_NOT_FOUND": "No asset was found to download from {message}.\n\nA valid zip file ending with '-cata' is required in order for WowUp to download it.",
-        "CLASSIC_ASSET_NOT_FOUND": "未找到可下載的附件 {message}。\n\n要通過 WowUp 下載插件，釋出頁面（Releases）上需要檔名以「-classic」結尾的有效的 zip 檔案。",
+        "CLASSIC_ASSET_NOT_FOUND": "未找到可下載的附件 {message}。\n\n要通過 WowUp 下載套件，釋出頁面（Releases）上需要檔名以「-classic」結尾的有效的 zip 檔案。",
         "FAILED_TO_CONNECT": "無法連線 API，請稍後重試。",
-        "INSTALL_FAILED": "安裝插件時出現了一些錯誤，請重試。\n\n如果一直出現此訊息，可以加入 Discord #help-me 頻道尋求幫助（英語）。",
+        "INSTALL_FAILED": "安裝套件時出現了一些錯誤，請重試。\n\n如果一直出現此訊息，可以加入 Discord #help-me 頻道尋求幫助（英語）。",
         "INVALID_URL": "輸入的 URL 無效。有效 URL 示例：\n\t- https://github.com/WowUp/WowUp.Addon\n\t- https://www.wowinterface.com/downloads/info25610-8.3-014.html\n\t- https://www.curseforge.com/wow/addons/altoholic",
-        "NO_ADDON_FOUND": "未找到插件，請檢查 URL 是否指向正確的頁面。\n\n從 GitHub 安裝時，請檢查是否存在帶有 zip 包的 release tag。",
-        "NO_RELEASE_FOUND": "未找到釋出版本 {message}.\n\n要通過 WowUp 下載插件，需要帶有 zip 附件的釋出版本。",
-        "NO_SEARCH_RESULTS": "无搜索结果。",
-        "TITLE": "插件安裝失敗",
-        "WRATH_ASSET_NOT_FOUND": "未找到可下載的附件 {message}。\n\n要通過 WowUp 下載插件，釋出頁面（Releases）上需要檔名以「-wrath」結尾的有效的 zip 檔案。"
+        "NO_ADDON_FOUND": "未找到套件，請檢查 URL 是否指向正確的頁面。\n\n從 GitHub 安裝時，請檢查是否存在帶有 zip 包的 release tag。",
+        "NO_RELEASE_FOUND": "未找到釋出版本 {message}.\n\n要通過 WowUp 下載套件，需要帶有 zip 附件的釋出版本。",
+        "NO_SEARCH_RESULTS": "無搜尋結果。",
+        "TITLE": "套件安裝失敗",
+        "WRATH_ASSET_NOT_FOUND": "未找到可下載的附件 {message}。\n\n要通過 WowUp 下載套件，釋出頁面（Releases）上需要檔名以「-wrath」結尾的有效的 zip 檔案。"
       },
-      "IMPORT_ASSET_WARNING": "已找到此插件的最新版本壓縮包「{zipName}」，但無法驗證它是否相容此《魔獸世界》客戶端。\n\n如要安裝，請自擔風險。",
+      "IMPORT_ASSET_WARNING": "已找到此套件的最新版本壓縮包「{zipName}」，但無法驗證它是否相容此《魔獸世界》。\n\n如要安裝，請自擔風險。",
       "IMPORT_BUTTON": "匯入",
-      "IMPORT_WARNING_TITLE": "匯入插件警告",
+      "IMPORT_WARNING_TITLE": "匯入套件警告",
       "INSTALL_BUTTON": "安裝",
       "INSTALL_SUCCESS_LABEL": "安裝成功！",
       "SUPPORTED_SOURCES": "支援 WowInterface 和 GitHub",
@@ -338,13 +338,13 @@
       "MESSAGE": "在開始使用 WowUp 之前，請設定此應用程式的許可權。",
       "POSITIVE_BUTTON": "確認",
       "TELEMETRY": {
-        "DESCRIPTION": "是否傳送匿名的插件統計資料和錯誤報告以幫助改進 WowUp？",
-        "TOGGLE_LABEL": "允許遙測"
+        "DESCRIPTION": "是否傳送匿名的套件統計資料和錯誤報告以幫助改進 WowUp？",
+        "TOGGLE_LABEL": "允許監測"
       },
       "TITLE": "WowUp 許可權設定",
       "WAGO": {
-        "DESCRIPTION": "啟用 Wago.io 插件安裝源。啟用此選項將會顯示一個廣告，以支援你喜歡的插件的作者。",
-        "TOGGLE_LABEL": "啟用 Wago.io 安裝源"
+        "DESCRIPTION": "啟用 Wago.io 套件安裝來源。啟用此選項將會顯示一個廣告，以支援你喜歡的套件的作者。",
+        "TOGGLE_LABEL": "啟用 Wago.io 安裝來源"
       }
     },
     "SELECT_INSTALLATION": {
@@ -354,7 +354,7 @@
       "DESCRIPTION": "是否傳送匿名應用安裝資料和錯誤資訊以幫助改進 WowUp？",
       "NEGATIVE_BUTTON": "否",
       "POSITIVE_BUTTON": "是",
-      "TITLE": "WowUp 遙測"
+      "TITLE": "WowUp 監測"
     },
     "TRUST_DOMAIN_CHECKBOX": "信任此域名，今後不再詢問"
   },
@@ -369,42 +369,42 @@
       "BETA": "測試版",
       "LOGIN_BUTTON": "立即登入！",
       "LOGOUT_BUTTON": "登出",
-      "LOGOUT_CONFIRMATION_MESSAGE": "確定要登出嗎？本地賬戶資料將會被刪除，重新登入時將會同步回來。",
+      "LOGOUT_CONFIRMATION_MESSAGE": "確定要登出嗎？本地帳號資料將會被刪除，重新登入時將會同步回來。",
       "LOGOUT_CONFIRMATION_TITLE": "是否登出？",
-      "MANAGE_ACCOUNT_BUTTON": "管理賬戶",
-      "TITLE": "賬戶"
+      "MANAGE_ACCOUNT_BUTTON": "管理帳號",
+      "TITLE": "帳號"
     },
     "GET_ADDONS": {
       "ADDON_CATEGORIES_BUTTON": "類別",
-      "ADDON_CATEGORIES_MENU_TITLE": "插件類別",
+      "ADDON_CATEGORIES_MENU_TITLE": "套件類別",
       "ADDON_CATEGORIES_SELECTED_TITLE": "類別: {category}",
-      "ADDON_CATEGORIES_TOOLTIP": "瀏覽插件類別",
+      "ADDON_CATEGORIES_TOOLTIP": "瀏覽套件類別",
       "CLIENT_TYPE_SELECT_LABEL": "魔獸世界",
       "INSTALL_FROM_URL_BUTTON": "從 URL 安裝",
-      "INSTALL_FROM_URL_TOOLTIP": "從 URL 安裝插件",
+      "INSTALL_FROM_URL_TOOLTIP": "從 URL 安裝套件",
       "REFRESH_BUTTON": "重新整理",
-      "REFRESH_TOOLTIP": "重新整理插件搜尋結果",
+      "REFRESH_TOOLTIP": "重新整理套件搜尋結果",
       "RESET_CATEGORY_TOOLTIP": "重置類別",
       "SEARCH_LABEL": "搜尋",
       "TABLE": {
-        "ADDON_COLUMN_HEADER": "插件",
+        "ADDON_COLUMN_HEADER": "套件",
         "AUTHOR_COLUMN_HEADER": "作者",
         "DOWNLOAD_COUNT_COLUMN_HEADER": "下載次數",
-        "PROVIDER_COLUMN_HEADER": "安裝源",
+        "PROVIDER_COLUMN_HEADER": "安裝來源",
         "RELEASED_AT_COLUMN_HEADER": "釋出時間",
         "STATUS_COLUMN_HEADER": "狀態"
       }
     },
     "HOME": {
       "ABOUT_TAB_TITLE": "關於",
-      "ACCOUNT_TAB_TITLE": "賬戶",
+      "ACCOUNT_TAB_TITLE": "帳號",
       "COLLAPSE_BUTTON_TITLE": "摺疊",
       "DISCORD_TAB_TITLE": "Discord（英語）",
       "EXPAND_BUTTON_TITLE": "展開",
-      "GET_ADDONS_TAB_TITLE": "獲取插件",
+      "GET_ADDONS_TAB_TITLE": "獲取套件",
       "GUIDE_TAB_TITLE": "指南（英語）",
-      "MIGRATING_ADDONS": "正在遷移插件...",
-      "MY_ADDONS_TAB_TITLE": "我的插件",
+      "MIGRATING_ADDONS": "正在遷移套件...",
+      "MY_ADDONS_TAB_TITLE": "我的套件",
       "NEWS_TAB_TITLE": "新聞（英語）",
       "OPTIONS_TAB_TITLE": "選項"
     },
@@ -415,22 +415,22 @@
         "AUTO_UPDATE_ADDON_BUTTON": "自動更新",
         "AUTO_UPDATE_ADDON_NOTIFICATIONS_ENABLED_BUTTON": "通知已開啟",
         "BETA_ADDON_CHANNEL": "Beta",
-        "CHANNEL_SUBMENU_TITLE": "更新通道",
+        "CHANNEL_SUBMENU_TITLE": "更新方式",
         "IGNORE_ADDON_BUTTON": "忽略",
-        "PROVIDER_SUBMENU_TITLE": "安裝源",
+        "PROVIDER_SUBMENU_TITLE": "安裝來源",
         "REINSTALL_ADDON_BUTTON": "重新安裝",
         "REMOVE_ADDON_BUTTON": "刪除",
         "SHOW_FOLDER": "開啟資料夾",
         "STABLE_ADDON_CHANNEL": "穩定版"
       },
-      "ADDON_IS_CODE_REPOSITORY": "插件似乎是程式碼倉庫",
+      "ADDON_IS_CODE_REPOSITORY": "套件似乎是程式碼倉庫",
       "ADDON_REMOVED_SNACKBAR": "{addonName} 已成功移除",
       "CHANGE_ADDON_PROVIDER_CONFIRMATION": {
-        "MESSAGE": "是否將 {addonName} 的安裝源修改為 {providerName}？此操作將會用 {providerName} 的版本替換現有版本。",
-        "TITLE": "修改插件安裝源？"
+        "MESSAGE": "是否將 {addonName} 的安裝來源修改為 {providerName}？此操作將會用 {providerName} 的版本替換現有版本。",
+        "TITLE": "修改套件安裝來源？"
       },
       "CHECK_UPDATES_BUTTON": "檢查更新",
-      "CHECK_UPDATES_BUTTON_TOOLTIP": "檢查最新的插件更新",
+      "CHECK_UPDATES_BUTTON_TOOLTIP": "檢查最新的套件更新",
       "CLIENT_TYPE_SELECT_BADGE": "{count} 個更新",
       "CLIENT_TYPE_SELECT_LABEL": "魔獸世界",
       "COLUMNS_CONTEXT_MENU": {
@@ -442,57 +442,57 @@
         "CUSTOM": "支援作者",
         "GENERIC": "在 {platform} 上支援作者",
         "GITHUB": "在 GitHub 上支援作者",
-        "PATREON": "通过 Patreon 支援作者",
-        "PAYPAL": "通过 PayPal 支援作者"
+        "PATREON": "通過 Patreon 支援作者",
+        "PAYPAL": "通過 PayPal 支援作者"
       },
-      "IMPORT_EXPORT_ADDONS_BUTTON": "匯入/匯出插件",
-      "MULTIPLE_PROVIDERS_TOOLTIP": "此插件有多個安裝源",
+      "IMPORT_EXPORT_ADDONS_BUTTON": "匯入/匯出套件",
+      "MULTIPLE_PROVIDERS_TOOLTIP": "此套件有多個安裝來源",
       "PAGE_CONTEXT_FOOTER": {
-        "ADDONS_INSTALLED": "共 {count} 個插件",
+        "ADDONS_INSTALLED": "共 {count} 個套件",
         "JOIN_DISCORD": "在 Discord 上與我們交流（英語）",
         "PATREON_SUPPORT": "透過 Patreon 向 WowUp 捐助（英語）",
         "SEARCH_RESULTS": "共 {count} 條結果",
         "VIEW_GITHUB": "在 GitHub 上檢視原始碼",
         "VIEW_GUIDE": "訪問指南，探索 WowUp 的功能"
       },
-      "REQUIRED_DEPENDENCY_MISSING_TOOLTIP": "缺失必要的依賴項",
+      "REQUIRED_DEPENDENCY_MISSING_TOOLTIP": "遺失必要的依賴項目",
       "RESCAN_FOLDERS_BUTTON": "重新掃描",
-      "RESCAN_FOLDERS_BUTTON_TOOLTIP": "掃描客戶端資料夾中已安裝的插件",
-      "RESCAN_FOLDERS_CONFIRMATION_DESCRIPTION": "重新掃描過程將會猜測已經安裝了哪些插件，可能會重置已知插件資訊。如果特定插件無法識別或顯示不正確，請使用此功能。掃描不會刪除插件本身，只會刪除 WowUp 記錄的插件資訊。\n\n掃描需要花費一些時間。",
+      "RESCAN_FOLDERS_BUTTON_TOOLTIP": "掃描用戶端資料夾中已安裝的套件",
+      "RESCAN_FOLDERS_CONFIRMATION_DESCRIPTION": "重新掃描過程將會猜測已經安裝了哪些套件，可能會重置已知套件資訊。如果特定套件無法識別或顯示不正確，請使用此功能。掃描不會刪除套件本身，只會刪除 WowUp 記錄的套件資訊。\n\n掃描需要花費一些時間。",
       "RESCAN_FOLDERS_CONFIRMATION_TITLE": "是否開始掃描？",
       "SPINNER": {
-        "GATHERING_ADDONS": "正在收集插件資訊...",
+        "GATHERING_ADDONS": "正在收集套件資訊...",
         "UPDATING": "正在更新第 {updateCount} 個，共 {addonCount} 個",
         "UPDATING_WITH_ADDON_NAME": "正在更新第 {updateCount} 個，共 {addonCount} 個\n{clientType}：{addonName}"
       },
       "TABLE": {
-        "ADDON_COLUMN_HEADER": "插件",
+        "ADDON_COLUMN_HEADER": "套件",
         "ADDON_INSTALL_BUTTON": "安裝",
         "ADDON_UPDATE_BUTTON": "更新",
         "AUTHOR_COLUMN_HEADER": "作者",
         "AUTO_UPDATE_ICON_TOOLTIP": "自動更新已啟用",
         "GAME_VERSION_COLUMN_HEADER": "遊戲版本",
         "LATEST_VERSION_COLUMN_HEADER": "最新版本",
-        "PROVIDER_COLUMN_HEADER": "安裝源",
-        "PROVIDER_RELEASE_CHANNEL": "更新通道",
+        "PROVIDER_COLUMN_HEADER": "安裝來源",
+        "PROVIDER_RELEASE_CHANNEL": "更新方式",
         "RELEASED_AT_COLUMN_HEADER": "釋出時間",
         "STATUS_COLUMN_HEADER": "狀態",
         "UPDATED_AT_COLUMN_HEADER": "更新時間"
       },
       "UNINSTALL_POPUP": {
-        "CONFIRMATION_ACTION_EXPLANATION": "此操作將會從《魔獸世界》所在路徑下刪除所有與插件相關的資料夾。",
-        "CONFIRMATION_LESS_THAN_THREE": "是否確定要刪除以下 {count} 個插件？",
-        "CONFIRMATION_MORE_THAN_THREE": "是否確定要刪除選中的 {count} 個插件？",
+        "CONFIRMATION_ACTION_EXPLANATION": "此操作將會從《魔獸世界》所在路徑下刪除所有與套件相關的資料夾。",
+        "CONFIRMATION_LESS_THAN_THREE": "是否確定要刪除以下 {count} 個套件？",
+        "CONFIRMATION_MORE_THAN_THREE": "是否確定要刪除選中的 {count} 個套件？",
         "CONFIRMATION_ONE": "是否確定要刪除 {addonName}？",
-        "DEPENDENCY_MESSAGE": "{addonName} 有 {dependencyCount} 個依賴項，是否一併刪除？",
-        "DEPENDENCY_TITLE": "是否刪除插件依賴項？",
-        "TITLE": "是否解除安裝插件？"
+        "DEPENDENCY_MESSAGE": "{addonName} 有 {dependencyCount} 個依賴項目，是否一併刪除？",
+        "DEPENDENCY_TITLE": "是否刪除套件依賴項目？",
+        "TITLE": "是否解除安裝套件？"
       },
-      "UNKNOWN_ADDON_INFO_TOOLTIP": "已安裝的插件與所有安裝源均無法匹配。",
+      "UNKNOWN_ADDON_INFO_TOOLTIP": "已安裝的套件與所有安裝來源均無法配對。",
       "UPDATE_ALL_BUTTON": "全部更新",
-      "UPDATE_ALL_BUTTON_TOOLTIP": "更新此客戶端的所有插件",
+      "UPDATE_ALL_BUTTON_TOOLTIP": "更新此用戶端的所有套件",
       "UPDATE_ALL_CONTEXT_MENU": {
-        "UPDATE_ALL_CLIENTS_BUTTON": "更新所有客戶端",
+        "UPDATE_ALL_CLIENTS_BUTTON": "更新所有用戶端",
         "UPDATE_RETAIL_CLASSIC_BUTTON": "更新正式服/經典懷舊服"
       },
       "WTF_BACKUP_BUTTON": "備份介面設定"
@@ -512,47 +512,47 @@
           "PROVIDER_NOTE": "需要 API 金鑰"
         },
         "ENABLED_PROVIDERS": {
-          "DESCRIPTION": "選擇從哪些安裝源搜尋和安裝新插件",
-          "FIELD_LABEL": "啟用插件安裝源",
-          "INPUT_LABEL": "安裝源"
+          "DESCRIPTION": "選擇從哪些安裝來源搜尋和安裝新套件",
+          "FIELD_LABEL": "啟用套件安裝來源",
+          "INPUT_LABEL": "安裝來源"
         },
         "GITHUB_PERSONAL_ACCESS_TOKEN": {
-          "MESSAGE": "免費的個人訪問令牌（PAT）可以提高 GitHub API 呼叫次數的限制。<a href=\"https://docs.github.com/cn/authentication/keeping-your-account-and-data-secure/creating-a-personal-access-token\">檢視簡體中文文件（部分翻譯）</a>或<a href=\"https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/creating-a-personal-access-token\">英文文件</a>。",
-          "PLACEHOLDER": "個人訪問令牌（PAT）",
-          "TITLE": "GitHub 個人訪問令牌（PAT）"
+          "MESSAGE": "免費的個人存取權杖（PAT）可以提高 GitHub API 呼叫次數的限制。<a href=\"https://docs.github.com/cn/authentication/keeping-your-account-and-data-secure/creating-a-personal-access-token\">檢視簡體中文文件（部分翻譯）</a>或<a href=\"https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/creating-a-personal-access-token\">英文文件</a>。",
+          "PLACEHOLDER": "個人存取權杖（PAT）",
+          "TITLE": "GitHub 個人存取權杖（PAT）"
         },
-        "TITLE": "插件",
+        "TITLE": "套件",
         "WAGO_ACCESS_KEY": {
-          "MESSAGE": "啟用 Wago 安裝源而無需顯示廣告。<a href=\"https://addons.wago.io/patreon\">瞭解詳細資訊（英語）</a>",
+          "MESSAGE": "啟用 Wago 安裝來源而無需顯示廣告。<a href=\"https://addons.wago.io/patreon\">瞭解詳細資訊（英語）</a>",
           "PLACEHOLDER": "訪問金鑰",
           "TITLE": "Wago 訪問金鑰"
         }
       },
       "APPLICATION": {
-        "APP_RELEASE_CHANNEL_CONFIRMATION_DESCRIPTION_BETA": "切換到 Beta 通道後，將會收到包含最新的錯誤修正和功能的版本。要切換回穩定版本，只能解除安裝 WowUp 並重新安裝。\n\n儘管 Beta 通道通常能正常工作，但仍需自擔風險。",
-        "APP_RELEASE_CHANNEL_CONFIRMATION_DESCRIPTION_STABLE": "切換到穩定版通道後，將會停止接受 Beta 版本。切換到穩定版通道不會回退到上一個穩定版，而是在下一個穩定版釋出後更新到穩定版。",
-        "APP_RELEASE_CHANNEL_CONFIRMATION_LABEL": "設定應用程式更新通道",
+        "APP_RELEASE_CHANNEL_CONFIRMATION_DESCRIPTION_BETA": "切換到 Beta 版本後，將會收到包含最新的錯誤修正和功能的版本。要切換回穩定版本，只能解除安裝 WowUp 並重新安裝。\n\n儘管 Beta 版本通常能正常工作，但仍需自擔風險。",
+        "APP_RELEASE_CHANNEL_CONFIRMATION_DESCRIPTION_STABLE": "切換到穩定版本後，將會停止接受 Beta 版本。切換到穩定版本不會回退到上一個穩定版，而是在下一個穩定版釋出後更新到穩定版。",
+        "APP_RELEASE_CHANNEL_CONFIRMATION_LABEL": "設定應用程式更新方式",
         "APP_RELEASE_CHANNEL_CONFIRMATION_POSITIVE_BUTTON": "我明白了",
-        "APP_RELEASE_CHANNEL_DESCRIPTION": "切換此應用程式的穩定版和 Beta 通道",
-        "APP_RELEASE_CHANNEL_DROPDOWN_LABEL": "更新通道",
-        "APP_RELEASE_CHANNEL_LABEL": "應用程式更新通道",
+        "APP_RELEASE_CHANNEL_DESCRIPTION": "切換此應用程式的穩定版和 Beta 版本",
+        "APP_RELEASE_CHANNEL_DROPDOWN_LABEL": "更新方式",
+        "APP_RELEASE_CHANNEL_LABEL": "應用程式更新方式",
         "CURRENT_LANGUAGE_LABEL": "當前語言",
-        "CURSE_PROTOCOL_DESCRIPTION": "從 CurseForge 網站下載插件時，WowUp 將會接管安裝過程",
+        "CURSE_PROTOCOL_DESCRIPTION": "從 CurseForge 網站下載套件時，WowUp 將會接管安裝過程",
         "CURSE_PROTOCOL_LABEL": "接管 CurseForge 下載連結",
-        "ENABLE_APP_BADGE_DESCRIPTION": "在應用程式圖示上用角標顯示可更新的插件數量。",
+        "ENABLE_APP_BADGE_DESCRIPTION": "在應用程式圖示上用角標顯示可更新的套件數量。",
         "ENABLE_APP_BADGE_LABEL": "啟用數字角標通知",
-        "ENABLE_SYSTEM_NOTIFICATIONS_DESCRIPTION": "啟用各種系統通知彈窗，如自動更新插件通知。",
+        "ENABLE_SYSTEM_NOTIFICATIONS_DESCRIPTION": "啟用各種系統通知跳窗，如自動更新套件通知。",
         "ENABLE_SYSTEM_NOTIFICATIONS_LABEL": "啟用系統通知",
-        "KEEP_LAST_OPENED_TAB_DESCRIPTION": "開啟插件詳情頁時，自動切換到上一次開啟的選項卡",
-        "KEEP_LAST_OPENED_TAB_LABEL": "記住上一次開啟的選項卡",
+        "KEEP_LAST_OPENED_TAB_DESCRIPTION": "開啟套件詳情頁時，自動切換到上一次開啟的選項頁",
+        "KEEP_LAST_OPENED_TAB_LABEL": "記住上一次開啟的選項頁",
         "MINIMIZE_ON_CLOSE_DESCRIPTION_MAC": "關閉 WowUp 視窗時，最小化到選單欄。",
-        "MINIMIZE_ON_CLOSE_DESCRIPTION_WINDOWS": "關閉 WowUp 視窗時，最小化到系統托盤。",
+        "MINIMIZE_ON_CLOSE_DESCRIPTION_WINDOWS": "關閉 WowUp 視窗時，最小化到系統列。",
         "MINIMIZE_ON_CLOSE_LABEL": "關閉時最小化",
         "PROTOCOL_DESCRIPTION": "WowUp 將會在系統中註冊自定義 URI 協議以處理傳入的請求",
         "PROTOCOL_LABEL": "允許 WowUp 處理 wowup:// URI",
-        "SCALE_DESCRIPTION": "修改整個應用程式的縮放係數。",
+        "SCALE_DESCRIPTION": "修改整個應用程式的縮放比例。",
         "SCALE_LABEL": "介面縮放",
-        "SET_LANGUAGE_CONFIRMATION_DESCRIPTION": "更改預設語言需要重新啟動客戶端。",
+        "SET_LANGUAGE_CONFIRMATION_DESCRIPTION": "更改預設語言需要重新啟動用戶端。",
         "SET_LANGUAGE_CONFIRMATION_LABEL": "設定新的預設語言",
         "SET_LANGUAGE_DESCRIPTION": "選擇要使用的語言",
         "SET_LANGUAGE_LABEL": "設定語言",
@@ -560,22 +560,22 @@
         "START_MINIMIZED_LABEL": "以最小化視窗啟動 WowUp",
         "START_WITH_SYSTEM_DESCRIPTION": "WowUp 將在登入後自動啟動……",
         "START_WITH_SYSTEM_LABEL": "登入後自動啟動 WowUp",
-        "TELEMETRY_DESCRIPTION": "傳送匿名應用安裝資料和錯誤資訊以幫助改進 WowUp。",
-        "TELEMETRY_LABEL": "遙測",
+        "TELEMETRY_DESCRIPTION": "傳送匿名安裝資料和錯誤資訊以幫助改進 WowUp。",
+        "TELEMETRY_LABEL": "監測",
         "THEME_DESCRIPTION": "選擇喜歡的配色主題",
         "THEME_LABEL": "配色主題",
         "TITLE": "應用程式",
-        "USE_CURSE_PROTOCOL_CONFIRMATION_DESCRIPTION": "WowUp 可以被註冊為 CurseForge 下載連結的處理程式。開啟此選項可能會導致使用 CurseForge 客戶端時出現問題，確定要繼續嗎？",
+        "USE_CURSE_PROTOCOL_CONFIRMATION_DESCRIPTION": "WowUp 可以被註冊為 CurseForge 下載連結的處理程式。開啟此選項可能會導致使用 CurseForge 用戶端時出現問題，確定要繼續嗎？",
         "USE_CURSE_PROTOCOL_CONFIRMATION_LABEL": "是否接管 CurseForge 下載？",
         "USE_HARDWARE_ACCELERATION_CONFIRMATION_LABEL": "是否重新啟動？",
-        "USE_HARDWARE_ACCELERATION_DESCRIPTION": "禁用硬體加速可能會提高 FPS 並修復其他渲染問題。更改此項需要重新啟動。",
+        "USE_HARDWARE_ACCELERATION_DESCRIPTION": "禁用硬體加速可能會提高 FPS 並修復其他成像問題。更改此項需要重新啟動。",
         "USE_HARDWARE_ACCELERATION_DISABLE_CONFIRMATION_DESCRIPTION": "禁用硬體加速需要重新啟動 WowUp。",
         "USE_HARDWARE_ACCELERATION_ENABLE_CONFIRMATION_DESCRIPTION": "啟用硬體加速需要重新啟動 WowUp。",
         "USE_HARDWARE_ACCELERATION_LABEL": "啟用硬體加速",
         "USE_SYMLINK_SUPPORT": "啟用符號連結",
-        "USE_SYMLINK_SUPPORT_CONFIRMATION_DESCRIPTION": "啟用符號連結使得 WowUp 在重新掃描時識別符號連結。警告：如果您不知道什麼是符號連結，請禁用此項。在當前版本中，符號連結將會在更新插件時被刪除，並被替換為真正的資料夾。",
+        "USE_SYMLINK_SUPPORT_CONFIRMATION_DESCRIPTION": "啟用符號連結使得 WowUp 在重新掃描時識別符號連結。警告：如果您不知道什麼是符號連結，請禁用此項。在當前版本中，符號連結將會在更新套件時被刪除，並被替換為真正的資料夾。",
         "USE_SYMLINK_SUPPORT_CONFIRMATION_LABEL": "啟用符號連結？",
-        "USE_SYMLINK_SUPPORT_DESCRIPTION": "允許 WowUp 掃描插件所在路徑下的符號連結。警告：符號連結在安裝或更新插件時會被替換。"
+        "USE_SYMLINK_SUPPORT_DESCRIPTION": "允許 WowUp 掃描套件所在路徑下的符號連結。警告：符號連結在安裝或更新套件時會被替換。"
       },
       "CURSEFORGE": {
         "ADS_OPTION_DESCRIPTION": "View and manage how CurseForge advertisers may use your data for ad personalization",
@@ -584,10 +584,10 @@
         "TITLE": "CurseForge"
       },
       "DEBUG": {
-        "CONFIG_FILES_BUTTON": "顯示配置檔案",
-        "CONFIG_FILES_DESCRIPTION": "開啟儲存 addons.json、preferences.json 等配置檔案的資料夾。",
-        "CONFIG_FILES_LABEL": "配置檔案",
-        "DEBUG_DATA_BUTTON": "轉儲除錯資料",
+        "CONFIG_FILES_BUTTON": "顯示設定檔案",
+        "CONFIG_FILES_DESCRIPTION": "開啟儲存 addons.json、preferences.json 等設定檔案的資料夾。",
+        "CONFIG_FILES_LABEL": "設定檔案",
+        "DEBUG_DATA_BUTTON": "另存除錯資料",
         "DEBUG_DATA_DESCRIPTION": "記錄除錯資料以幫助診斷潛在的問題。除錯資料可以在最新的日誌檔案中找到。",
         "DEBUG_DATA_LABEL": "除錯資料",
         "LOG_FILES_BUTTON": "顯示日誌檔案",
@@ -597,35 +597,35 @@
       },
       "TABS": {
         "ABOUT": "關於",
-        "ADDONS": "插件",
+        "ADDONS": "套件",
         "APPLICATION": "應用程式",
-        "CLIENTS": "客戶端",
+        "CLIENTS": "用戶端",
         "CURSEFORGE": "CurseForge",
         "DEBUG": "除錯",
         "WTF_EXPLORER": "WTF Explorer"
       },
       "WOW": {
         "ADD_CLIENT_BUTTON": "新增",
-        "AUTO_UPDATE_DESCRIPTION": "新安裝的插件將預設設定為自動更新",
+        "AUTO_UPDATE_DESCRIPTION": "新安裝的套件將預設設定為自動更新",
         "AUTO_UPDATE_LABEL": "自動更新",
         "CANCEL_WOW_DIRECTORY_SELECT_BUTTON": "取消",
         "CLEAR_INSTALL_LOCATION_DIALOG": {
-          "MESSAGE": "是否忘記 {clientName} 的安裝路徑？此操作將會刪除 WowUp 記錄的此客戶端所安裝插件資訊。\n\n插件資料夾不會被刪除。",
+          "MESSAGE": "是否忘記 {clientName} 的安裝路徑？此操作將會刪除 WowUp 記錄的此用戶端所安裝套件資訊。\n\n套件資料夾不會被刪除。",
           "TITLE": "忘記此路徑？"
         },
-        "CLIENT_TYPE_INPUT_HINT": "{clientTypeName} 客戶端「{clientFolderName}」主程式路徑",
+        "CLIENT_TYPE_INPUT_HINT": "{clientTypeName} 用戶端「{clientFolderName}」主程式路徑",
         "CLIENT_TYPE_PATH_LABEL": "{clientTypeName} 路徑",
-        "DEFAULT_ADDON_CHANNEL_LABEL": "預設插件更新通道",
-        "DEFAULT_ADDON_CHANNEL_SELECT_LABEL": "插件更新通道",
+        "DEFAULT_ADDON_CHANNEL_LABEL": "預設套件更新方式",
+        "DEFAULT_ADDON_CHANNEL_SELECT_LABEL": "套件更新方式",
         "EDIT_WOW_DIRECTORY_SELECT_BUTTON": "編輯",
         "MOVE_DOWN_BUTTON": "下移",
         "MOVE_UP_BUTTON": "上移",
-        "NO_CLIENTS_FOUND_TEXT": "未找到《魔獸世界》客戶端，請檢查 Battle.net 是否為最新版本，或者手動新增客戶端。",
+        "NO_CLIENTS_FOUND_TEXT": "未找到《魔獸世界》，請檢查 Battle.net 是否為最新版本，或者手動新增。",
         "OPEN_FOLDER_BUTTON": "在檔案管理器中顯示",
         "OPEN_WOW_DIRECTORY_SELECT_BUTTON": "瀏覽",
         "REMOVE_WOW_DIRECTORY_SELECT_BUTTON": "移除",
         "RESCAN_CLIENTS_BUTTON": "重新掃描",
-        "RESCAN_CLIENTS_LABEL": "重新掃描已安裝的《魔獸世界》客戶端",
+        "RESCAN_CLIENTS_LABEL": "重新掃描已安裝的《魔獸世界》",
         "SAVE_WOW_DIRECTORY_SELECT_BUTTON": "儲存",
         "TITLE": "魔獸世界"
       },
@@ -638,7 +638,7 @@
   },
   "WTF_BACKUP": {
     "APPLY_CONFIRMATION": {
-      "MESSAGE": "確認要把這個備份還原到介面設定中嗎？\n\n還原之前務必關閉《魔獸世界》客戶端。\n\n此操作無法撤銷。",
+      "MESSAGE": "確認要把這個備份還原到介面設定中嗎？\n\n還原之前務必關閉《魔獸世界》。\n\n此操作無法返回。",
       "TITLE": "是否還原 WTF 備份？"
     },
     "BACKUP_APPLY_SUCCESS": "還原備份 {name} 成功",
@@ -651,7 +651,7 @@
     },
     "CREATE_BACKUP_BUTTON": "建立備份",
     "DELETE_CONFIRMATION": {
-      "MESSAGE": "確認要刪除備份 {name} 嗎？\n此操作無法撤銷。",
+      "MESSAGE": "確認要刪除備份 {name} 嗎？\n此操作無法返回。",
       "TITLE": "是否刪除 WTF 備份？"
     },
     "DIALOG_TITLE": "WTF 設定備份：{clientType}",
