@@ -58,13 +58,6 @@ export class WarcraftController implements IpcController {
     return result;
   }
 
-  /**
-   * The `_classic_beta_` folder is shared by two distinct products: the legacy
-   * MoP Classic beta (WowClassicB.exe) and the newer Forever Classic beta,
-   * which reuses the retail beta executable name (WowB.exe) instead. Folder name
-   * alone can't tell them apart, so disambiguate by checking which executable
-   * actually exists on disk.
-   */
   private async refineClassicBetaClientType(product: InstalledProduct): Promise<WowClientType> {
     if (product.clientType !== WowClientType.ClassicBeta) {
       return product.clientType;
