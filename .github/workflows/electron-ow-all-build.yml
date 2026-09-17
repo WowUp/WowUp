@@ -85,12 +85,43 @@ jobs:
           npm ci
           npm run ow:electron:publish
 
+      - name: Set up signing keychain
+        if: matrix.os == 'macos-latest'
+        env:
+          MACOS_CERT: ${{ secrets.MACOS_CERT }}
+          MACOS_CERT_PASSWORD: ${{ secrets.MACOS_CERT_PASSWORD }}
+        run: |
+          # electron-builder < 26.16 and every @overwolf/ow-electron-builder release pass
+          # the p12 password to `security set-key-partition-list -k`, which wants the
+          # keychain's own password. macOS 26.6 turned that into a hard error, so build
+          # the keychain here and hand it over via CSC_KEYCHAIN instead of CSC_LINK.
+          set -euo pipefail
+          KEYCHAIN="$RUNNER_TEMP/wowup-signing.keychain"
+          KEYCHAIN_PASSWORD=$(openssl rand -base64 24)
+          CERT_PATH="$RUNNER_TEMP/macos-cert.p12"
+          echo "$MACOS_CERT" | base64 --decode > "$CERT_PATH"
+          security create-keychain -p "$KEYCHAIN_PASSWORD" "$KEYCHAIN"
+          if [ ! -f "$KEYCHAIN" ] && [ -f "$KEYCHAIN-db" ]; then KEYCHAIN="$KEYCHAIN-db"; fi
+          security set-keychain-settings "$KEYCHAIN"
+          security unlock-keychain -p "$KEYCHAIN_PASSWORD" "$KEYCHAIN"
+          security import "$CERT_PATH" -k "$KEYCHAIN" -P "$MACOS_CERT_PASSWORD" \
+            -T /usr/bin/codesign -T /usr/bin/productbuild
+          security set-key-partition-list -S apple-tool:,apple:,codesign: -s \
+            -k "$KEYCHAIN_PASSWORD" "$KEYCHAIN"
+          security list-keychains -d user -s "$KEYCHAIN" $(security list-keychains -d user | tr -d '"')
+          rm -f "$CERT_PATH"
+          IDENTITIES=$(security find-identity -v -p codesigning "$KEYCHAIN")
+          echo "$IDENTITIES"
+          case "$IDENTITIES" in
+            *"Developer ID Application"*) ;;
+            *) echo "::error::No Developer ID Application identity found in $KEYCHAIN"; exit 1 ;;
+          esac
+          echo "CSC_KEYCHAIN=$KEYCHAIN" >> "$GITHUB_ENV"
+
       - name: Build Mac App
         if: matrix.os == 'macos-latest'
         env:
           GH_TOKEN: ${{ secrets.WOWUP_CF_REPO_KEY }} # This token is provided by Actions, you do not need to create your own token
-          CSC_LINK: ${{ secrets.MACOS_CERT }}
-          CSC_KEY_PASSWORD: ${{ secrets.MACOS_CERT_PASSWORD }}
           NOTARIZE_APPLE_ID: ${{ secrets.NOTARIZE_APPLE_ID }}
           NOTARIZE_APPLE_PASSWORD: ${{ secrets.NOTARIZE_APPLE_PASSWORD }}
           NOTARIZE_APPLE_TEAM_ID: ${{ secrets.NOTARIZE_APPLE_TEAM_ID }}
