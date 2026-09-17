@@ -1,5 +1,7 @@
 import { ipcMain } from "electron";
 import * as Store from "electron-store";
+import * as fsp from "fs/promises";
+import * as path from "path";
 
 import {
   BLIZZARD_AGENT_PATH_KEY,
@@ -50,8 +52,31 @@ export class WarcraftController implements IpcController {
 
     const result = new Map<WowClientType, InstalledProduct>();
     for (const product of resolved) {
-      result.set(product.clientType, product);
+      const clientType = await this.refineClassicBetaClientType(product);
+      result.set(clientType, { ...product, clientType });
     }
     return result;
+  }
+
+  /**
+   * The `_classic_beta_` folder is shared by two distinct products: the legacy
+   * MoP Classic beta (WowClassicB.exe) and the newer Forever Classic beta,
+   * which reuses the retail beta executable name (WowB.exe) instead. Folder name
+   * alone can't tell them apart, so disambiguate by checking which executable
+   * actually exists on disk.
+   */
+  private async refineClassicBetaClientType(product: InstalledProduct): Promise<WowClientType> {
+    if (product.clientType !== WowClientType.ClassicBeta) {
+      return product.clientType;
+    }
+
+    const foreverExeName = this.platform.getExecutableName(WowClientType.Forever);
+    const foreverExePath = path.join(product.location, product.name, foreverExeName);
+    const exists = await fsp
+      .access(foreverExePath)
+      .then(() => true)
+      .catch(() => false);
+
+    return exists ? WowClientType.Forever : product.clientType;
   }
 }

@@ -15,6 +15,7 @@ export function getTocForGameType(tocFileNames: string[], clientType: WowClientT
     case WowClientType.Retail:
     case WowClientType.RetailPtr:
     case WowClientType.RetailXPtr:
+    case WowClientType.Forever:
       matchedToc = tocFileNames.find((tfn) => /.*[-_]mainline\.toc$/gi.test(tfn)) || '';
       break;
     case WowClientType.ClassicEra:

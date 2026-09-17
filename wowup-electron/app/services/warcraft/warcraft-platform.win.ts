@@ -4,6 +4,7 @@ import * as path from "path";
 
 import {
   WOW_ANNIVERSARY_FOLDER,
+  WOW_CLASSIC_BETA_FOLDER,
   WOW_CLASSIC_ERA_FOLDER,
   WOW_CLASSIC_ERA_PTR_FOLDER,
   WOW_RETAIL_XPTR_FOLDER,
@@ -93,6 +94,7 @@ export class WarcraftPlatformWin implements WarcraftPlatform {
       case WowClientType.ClassicEraPtr:
         return this.isArm64 ? WOW_CLASSIC_PTR_NAME_ARM64 : WOW_CLASSIC_PTR_NAME;
       case WowClientType.Beta:
+      case WowClientType.Forever:
         return this.isArm64 ? WOW_RETAIL_BETA_NAME_ARM64 : WOW_RETAIL_BETA_NAME;
       case WowClientType.ClassicBeta:
         return this.isArm64 ? WOW_CLASSIC_BETA_NAME_ARM64 : WOW_CLASSIC_BETA_NAME;
@@ -133,7 +135,9 @@ export class WarcraftPlatformWin implements WarcraftPlatform {
         break;
       case WOW_RETAIL_BETA_NAME:
       case WOW_RETAIL_BETA_NAME_ARM64:
-        clientType = WowClientType.Beta;
+        clientType = binaryPath.toLowerCase().includes(WOW_CLASSIC_BETA_FOLDER)
+          ? WowClientType.Forever
+          : WowClientType.Beta;
         break;
       case WOW_CLASSIC_BETA_NAME:
       case WOW_CLASSIC_BETA_NAME_ARM64:

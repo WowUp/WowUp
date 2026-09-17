@@ -69,7 +69,13 @@ const GAME_TYPE_LISTS = [
   {
     flavor: "wow_retail",
     typeId: 517,
-    matches: [WowClientType.Retail, WowClientType.RetailPtr, WowClientType.Beta, WowClientType.RetailXPtr],
+    matches: [
+      WowClientType.Retail,
+      WowClientType.RetailPtr,
+      WowClientType.Beta,
+      WowClientType.RetailXPtr,
+      WowClientType.Forever,
+    ],
   },
   {
     flavor: "wow-burning-crusade-classic",

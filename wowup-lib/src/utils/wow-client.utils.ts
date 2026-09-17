@@ -37,6 +37,7 @@ export function getWowGameType(clientType: WowClientType): WowGameType {
     case WowClientType.RetailPtr:
     case WowClientType.RetailXPtr:
     case WowClientType.Beta:
+    case WowClientType.Forever:
     default:
       return WowGameType.Retail;
   }
@@ -56,6 +57,7 @@ export function getWowMajorVersion(clientType: WowClientType): number {
     case WowClientType.Beta:
     case WowClientType.RetailPtr:
     case WowClientType.RetailXPtr:
+    case WowClientType.Forever:
       return WowMajorVersion.RetailBeta;
     case WowClientType.Retail:
     default:
