@@ -4,6 +4,7 @@ import * as path from "path";
 
 import {
   WOW_ANNIVERSARY_FOLDER,
+  WOW_CLASSIC_BETA_FOLDER,
   WOW_CLASSIC_ERA_FOLDER,
   WOW_CLASSIC_ERA_PTR_FOLDER,
   WOW_RETAIL_XPTR_FOLDER,
@@ -77,9 +78,8 @@ export class WarcraftPlatformLinux implements WarcraftPlatform {
       case WowClientType.ClassicEraPtr:
         return WOW_CLASSIC_PTR_NAME;
       case WowClientType.Beta:
+      case WowClientType.ClassicBeta: // WoW Forever Beta is the same binary as WoW Beta, so we can return the same name for both
         return WOW_RETAIL_BETA_NAME;
-      case WowClientType.ClassicBeta:
-        return WOW_CLASSIC_BETA_NAME;
       default:
         return "";
     }
@@ -107,7 +107,9 @@ export class WarcraftPlatformLinux implements WarcraftPlatform {
           ? WowClientType.ClassicEraPtr
           : WowClientType.ClassicPtr;
       case WOW_RETAIL_BETA_NAME:
-        return WowClientType.Beta;
+        return binaryPath.toLowerCase().includes(WOW_CLASSIC_BETA_FOLDER)
+          ? WowClientType.ClassicBeta
+          : WowClientType.Beta;
       case WOW_CLASSIC_BETA_NAME:
         return WowClientType.ClassicBeta;
       default:
@@ -170,5 +172,8 @@ export class WarcraftPlatformLinux implements WarcraftPlatform {
 }
 
 async function pathExists(filePath: string): Promise<boolean> {
-  return fsp.access(filePath).then(() => true).catch(() => false);
+  return fsp
+    .access(filePath)
+    .then(() => true)
+    .catch(() => false);
 }

@@ -1,13 +1,14 @@
 import { AddonChannelType, WowClientType } from '../types';
 
 export class WowMajorVersion {
-  static readonly RetailBeta = 12;
-  static readonly Retail = 11;
-  static readonly Mists = 5;
-  static readonly Cata = 4;
-  static readonly Wrath = 3;
-  static readonly BurningCrusade = 2;
-  static readonly Classic = 1;
+  static readonly RetailBeta = '12.';
+  static readonly Retail = '11.';
+  static readonly Mists = '5.';
+  static readonly Cata = '4.';
+  static readonly Wrath = '3.';
+  static readonly BurningCrusade = '2.';
+  static readonly Classic = '1.1';
+  static readonly Forever = '1.6';
 }
 
 export interface InstalledProduct {
