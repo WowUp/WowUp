@@ -1,0 +1,671 @@
+{
+  "ADDON_IMPORT": {
+    "ACTIVE_ADDON_COUNT": "Aktif eklentiler: {count}",
+    "ADDED_BADGE_TOOLTIP": "Bu eklentiyi yüklemeye çalışacağız",
+    "CONFLICT_BADGE_TOOLTIP": "Çakışan eklentiler değiştirilmeyecek",
+    "COPY_BUTTON": "Kopyala",
+    "DIALOG_TITLE": "Eklenti İçe/Dışa Aktar: {clientType}",
+    "EXPORT_STRING_COPIED": "Dışa aktarma metni panoya kopyalandı",
+    "EXPORT_STRING_PASTED": "Pano içeriği yapıştırıldı",
+    "EXPORT_TAB_LABEL": "Dışa Aktar",
+    "EXPORT_TEXT_LABEL": "Eklenti Dışa Aktarma Verisi",
+    "GENERIC_IMPORT_ERROR": "İçe aktarma sırasında bir hata oluştu",
+    "IGNORED_ADDON_COUNT": "Yoksayılan eklentiler: {count}",
+    "IMPORT_ADDED_COUNT": "{count} eklendi",
+    "IMPORT_BADGE_ADDED": "Yeni",
+    "IMPORT_BADGE_CONFLICT": "Çakışma",
+    "IMPORT_BADGE_NO_CHANGE": "Değişiklik Yok",
+    "IMPORT_BUTTON": "İçe Aktar",
+    "IMPORT_CONFLICT_COUNT": "{count} çakışıyor",
+    "IMPORT_NO_CHANGE_COUNT": "{count} değişmedi",
+    "IMPORT_STRING_INVALID": "İçe aktarma metni geçersiz",
+    "IMPORT_TAB_LABEL": "İçe Aktar",
+    "IMPORT_TEXT_INSTRUCTIONS": "Başlamak için aşağıdaki alana WowUp eklenti dışa aktarma verisini yapıştırın",
+    "IMPORT_TEXT_LABEL": "İçe aktarma verisi",
+    "IMPORT_TOTAL_COUNT": "{count} {count, plural, =1{eklenti} other{eklentiler}} içe aktarılıyor",
+    "INSTALL_BUTTON": "Yükle",
+    "INVALID_CLIENT_TYPE": "İçe aktarma dizesi seçili kurulum türüyle eşleşmedi",
+    "MISSING_ADDON_PROVIDERS": "Bir veya daha fazla eklenti sağlayıcısı kullanılamıyor veya etkin değil ({missingProviders})",
+    "MISSING_CURSEFORGE_PROVIDER": "Eklenti listesinde bir CurseForge eklentisi var, wowup.io adresinden \"WowUp with CurseForge\" uygulamasını yüklemeniz gerekecek",
+    "MISSING_PROVIDER_MODAL_DOWNLOAD_BTN": "İndir",
+    "MISSING_PROVIDER_MODAL_TITLE": "Eksik Eklenti Sağlayıcısı",
+    "MISSING_WAGO_PROVIDER": "Eklenti listesinde bir Wago eklentisi var, wowup.io adresinden \"WowUp with Wago\" uygulamasını yüklemeniz gerekecek",
+    "NO_CHANGE_BADGE_TOOLTIP": "Bu eklentiyi zaten yüklediniz",
+    "PASTE_BUTTON": "Yapıştır",
+    "PROVIDER_MISMATCH": "Bu eklenti zaten yüklü, ancak sağlayıcı eşleşmiyor",
+    "RESET_BUTTON": "Sıfırla",
+    "VERSION_MISMATCH": "Bu eklenti zaten yüklü, ancak sürümler eşleşmiyor"
+  },
+  "ADS": {
+    "AD_EXPLAINER_BUTTON": "Bu reklam eklenti yazarlarını destekliyor",
+    "AD_EXPLAINER_DIALOG": {
+      "MESSAGE": "<a appExternalLink href=\"https://addons.wago.io/\">wago.io</a> adresini eklenti sağlayıcısı olarak kullanabilmek ve favori eklentileriniz için yazarların yoğun çalışmalarını desteklemek adına bu reklamı göstermemiz gerekiyor.\n\nBu reklamı görmek istemiyorsanız, seçenekler sekmesinde Wago'yu sağlayıcı olarak devre dışı bırakabilirsiniz.",
+      "TITLE": "Bu reklamı neden görüyorum?"
+    },
+    "AD_EXPLAINER_DIALOG_CF": {
+      "MESSAGE": "<a appExternalLink href=\"https://curseforge.com/\">CurseForge</a> adresini eklenti sağlayıcısı olarak kullanabilmek ve favori eklentileriniz için yazarların yoğun çalışmalarını desteklemek adına bu reklamı göstermemiz gerekiyor.\n\nBu reklamı görmek istemiyorsanız, seçenekler sekmesinde CurseForge'u sağlayıcı olarak devre dışı bırakabilirsiniz.",
+      "TITLE": "Bu reklamı neden görüyorum?"
+    }
+  },
+  "APP": {
+    "APP_MENU": {
+      "EDIT": {
+        "COPY": "Kopyala",
+        "CUT": "Kes",
+        "LABEL": "Düzenle",
+        "PASTE": "Yapıştır",
+        "REDO": "Yinele",
+        "SELECT_ALL": "Tümünü Seç",
+        "UNDO": "Geri Al"
+      },
+      "QUIT": "Çıkış Yap",
+      "VIEW": {
+        "FORCE_RELOAD": "Zorla Yenile",
+        "LABEL": "Görünüm",
+        "RELOAD": "Yenile",
+        "TOGGLE_DEV_TOOLS": "Geliştirici Araçlarını Aç/Kapat",
+        "TOGGLE_FULL_SCREEN": "Tam Ekranı Aç/Kapat",
+        "ZOOM_IN": "Yakınlaştır",
+        "ZOOM_OUT": "Uzaklaştır",
+        "ZOOM_RESET": "Yakınlaştırmayı Sıfırla"
+      },
+      "WINDOW": {
+        "CLOSE": "Kapat",
+        "LABEL": "Pencere"
+      }
+    },
+    "AUTO_UPDATE_FEW_NOTIFICATION_BODY": "Otomatik olarak güncellendi\r\n{addonNames}",
+    "AUTO_UPDATE_NOTIFICATION_BODY": "{count} {count, plural, =1{eklenti} other{eklentiler}} otomatik olarak güncellendi.",
+    "AUTO_UPDATE_NOTIFICATION_TITLE": "Otomatik Güncellemeler",
+    "CLOSE_FULLSCREEN_BUTTON_TOOLTIP": "Tam ekran modundan çık",
+    "FULLSCREEN_SNACKBAR": {
+      "MAC": "Tam ekrandan çıkmak için ^⌘F tuşlarına basın",
+      "WINDOWS": "Tam ekrandan çıkmak için F11 tuşuna basın"
+    },
+    "LINK_NAVIGATION": {
+      "MESSAGE": "{url}\n\nVarsayılan tarayıcınızda bu 3. taraf sayfasını açmak istediğinizden emin misiniz?",
+      "TITLE": "WowUp'tan ayrılmak üzeresiniz"
+    },
+    "PROVIDERS": {
+      "UNKNOWN": "Bilinmeyen"
+    },
+    "STATUS_TEXT": {
+      "ADDON_SCAN_COMPLETED": "Eklenti taraması tamamlandı...",
+      "ADDON_SCAN_STARTED": "Eklenti taraması başladı...",
+      "ADDON_SCAN_UPDATE": "{count} klasör taranıyor..."
+    },
+    "SYSTEM_TRAY": {
+      "CHECK_UPDATE": "Güncellemeleri Denetle...",
+      "QUIT_ACTION": "Çıkış Yap",
+      "SHOW_ACTION": "Göster"
+    },
+    "THEME": {
+      "ALLIANCE": "İttifak",
+      "DEFAULT": "WowUp",
+      "GROUP_DARK": "Koyu",
+      "GROUP_LIGHT": "Açık",
+      "HORDE": "Horde"
+    },
+    "WINDOW_TITLE": "WowUp.io",
+    "WINDOW_TITLE_CF": "WowUp.io CF",
+    "WINDOW_TITLE_FULLSCREEN": "WowUp.io - Tam Ekran",
+    "WOWUP_UPDATE": {
+      "CHECKING_FOR_UPDATE": "Güncelleme denetleniyor",
+      "DOWNLOADED_TOOLTIP": "WowUp güncellemesini yükle",
+      "DOWNLOADING_UPDATE": "Güncelleme indiriliyor",
+      "INSTALL_MESSAGE": "WowUp'ı yeniden başlatıp güncellemeyi yüklemek istiyor musunuz?",
+      "INSTALL_TITLE": "WowUp Güncellemesi Hazır",
+      "NOT_AVAILABLE": "WowUp'ın en son sürümü zaten yüklü",
+      "PORTABLE_DOWNLOAD_MESSAGE": "En son taşınabilir sürümü manuel olarak indirmek istiyor musunuz?\n\nUygulamayı manuel olarak kapatıp yeni sürümü kopyalamanız gerekecek.",
+      "PORTABLE_DOWNLOAD_TITLE": "Manuel İndirme Gerekli",
+      "SNACKBAR_ACTION": "Güncelle ve Yeniden Başlat",
+      "SNACKBAR_TEXT": "WowUp'ın yeni bir sürümü mevcut",
+      "TOOLTIP": "WowUp güncellemesi mevcut",
+      "UPDATE_AVAILABLE": "İndirme başlatılıyor",
+      "UPDATE_ERROR": "WowUp güncellemesi alınamadı"
+    }
+  },
+  "COMMON": {
+    "ADDON_CATEGORIES": {
+      "ACHIEVEMENTS": "Başarımlar",
+      "ACTION_BARS": "Aksiyon Barları",
+      "ALL_ADDONS": "Tüm Eklentiler",
+      "AUCTION_ECONOMY": "Müzayede ve Ekonomi",
+      "BAGS_INVENTORY": "Çantalar ve Envanter",
+      "BOSS_ENCOUNTERS": "Boss Savaşları",
+      "BUFFS_DEBUFFS": "Buff ve Debufflar",
+      "BUNDLES": "Paketler",
+      "CHAT_COMMUNICATION": "Sohbet ve İletişim",
+      "CLASS": "Sınıf",
+      "COMBAT": "Savaş",
+      "COMPANIONS": "Yoldaşlar",
+      "DATA_EXPORT": "Veri Dışa Aktarımı",
+      "DEVELOPMENT_TOOLS": "Geliştirme Araçları",
+      "GUILD": "Lonca",
+      "LIBRARIES": "Kütüphaneler",
+      "MAIL": "Posta",
+      "MAP_MINIMAP": "Harita ve Minimap",
+      "MISCELLANEOUS": "Karışık",
+      "MISSIONS": "Görevler",
+      "PLUGINS": "Eklentiler",
+      "PROFESSIONS": "Meslekler",
+      "PVP": "PVP",
+      "QUESTS_LEVELING": "Görevler ve Seviye Atlama",
+      "ROLEPLAY": "Rol Yapma",
+      "TOOLTIPS": "Araç İpuçları",
+      "UNIT_FRAMES": "Birim Çerçeveleri"
+    },
+    "ADDON_STATE": {
+      "IGNORED": "Yoksayıldı",
+      "INSTALL": "Yükle",
+      "PENDING": "Beklemede",
+      "UNAVAILABLE": "Kullanılamaz",
+      "UNAVAILABLE_TOOLTIP": "Bu yazar veya sağlayıcı bu eklentiyi kullanılamaz hale getirdi",
+      "UNINSTALL": "Kaldır",
+      "UNKNOWN": "",
+      "UPDATE": "Güncelle",
+      "UPTODATE": "Güncel",
+      "WARNING": "Uyarı"
+    },
+    "ADDON_STATUS": {
+      "BACKINGUP": "Yedekleniyor",
+      "COMPLETE": "Yüklendi",
+      "DOWNLOADING": "İndiriliyor",
+      "ERROR": "Hata",
+      "INSTALLING": "Yükleniyor",
+      "PENDING": "Beklemede",
+      "RETRY": "Tekrar deneniyor...",
+      "UNINSTALLING": "Kaldırılıyor",
+      "UPDATING": "Güncelleniyor..."
+    },
+    "ADDON_WARNING": {
+      "GAME_VERSION_TOC_MISSING_DESCRIPTION": "Bu eklenti veya alt eklentileri bu oyun sürümü için bir veya daha fazla eksik toc dosyasına sahip",
+      "GAME_VERSION_TOC_MISSING_TOOLTIP": "Bu oyun sürümü için bir veya daha fazla eksik toc dosyası",
+      "GENERIC_DESCRIPTION": "Bu eklentiyle ilgili bir sorun tespit ettik. Bu eklentiyi artık güncelleyemiyoruz veya detay veremiyoruz.",
+      "GENERIC_TOOLTIP": "Bu eklentiyle ilgili bir sorun tespit ettik",
+      "MISSING_ON_PROVIDER_DESCRIPTION": "{providerName} istediğimizde eklentiyi gönderemedi.<br>{providerName} düzeltene kadar bu eklentiyi artık güncelleyemiyoruz veya detay veremiyoruz.",
+      "MISSING_ON_PROVIDER_TOOLTIP": "{providerName} bu eklentiyi beklediğimiz gibi gönderemiyor",
+      "NO_PROVIDER_FILES_DESCRIPTION": "{providerName} bu eklentiyi düzgün gönderdi, ancak bu oyun sürümüyle eşleşen dosya yok.<br>Bu oyun sürümüyle eşleşen bir güncelleme olduğunda bu uyarı ortadan kalkacaktır.",
+      "NO_PROVIDER_FILES_TOOLTIP": "{providerName} eşleşen oyun sürümü dosyalarına sahip değil",
+      "TOC_NAME_MISMATCH_DESCRIPTION": "Bu eklentinin klasör adı beklenen toc dosyasıyla eşleşmedi, oyun içinde bu eklentiyle ilgili sorunlarla karşılaşabilirsiniz.",
+      "TOC_NAME_MISMATCH_TOOLTIP": "Bu eklentinin klasörü toc ile eşleşmiyor"
+    },
+    "CLIENT_TYPES": {
+      "BETA": "TWW Beta",
+      "CLASSIC": "Cataclysm Klasik",
+      "CLASSICBETA": "Cataclysm Klasik Beta",
+      "CLASSICERA": "World of Warcraft Klasik",
+      "CLASSICERAPTR": "PTR (Klasik Era)",
+      "CLASSICPTR": "PTR (Cataclysm Klasik)",
+      "RETAIL": "World of Warcraft",
+      "RETAILPTR": "PTR (TWW 11.0.2)",
+      "RETAILXPTR": "PTR (TWW 11.0)"
+    },
+    "DATES": {
+      "DAYS_AGO": "{count} {count, plural, =1{gün} other{gün}} önce",
+      "HOURS_AGO": "{count} {count, plural, =1{saat} other{saat}} önce",
+      "JUST_NOW": "Az önce",
+      "MONTHS_AGO": "{count} {count, plural, =1{ay} other{ay}} önce",
+      "YEARS_AGO": "{count} {count, plural, =1{yıl} other{yıl}} önce",
+      "YESTERDAY": "Dün"
+    },
+    "DEPENDENCY": {
+      "TOOLTIP": "{dependencyCount} gerekli {dependencyCount, plural, =1{destek dosyaları} other{destek dosyaları}}"
+    },
+    "DOWNLOAD_COUNT": {
+      "e+0": "birkaç",
+      "e+1": "{count}",
+      "e+2": "{count}",
+      "e+3": "{count} bin",
+      "e+4": "{count} bin",
+      "e+5": "{count} bin",
+      "e+6": "{count} milyon",
+      "e+7": "{count} milyon",
+      "e+8": "{count} milyon",
+      "e+9": "{count} milyar"
+    },
+    "ENUM": {
+      "ADDON_CHANNEL_TYPE": {
+        "ALPHA": "Alfa",
+        "BETA": "Beta",
+        "STABLE": "Stabil"
+      }
+    },
+    "ERRORS": {
+      "ACCOUNT_PUSH_TOGGLE_FAILED_ERROR": "Hesabınız için anlık güncellemeleri açıp kapatma işlemi başarısız oldu. Lütfen daha sonra tekrar deneyin veya Discord üzerinden iletişime geçin.",
+      "ADDON_INSTALL_ERROR": "{addonName} eklentisi yüklenemedi. Lütfen daha sonra tekrar deneyin.",
+      "ADDON_SCAN_ERROR": "Eklenti klasörleriniz {providerName} ile eşleştirilirken bir hata oluştu, lütfen daha sonra tekrar deneyin.",
+      "ADDON_SYNC_ERROR": "{providerName} kaynağından güncellemeler denetlenirken bir hata oluştu, lütfen daha sonra tekrar deneyin.",
+      "ADDON_SYNC_FULL_ERROR": "[{installationName}]: {providerName} kaynağından {addonName} güncellemeleri denetlenirken bir hata oluştu, lütfen daha sonra tekrar deneyin.",
+      "CHANGE_PROVIDER_ERROR": "{addonName} eklentisinin sağlayıcısı {providerName} olarak değiştirilemedi",
+      "GITHUB_LIMIT_ERROR": "{max} istek GitHub API sınırınıza ulaştınız.\nLütfen {reset} zamanına kadar bekleyip tekrar deneyin.",
+      "GITHUB_REPOSITORY_FETCH_ERROR": "{addonName} için güncellemeler denetlenemedi.\nLütfen deponun doğru olduğunu doğrulayın veya bu eklentiyi yoksayılacak olarak ayarlayın."
+    },
+    "PROGRESS_SPINNER": {
+      "LOADING": "Yükleniyor..."
+    },
+    "PROVIDER_ERROR": "{providerName} ile iletişim kurulurken hata",
+    "SEARCH": {
+      "NO_ADDONS": "Eklenti bulunamadı"
+    },
+    "WOW_EXE_SELECTION_NAME": "WoW.exe Dosyası"
+  },
+  "DIALOGS": {
+    "ADDON_DETAILS": {
+      "ADDON_ID_PREFIX": "Eklenti Kimliği:",
+      "BY_AUTHOR": "{authorName} tarafından",
+      "CHANGELOG_TAB": "Değişiklik Günlüğü",
+      "COPY_ADDON_ID_SNACKBAR": "Eklenti Kimliği panoya kopyalandı",
+      "COPY_ADDON_ID_TOOLTIP": "Eklenti kimliğini panoya kopyala",
+      "DEPENDENCY_TEXT": "Bu eklenti {dependencyCount} gerekli {dependencyCount, plural, =1{destek dosyaları} other{destek dosyaları}} içeriyor",
+      "DESCRIPTION_NOT_FOUND": "Açıklama bulunamadı",
+      "DESCRIPTION_TAB": "Açıklama",
+      "FUNDING_LINK_TITLE": "Bu yazarı destekle",
+      "IMAGES_TAB": "Önizlemeler",
+      "MISSING_DEPENDENCIES": "Eksik Destek Dosyaları",
+      "NO_CHANGELOG_TEXT": "Değişiklik günlüğü mevcut değil",
+      "VIEW_IN_BROWSER_BUTTON": "Tarayıcıda Görüntüle",
+      "VIEW_ON_PROVIDER_PREFIX": "Şuradan Görüntüle"
+    },
+    "ALERT": {
+      "ERROR_TITLE": "Hata",
+      "POSITIVE_BUTTON": "Tamam"
+    },
+    "CONFIRM": {
+      "NEGATIVE_BUTTON": "Hayır",
+      "POSITIVE_BUTTON": "Evet"
+    },
+    "CURSE_MIGRATION": {
+      "MESSAGE": "CurseForge API kapatıldığı için WowUp artık eklenti bilgilerini oradan alamıyor.<br/>Maalesef CurseForge sağlayıcısı kaldırıldı ve CurseForge eklentileriniz artık güncellenmeyecek.<br/>Diğer sağlayıcılarda hangi eklentilerin bulunabileceğini görmek için tekrar tarama yapmanız önerilir.<br/>Tekrar tarama işlemi bir süre alabilir.<br/><a appExternalLink href=\"https://wowup.io/guide/wowup/curseforge-migration\">Buradan daha fazla bilgi edinin.</a>",
+      "NEGATIVE_BUTTON": "Manuel Olarak Tekrar Tara",
+      "POSITIVE_BUTTON": "Otomatik Olarak Tekrar Tara",
+      "RE_SCAN_ERROR": "Otomatik tekrar tarama başarısız oldu, lütfen manuel olarak tekrar deneyin.",
+      "RE_SCAN_SUCCESS": "Otomatik tekrar tarama tamamlandı, hazırsınız.",
+      "TITLE": "CurseForge Taşınması"
+    },
+    "INSTALL_FROM_PROTOCOL": {
+      "ADDON_INSTALLED": "Eklenti yüklendi!",
+      "ADDON_INSTALLING": "Eklenti yükleniyor",
+      "CANCEL_BUTTON": "Kapat",
+      "ERRORS": {
+        "ADDON_NOT_FOUND": "Protokol için eklenti bulunamadı: {protocol}",
+        "GENERIC": "Protokol için veri alınırken hata: {protocol}",
+        "NO_VALID_WOW_INSTALLATIONS": "Protokol için geçerli WoW kurulumu yok: {protocol}"
+      },
+      "INSTALL_BUTTON": "Yükle",
+      "TITLE": "{providerName} Kaynağından Eklenti Yükle"
+    },
+    "INSTALL_FROM_URL": {
+      "ADDON_URL_INPUT_LABEL": "Eklenti URL'si",
+      "ADDON_URL_INPUT_PLACEHOLDER": "Örn. GitHub veya WowInterface URL'si",
+      "CLOSE_BUTTON": "Kapat",
+      "DESCRIPTION": "Doğrudan bir URL'den eklenti yüklemek istiyorsanız başlamak için aşağıya yapıştırın.",
+      "DOWNLOAD_COUNT": "{provider} kaynağında {textCount} {count, plural, =1{indirme} other{indirmeler}}",
+      "ERROR": {
+        "ASSET_NOT_FOUND": "{message} kaynağından indirilecek dosya bulunamadı.\n\nWowUp'ın indirebilmesi için sürümde geçerli bir zip dosyası bulunması gereklidir.",
+        "BURNING_CRUSADE_ASSET_NOT_FOUND": "{message} kaynağından indirilecek dosya bulunamadı.\n\nWowUp'ın indirebilmesi için '-bc' ile biten geçerli bir zip dosyası gereklidir.",
+        "CATACLYSM_ASSET_NOT_FOUND": "{message} kaynağından indirilecek dosya bulunamadı.\n\nWowUp'ın indirebilmesi için '-cata' ile biten geçerli bir zip dosyası gereklidir.",
+        "CLASSIC_ASSET_NOT_FOUND": "{message} kaynağından indirilecek dosya bulunamadı.\n\nWowUp'ın indirebilmesi için '-classic' ile biten geçerli bir zip dosyası gereklidir.",
+        "FAILED_TO_CONNECT": "API'ye bağlanılamıyor, lütfen biraz bekleyip tekrar deneyin.",
+        "INSTALL_FAILED": "Eklenti yüklenmeye çalışılırken bir hata oluştu, lütfen tekrar deneyin.\n\nBu mesaj devam ederse #help-me kanalında Discord'tan yardım alabilirsiniz.",
+        "INVALID_URL": "Verilen değer geçerli bir URL değil. Geçerli eklenti URL örnekleri:\n\t- https://github.com/WowUp/WowUp.Addon\n\t- https://www.wowinterface.com/downloads/info25610-8.3-014.html\n\t- https://www.curseforge.com/wow/addons/altoholic",
+        "NO_ADDON_FOUND": "Eklenti bulunamadı, URL'nizin doğru sayfaya yönlendirdiğinden emin olun.\n\nGitHub'dan yüklerken, depoda eklentiyi içeren bir zip arşivine sahip bir sürüm etiketi olduğundan emin olun.",
+        "NO_RELEASE_FOUND": "{message} için hiçbir sürüm bulunamadı.\n\nWowUp'ın indirebilmesi için zip dosyaları içeren geçerli bir sürüm gereklidir.",
+        "NO_SEARCH_RESULTS": "Arama sonucu bulunamadı.",
+        "TITLE": "Eklenti Kurulumu Başarısız",
+        "WRATH_ASSET_NOT_FOUND": "{message} kaynağından indirilecek dosya bulunamadı.\n\nWowUp'ın indirebilmesi için '-wrath' ile biten geçerli bir zip dosyası gereklidir."
+      },
+      "IMPORT_ASSET_WARNING": "Bu eklentinin en son sürümünün seçili kurulumunuzla uyumlu olup olmadığını doğrulayamadık.\n\nAma \"{zipName}\" adında bir zip dosyası bulduk.\n\nRisk size aittir.",
+      "IMPORT_BUTTON": "İçe Aktar",
+      "IMPORT_WARNING_TITLE": "Eklenti İçe Aktarma Uyarısı",
+      "INSTALL_BUTTON": "Yükle",
+      "INSTALL_SUCCESS_LABEL": "Yüklendi!",
+      "SUPPORTED_SOURCES": "WowInterface ve GitHub destekleniyor",
+      "TITLE": "URL'den Eklenti Yükle"
+    },
+    "NEW_VERSION_POPUP": {
+      "TITLE": "Yama Notları {versionNumber}"
+    },
+    "PERMISSIONS": {
+      "CURSEFORGE": {
+        "DESCRIPTION_AD_LINK": "reklam sağlayıcıları",
+        "DESCRIPTION_BOTTOM": ". Onaylarınızı yönetmek veya verilerinizin işlenmesine itiraz etmek için Yönet düğmesine tıklayın. Tercihlerinizi istediğiniz zaman ayarlar ekranından değiştirebilirsiniz.",
+        "DESCRIPTION_TOP": " Bu uygulamanın CurseForge entegrasyonunu kullanabilmesi için reklam sağlayıcılarından birinden size reklam göstermelerine izin vermeniz gerekiyor. ",
+        "MANAGE_BUTTON": "Yönet",
+        "TITLE": "CurseForge"
+      },
+      "MESSAGE": "Başlamadan önce uygulama için birkaç izin ayarlamanız gerekiyor.",
+      "POSITIVE_BUTTON": "Kabul Et ve Devam Et",
+      "TELEMETRY": {
+        "DESCRIPTION": "Anonim uygulama kurulum verileri ve/veya hatalar göndererek WowUp'ı geliştirmemize yardımcı olun mu?",
+        "TOGGLE_LABEL": "Telemetriye İzin Ver"
+      },
+      "TITLE": "WowUp İzinleri Kurulumu",
+      "WAGO": {
+        "DESCRIPTION": "Favori eklentilerinizin yazarlarını desteklemeye yardımcı olmak için Wago.io eklenti sağlayıcısını etkinleştirin! Bu, hizmetlerini kullanmak için gereken tanıtım panelini gösterecektir.\nKatılırsanız <a appExternalLink href=\"{termsUrl}\" >Kullanım Koşullarını</a> ve <a appExternalLink href=\"{dataUrl}\" >Veri Onayını</a> kabul etmiş olursunuz.",
+        "TOGGLE_LABEL": "Wago.io Sağlayıcısını Etkinleştir"
+      }
+    },
+    "SELECT_INSTALLATION": {
+      "INVALID_INSTALLATION_PATH": "Bu, geçerli bir World of Warcraft uygulaması gibi görünmüyor:\n{selectedPath}"
+    },
+    "TELEMETRY": {
+      "DESCRIPTION": "Anonim uygulama kurulum verileri ve/veya hatalar göndererek WowUp'ı geliştirmemize yardımcı olun mu?",
+      "NEGATIVE_BUTTON": "Hayır Teşekkürler",
+      "POSITIVE_BUTTON": "Evet!",
+      "TITLE": "WowUp Telemetri"
+    },
+    "TRUST_DOMAIN_CHECKBOX": "Bu siteye güven ve gelecekte sorma"
+  },
+  "PAGES": {
+    "ABOUT": {
+      "ATTRIBUTIONS_TITLE": "Atıflar",
+      "CHANGE_LOG_SECTION_LABEL": "Değişiklik Günlüğü",
+      "TITLE": "WowUp.io",
+      "WEBSITE_LINK_LABEL": "Web sitesine göz atın!"
+    },
+    "ACCOUNT": {
+      "BETA": "Beta",
+      "LOGIN_BUTTON": "Şimdi Giriş Yap!",
+      "LOGOUT_BUTTON": "Çıkış Yap",
+      "LOGOUT_CONFIRMATION_MESSAGE": "Çıkış yapmak istediğinizden emin misiniz? Tüm yerel hesap verileriniz kaldırılacak, tekrar giriş yapana kadar bilgileriniz kaybolacak.",
+      "LOGOUT_CONFIRMATION_TITLE": "Çıkış Yap?",
+      "MANAGE_ACCOUNT_BUTTON": "Hesabı Yönet",
+      "TITLE": "Hesap"
+    },
+    "GET_ADDONS": {
+      "ADDON_CATEGORIES_BUTTON": "Kategoriler",
+      "ADDON_CATEGORIES_MENU_TITLE": "Eklenti Kategorileri",
+      "ADDON_CATEGORIES_SELECTED_TITLE": "Kategori: {category}",
+      "ADDON_CATEGORIES_TOOLTIP": "Çeşitli kategorilere göz atın",
+      "CLIENT_TYPE_SELECT_LABEL": "World of Warcraft",
+      "INSTALL_FROM_URL_BUTTON": "URL'den Yükle",
+      "INSTALL_FROM_URL_TOOLTIP": "Bir URL'den eklenti yükleyin",
+      "REFRESH_BUTTON": "Yenile",
+      "REFRESH_TOOLTIP": "Eklenti sonuçlarını yenile",
+      "RESET_CATEGORY_TOOLTIP": "Kategoriyi Sıfırla",
+      "SEARCH_LABEL": "Ara",
+      "TABLE": {
+        "ADDON_COLUMN_HEADER": "Eklenti",
+        "AUTHOR_COLUMN_HEADER": "Yazar(lar)",
+        "DOWNLOAD_COUNT_COLUMN_HEADER": "İndirmeler",
+        "PROVIDER_COLUMN_HEADER": "Sağlayıcı",
+        "RELEASED_AT_COLUMN_HEADER": "Yayınlandı",
+        "STATUS_COLUMN_HEADER": "Durum"
+      }
+    },
+    "HOME": {
+      "ABOUT_TAB_TITLE": "Hakkında",
+      "ACCOUNT_TAB_TITLE": "Hesap",
+      "COLLAPSE_BUTTON_TITLE": "Daralt",
+      "DISCORD_TAB_TITLE": "Discord",
+      "EXPAND_BUTTON_TITLE": "Genişlet",
+      "GET_ADDONS_TAB_TITLE": "Eklenti Al",
+      "GUIDE_TAB_TITLE": "Rehber",
+      "MIGRATING_ADDONS": "Eklentiler taşınıyor...",
+      "MY_ADDONS_TAB_TITLE": "Eklentilerim",
+      "NEWS_TAB_TITLE": "Haberler",
+      "OPTIONS_TAB_TITLE": "Seçenekler"
+    },
+    "MY_ADDONS": {
+      "ADDON_CONTEXT_MENU": {
+        "ADDONS_SELECTED": "{count} {count, plural, =1{eklenti} other{eklenti}} seçili",
+        "ALPHA_ADDON_CHANNEL": "Alfa",
+        "AUTO_UPDATE_ADDON_BUTTON": "Otomatik Güncelle",
+        "AUTO_UPDATE_ADDON_NOTIFICATIONS_ENABLED_BUTTON": "Bildirimler Etkin",
+        "BETA_ADDON_CHANNEL": "Beta",
+        "CHANNEL_SUBMENU_TITLE": "Kanal",
+        "IGNORE_ADDON_BUTTON": "Yoksay",
+        "PROVIDER_SUBMENU_TITLE": "Sağlayıcılar",
+        "REINSTALL_ADDON_BUTTON": "Tekrar Yükle",
+        "REMOVE_ADDON_BUTTON": "Kaldır",
+        "SHOW_FOLDER": "Klasörü Göster",
+        "STABLE_ADDON_CHANNEL": "Stabil"
+      },
+      "ADDON_IS_CODE_REPOSITORY": "Bu eklenti bir kaynak kodu deposu gibi görünüyor",
+      "ADDON_REMOVED_SNACKBAR": "Başarıyla kaldırıldı: {addonName} ",
+      "CHANGE_ADDON_PROVIDER_CONFIRMATION": {
+        "MESSAGE": "{addonName} eklentisinin sağlayıcısını {providerName} olarak değiştirmek istiyor musunuz? Bu işlem mevcut eklentiyi kaldıracak ve yeni sağlayıcıdan bir kopya ile değiştirecektir.",
+        "TITLE": "Eklenti Sağlayıcısını Değiştir?"
+      },
+      "CHECK_UPDATES_BUTTON": "Güncellemeleri Denetle",
+      "CHECK_UPDATES_BUTTON_TOOLTIP": "En son eklenti güncellemelerini denet",
+      "CLIENT_TYPE_SELECT_BADGE": "{count} {count, plural, =1{güncelleme} other{güncelleme}} ",
+      "CLIENT_TYPE_SELECT_LABEL": "World of Warcraft",
+      "COLUMNS_CONTEXT_MENU": {
+        "TITLE": "Sütunları Göster"
+      },
+      "ERROR_SNACKBAR": "Bir hata oluştu",
+      "FILTER_LABEL": "Filtrele",
+      "FUNDING_TOOLTIP": {
+        "CUSTOM": "Bu yazarı destekle",
+        "GENERIC": "Bu yazarı {platform} üzerinde destekle",
+        "GITHUB": "Bu yazarı GitHub üzerinde destekle",
+        "PATREON": "Bu yazarı Patreon üzerinde destekle",
+        "PAYPAL": "Bu yazarı PayPal üzerinde destekle"
+      },
+      "IMPORT_EXPORT_ADDONS_BUTTON": "Eklentileri İçe/Dışa Aktar",
+      "MULTIPLE_PROVIDERS_TOOLTIP": "Bu eklentinin birden fazla sağlayıcısı var",
+      "PAGE_CONTEXT_FOOTER": {
+        "ADDONS_INSTALLED": "{count} {count, plural, =1{eklenti} other{eklenti}}",
+        "JOIN_DISCORD": "Discord'ta bizimle sohbet edin",
+        "PATREON_SUPPORT": "WowUp'ı Patreon'dan destekleyin",
+        "SEARCH_RESULTS": "{count} {count, plural, =1{sonuç} other{sonuç}}",
+        "VIEW_GITHUB": "Kodu GitHub'da inceleyin",
+        "VIEW_GUIDE": "WowUp'ın neler yapabileceğini görmek için rehberimize göz atın"
+      },
+      "REQUIRED_DEPENDENCY_MISSING_TOOLTIP": "Gerekli destek dosyaları eksik",
+      "RESCAN_FOLDERS_BUTTON": "Klasörleri Tekrar Tara",
+      "RESCAN_FOLDERS_BUTTON_TOOLTIP": "Yüklü eklentiler için oyun klasörünüzü tarayın",
+      "RESCAN_FOLDERS_CONFIRMATION_DESCRIPTION": "Tekrar tarama yapmak, halihazırda yüklü olan eklentilerinizi tahmin etmeye çalışacaktır, bunu yapmak bilinen eklenti bilgilerini sıfırlayabilir.\\n\\nBelirli eklentiler tanınmıyorsa veya eklenti sürümleri doğru görünmüyorsa bu işlevi kullanın. Bu tarama yüklü eklentilerinizi asla silmez, yalnızca WowUp'ın onlar hakkında bildiklerini siler.\\n\\nTarama birkaç dakika sürebilir.",
+      "RESCAN_FOLDERS_CONFIRMATION_TITLE": "Tekrar taramayı başlat?",
+      "SPINNER": {
+        "GATHERING_ADDONS": "Eklentiler toplanıyor...",
+        "UPDATING": "{updateCount}/{addonCount} güncelleniyor",
+        "UPDATING_WITH_ADDON_NAME": "{updateCount}/{addonCount} güncelleniyor\n{clientType}: {addonName}"
+      },
+      "TABLE": {
+        "ADDON_COLUMN_HEADER": "Eklenti",
+        "ADDON_INSTALL_BUTTON": "Yükle",
+        "ADDON_UPDATE_BUTTON": "Güncelle",
+        "AUTHOR_COLUMN_HEADER": "Yazar(lar)",
+        "AUTO_UPDATE_ICON_TOOLTIP": "Otomatik güncelleme etkin",
+        "GAME_VERSION_COLUMN_HEADER": "Oyun Sürümü",
+        "LATEST_VERSION_COLUMN_HEADER": "En Son Sürüm",
+        "PROVIDER_COLUMN_HEADER": "Sağlayıcı",
+        "PROVIDER_RELEASE_CHANNEL": "Sağlayıcı Kanalı",
+        "RELEASED_AT_COLUMN_HEADER": "Yayınlandı",
+        "STATUS_COLUMN_HEADER": "Durum",
+        "UPDATED_AT_COLUMN_HEADER": "Güncellendi"
+      },
+      "UNINSTALL_POPUP": {
+        "CONFIRMATION_ACTION_EXPLANATION": "Bir eklentiyi WowUp üzerinden kaldırmak, seçili eklentiyi arayüz/eklentiler dizininizden kaldıracaktır. Bu eklentinin karakter ayarları kaldırılmayacaktır.",
+        "CONFIRMATION_LESS_THAN_THREE": "Aşağıdaki {count} eklentiyi kaldırmak istediğinizden emin misiniz?",
+        "CONFIRMATION_MORE_THAN_THREE": "Seçili {count} eklentiyi kaldırmak istediğinizden emin misiniz?",
+        "CONFIRMATION_ONE": "{addonName} eklentisini kaldırmak istediğinizden emin misiniz?",
+        "DEPENDENCY_MESSAGE": "{addonName} eklentisinin {dependencyCount} {dependencyCount, plural, =1{bağımlılığı} other{bağımlılığı}} var. Onları da kaldırmak ister misiniz?",
+        "DEPENDENCY_TITLE": "Destek dosyaları Eklentileri de Kaldırılsın mı?",
+        "TITLE": "{count, plural, =1{Eklentiyi} other{Eklentileri}} Kaldır?"
+      },
+      "UNKNOWN_ADDON_INFO_TOOLTIP": "Yüklü eklenti yapılandırılmış sağlayıcılardan hiçbiriyle eşleşmedi",
+      "UPDATE_ALL_BUTTON": "Tümünü Güncelle",
+      "UPDATE_ALL_BUTTON_TOOLTIP": "Bu oyun için tüm eklentileri güncelle",
+      "UPDATE_ALL_CONTEXT_MENU": {
+        "UPDATE_ALL_CLIENTS_BUTTON": "Tüm Versiyonları Güncelle",
+        "UPDATE_RETAIL_CLASSIC_BUTTON": "Retail/Klasik'i Güncelle"
+      },
+      "WTF_BACKUP_BUTTON": "Arayüz Ayarları Yedeği"
+    },
+    "NEWS": {
+      "NEWS_LINK_COPY_TOAST": "Haber bağlantısı panoya kopyalandı",
+      "NEWS_LINK_COPY_TOOLTIP": "Haber bağlantısını kopyala",
+      "PAGE_CONTEXT_FOOTER": "{count} haber",
+      "REFRESH_TOOLTIP": "Haber akışını yenile"
+    },
+    "OPTIONS": {
+      "ADDON": {
+        "AD_REQUIRED_HINT": "Reklam gerekli",
+        "CURSE_FORGE_V2": {
+          "API_KEY_DESCRIPTION": "CurseForge API anahtarı istediyseniz API'ye bağlanmak için buraya girebilirsiniz.",
+          "API_KEY_TITLE": "CurseForge API Anahtarı",
+          "PROVIDER_NOTE": "API Anahtarı Gerekli"
+        },
+        "ENABLED_PROVIDERS": {
+          "DESCRIPTION": "Yeni eklenti aramak ve yüklemek için hangi sağlayıcıların kullanılabileceğini seçin",
+          "FIELD_LABEL": "Etkin Eklenti Sağlayıcıları",
+          "INPUT_LABEL": "Sağlayıcılar"
+        },
+        "GITHUB_PERSONAL_ACCESS_TOKEN": {
+          "MESSAGE": "Kişisel bir erişim anahtarı, GitHub API çağrı sayınızı artırır ve ücretsiz olarak edinilebilir. <a href=\"https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/creating-a-personal-access-token\">Daha Fazla Bilgi</a>",
+          "PLACEHOLDER": "Kişisel Erişim Anahtarı",
+          "TITLE": "GitHub Kişisel Erişim Anahtarı"
+        },
+        "TITLE": "Eklentiler",
+        "WAGO_ACCESS_KEY": {
+          "MESSAGE": "Reklam görmeden Wago sağlayıcısını kullanın. <a href=\"https://addons.wago.io/patreon\">Daha Fazla Bilgi</a>",
+          "PLACEHOLDER": "Erişim Anahtarı",
+          "TITLE": "Wago Erişim Anahtarı"
+        }
+      },
+      "APPLICATION": {
+        "APP_RELEASE_CHANNEL_CONFIRMATION_DESCRIPTION_BETA": "Beta kanalına geçmek, hata düzeltmelerinin yanı sıra yeni ve yaklaşan özellikleri içeren deneysel yapılar almanıza olanak tanır. Mevcut stabil sürüme geri dönmek için yalnızca mevcut uygulamayı kaldırıp wowup.io adresinden yeniden yükleyerek dönebilirsiniz.\n\nBeta kanalı işlevsel olsa da kendi sorumluluğunuzda kullanın.",
+        "APP_RELEASE_CHANNEL_CONFIRMATION_DESCRIPTION_STABLE": "Uygulama için Stabil kanala geçmek, daha fazla Beta yapısı almanızı engelleyecektir, bir sonraki güncelleme bir sonraki Stabil sürüm olacaktır.",
+        "APP_RELEASE_CHANNEL_CONFIRMATION_LABEL": "Uygulama yayın kanalını ayarlama",
+        "APP_RELEASE_CHANNEL_CONFIRMATION_POSITIVE_BUTTON": "Evet, anlıyorum",
+        "APP_RELEASE_CHANNEL_DESCRIPTION": "Uygulamanın Beta ve Stabil sürümleri arasında geçiş yapın",
+        "APP_RELEASE_CHANNEL_DROPDOWN_LABEL": "Kanal",
+        "APP_RELEASE_CHANNEL_LABEL": "Uygulama Yayın Kanalı",
+        "CURRENT_LANGUAGE_LABEL": "Mevcut Dil",
+        "CURSE_PROTOCOL_DESCRIPTION": "CurseForge web sitesinden eklenti indirirken WowUp kurulumu halledecektir",
+        "CURSE_PROTOCOL_LABEL": "CurseForge indirme bağlantılarını işle",
+        "ENABLE_APP_BADGE_DESCRIPTION": "Uygulama simgesinde, güncellemesi olan eklentilerin sayısını gösteren bir rozet görüntüle.",
+        "ENABLE_APP_BADGE_LABEL": "Uygulama Rozeti Bildirimini Etkinleştir",
+        "ENABLE_SYSTEM_NOTIFICATIONS_DESCRIPTION": "Otomatik güncellenen eklentiler gibi çeşitli sistem bildirimi açılır pencerelerini etkinleştir.",
+        "ENABLE_SYSTEM_NOTIFICATIONS_LABEL": "Sistem Bildirimlerini Etkinleştir",
+        "KEEP_LAST_OPENED_TAB_DESCRIPTION": "Bir eklenti ayrıntı sayfası açıldığında, otomatik olarak en son açılan sekmeyi seçin",
+        "KEEP_LAST_OPENED_TAB_LABEL": "Son açılan sekmeyi açık tut",
+        "MINIMIZE_ON_CLOSE_DESCRIPTION_MAC": "WowUp penceresi kapatıldığında, menü çubuğuna küçült.",
+        "MINIMIZE_ON_CLOSE_DESCRIPTION_WINDOWS": "WowUp penceresi kapatıldığında, görev çubuğu bildirim alanına küçült.",
+        "MINIMIZE_ON_CLOSE_LABEL": "Kapatınca Küçült",
+        "PROTOCOL_DESCRIPTION": "WowUp özel bir URI protokolünü sisteminize kaydedecek ve gelen sorguları halledecek",
+        "PROTOCOL_LABEL": "wowup:// URI protokolünü etkinleştir",
+        "SCALE_DESCRIPTION": "Tüm uygulama için yakınlaştırma faktörünü değiştir.",
+        "SCALE_LABEL": "Ölçek",
+        "SET_LANGUAGE_CONFIRMATION_DESCRIPTION": "Varsayılan dili değiştirmek uygulamanın yeniden başlatılmasını gerektirir.",
+        "SET_LANGUAGE_CONFIRMATION_LABEL": "Yeni varsayılan dil ayarlanıyor",
+        "SET_LANGUAGE_DESCRIPTION": "Değiştirmek için bir dil seçin",
+        "SET_LANGUAGE_LABEL": "Dili Ayarla",
+        "START_MINIMIZED_DESCRIPTION": "WowUp simge durumuna küçülmüş başlayacak ve görünmeyecektir.",
+        "START_MINIMIZED_LABEL": "WowUp'ı simge durumunda başlat",
+        "START_WITH_SYSTEM_DESCRIPTION": "Sisteminizi başlattığınızda WowUp otomatik olarak başlatılacaktır.",
+        "START_WITH_SYSTEM_LABEL": "WowUp'ı sistemle başlat",
+        "TELEMETRY_DESCRIPTION": "Anonim kurulum verileri ve/veya hatalar göndererek WowUp'ı geliştirmemize yardımcı olun.",
+        "TELEMETRY_LABEL": "Telemetri",
+        "THEME_DESCRIPTION": "Renk temasını istediğiniz gibi değiştirin",
+        "THEME_LABEL": "Renk Teması",
+        "TITLE": "Uygulama",
+        "USE_CURSE_PROTOCOL_CONFIRMATION_DESCRIPTION": "WowUp, CurseForge indirme bağlantıları için varsayılan işleyici olarak kendini ayarlayabilir. CurseForge uygulamasını kullanmaya çalışıyorsanız bu sorunlara neden olabilir, devam etmek istediğinizden emin misiniz?",
+        "USE_CURSE_PROTOCOL_CONFIRMATION_LABEL": "CurseForge İndirmelerini İşle?",
+        "USE_HARDWARE_ACCELERATION_CONFIRMATION_LABEL": "Yeniden başlatmak istiyor musunuz?",
+        "USE_HARDWARE_ACCELERATION_DESCRIPTION": "Donanım hızlandırmayı devre dışı bırakmak bu uygulamadaki FPS sorunlarını ve diğer oluşturma sorunlarını çözebilir.<br>Bu ayarı değiştirmek yeniden başlatma gerektirir.",
+        "USE_HARDWARE_ACCELERATION_DISABLE_CONFIRMATION_DESCRIPTION": "Donanım hızlandırmayı devre dışı bırakmak uygulamanın yeniden başlatılmasını gerektirir.",
+        "USE_HARDWARE_ACCELERATION_ENABLE_CONFIRMATION_DESCRIPTION": "Donanım hızlandırmayı etkinleştirmek uygulamanın yeniden başlatılmasını gerektirir.",
+        "USE_HARDWARE_ACCELERATION_LABEL": "Donanım Hızlandırmayı Etkinleştir",
+        "USE_SYMLINK_SUPPORT": "Bağlantı (Symlink) Desteğini Etkinleştir",
+        "USE_SYMLINK_SUPPORT_CONFIRMATION_DESCRIPTION": "Sembolik bağlantı desteğini etkinleştirmek, WowUp'ın yeniden tarama yaparken sembolik bağlantıları tanımasına olanak tanır. Uyarı: Sembolik bağlantının (symlink) ne olduğunu bilmiyorsanız buna ihtiyacınız yoktur. Güncelleme sırasında sembolik bağlantılar gerçek bir klasörle değiştirilecek ve bağlantı kaybolacaktır.",
+        "USE_SYMLINK_SUPPORT_CONFIRMATION_LABEL": "Bağlantı desteğini etkinleştir?",
+        "USE_SYMLINK_SUPPORT_DESCRIPTION": "WowUp'ın eklenti klasörünüzdeki bağlantı klasörlerini taramasına izin verin. Uyarı: Güncellenirken/yüklenirken değiştirilecekler."
+      },
+      "CURSEFORGE": {
+        "ADS_OPTION_DESCRIPTION": "CurseForge reklamverenlerinin reklam kişiselleştirmesi için verilerinizi nasıl kullanabileceklerini görüntüleyin ve yönetin",
+        "ADS_OPTION_LABEL": "Reklam Kişiselleştirme ve Veri",
+        "ADS_OPTION_MANAGE": "Yönet",
+        "TITLE": "CurseForge"
+      },
+      "DEBUG": {
+        "CONFIG_FILES_BUTTON": "Yapılandırma Dosyalarını Göster",
+        "CONFIG_FILES_DESCRIPTION": "Örneğin addons.json ve preferences.json dosyalarınızın saklandığı klasörü açın.",
+        "CONFIG_FILES_LABEL": "Yapılandırma Dosyaları",
+        "DEBUG_DATA_BUTTON": "Hata Ayıklama Verilerini Dök",
+        "DEBUG_DATA_DESCRIPTION": "Potansiyel sorunları tanılamaya yardımcı olmak için hata ayıklama verilerini kaydedin. Meraklı olanlar için bu, en son günlük dosyanızda bulunabilir.",
+        "DEBUG_DATA_LABEL": "Hata Ayıklama Verileri",
+        "LOG_FILES_BUTTON": "Günlük Dosyalarını Göster",
+        "LOG_FILES_DESCRIPTION": "Son birkaç günlük dosyanızı içeren klasörü açın.",
+        "LOG_FILES_LABEL": "Günlük Dosyaları",
+        "TITLE": "Hata Ayıklama"
+      },
+      "TABS": {
+        "ABOUT": "Hakkında",
+        "ADDONS": "Eklentiler",
+        "APPLICATION": "Uygulama",
+        "CLIENTS": "Oyun Versiyonları",
+        "CURSEFORGE": "CurseForge",
+        "DEBUG": "Hata Ayıklama",
+        "WTF_EXPLORER": "WTF Gezgini"
+      },
+      "WOW": {
+        "ADD_CLIENT_BUTTON": "Yeni Ekle",
+        "AUTO_UPDATE_DESCRIPTION": "Mevcut ve yeni yüklenen tüm eklentiler varsayılan olarak otomatik güncellenecek şekilde ayarlanacak",
+        "AUTO_UPDATE_LABEL": "Otomatik Güncelle",
+        "CANCEL_WOW_DIRECTORY_SELECT_BUTTON": "İptal",
+        "CLEAR_INSTALL_LOCATION_DIALOG": {
+          "MESSAGE": "\"{location}\" konumundaki kurulumu kaldırmak istediğinizden emin misiniz? Bu, bu kurulum için tüm saklanan eklenti bilgilerini kaldıracaktır.\n\nEklenti klasörleriniz kaldırılmayacaktır.",
+          "TITLE": "World of Warcraft Kurulumunu Kaldır?"
+        },
+        "CLIENT_TYPE_INPUT_HINT": "{clientTypeName} uygulamasını seçin: \"{clientFolderName}\"",
+        "CLIENT_TYPE_PATH_LABEL": "{clientTypeName} yolu",
+        "DEFAULT_ADDON_CHANNEL_LABEL": "Varsayılan Eklenti Kanalı",
+        "DEFAULT_ADDON_CHANNEL_SELECT_LABEL": "Eklenti Kanalı",
+        "EDIT_WOW_DIRECTORY_SELECT_BUTTON": "Düzenle",
+        "MOVE_DOWN_BUTTON": "Aşağı Taşı",
+        "MOVE_UP_BUTTON": "Yukarı Taşı",
+        "NO_CLIENTS_FOUND_TEXT": "World of Warcraft kurulumu bulunamadı, lütfen Battle.net uygulamanızın güncel olduğundan emin olun veya bir kurulumu manuel olarak ekleyin",
+        "OPEN_FOLDER_BUTTON": "Klasörü Aç",
+        "OPEN_WOW_DIRECTORY_SELECT_BUTTON": "Seç",
+        "REMOVE_WOW_DIRECTORY_SELECT_BUTTON": "Kaldır",
+        "RESCAN_CLIENTS_BUTTON": "Tekrar Tara",
+        "RESCAN_CLIENTS_LABEL": "Kurulu World of Warcraft ürünlerini yeniden tara",
+        "SAVE_WOW_DIRECTORY_SELECT_BUTTON": "Kaydet",
+        "TITLE": "World of Warcraft"
+      },
+      "WTF_EXPLORER": {
+        "FOLDER_PATH_LABEL": "Klasör: ",
+        "PAGE_EXPLANATION": "WTF Gezgini, eklentilerinizin kaydettiği tüm verileri incelemenize olanak tanır.\nGri renkteki dosyalar normalde yedek dosyalar gibi göz ardı edebileceğiniz şeyleridir.\nKırmızı dosyalar artık yüklü olmayan eklentilere ait olmalıdır.",
+        "TITLE": "WTF Gezgini"
+      }
+    }
+  },
+  "WTF_BACKUP": {
+    "APPLY_CONFIRMATION": {
+      "MESSAGE": "Bu yedeği arayüz ayarlarınıza uygulamak istediğinizden emin misiniz?\n\nYedek uygulamadan önce World of Warcraft oyununun çalışmadığından emin olun.\n\nBu işlem geri alınamaz.",
+      "TITLE": "WTF Yedeğini Uygula?"
+    },
+    "BACKUP_APPLY_SUCCESS": "Yedek başarıyla uygulandı: {name}",
+    "BACKUP_COUNT_TEXT": "{count} {count, plural, =1{yedek} other{yedek}} bulundu",
+    "BUSY_TEXT": {
+      "APPLYING_BACKUP": "Yedek uygulanıyor...",
+      "CREATING_BACKUP": "{count} dosyadan yedek oluşturuluyor...",
+      "LOADING_BACKUPS": "Yedekler yükleniyor...",
+      "REMOVING_BACKUP": "Yedek kaldırılıyor..."
+    },
+    "CREATE_BACKUP_BUTTON": "Yedek Oluştur",
+    "DELETE_CONFIRMATION": {
+      "MESSAGE": "{name} yedeğini silmek istediğinizden emin misiniz?\nBu işlem geri alınamaz.",
+      "TITLE": "WTF Yedeğini Sil?"
+    },
+    "DIALOG_TITLE": "WTF Ayarları Yedeği: {clientType}",
+    "ERROR": {
+      "BACKUP_APPLY_FAILED": "Yedek uygulanamadı: {name}",
+      "FAILED_TO_DELETE": "Yedek silinemedi: {name}",
+      "GENERIC_ERROR": "Bu yedek işlenirken bir sorun oluştu",
+      "INVALID_CONTENTS": "Bu yedek işlenirken bir sorun oluştu",
+      "INVALID_CREATED_AT": "Bu yedek işlenirken bir sorun oluştu",
+      "INVALID_CREATED_BY": "Bu yedek işlenirken bir sorun oluştu"
+    },
+    "SHOW_FOLDER_BUTTON": "Klasörü Göster",
+    "TOOL_TIP": {
+      "APPLY_BUTTON": "Bu yedeği uygula",
+      "DELETE_BUTTON": "Bu yedeği sil"
+    }
+  }
+}
