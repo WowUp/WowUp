@@ -24,6 +24,7 @@ module.exports = {
           "./src/tsconfig.app.json",
           "./src/tsconfig.spec.json",
           "./e2e/tsconfig.e2e.json",
+          "./app/tsconfig.spec.json",
         ],
         sourceType: "module",
         ecmaFeatures: {

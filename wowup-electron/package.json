@@ -1,6 +1,6 @@
 {
-  "name": "wowup",
-  "productName": "WowUp",
+  "name": "wowup-cf",
+  "productName": "WowUpCf",
   "version": "2.24.0-beta.3",
   "private": true,
   "description": "World of Warcraft addon updater",
@@ -11,7 +11,7 @@
   "homepage": "https://wowup.io",
   "repository": {
     "type": "git",
-    "url": "https://github.com/WowUp/WowUp.git"
+    "url": "https://github.com/WowUp/WowUp.CF.git"
   },
   "author": {
     "name": "WowUp LLC",
@@ -51,7 +51,9 @@
     "ow:electron:publish:vanilla": "npm run lint && npm run ow:build:prod && electron-builder -c electron-build/electron-builder-local-ow.json build --publish always",
     "ow:electron:publish:never": "npm run electron:build && ow-electron-builder --publish never",
     "ow:electron:publish:local": "npm run lint && npm run ow:build:dev && npx ow-electron-builder -c electron-build/electron-builder-local-ow.json --publish never",
-    "test": "ng test --watch=false",
+    "test": "npm run test:main && ng test --watch=false",
+    "test:renderer": "ng test --watch=false",
+    "test:main": "tsc -p app/tsconfig.spec.json && mocha",
     "test:watch": "ng test",
     "test:locales": "ng test --watch=false --include='src/locales.spec.ts'",
     "test:customprotocol:": "npx electron . \"curseforge://install?addonId=3358^^^&fileId=3240590\"",
@@ -120,8 +122,8 @@
     "@microsoft/applicationinsights-web": "3.0.5",
     "@ngx-translate/core": "15.0.0",
     "@ngx-translate/http-loader": "8.0.0",
-    "@overwolf/ow-electron": "39.8.10",
-    "@overwolf/ow-electron-builder": "26.9.0",
+    "@overwolf/ow-electron": "42.7.1",
+    "@overwolf/ow-electron-builder": "26.9.3",
     "@types/adm-zip": "0.5.1",
     "@types/flat": "5.0.2",
     "@types/globrex": "0.1.2",
