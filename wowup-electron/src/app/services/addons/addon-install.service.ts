@@ -587,19 +587,28 @@ export class AddonInstallService {
 
     const exists = externalIds.findIndex((extId) => extId.id === addonId && extId.providerName === providerName) !== -1;
 
+    // Runs once per provider per addon, so roughly the addon count times five on every scan. That
+    // the id is already present is the expected case and says nothing worth a console row.
     if (exists) {
-      console.debug(`External id exists ${providerName}|${addonId}`);
       return;
     }
 
-    if (this._addonProviderService.getProvider(providerName)?.isValidAddonId(addonId) ?? false) {
+    const provider = this._addonProviderService.getProvider(providerName);
+
+    // A provider that is not enabled for this flavor is the normal case, not something to report.
+    // This runs for every provider of every addon, and console.warn is redirected to electron-log,
+    // so a line here costs an ipc round trip and a disk write per addon.
+    if (provider === undefined) {
+      return;
+    }
+
+    if (provider.isValidAddonId(addonId)) {
       externalIds.push({
         id: addonId,
         providerName: providerName,
       });
     } else {
       console.warn(`Invalid provider id ${providerName}|${addonId}`);
-      console.warn(externalIds);
     }
   }
 

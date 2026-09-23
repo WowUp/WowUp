@@ -288,11 +288,10 @@ export class WagoAddonProvider extends AddonProvider {
       request.addons.push(waddon);
     });
 
-    console.debug(`[wago] scan`, request);
-    console.debug(JSON.stringify(request));
+    console.debug(`[wago] scan: ${request.addons.length} addons`);
 
     const matchResult = await this.sendMatchesRequest(request);
-    console.debug(`[wago] matchResult`, matchResult);
+    console.debug(`[wago] matchResult: ${matchResult.addons?.length ?? 0} matched`);
 
     const scanResultMap: { [folder: string]: WagoScanAddon } = {};
 
@@ -339,7 +338,7 @@ export class WagoAddonProvider extends AddonProvider {
       }
     }
 
-    console.debug(`[wago] delta`, addonFolders);
+    console.debug(`[wago] delta: ${addonFolders.length} folders`);
   }
 
   public async getFeaturedAddons(installation: WowInstallation): Promise<AddonSearchResult[]> {
