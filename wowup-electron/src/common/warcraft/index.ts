@@ -1,5 +1,15 @@
+import * as path from "path";
+
 import { WowClientType } from "wowup-lib-core";
 import * as constants from "../constants";
+
+// Windows/macOS filesystems are case-insensitive and paths can differ by
+// separator style or trailing separators depending on their source
+// (a manually-picked file vs. one reconstructed from Battle.net's product
+// db), so installation paths must be normalized before being compared.
+export function normalizeInstallationPath(installationPath: string): string {
+  return path.normalize(installationPath).toLowerCase();
+}
 
 export function getWowClientFolderName(clientType: WowClientType): string {
   switch (clientType) {
