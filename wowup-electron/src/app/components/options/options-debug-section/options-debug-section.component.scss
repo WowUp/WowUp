@@ -11,4 +11,33 @@
     align-items: center;
     row-gap: 1rem;
   }
+
+  .metrics {
+    margin-top: 1.5rem;
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-family: monospace;
+      font-size: 0.9em;
+    }
+
+    th,
+    td {
+      text-align: left;
+      padding: 0.25rem 0.5rem 0.25rem 0;
+      white-space: nowrap;
+    }
+
+    td:not(:first-child),
+    th:not(:first-child) {
+      text-align: right;
+    }
+
+    td:first-child,
+    th:first-child {
+      width: 100%;
+      white-space: normal;
+    }
+  }
 }

@@ -12,6 +12,7 @@ import {
   IPC_WARCRAFT_INSTALLATIONS_UPDATE,
   WOW_INSTALLATIONS_KEY,
 } from "../../../src/common/constants";
+import { normalizeInstallationPath } from "../../../src/common/warcraft";
 import { ipcHandle, IpcController } from "../ipc-controller";
 
 export class WarcraftInstallationController implements IpcController {
@@ -44,7 +45,8 @@ export class WarcraftInstallationController implements IpcController {
 
   public add(installation: WowInstallation): WowInstallation[] {
     const installations = this.getAll();
-    const exists = installations.some((inst) => inst.location === installation.location);
+    const normalizedLocation = normalizeInstallationPath(installation.location);
+    const exists = installations.some((inst) => normalizeInstallationPath(inst.location) === normalizedLocation);
     if (exists) {
       throw new Error(`Installation already exists: ${installation.location}`);
     }

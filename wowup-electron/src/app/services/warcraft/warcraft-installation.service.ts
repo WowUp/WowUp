@@ -7,7 +7,7 @@ import { v4 as uuidv4 } from "uuid";
 import { Injectable } from "@angular/core";
 import { TranslateService } from "@ngx-translate/core";
 
-import { getWowClientFolderName } from "../../../common/warcraft";
+import { getWowClientFolderName, normalizeInstallationPath } from "../../../common/warcraft";
 import { getEnumName, getWowClientGroupForType } from "wowup-lib-core";
 import { ElectronService } from "../electron/electron.service";
 import { FileService } from "../files/file.service";
@@ -210,8 +210,9 @@ export class WarcraftInstallationService {
       const displayName = await this.getDisplayName(label, typeName);
 
       const fullProductPath = await this.getFullProductPath(product.location, product.clientType);
+      const normalizedProductPath = normalizeInstallationPath(fullProductPath);
 
-      if (currentInstallations.some((inst) => inst.location === fullProductPath)) {
+      if (currentInstallations.some((inst) => normalizeInstallationPath(inst.location) === normalizedProductPath)) {
         continue;
       }
 

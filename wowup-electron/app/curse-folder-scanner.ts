@@ -1,13 +1,15 @@
 import * as path from "path";
 import * as _ from "lodash";
-import * as log from "electron-log/main";
-import { exists, readDirRecursive } from "./file.utils";
-import * as fsp from "fs/promises";
 import { firstValueFrom, from, mergeMap, toArray } from "rxjs";
-import { app } from "electron";
 import { AddonScanResult } from "wowup-lib-core";
 
-const nativeAddon = require(path.join(app.getAppPath(), "build/Release/addon.node"));
+import { FolderScanContext } from "./services/scan/folder-scan-context";
+
+/** Reading a file that is not a toc or an xml only ever produced a result that was thrown away. */
+function isParsedForIncludes(filePath: string): boolean {
+  const ext = path.extname(filePath);
+  return ext === ".xml" || ext === ".toc";
+}
 
 const INVALID_PATH_CHARS = [
   "|",
@@ -48,6 +50,12 @@ export class CurseFolderScanner {
   // This map is required for solving for case sensitive mismatches from addon authors on Linux
   private _fileMap: { [key: string]: string } = {};
 
+  /**
+   * The context is shared with the wowup scanner working on the same folder, which is what keeps
+   * the folder to one walk and each file to one read.
+   */
+  public constructor(private readonly _context: FolderScanContext) {}
+
   private get tocFileCommentsRegex() {
     return /\s*#.*$/gim;
   }
@@ -73,7 +81,7 @@ export class CurseFolderScanner {
   }
 
   public async scanFolder(folderPath: string): Promise<AddonScanResult> {
-    const fileList = await readDirRecursive(folderPath);
+    const fileList = await this._context.listFiles(folderPath);
     fileList.forEach((fp) => (this._fileMap[fp.toLowerCase()] = fp));
 
     let matchingFiles = await this.getMatchingFiles(folderPath, fileList);
@@ -81,9 +89,9 @@ export class CurseFolderScanner {
 
     const toFileHash = async (path: string) => {
       try {
-        return await this.getFileHash(path);
+        return await this._context.hashFileMurmur(path);
       } catch (e) {
-        log.error(`Failed to get filehash: ${path}`, e);
+        this._context.log.error(`Failed to get filehash: ${path}`, e);
         return -1;
       }
     };
@@ -91,14 +99,14 @@ export class CurseFolderScanner {
     let individualFingerprints = await firstValueFrom(
       from(matchingFiles).pipe(
         mergeMap((file) => from(toFileHash(file)), 3),
-        toArray()
-      )
+        toArray(),
+      ),
     );
 
     individualFingerprints = _.filter(individualFingerprints, (fp) => fp >= 0);
 
     const hashConcat = _.orderBy(individualFingerprints).join("");
-    const fingerprint = this.getStringHash(hashConcat);
+    const fingerprint = this._context.hashStringMurmur(hashConcat);
 
     return {
       source: "curseforge",
@@ -141,14 +149,20 @@ export class CurseFolderScanner {
       return;
     }
 
-    const pathExists = await exists(nativePath);
+    const pathExists = await this._context.exists(nativePath);
     if (!pathExists || matchingFileList.indexOf(nativePath) !== -1) {
       return;
     }
 
     matchingFileList.push(nativePath);
 
-    let input = await fsp.readFile(nativePath, { encoding: "utf-8" });
+    // A lua include is matched and hashed, but parsing it for further includes never found any, so
+    // reading its text here only ever cost a read.
+    if (!isParsedForIncludes(nativePath)) {
+      return;
+    }
+
+    let input = await this._context.readText(nativePath);
     input = this.removeComments(nativePath, input);
 
     const inclusions = this.getFileInclusionMatches(nativePath, input);
@@ -159,7 +173,7 @@ export class CurseFolderScanner {
     const dirname = path.dirname(nativePath);
     for (const include of inclusions) {
       if (this.hasInvalidPathChars(include)) {
-        log.debug(`Invalid include file ${nativePath}`);
+        this._context.log.debug(`Invalid include file ${nativePath}`);
         break;
       }
 
@@ -212,7 +226,7 @@ export class CurseFolderScanner {
         }
       }
     } catch (e) {
-      log.error(e);
+      this._context.log.error(e);
     }
 
     return matches.map((s) => s.trim());
@@ -229,26 +243,6 @@ export class CurseFolderScanner {
     } while (currentMatch);
 
     return matches;
-  }
-
-  private getStringHash(targetString: string, targetStringEncoding?: BufferEncoding): number {
-    try {
-      const strBuffer = Buffer.from(targetString, targetStringEncoding || "ascii");
-
-      const hash = nativeAddon.computeHash(strBuffer, strBuffer.length);
-
-      return hash;
-    } catch (err) {
-      log.error(err);
-      log.info(targetString, targetStringEncoding);
-      throw err;
-    }
-  }
-
-  private async getFileHash(filePath: string): Promise<number> {
-    const buffer = await fsp.readFile(filePath);
-    const hash = nativeAddon.computeHash(buffer, buffer.length);
-    return hash;
   }
 
   private getRealPath(filePath: string) {

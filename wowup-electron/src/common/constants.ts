@@ -26,7 +26,6 @@ export const WOWUP_DATA_ADDON_FOLDER_NAME = "wowup_data_addon";
 export const WOWUP_ASSET_FOLDER_NAME = "WowUpAddon";
 
 // IPC CHANNELS
-export const IPC_CURSE_GET_SCAN_RESULTS = "curse-get-scan-results";
 export const IPC_DOWNLOAD_FILE_CHANNEL = "download-file";
 export const IPC_COPY_DIRECTORY_CHANNEL = "copy-directory";
 export const IPC_CREATE_DIRECTORY_CHANNEL = "create-directory";
@@ -42,7 +41,6 @@ export const IPC_WRITE_FILE_CHANNEL = "write-file";
 export const IPC_UNZIP_FILE_CHANNEL = "unzip-file";
 export const IPC_COPY_FILE_CHANNEL = "copy-file";
 export const IPC_SHOW_DIRECTORY = "show-directory";
-export const IPC_WOWUP_GET_SCAN_RESULTS = "wowup-get-scan-results";
 export const IPC_GET_HOME_DIR = "get-home-dir";
 export const IPC_GET_ASSET_FILE_PATH = "get-asset-file-path";
 export const IPC_CREATE_TRAY_MENU_CHANNEL = "create-tray-menu";
@@ -140,6 +138,13 @@ export const IPC_WARCRAFT_GET_ADDON_FOLDER = "warcraft-get-addon-folder";
 // TOC CONTROLLER
 export const IPC_TOC_PARSE = "toc-parse";
 export const IPC_TOC_GET_ALL_TOCS = "toc-get-all-tocs";
+
+// ADDON SCAN CONTROLLER
+export const IPC_ADDON_GET_SCAN_RESULTS = "addons-get-scan-results";
+
+// METRICS CONTROLLER
+export const IPC_METRICS_GET_SNAPSHOT = "metrics-get-snapshot";
+export const IPC_METRICS_LOG_SNAPSHOT = "metrics-log-snapshot";
 
 // IPC STORAGE
 export const IPC_STORE_GET_OBJECT = "store-get-object";

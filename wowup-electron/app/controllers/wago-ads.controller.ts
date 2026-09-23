@@ -15,13 +15,11 @@ import { WagoCmpWindowService } from "../services/ads/wago-cmp-window.service";
 import { ipcHandle, IpcController } from "./ipc-controller";
 
 export class WagoAdsController implements IpcController {
-  private readonly _adView: WagoAdViewService;
-  private readonly _cmpWindow: WagoCmpWindowService;
-
-  public constructor(private readonly _window: BrowserWindow) {
-    this._adView = new WagoAdViewService(this._window);
-    this._cmpWindow = new WagoCmpWindowService(this._window, (visible) => this._adView.setCmpOpen(visible));
-  }
+  public constructor(
+    private readonly _window: BrowserWindow,
+    private readonly _adView: WagoAdViewService,
+    private readonly _cmpWindow: WagoCmpWindowService,
+  ) {}
 
   public register(): void {
     this._cmpWindow.initialize();
@@ -40,19 +38,18 @@ export class WagoAdsController implements IpcController {
     this._window.on("resize", this.onWindowBoundsChanged);
     this._window.on("enter-full-screen", this.onWindowBoundsChanged);
     this._window.on("leave-full-screen", this.onWindowBoundsChanged);
-    this._window.once("closed", this.onWindowClosed);
   }
 
-  private readonly onWindowBoundsChanged = () => {
-    this._adView.refreshBounds();
-  };
-
-  private readonly onWindowClosed = () => {
+  public dispose(): void {
     this._window.off("resize", this.onWindowBoundsChanged);
     this._window.off("enter-full-screen", this.onWindowBoundsChanged);
     this._window.off("leave-full-screen", this.onWindowBoundsChanged);
 
     this._cmpWindow.dispose();
     this._adView.dispose();
+  }
+
+  private readonly onWindowBoundsChanged = () => {
+    this._adView.refreshBounds();
   };
 }
