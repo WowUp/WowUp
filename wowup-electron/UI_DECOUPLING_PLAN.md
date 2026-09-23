@@ -60,13 +60,22 @@ Pattern for each phase:
   so it isn't "business logic coupled to Electron" in the sense this plan cares about —
   same rationale as keeping `TranslateService`-based display names client-side in Phase 2.
 
-## Phase 4 — Addon Scan / Sync ⏳ not started
+## Phase 4 — Addon Scan / Sync 🚧 in progress
 
-- Move addon scanning/sync orchestration (matching installed folders to known addons,
-  fingerprinting) out of `src/app/services/addons/addon.service.ts` into main.
+- ✅ **Fingerprinting.** `AddonScanController` (`app/controllers/scan/`) + `AddonScanService`
+  (`app/services/scan/`) own folder fingerprinting behind a single
+  `IPC_ADDON_GET_SCAN_RESULTS` channel that takes the sources it should produce.
+  `WowUpFolderScanner`/`CurseFolderScanner` now take their filesystem access as deps from a
+  shared `FolderScanContext`, so one folder is walked once and each file read once however
+  many fingerprints are wanted — the two per-source channels it replaced each did their own
+  walk and their own reads. Renderer side is `addon-scan-api.service.ts`, consumed by
+  `AddonFingerprintService`. Fingerprint values are pinned by characterization tests in
+  `addon-scan.service.spec.ts`.
+- ⏳ **Scan/sync orchestration.** Still in `src/app/services/addons/addon.service.ts`:
+  matching scanned folders back to known addons, and the sync pipeline around it.
 - `AddonController` (`app/controllers/addon.controller.ts`) already owns addon *storage*
-  CRUD (get/save addons) — this phase extends it (or adds a sibling controller) to own
-  the scan/sync business logic too.
+  CRUD (get/save addons) — the remaining orchestration extends it (or adds a sibling
+  controller).
 
 ## Phase 5 — Install / Remove Pipeline ⏳ not started
 

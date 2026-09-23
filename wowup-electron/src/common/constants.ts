@@ -46,8 +46,6 @@ export const IPC_GET_ASSET_FILE_PATH = "get-asset-file-path";
 export const IPC_CREATE_TRAY_MENU_CHANNEL = "create-tray-menu";
 export const IPC_LIST_DISKS_WIN32 = "list-disks-win32";
 export const IPC_CREATE_APP_MENU_CHANNEL = "create-app-menu";
-export const IPC_CURSE_GET_SCAN_RESULTS = "curse-get-scan-results";
-export const IPC_WOWUP_GET_SCAN_RESULTS = "wowup-get-scan-results";
 export const IPC_OW_IS_CMP_REQUIRED = "ow-is-cmp-required";
 export const IPC_OW_OPEN_CMP = "ow-open-cmp";
 export const IPC_WAGO_ADS_LOAD = "wago-ads-load";
@@ -140,6 +138,9 @@ export const IPC_WARCRAFT_GET_ADDON_FOLDER = "warcraft-get-addon-folder";
 // TOC CONTROLLER
 export const IPC_TOC_PARSE = "toc-parse";
 export const IPC_TOC_GET_ALL_TOCS = "toc-get-all-tocs";
+
+// ADDON SCAN CONTROLLER
+export const IPC_ADDON_GET_SCAN_RESULTS = "addons-get-scan-results";
 
 // METRICS CONTROLLER
 export const IPC_METRICS_GET_SNAPSHOT = "metrics-get-snapshot";

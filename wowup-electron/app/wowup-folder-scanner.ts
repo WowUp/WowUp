@@ -1,10 +1,15 @@
 import * as _ from "lodash";
 import * as path from "path";
-import * as log from "electron-log";
-import { exists, readDirRecursive, hashFile, hashString } from "./file.utils";
-import * as fsp from "fs/promises";
 import { firstValueFrom, from, mergeMap, toArray } from "rxjs";
 import { AddonScanResult } from "wowup-lib-core";
+
+import { FolderScanContext } from "./services/scan/folder-scan-context";
+
+/** Reading a file that is not a toc or an xml only ever produced a result that was thrown away. */
+function isParsedForIncludes(filePath: string): boolean {
+  const ext = path.extname(filePath);
+  return ext === ".xml" || ext === ".toc";
+}
 
 const INVALID_PATH_CHARS = [
   "|",
@@ -47,7 +52,14 @@ export class WowUpFolderScanner {
   // This map is required for solving for case sensitive mismatches from addon authors on Linux
   private _fileMap: { [key: string]: string } = {};
 
-  public constructor(folderPath: string) {
+  /**
+   * The context is shared with the curse scanner working on the same folder, which is what keeps
+   * the folder to one walk and each file to one read.
+   */
+  public constructor(
+    folderPath: string,
+    private readonly _context: FolderScanContext,
+  ) {
     this._folderPath = folderPath;
   }
 
@@ -76,30 +88,31 @@ export class WowUpFolderScanner {
   }
 
   public async scanFolder(): Promise<AddonScanResult> {
-    const files = await readDirRecursive(this._folderPath);
+    const files = await this._context.listFiles(this._folderPath);
     files.forEach((fp) => (this._fileMap[fp.toLowerCase()] = fp));
 
     let matchingFiles = await this.getMatchingFiles(this._folderPath, files);
     matchingFiles = _.orderBy(matchingFiles, [(f) => f.toLowerCase()], ["asc"]);
 
-    async function toFileHash(file: string) {
-      return { hash: await hashFile(file), file };
-    }
+    const toFileHash = async (file: string) => {
+      return { hash: await this._context.hashFileMd5(file), file };
+    };
 
     const fileFingerprints = await firstValueFrom(
       from(matchingFiles).pipe(
         mergeMap((file) => from(toFileHash(file)), 3),
-        toArray()
-      )
+        toArray(),
+      ),
     );
 
     const fingerprintList = _.map(fileFingerprints, (ff) => ff.hash);
     const hashConcat = _.orderBy(fingerprintList).join("");
-    const fingerprint = hashString(hashConcat);
+    const fingerprint = this._context.hashStringMd5(hashConcat);
 
+    // The per file hashes are deliberately not carried on the result. Nothing reads them, and for a
+    // few hundred addons they were the majority of what crossed ipc and got dumped into the console.
     const result: AddonScanResult = {
-      source: 'wowup',
-      fileFingerprints: fingerprintList,
+      source: "wowup",
       fingerprint,
       fingerprintNum: 0,
       path: this._folderPath,
@@ -140,14 +153,20 @@ export class WowUpFolderScanner {
       return;
     }
 
-    const pathExists = await exists(nativePath);
+    const pathExists = await this._context.exists(nativePath);
     if (!pathExists || matchingFileList.indexOf(nativePath) !== -1) {
       return;
     }
 
     matchingFileList.push(nativePath);
 
-    let input = await fsp.readFile(nativePath, { encoding: "utf-8" });
+    // A lua include is matched and hashed, but parsing it for further includes never found any, so
+    // reading its text here only ever cost a read.
+    if (!isParsedForIncludes(nativePath)) {
+      return;
+    }
+
+    let input = await this._context.readText(nativePath);
     input = this.removeComments(nativePath, input);
 
     const inclusions = this.getFileInclusionMatches(nativePath, input);
@@ -158,7 +177,7 @@ export class WowUpFolderScanner {
     const dirname = path.dirname(nativePath);
     for (const include of inclusions) {
       if (this.hasInvalidPathChars(include)) {
-        log.debug(`Invalid include file ${nativePath}`);
+        this._context.log.debug(`Invalid include file ${nativePath}`);
         break;
       }
 
