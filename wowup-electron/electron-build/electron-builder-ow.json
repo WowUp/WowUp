@@ -16,7 +16,8 @@
   "nodeGypRebuild": true,
   "files": ["dist/**/*.*", "assets/**/*.*", "app-build/**/*.js", "src/common/**/*.js", "build/Release/*.node"],
   "overwolf": {
-    "requireSigning": false
+    "requireSigning": false,
+    "disableAdOptimization": true
   },
   "win": {
     "icon": "electron-build/icon-cf.ico",

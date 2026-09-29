@@ -69,6 +69,25 @@ log.info("Args", process.argv);
 log.info(`Log path: ${LOG_PATH}`);
 log.info(`App flavor: ${AppEnv.buildFlavor}`);
 
+// Overwolf's own logger (enabled via "overwolf.logger" in package.json) mirrors each line to the main
+// process console prefixed with "|ow-electron|", and its own log file is truncated on every launch.
+// Route those lines into main.log so a single log covers both. Lines from before this point only
+// exist in <appData>/ow-electron/<uid>/logs/ow-electron.log.
+if (AppEnv.buildFlavor === "ow") {
+  const owLog = log.scope("ow");
+  const levels = { log: "info", info: "info", warn: "warn", error: "error" } as const;
+  for (const level of Object.keys(levels) as Array<keyof typeof levels>) {
+    const original = console[level].bind(console);
+    console[level] = (...args: unknown[]) => {
+      if (typeof args[0] === "string" && args[0].includes("|ow-electron")) {
+        owLog[levels[level]](...args.slice(1));
+        return;
+      }
+      original(...args);
+    };
+  }
+}
+
 // ERROR HANDLING SETUP
 process.on("uncaughtException", (error) => {
   log.error("uncaughtException", error);
@@ -105,7 +124,11 @@ initializeDefaultPreferences();
 // Adapted from https://github.com/electron/electron/blob/master/docs/api/app.md#apprequestsingleinstancelock
 const singleInstanceLock = app.requestSingleInstanceLock();
 if (!singleInstanceLock) {
-  app.quit();
+  // app.quit() is async and does not stop this module from continuing, which let the losing instance
+  // still build a full window (IPC handlers, updater, ads) only to have its load aborted by the quit.
+  // Exit immediately instead. See https://github.com/WowUp/WowUp/issues/1379
+  log.info("Another instance holds the single instance lock, exiting");
+  app.exit(0);
 } else {
   app.on("second-instance", (evt, args) => {
     log.info(`Second instance detected`, args);
@@ -175,6 +198,10 @@ function getProtocol(arg: string) {
 app
   .whenReady()
   .then(() => {
+    if (!singleInstanceLock) {
+      return;
+    }
+
     powerMonitor.on("resume", () => {
       log.info("powerMonitor resume");
       win?.webContents?.send(IPC_POWER_MONITOR_RESUME);
@@ -196,6 +223,11 @@ app
     });
 
     log.info(`App ready: ${Date.now() - startedAt}ms`);
+    if (AppEnv.buildFlavor === "ow") {
+      log.info(
+        `Overwolf log: ${join(app.getPath("userData"), "..", "ow-electron", process.env.OVERWOLF_APP_UID ?? "", "logs")}`,
+      );
+    }
     createWindow();
   })
   .catch((e) => {
@@ -545,6 +577,10 @@ async function loadMainUrl(window: BrowserWindow | null): Promise<void> {
 }
 
 async function onActivate() {
+  if (!singleInstanceLock) {
+    return;
+  }
+
   // On OS X it's common to re-create a window in the app when the
   // dock icon is clicked and there are no other windows open.
   if (platform.isMac) {
