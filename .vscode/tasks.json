@@ -138,33 +138,6 @@
       },
       "dependsOn": ["Build.Lib"],
       "dependsOrder": "sequence"
-    },
-    {
-      "label": "Build.Renderer.OW",
-      "type": "shell",
-      "command": "npm run ow:ng:serve",
-      "isBackground": true,
-      "group": {
-        "kind": "build",
-        "isDefault": true
-      },
-      "options": {
-        "cwd": "${workspaceFolder}/wowup-electron"
-      },
-      "problemMatcher": {
-        "owner": "typescript",
-        "source": "ts",
-        "applyTo": "closedDocuments",
-        "fileLocation": ["relative", "${workspaceFolder}/wowup-electron"],
-        "pattern": "$tsc",
-        "background": {
-          "activeOnStart": true,
-          "beginsPattern": "^.*",
-          "endsPattern": "^.*Compiled successfully.*"
-        }
-      },
-      "dependsOn": ["Build.Lib"],
-      "dependsOrder": "sequence"
     }
   ]
 }
