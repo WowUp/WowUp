@@ -18,6 +18,8 @@ import { WowInstallation } from "wowup-lib-core";
 import { TocService } from "../toc/toc.service";
 
 import {
+  ADDON_PROVIDER_CURSEFORGE,
+  ADDON_PROVIDER_CURSEFORGEV2,
   ADDON_PROVIDER_RAIDERIO,
   ADDON_PROVIDER_TUKUI,
   ADDON_PROVIDER_UNKNOWN,
@@ -46,6 +48,8 @@ const IGNORED_FOLDER_NAMES = ["__MACOSX"];
 const ADDON_PROVIDER_TOC_EXTERNAL_ID_MAP: Record<string, keyof Toc> = {
   [ADDON_PROVIDER_WOWINTERFACE]: "wowInterfaceId",
   [ADDON_PROVIDER_TUKUI]: "tukUiProjectId",
+  [ADDON_PROVIDER_CURSEFORGE]: "curseProjectId",
+  [ADDON_PROVIDER_CURSEFORGEV2]: "curseProjectId",
   [ADDON_PROVIDER_WAGO]: "wagoAddonId",
 };
 
