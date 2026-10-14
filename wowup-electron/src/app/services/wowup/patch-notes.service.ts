@@ -16,6 +16,16 @@ export class PatchNotesService {
 
 const CHANGELOGS: ChangeLog[] = [
   {
+    Version: "2.24.1",
+    html: `
+    <h4>Fixes</h4>
+    <ul>
+    <li>Fix WowUp freezing on startup and ignoring clicks when an ad blocker or ad-blocking DNS is in use (Wago version)</li>
+    <li>Use the correct quotation marks in German and Norwegian translations</li>
+    </ul>
+    `,
+  },
+  {
     Version: "2.24.0",
     html: `
     <h4>Features</h4>
