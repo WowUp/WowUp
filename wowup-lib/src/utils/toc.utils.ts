@@ -23,11 +23,13 @@ export function getTocForGameType(tocFileNames: string[], clientType: WowClientT
       break;
     case WowClientType.Classic:
     case WowClientType.ClassicPtr:
-    case WowClientType.ClassicBeta:
       matchedToc = tocFileNames.find((tfn) => /.*[-_](mists)\.toc$/gi.test(tfn)) || '';
       break;
     case WowClientType.Anniversary:
       matchedToc = tocFileNames.find((tfn) => /.*[-_](tbc|bcc)\.toc$/gi.test(tfn)) || '';
+      break;
+    case WowClientType.ClassicBeta: // TODO the correct WoW Forever Beta suffix is not yet known, so we will treat it as mainline for now
+      matchedToc = tocFileNames.find((tfn) => /.*[-_](forever|camelot)\.toc$/gi.test(tfn)) || '';
       break;
     default:
       break;
@@ -36,7 +38,7 @@ export function getTocForGameType(tocFileNames: string[], clientType: WowClientT
   return (
     matchedToc ||
     tocFileNames.find((tfn) =>
-      /.*(?<![-_](classic|vanilla|bcc|tbc|mainline|wrath|wotlkc|cata|mists))\.toc$/gi.test(tfn),
+      /.*(?<![-_](classic|vanilla|bcc|tbc|mainline|wrath|wotlkc|cata|mists|forever|camelot))\.toc$/gi.test(tfn),
     ) ||
     ''
   );

@@ -39,7 +39,9 @@ describe("WowClientOptionsComponent", () => {
       },
     });
 
-    warcraftService = jasmine.createSpyObj("WarcraftService", ["getExecutableName"], {});
+    warcraftService = jasmine.createSpyObj("WarcraftService", [], {
+      getExecutableName: () => Promise.resolve("test.exe"),
+    });
     sessionService = jasmine.createSpyObj("SessionService", [""], {
       editingWowInstallationId$: new Observable(),
     });

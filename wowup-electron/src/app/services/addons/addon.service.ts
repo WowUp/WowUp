@@ -820,7 +820,7 @@ export class AddonService {
     // Map the old installation addon settings to the new ones
     addons = this.updateAddons(addons, newAddons);
 
-    console.debug("addons", addons);
+    console.debug(`addons: ${addons.length} for ${installation.displayName}`);
     await this._addonStorage.saveAll(addons);
 
     this._addonActionSrc.next({ type: "scan" });
@@ -1403,7 +1403,7 @@ export class AddonService {
           `${addonFolder.matchingAddon?.providerName ?? ""}${addonFolder.matchingAddon?.externalId ?? ""}`,
       );
 
-      console.debug("matchedGroups", matchedGroups);
+      console.debug(`matchedGroups: ${Object.keys(matchedGroups).length} groups`);
 
       for (const value of Object.values(matchedGroups)) {
         const ordered = _.orderBy(value, (v) => v.matchingAddon?.externalIds?.length ?? 0).reverse();
@@ -1433,7 +1433,11 @@ export class AddonService {
         addon.channelType = installation.defaultAddonChannelType;
       });
 
-      console.debug(addonList);
+      // Not the array itself: devtools keeps a live reference to whatever is logged so it can be
+      // expanded, which pinned every addon of every scan in the inspector's heap for the life of
+      // the session. console.debug is also the one level not forwarded to the log file, so this
+      // was invisible everywhere except the devtools that it was bloating.
+      console.debug(`scan complete: ${addonList.length} addons`);
 
       return addonList;
     } finally {
@@ -1501,19 +1505,28 @@ export class AddonService {
 
     const exists = externalIds.findIndex((extId) => extId.id === addonId && extId.providerName === providerName) !== -1;
 
+    // Runs once per provider per addon, so roughly the addon count times five on every scan. That
+    // the id is already present is the expected case and says nothing worth a console row.
     if (exists) {
-      console.debug(`External id exists ${providerName}|${addonId}`);
       return;
     }
 
-    if (this._addonProviderService.getProvider(providerName)?.isValidAddonId(addonId) ?? false) {
+    const provider = this._addonProviderService.getProvider(providerName);
+
+    // A provider that is not enabled for this flavor is the normal case, not something to report.
+    // This runs for every provider of every addon, and console.warn is redirected to electron-log,
+    // so a line here costs an ipc round trip and a disk write per addon.
+    if (provider === undefined) {
+      return;
+    }
+
+    if (provider.isValidAddonId(addonId)) {
       externalIds.push({
         id: addonId,
         providerName: providerName,
       });
     } else {
       console.warn(`Invalid provider id ${providerName}|${addonId}`);
-      console.warn(externalIds);
     }
   }
 

@@ -7,6 +7,7 @@ import { Addon, AddonExternalId, getGameVersionList, Toc, WowClientType } from "
 import { AddonInstallState } from "../../models/wowup/addon-install-state";
 import { AddonUpdateEvent } from "../../models/wowup/addon-update-event";
 import { capitalizeString } from "../../utils/string.utils";
+import { delayMs } from "../../utils/time.utils";
 import { DownloadOptions, DownloadService } from "../download/download.service";
 import { WarcraftInstallationService } from "../warcraft/warcraft-installation.service";
 import { WarcraftService } from "../warcraft/warcraft.service";
@@ -18,6 +19,8 @@ import { WowInstallation } from "wowup-lib-core";
 import { TocService } from "../toc/toc.service";
 
 import {
+  ADDON_PROVIDER_CURSEFORGE,
+  ADDON_PROVIDER_CURSEFORGEV2,
   ADDON_PROVIDER_RAIDERIO,
   ADDON_PROVIDER_TUKUI,
   ADDON_PROVIDER_UNKNOWN,
@@ -46,6 +49,8 @@ const IGNORED_FOLDER_NAMES = ["__MACOSX"];
 const ADDON_PROVIDER_TOC_EXTERNAL_ID_MAP: Record<string, keyof Toc> = {
   [ADDON_PROVIDER_WOWINTERFACE]: "wowInterfaceId",
   [ADDON_PROVIDER_TUKUI]: "tukUiProjectId",
+  [ADDON_PROVIDER_CURSEFORGE]: "curseProjectId",
+  [ADDON_PROVIDER_CURSEFORGEV2]: "curseProjectId",
   [ADDON_PROVIDER_WAGO]: "wagoAddonId",
 };
 
@@ -141,7 +146,8 @@ export class AddonInstallService {
             throw e;
           }
           retryCt += 1;
-          console.log(`install download failed, retry ${retryCt}`);
+          const backoffMs = 1000 * Math.pow(2, retryCt - 1);
+          console.log(`install download failed, retry ${retryCt} in ${backoffMs}ms`);
 
           this._addonInstalledSrc.next({
             addon,
@@ -149,6 +155,7 @@ export class AddonInstallService {
             progress: 0,
           });
           await onUpdate?.call(this, AddonInstallState.Retry, 0);
+          await delayMs(backoffMs);
         }
       }
 
@@ -262,6 +269,7 @@ export class AddonInstallService {
         addon,
         installState: AddonInstallState.Error,
         progress: 100,
+        error: err instanceof Error ? err : undefined,
       });
     } finally {
       const unzippedDirectoryExists = await this._fileService.pathExists(unzippedDirectory);
@@ -583,19 +591,28 @@ export class AddonInstallService {
 
     const exists = externalIds.findIndex((extId) => extId.id === addonId && extId.providerName === providerName) !== -1;
 
+    // Runs once per provider per addon, so roughly the addon count times five on every scan. That
+    // the id is already present is the expected case and says nothing worth a console row.
     if (exists) {
-      console.debug(`External id exists ${providerName}|${addonId}`);
       return;
     }
 
-    if (this._addonProviderService.getProvider(providerName)?.isValidAddonId(addonId) ?? false) {
+    const provider = this._addonProviderService.getProvider(providerName);
+
+    // A provider that is not enabled for this flavor is the normal case, not something to report.
+    // This runs for every provider of every addon, and console.warn is redirected to electron-log,
+    // so a line here costs an ipc round trip and a disk write per addon.
+    if (provider === undefined) {
+      return;
+    }
+
+    if (provider.isValidAddonId(addonId)) {
       externalIds.push({
         id: addonId,
         providerName: providerName,
       });
     } else {
       console.warn(`Invalid provider id ${providerName}|${addonId}`);
-      console.warn(externalIds);
     }
   }
 

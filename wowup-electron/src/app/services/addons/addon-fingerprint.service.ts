@@ -1,37 +1,36 @@
 import { Injectable } from "@angular/core";
-import { AddonFolder, AddonScanResult } from "wowup-lib-core";
-import { IPC_CURSE_GET_SCAN_RESULTS, IPC_WOWUP_GET_SCAN_RESULTS } from "../../../common/constants";
-import { ElectronService } from "../electron/electron.service";
+import { AddonFolder } from "wowup-lib-core";
+import { AddonScanSource } from "../../../common/models/addon-scan";
+import { AddonScanApiService } from "../api/addon-scan-api.service";
 import { AppConfig } from "../../../environments/environment";
 
 @Injectable({
   providedIn: "root",
 })
 export class AddonFingerprintService {
-  public constructor(private _electronService: ElectronService) {}
+  public constructor(private _addonScanApiService: AddonScanApiService) {}
 
-  public async getFingerprints(addonFolders: AddonFolder[]) {
+  public async getFingerprints(addonFolders: AddonFolder[]): Promise<void> {
     const filePaths = addonFolders.map((addonFolder) => addonFolder.path);
 
-    console.time("WowUpScan");
-    const wowUpScanResults: AddonScanResult[] = await this._electronService.invoke(
-      IPC_WOWUP_GET_SCAN_RESULTS,
-      filePaths,
-    );
-    console.timeEnd("WowUpScan");
-
-    let cfScanResults: AddonScanResult[] = [];
+    const sources: AddonScanSource[] = ["wowup"];
     if (AppConfig.curseforge.enabled) {
-      console.time("CFScan");
-      cfScanResults = await this._electronService.invoke(IPC_CURSE_GET_SCAN_RESULTS, filePaths);
-      console.timeEnd("CFScan");
+      sources.push("curseforge");
     }
 
+    console.time("AddonScan");
+    const scanResults = await this._addonScanApiService.getScanResults(filePaths, sources);
+    console.timeEnd("AddonScan");
+
+    const resultsByPath = new Map(scanResults.map((result) => [result.path, result]));
+
     addonFolders.forEach((af) => {
-      af.wowUpScanResults = wowUpScanResults.find((wur) => wur.path === af.path);
+      const result = resultsByPath.get(af.path);
+
+      af.wowUpScanResults = result?.wowup;
 
       if (AppConfig.curseforge.enabled) {
-        af.cfScanResults = cfScanResults.find((cfr) => cfr.path === af.path);
+        af.cfScanResults = result?.curseforge;
       }
     });
   }

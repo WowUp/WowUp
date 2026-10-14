@@ -21,7 +21,7 @@ The application still runs a **coupled renderer architecture** where Node capabi
 - **Node Integration Enabled**: `nodeIntegration: true` and `contextIsolation: false` are configured in `app/main.ts`. The Angular UI imports Node native APIs (`fs`, `path`, etc.) directly.
 - **Business Logic in Renderer (not yet migrated)**:
   - Addon Providers (`src/app/addon-providers/`) execute all HTTP calls and metadata scraping in the browser context.
-  - Warcraft installation CRUD, TOC parsing, addon scan/sync, and install/remove (`src/app/services/warcraft/`, `src/app/services/addons/`) still run on the Angular side.
+  - Addon scan/sync and install/remove (`src/app/services/addons/`) still run on the Angular side.
 - **Main Process (`app/`)**: Was a thin window manager routed through the legacy [`app/ipc-events.ts`](file:///d:/GitHub/WowUp-Dev/wowup-electron/app/ipc-events.ts) registry; now also hosts a growing set of **Controllers** (`app/controllers/`, implementing `IpcController`, registered in `app/controllers/index.ts`) and main-process **services** (`app/services/`) for logic that has already been migrated — e.g. Warcraft platform/executable detection (`WarcraftController`).
 - **Renderer API wrappers**: Migrated domains get a thin Angular service under `src/app/services/api/` (e.g. `warcraft-api.service.ts`) that just wraps `ipcRenderer.invoke()` for the new IPC channels — no business logic.
 
@@ -35,8 +35,9 @@ Full phase-by-phase checklist: [`wowup-electron/UI_DECOUPLING_PLAN.md`](file:///
 
 Status snapshot:
 1. **Phase 1 — Warcraft Platform Detection**: ✅ done. `WarcraftPlatform` (`app/services/warcraft/`) + `WarcraftController` + `warcraft-api.service.ts`; old `warcraft.service.{impl,win,mac,linux}.ts` deleted from the renderer.
-2. **Phase 2 — Warcraft Installation CRUD**: 🚧 in progress.
-3. **Phases 3–6 — TOC parsing/addon folder listing, addon scan/sync, install/remove pipeline, `ipc-events.ts` cleanup**: ⏳ not started.
+2. **Phase 2 — Warcraft Installation CRUD**: ✅ done. `WarcraftInstallationController` (`app/controllers/warcraft/`) + `warcraft-installation-api.service.ts`; `WarcraftInstallationService` now delegates CRUD/storage to the controller and only keeps Angular-specific state (RxJS broadcast, `TranslateService` display names).
+3. **Phase 3 — TOC Parsing / Addon Folder Listing**: ✅ done. `TocController` (`app/controllers/toc/`) + `toc-api.service.ts`; `WarcraftController` gained `listAddons`/`getAddonFolder` (one IPC round trip per installation instead of one per file); renderer `TocService`/`WarcraftService` delegate and kept their public signatures.
+4. **Phases 4–6 — addon scan/sync, install/remove pipeline, `ipc-events.ts` cleanup**: ⏳ not started.
 
 Note: there is no `Procedure<I, O>` / `EventChannel<P>` primitive layer — the actual pattern is the simpler `IpcController` interface + per-channel `ipcMain.handle()` calls, wired up in `registerControllers()`.
 
@@ -73,9 +74,13 @@ npm run ow:start   # Serve Overwolf flavor (ow)
 ## 📝 Branching & Style Guidelines
 
 - **Branching Policy**:
-  - Primary development branch: `master`.
-  - Release branches: `release/X.Y.Z`.
-  - Target all PRs at `master` unless explicitly working on a specific release.
+  - Primary development branch: `develop` — all feature and fix work integrates here.
+  - **Target all PRs at `develop`.** GitHub's default branch is still `master`, so the
+    base has to be changed manually when opening a PR (`gh pr create --base develop`);
+    PRs that arrive against `master` normally just need retargeting.
+  - `master` is the release/stable branch. Only `release/X.Y.Z` branches merge into it,
+    and `master` is merged back into `develop` afterwards.
+  - Release branches: `release/X.Y.Z`, cut from `develop`.
 - **Code Formatting**:
   - TypeScript strictly throughout the workspace.
   - Formatted via Prettier (`npx prettier --write .`).

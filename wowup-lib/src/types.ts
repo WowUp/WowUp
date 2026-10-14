@@ -89,6 +89,7 @@ export enum WowClientGroup {
   WOTLK,
   Cata,
   Mists,
+  Forever,
 }
 
 export enum WowGameType {
@@ -98,4 +99,5 @@ export enum WowGameType {
   WOTLK = 'wotlk',
   Cata = 'cata',
   Mists = 'mists',
+  Forever = 'forever',
 }

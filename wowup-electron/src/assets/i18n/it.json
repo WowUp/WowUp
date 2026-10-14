@@ -194,7 +194,7 @@
       "ANNIVERSARY": "Burning Crusade Anniversary",
       "BETA": "The War Within Beta",
       "CLASSIC": "Mists of Pandaria Classic",
-      "CLASSICBETA": "MoP Classic Beta",
+      "CLASSICBETA": "World of Warcraft: Forever",
       "CLASSICERA": "World of Warcraft Classic",
       "CLASSICERAPTR": "PTR (Classic Era)",
       "CLASSICPTR": "PTR (MoP Classic)",
@@ -235,6 +235,7 @@
     "ERRORS": {
       "ACCOUNT_PUSH_TOGGLE_FAILED_ERROR": "Failed to toggle instant updates for your account. Please try again later, or reach out on Discord.",
       "ADDON_INSTALL_ERROR": "Fallito nell'installare l'addon {addonName}. Per favore riprovare più tardi.",
+      "ADDON_INSTALL_NETWORK_ERROR": "Failed to download {addonName} due to a network error. This can be caused by an unstable connection or IPv6 issues on your network — try disabling IPv6 on your network adapter if this keeps happening.",
       "ADDON_SCAN_ERROR": "Errore nel sincronizzare le cartelle dell'addon con {providerName}, per favore riprovare più tardi.",
       "ADDON_SYNC_ERROR": "Errore nel controllare gli aggioranementi da: {providerName}",
       "ADDON_SYNC_FULL_ERROR": "[{installationName}]: Errore nel controllare gli aggiornamenti per {addonName} da {providerName}, per favore riprovare più tardi.",
@@ -310,6 +311,7 @@
         "FAILED_TO_CONNECT": "Impossibile connettersi all'API, per favore riprovare più tardi.",
         "INSTALL_FAILED": "Qualcosa è andato storto nell'installazione dell'addon, per favore riprovare.\n\nSe questo messaggio continua ad apparire puoi chiederci aiuto su Discord, nel canale #help-me.",
         "INVALID_URL": "Il valore fornito non è un URL valido. Esempi di URLs di addon validi:\n\t- https://github.com/WowUp/WowUp.Addon\n\t- https://www.wowinterface.com/downloads/info25610-8.3-014.html\n\t- https://www.curseforge.com/wow/addons/altoholic",
+        "MISTS_ASSET_NOT_FOUND": "No asset was found to download from {message}.\n\nA valid zip file ending with '-mists' is required in order for WowUp to download it.",
         "NO_ADDON_FOUND": "Non è stato trovato alcun addon, assicurarsi che l'URL sia corretto.\n\nSe si sta installando da GitHub, assicurarsi che la repository abbia un release tag con un file zip contenente l'addon.",
         "NO_RELEASE_FOUND": "Non è stata trovata alcuna release per {message}.\n\nÈ necessaro ci sia un file zip negli assets affinché WowUp possa scaricarlo.",
         "NO_SEARCH_RESULTS": "Nessun risultato dalla ricerca.",
@@ -539,6 +541,11 @@
         "CURRENT_LANGUAGE_LABEL": "Lingua Corrente",
         "CURSE_PROTOCOL_DESCRIPTION": "Quando si scaricano addons dal sito Web CurseForge, WowUp ne gestirà l'installazione",
         "CURSE_PROTOCOL_LABEL": "Gestisci i link dei downloads da CurseForge",
+        "DISABLE_IPV6_CONFIRMATION_LABEL": "Do you want to restart?",
+        "DISABLE_IPV6_DESCRIPTION": "If addon downloads keep failing with a network error, your network's IPv6 connectivity may be broken. Enabling this forces WowUp to use IPv4 only.<br>Changing this setting requires a restart.",
+        "DISABLE_IPV6_DISABLE_CONFIRMATION_DESCRIPTION": "Re-enabling IPv6 requires the application to restart.",
+        "DISABLE_IPV6_ENABLE_CONFIRMATION_DESCRIPTION": "Forcing IPv4-only networking requires the application to restart.",
+        "DISABLE_IPV6_LABEL": "Force IPv4 (disable IPv6)",
         "ENABLE_APP_BADGE_DESCRIPTION": "Mostra un indicatore di notifica sull'icona dell'applicazione con il numero di addons con un aggiornamento disponibile.",
         "ENABLE_APP_BADGE_LABEL": "Abilita indicatore di notifica",
         "ENABLE_SYSTEM_NOTIFICATIONS_DESCRIPTION": "Abilita i vari popup di notifica del sistema, come gli addons aggiornati automaticamente.",
@@ -603,6 +610,11 @@
         "CURSEFORGE": "CurseForge",
         "DEBUG": "Debug",
         "WTF_EXPLORER": "WTF Explorer"
+      },
+      "WAGO": {
+        "AD_CONSENT_DESCRIPTION": "View and manage how Wago ad partners may use your data for ad personalization",
+        "AD_CONSENT_LABEL": "Wago Ads Personalization & Data",
+        "AD_CONSENT_MANAGE": "Manage"
       },
       "WOW": {
         "ADD_CLIENT_BUTTON": "Aggiungi Nuovo",

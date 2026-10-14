@@ -32,7 +32,7 @@ import {
 import { WowInstallation } from "wowup-lib-core";
 import { SourceRemovedAddonError } from "wowup-lib-core";
 
-declare type WagoGameVersion = "retail" | "classic" | "bc" | "wotlk" | "cata" | "mop";
+declare type WagoGameVersion = "retail" | "classic" | "bc" | "wotlk" | "cata" | "mop" | "forever";
 declare type WagoStability = "stable" | "beta" | "alpha";
 
 interface WagoFingerprintAddon {
@@ -158,10 +158,8 @@ interface WagoRecentsResponse {
 }
 
 const WAGO_BASE_URL = "https://addons.wago.io/api/external";
-const WAGO_AD_URL = "https://addons.wago.io/wowup_ad";
+const WAGO_AD_URL = "https://addons.wago.io/wowup_ad_nitro";
 const WAGO_AD_REFERRER = "https://wago.io";
-const WAGO_AD_USER_AGENT =
-  "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.100 Safari/537.36"; // the ad requires a normal looking user agent
 const WAGO_AD_PRELOAD = "preload/wago.js";
 const WAGO_SEARCH_CACHE_TIME_SEC = 60;
 const WAGO_DETAILS_CACHE_TIME_SEC = 60;
@@ -290,11 +288,10 @@ export class WagoAddonProvider extends AddonProvider {
       request.addons.push(waddon);
     });
 
-    console.debug(`[wago] scan`, request);
-    console.debug(JSON.stringify(request));
+    console.debug(`[wago] scan: ${request.addons.length} addons`);
 
     const matchResult = await this.sendMatchesRequest(request);
-    console.debug(`[wago] matchResult`, matchResult);
+    console.debug(`[wago] matchResult: ${matchResult.addons?.length ?? 0} matched`);
 
     const scanResultMap: { [folder: string]: WagoScanAddon } = {};
 
@@ -341,7 +338,7 @@ export class WagoAddonProvider extends AddonProvider {
       }
     }
 
-    console.debug(`[wago] delta`, addonFolders);
+    console.debug(`[wago] delta: ${addonFolders.length} folders`);
   }
 
   public async getFeaturedAddons(installation: WowInstallation): Promise<AddonSearchResult[]> {
@@ -437,11 +434,14 @@ export class WagoAddonProvider extends AddonProvider {
     }
   }
 
+  /**
+   * The page behind this url serves the ad and hands us the public api key through the preload
+   * bridge. The session partition and user agent are decided by the native ad view in main.
+   */
   public getAdPageParams(): AdPageOptions {
     return {
       pageUrl: WAGO_AD_URL,
       referrer: WAGO_AD_REFERRER,
-      userAgent: WAGO_AD_USER_AGENT,
       preloadFilePath: WAGO_AD_PRELOAD,
     };
   }
@@ -760,6 +760,8 @@ export class WagoAddonProvider extends AddonProvider {
         return "cata";
       case WowClientGroup.Mists:
         return "mop";
+      case WowClientGroup.Forever:
+        return "forever";
       default:
         throw new Error(`[wago] Un-handled client type: ${clientType}`);
     }

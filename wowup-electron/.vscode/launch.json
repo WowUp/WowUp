@@ -42,17 +42,11 @@
     },
     {
       "name": "OW Renderer",
-      "type": "chrome",
-      "request": "attach",
-      "port": 9876,
-      "url": "http://localhost:4200",
-      "sourceMaps": true,
-      "timeout": 10000,
-      "trace": "verbose",
-      "sourceMapPathOverrides": {
-        "webpack:///./*": "${workspaceFolder}/*"
-      },
-      "preLaunchTask": "Build.Renderer.OW"
+      "type": "node-terminal",
+      "request": "launch",
+      "cwd": "${workspaceFolder}",
+      "command": "npm run ow:ng:serve",
+      "preLaunchTask": "Build.Lib"
     },
     {
       "name": "OW Main",

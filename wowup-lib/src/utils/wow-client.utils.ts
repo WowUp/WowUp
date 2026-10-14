@@ -15,6 +15,8 @@ export function getWowClientGroup(gameType: WowGameType): WowClientGroup {
       return WowClientGroup.Cata;
     case WowGameType.Mists:
       return WowClientGroup.Mists;
+    case WowGameType.Forever:
+      return WowClientGroup.Forever;
   }
 }
 
@@ -29,8 +31,9 @@ export function getWowGameType(clientType: WowClientType): WowGameType {
       return WowGameType.Classic;
     case WowClientType.Classic:
     case WowClientType.ClassicPtr:
-    case WowClientType.ClassicBeta:
       return WowGameType.Mists;
+    case WowClientType.ClassicBeta:
+      return WowGameType.Forever;
     case WowClientType.Anniversary:
       return WowGameType.BurningCrusade;
     case WowClientType.Retail:
@@ -42,15 +45,16 @@ export function getWowGameType(clientType: WowClientType): WowGameType {
   }
 }
 
-export function getWowMajorVersion(clientType: WowClientType): number {
+export function getWowMajorVersion(clientType: WowClientType): string {
   switch (clientType) {
     case WowClientType.ClassicEra:
     case WowClientType.ClassicEraPtr:
       return WowMajorVersion.Classic;
     case WowClientType.Classic:
     case WowClientType.ClassicPtr:
-    case WowClientType.ClassicBeta:
       return WowMajorVersion.Mists;
+    case WowClientType.ClassicBeta:
+      return WowMajorVersion.Forever;
     case WowClientType.Anniversary:
       return WowMajorVersion.BurningCrusade;
     case WowClientType.Beta:

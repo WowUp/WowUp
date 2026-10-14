@@ -1,0 +1,62 @@
+#!/bin/sh
+#
+# Blocks commits that would publish a real CurseForge API key.
+#
+# Why this exists: inject-token.js and gulpfile-ow.js both iterate over every
+# file in wowup-electron/src/environments and replace {{CURSEFORGE_API_KEY}}
+# with the real key *in place*. Any local ow build therefore leaves live keys
+# in the working tree, where a broad `git add` will sweep them into a commit.
+#
+# Bypass (only if you are certain): git commit --no-verify
+
+PLACEHOLDER='{{CURSEFORGE_API_KEY}}'
+ENV_DIR='wowup-electron/src/environments/'
+status=0
+
+list=$(mktemp) || exit 1
+trap 'rm -f "$list"' EXIT
+
+# --- Check 1: env files must still carry the placeholder ---------------------
+git diff --cached --name-only --diff-filter=ACM -z |
+  tr '\0' '\n' | grep "^${ENV_DIR}.*\.ts$" > "$list" || true
+
+while IFS= read -r file; do
+  [ -n "$file" ] || continue
+  offending=$(git show ":$file" 2>/dev/null | grep -n 'apiKey:' | grep -vF "$PLACEHOLDER") || true
+  if [ -n "$offending" ]; then
+    if [ "$status" -eq 0 ]; then
+      echo "BLOCKED: a real API key looks staged instead of the build placeholder." >&2
+      echo >&2
+    fi
+    echo "  $file" >&2
+    echo "$offending" | sed 's/^/    /' >&2
+    status=1
+  fi
+done < "$list"
+
+if [ "$status" -ne 0 ]; then
+  echo >&2
+  echo "  Every apiKey in ${ENV_DIR} must read exactly:" >&2
+  echo "      apiKey: \"${PLACEHOLDER}\"" >&2
+  echo >&2
+  echo "  Restore them with:" >&2
+  echo "      git checkout -- ${ENV_DIR}" >&2
+  echo >&2
+fi
+
+# --- Check 2: bcrypt-shaped secret anywhere in newly added lines -------------
+secrets=$(git diff --cached -U0 --diff-filter=ACM |
+  grep '^+' | grep -v '^+++' |
+  grep -oE '\$2[aby]\$[0-9]{2}\$[./A-Za-z0-9]{53}') || true
+
+if [ -n "$secrets" ]; then
+  echo "BLOCKED: staged changes add a bcrypt-shaped secret (CurseForge key format):" >&2
+  echo >&2
+  echo "$secrets" | sort -u | cut -c1-20 | sed 's/^/    /;s/$/.../' >&2
+  echo >&2
+  echo "  If this is genuinely not a secret: git commit --no-verify" >&2
+  echo >&2
+  status=1
+fi
+
+exit $status

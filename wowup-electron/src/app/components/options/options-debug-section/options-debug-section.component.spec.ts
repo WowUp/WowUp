@@ -9,6 +9,21 @@ import { httpLoaderFactory } from "../../../app.module";
 import { NoopAnimationsModule } from "@angular/platform-browser/animations";
 import { MatModule } from "../../../modules/mat-module";
 import { SessionService } from "../../../services/session/session.service";
+import { MetricsApiService } from "../../../services/api/metrics-api.service";
+import { MetricsSnapshot } from "../../../../common/models/process-metrics";
+
+const SNAPSHOT: MetricsSnapshot = {
+  takenAt: 1700000000000,
+  flavor: "ow",
+  window: { visible: true, minimized: false, focused: true },
+  processes: [
+    { pid: 1, type: "Browser", cpuPercent: 1.2, memoryMb: 94 },
+    { pid: 2, type: "Tab", cpuPercent: 10.9, memoryMb: 229.6 },
+  ],
+  totalCpuPercent: 12.1,
+  totalMemoryMb: 323.6,
+  cpuMeasured: true,
+};
 
 describe("OptionsDebugSectionComponent", () => {
   let component: OptionsDebugSectionComponent;
@@ -16,11 +31,14 @@ describe("OptionsDebugSectionComponent", () => {
   let addonServiceSpy: any;
   let wowUpServiceSpy: any;
   let sessionService: any;
+  let metricsApiServiceSpy: any;
 
   beforeEach(async () => {
     addonServiceSpy = jasmine.createSpyObj(AddonService, ["logDebugData"]);
     wowUpServiceSpy = jasmine.createSpyObj(WowUpService, ["showLogsFolder"]);
     sessionService = jasmine.createSpyObj("SessionService", [""], {});
+    metricsApiServiceSpy = jasmine.createSpyObj("MetricsApiService", ["getSnapshot", "logSnapshot"]);
+    metricsApiServiceSpy.logSnapshot.and.returnValue(Promise.resolve(SNAPSHOT));
 
     await TestBed.configureTestingModule({
       declarations: [OptionsDebugSectionComponent],
@@ -47,6 +65,7 @@ describe("OptionsDebugSectionComponent", () => {
             { provide: AddonService, useValue: addonServiceSpy },
             { provide: WowUpService, useValue: wowUpServiceSpy },
             { provide: SessionService, useValue: sessionService },
+            { provide: MetricsApiService, useValue: metricsApiServiceSpy },
           ],
         },
       })
@@ -74,5 +93,15 @@ describe("OptionsDebugSectionComponent", () => {
     button.click();
     tick();
     expect(wowUpServiceSpy.showLogsFolder).toHaveBeenCalled();
+  }));
+
+  it("Should log the process metrics and show them busiest first", fakeAsync(() => {
+    const button = fixture.debugElement.nativeElement.querySelector("#log-metrics-btn");
+    button.click();
+    tick();
+
+    expect(metricsApiServiceSpy.logSnapshot).toHaveBeenCalled();
+    expect(component.metricsProcesses.map((p) => p.pid)).toEqual([2, 1]);
+    expect(component.metricsWindowState).toEqual("focused");
   }));
 });

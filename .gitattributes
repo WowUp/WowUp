@@ -1,0 +1,28 @@
+# Git already stores every text file with LF. Without this file each contributor's
+# core.autocrlf decides what lands in their working tree, and on Windows that means
+# CRLF -- which Prettier (endOfLine: "lf") then reports as a style violation on files
+# nobody has touched. Pin LF everywhere so `npx prettier --check .` agrees on all
+# platforms and `--write .` doesn't rewrite the whole tree.
+* text=auto eol=lf
+
+# Windows-only scripts that genuinely want CRLF
+*.bat text eol=crlf
+*.cmd text eol=crlf
+*.ps1 text eol=crlf
+
+# Binary assets -- never convert
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.ico binary
+*.icns binary
+*.tga binary
+*.woff binary
+*.woff2 binary
+*.ttf binary
+*.eot binary
+*.zip binary
+*.exe binary
+*.dll binary
+*.node binary

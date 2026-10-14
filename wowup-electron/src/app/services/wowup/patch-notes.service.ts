@@ -16,6 +16,28 @@ export class PatchNotesService {
 
 const CHANGELOGS: ChangeLog[] = [
   {
+    Version: "2.24.0",
+    html: `
+    <h4>Features</h4>
+    <ul>
+    <li>Prep for World of Warcraft: Forever</li>
+    <li>Add a "Force IPv4 (disable IPv6)" setting for networks where IPv6 connectivity is broken</li>
+    </ul>
+    <h4>Changes</h4>
+    <ul>
+    <li>Update the app background artwork to World of Warcraft: Forever</li>
+    <li>Show the World of Warcraft: Forever logo on Classic Beta installations</li>
+    </ul>
+    <h4>Fixes</h4>
+    <ul>
+    <li>Fix GitHub addon updates failing to install when no personal access token is configured (@DarthWixon)</li>
+    <li>Show a clearer error when an addon install or update fails due to a network problem, and wait longer between retries</li>
+    <li>Fix ads reappearing after being disabled and overhanging the window edge</li>
+    <li>Add missing translations across supported languages</li>
+    </ul>
+    `,
+  },
+  {
     Version: "2.23.1",
     html: `
     <h4>Fixes</h4>

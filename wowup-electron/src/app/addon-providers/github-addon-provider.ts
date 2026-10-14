@@ -27,7 +27,7 @@ import {
 import { GitHubAsset, GitHubRelease, GitHubRepository, WowInstallation } from "wowup-lib-core";
 import { SourceRemovedAddonError } from "wowup-lib-core";
 
-type MetadataFlavor = "bcc" | "classic" | "mainline" | "wrath" | "cata" | "mists";
+type MetadataFlavor = "bcc" | "classic" | "mainline" | "wrath" | "cata" | "mists" | "forever";
 
 interface LatestValidAsset {
   matchedAsset: GitHubAsset | undefined;
@@ -83,17 +83,17 @@ export class GitHubAddonProvider extends AddonProvider {
   }
 
   public async getDownloadAuth(): Promise<DownloadAuth | undefined> {
-    const hasPat = await this.hasPersonalAccessKey();
-    if (hasPat) {
-      const headers = await this.getAuthorizationHeader();
-      headers.Accept = "application/octet-stream";
+    // The GitHub REST API asset endpoint (asset.url) only streams the binary when the
+    // request carries Accept: application/octet-stream; without it, it returns 200 with a
+    // small JSON metadata payload that then gets saved as the addon zip and fails to unzip.
+    // Send the header unconditionally so anonymous/public-repo downloads work, and add the
+    // PAT Authorization header on top when one is configured (required for private repos).
+    const headers = await this.getAuthorizationHeader();
+    headers.Accept = "application/octet-stream";
 
-      return {
-        headers,
-      };
-    } else {
-      return undefined;
-    }
+    return {
+      headers,
+    };
   }
 
   public async getAll(installation: WowInstallation, addonIds: string[]): Promise<GetAllResult> {
@@ -186,7 +186,9 @@ export class GitHubAddonProvider extends AddonProvider {
         files: [
           {
             channelType: result.release?.prerelease ? AddonChannelType.Beta : AddonChannelType.Stable,
-            downloadUrl: asset?.browser_download_url || asset?.url || "",
+            // See getByIdAsync: asset.url + Accept: application/octet-stream works both
+            // anonymously and with a PAT; keep it consistent so updates don't rewrite the URL.
+            downloadUrl: asset?.url ?? "",
             folders: [],
             gameVersion: "",
             releaseDate: new Date(result.release?.published_at ?? ""),
@@ -249,6 +251,9 @@ export class GitHubAddonProvider extends AddonProvider {
 
     const searchResultFile: AddonSearchResultFile = {
       channelType: AddonChannelType.Stable,
+      // Use the REST API asset endpoint rather than browser_download_url: combined with the
+      // Accept: application/octet-stream header from getDownloadAuth() it works both
+      // anonymously and with a PAT, whereas browser_download_url 404s on private repos.
       downloadUrl: asset?.url ?? "",
       folders: [addonName],
       gameVersion: "",
@@ -373,7 +378,9 @@ export class GitHubAddonProvider extends AddonProvider {
       console.log(`Target metadata release: ${targetMetaRelease.filename}`);
 
       // return any matching valid asset with the metadata file name and content type
-      return release.assets.find((asset) => this.isValidContentType(asset) && asset.name === targetMetaRelease.filename);
+      return release.assets.find(
+        (asset) => this.isValidContentType(asset) && asset.name === targetMetaRelease.filename,
+      );
     } catch (err) {
       console.error("Error in getValidAssetFromMetadata", err);
       console.error("Release:", releaseMeta);
@@ -386,7 +393,6 @@ export class GitHubAddonProvider extends AddonProvider {
     switch (clientType) {
       case WowClientType.Classic:
       case WowClientType.ClassicPtr:
-      case WowClientType.ClassicBeta:
         return "mists";
       case WowClientType.Anniversary:
         return "bcc";
@@ -398,6 +404,8 @@ export class GitHubAddonProvider extends AddonProvider {
       case WowClientType.RetailPtr:
       case WowClientType.RetailXPtr:
         return "mainline";
+      case WowClientType.ClassicBeta: // confirmed https://github.com/BigWigsMods/packager/commit/7391c8ded01a14ff084dfa28ef09e52b0470c3cb
+        return "forever";
       default:
         throw new Error("Unknown client type for metadata");
     }
@@ -447,6 +455,7 @@ export class GitHubAddonProvider extends AddonProvider {
     const isWotlk = this.isWotlk(asset);
     const isCataclysm = this.isCataclysm(asset);
     const isMists = this.isMists(asset);
+    const isForever = this.isForever(asset);
 
     switch (clientType) {
       case WowClientType.Retail:
@@ -459,8 +468,9 @@ export class GitHubAddonProvider extends AddonProvider {
         return isClassic;
       case WowClientType.Classic:
       case WowClientType.ClassicPtr:
-      case WowClientType.ClassicBeta:
         return isMists;
+      case WowClientType.ClassicBeta:
+        return isForever;
       case WowClientType.Anniversary:
         return isBurningCrusade;
       default:
@@ -486,6 +496,10 @@ export class GitHubAddonProvider extends AddonProvider {
 
   private isMists(asset: GitHubAsset): boolean {
     return /[-_](mists)\.zip$/i.test(asset.name);
+  }
+
+  private isForever(asset: GitHubAsset): boolean {
+    return /[-_](forever|camelot)\.zip$/i.test(asset.name); // TODO get the correct WoW Forever suffix when known
   }
 
   private getAddonName(addonId: string): string {

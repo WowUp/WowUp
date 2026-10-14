@@ -1,14 +1,16 @@
 import { Injectable } from "@angular/core";
 
 import {
+  IPC_WARCRAFT_GET_ADDON_FOLDER,
   IPC_WARCRAFT_GET_BLIZZARD_AGENT_PATH,
   IPC_WARCRAFT_GET_CLIENT_TYPE_FOR_BINARY,
   IPC_WARCRAFT_GET_EXECUTABLE_EXTENSION,
   IPC_WARCRAFT_GET_EXECUTABLE_NAME,
   IPC_WARCRAFT_GET_INSTALLED_PRODUCTS,
   IPC_WARCRAFT_IS_WOW_APPLICATION,
+  IPC_WARCRAFT_LIST_ADDONS,
 } from "../../../common/constants";
-import { InstalledProduct, WowClientType } from "wowup-lib-core";
+import { AddonFolder, InstalledProduct, WowClientType } from "wowup-lib-core";
 
 import { ElectronService } from "../electron/electron.service";
 
@@ -40,5 +42,13 @@ export class WarcraftApiService {
 
   public getExecutableExtension(): Promise<string> {
     return this._electronService.invoke(IPC_WARCRAFT_GET_EXECUTABLE_EXTENSION);
+  }
+
+  public listAddons(addonFolderPath: string, scanSymlinks = false): Promise<AddonFolder[]> {
+    return this._electronService.invoke(IPC_WARCRAFT_LIST_ADDONS, addonFolderPath, scanSymlinks);
+  }
+
+  public getAddonFolder(addonFolderPath: string, dir: string): Promise<AddonFolder | undefined> {
+    return this._electronService.invoke(IPC_WARCRAFT_GET_ADDON_FOLDER, addonFolderPath, dir);
   }
 }

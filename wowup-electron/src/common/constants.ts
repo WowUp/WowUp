@@ -26,7 +26,6 @@ export const WOWUP_DATA_ADDON_FOLDER_NAME = "wowup_data_addon";
 export const WOWUP_ASSET_FOLDER_NAME = "WowUpAddon";
 
 // IPC CHANNELS
-export const IPC_CURSE_GET_SCAN_RESULTS = "curse-get-scan-results";
 export const IPC_DOWNLOAD_FILE_CHANNEL = "download-file";
 export const IPC_COPY_DIRECTORY_CHANNEL = "copy-directory";
 export const IPC_CREATE_DIRECTORY_CHANNEL = "create-directory";
@@ -42,7 +41,6 @@ export const IPC_WRITE_FILE_CHANNEL = "write-file";
 export const IPC_UNZIP_FILE_CHANNEL = "unzip-file";
 export const IPC_COPY_FILE_CHANNEL = "copy-file";
 export const IPC_SHOW_DIRECTORY = "show-directory";
-export const IPC_WOWUP_GET_SCAN_RESULTS = "wowup-get-scan-results";
 export const IPC_GET_HOME_DIR = "get-home-dir";
 export const IPC_GET_ASSET_FILE_PATH = "get-asset-file-path";
 export const IPC_CREATE_TRAY_MENU_CHANNEL = "create-tray-menu";
@@ -50,6 +48,14 @@ export const IPC_LIST_DISKS_WIN32 = "list-disks-win32";
 export const IPC_CREATE_APP_MENU_CHANNEL = "create-app-menu";
 export const IPC_OW_IS_CMP_REQUIRED = "ow-is-cmp-required";
 export const IPC_OW_OPEN_CMP = "ow-open-cmp";
+export const IPC_WAGO_ADS_LOAD = "wago-ads-load";
+export const IPC_WAGO_ADS_DISABLE = "wago-ads-disable";
+export const IPC_WAGO_ADS_SET_BOUNDS = "wago-ads-set-bounds";
+export const IPC_WAGO_ADS_RELOAD = "wago-ads-reload";
+export const IPC_WAGO_ADS_OPEN_DEV_TOOLS = "wago-ads-open-dev-tools";
+export const IPC_WAGO_ADS_SHOW_CMP = "wago-ads-show-cmp";
+export const IPC_WAGO_ADS_RESURFACE_CMP = "wago-ads-resurface-cmp";
+export const IPC_WAGO_ADS_CMP_CLOSE = "wago-ads-cmp-close";
 export const IPC_MENU_ZOOM_OUT_CHANNEL = "menu-zoom-out";
 export const IPC_MENU_ZOOM_IN_CHANNEL = "menu-zoom-in";
 export const IPC_MENU_ZOOM_RESET_CHANNEL = "menu-zoom-reset";
@@ -118,6 +124,28 @@ export const IPC_WARCRAFT_GET_CLIENT_TYPE_FOR_BINARY = "warcraft-get-client-type
 export const IPC_WARCRAFT_IS_WOW_APPLICATION = "warcraft-is-wow-application";
 export const IPC_WARCRAFT_GET_EXECUTABLE_EXTENSION = "warcraft-get-executable-extension";
 
+// WARCRAFT INSTALLATION CONTROLLER
+export const IPC_WARCRAFT_INSTALLATIONS_GET_ALL = "warcraft-installations-get-all";
+export const IPC_WARCRAFT_INSTALLATIONS_SET_ALL = "warcraft-installations-set-all";
+export const IPC_WARCRAFT_INSTALLATIONS_ADD = "warcraft-installations-add";
+export const IPC_WARCRAFT_INSTALLATIONS_REMOVE = "warcraft-installations-remove";
+export const IPC_WARCRAFT_INSTALLATIONS_UPDATE = "warcraft-installations-update";
+export const IPC_WARCRAFT_INSTALLATIONS_REORDER = "warcraft-installations-reorder";
+export const IPC_WARCRAFT_INSTALLATIONS_SET_SELECTED = "warcraft-installations-set-selected";
+export const IPC_WARCRAFT_LIST_ADDONS = "warcraft-list-addons";
+export const IPC_WARCRAFT_GET_ADDON_FOLDER = "warcraft-get-addon-folder";
+
+// TOC CONTROLLER
+export const IPC_TOC_PARSE = "toc-parse";
+export const IPC_TOC_GET_ALL_TOCS = "toc-get-all-tocs";
+
+// ADDON SCAN CONTROLLER
+export const IPC_ADDON_GET_SCAN_RESULTS = "addons-get-scan-results";
+
+// METRICS CONTROLLER
+export const IPC_METRICS_GET_SNAPSHOT = "metrics-get-snapshot";
+export const IPC_METRICS_LOG_SNAPSHOT = "metrics-log-snapshot";
+
 // IPC STORAGE
 export const IPC_STORE_GET_OBJECT = "store-get-object";
 export const IPC_STORE_GET_OBJECT_SYNC = "store-get-object-sync";
@@ -140,6 +168,7 @@ export const DEFAULT_AUTO_UPDATE_PREFERENCE_KEY_SUFFIX = "_default_auto_update";
 export const LAST_SELECTED_WOW_CLIENT_TYPE_PREFERENCE_KEY = "last_selected_client_type";
 export const USE_HARDWARE_ACCELERATION_PREFERENCE_KEY = "use_hardware_acceleration";
 export const USE_SYMLINK_MODE_PREFERENCE_KEY = "use_symlink_mode";
+export const DISABLE_IPV6_PREFERENCE_KEY = "disable_ipv6";
 export const START_WITH_SYSTEM_PREFERENCE_KEY = "start_with_system";
 export const START_MINIMIZED_PREFERENCE_KEY = "start_minimized";
 export const SELECTED_LANGUAGE_PREFERENCE_KEY = "selected_language";

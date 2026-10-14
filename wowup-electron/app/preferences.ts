@@ -6,6 +6,7 @@ import {
   CURRENT_THEME_KEY,
   DEFAULT_THEME,
   DEFAULT_TRUSTED_DOMAINS,
+  DISABLE_IPV6_PREFERENCE_KEY,
   ENABLE_APP_BADGE_KEY,
   ENABLE_SYSTEM_NOTIFICATIONS_PREFERENCE_KEY,
   TRUSTED_DOMAINS_KEY,
@@ -27,6 +28,7 @@ export function initializeDefaultPreferences() {
   setDefaultPreference(CURRENT_THEME_KEY, DEFAULT_THEME);
   setDefaultPreference(WOWUP_RELEASE_CHANNEL_PREFERENCE_KEY, defaultReleaseChannel);
   setDefaultPreference(USE_SYMLINK_MODE_PREFERENCE_KEY, false);
+  setDefaultPreference(DISABLE_IPV6_PREFERENCE_KEY, false);
   setDefaultPreference(ENABLE_APP_BADGE_KEY, true);
   setDefaultPreference(TRUSTED_DOMAINS_KEY, DEFAULT_TRUSTED_DOMAINS);
   setDefaultPreference(ACCT_PUSH_ENABLED_KEY, false);

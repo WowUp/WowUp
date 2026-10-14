@@ -56,5 +56,42 @@
         {{ "Open Dev Tools" | translate }}
       </button>
     </div>
+    <!-- PROCESS METRICS -->
+    <div>
+      <div>{{ "Process metrics" | translate }}</div>
+      <small class="text-2">{{ "Record what each process is using right now to the log file" | translate }}</small>
+    </div>
+    <div>
+      <button
+        id="log-metrics-btn"
+        class="wu-btn wu-btn-primary w-100"
+        (click)="onLogProcessMetrics()"
+        [disabled]="loggingMetrics === true"
+      >
+        {{ "Log Process Metrics" | translate }}
+      </button>
+    </div>
+  </div>
+
+  <div class="metrics" *ngIf="metrics as snapshot">
+    <p class="text-2">
+      {{ snapshot.flavor }} &middot; window {{ metricsWindowState }} &middot; {{ snapshot.totalCpuPercent }}% cpu
+      &middot; {{ snapshot.totalMemoryMb }}MB
+      <span *ngIf="snapshot.cpuMeasured === false"> &middot; cpu not measured yet, sample again in a minute</span>
+    </p>
+    <table>
+      <tr>
+        <th>{{ "Process" | translate }}</th>
+        <th>{{ "PID" | translate }}</th>
+        <th>{{ "CPU" | translate }}</th>
+        <th>{{ "Memory" | translate }}</th>
+      </tr>
+      <tr *ngFor="let process of metricsProcesses">
+        <td>{{ describeProcessName(process) }}</td>
+        <td>{{ process.pid }}</td>
+        <td>{{ process.cpuPercent }}%</td>
+        <td>{{ process.memoryMb }}MB</td>
+      </tr>
+    </table>
   </div>
 </div>
