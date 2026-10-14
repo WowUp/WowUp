@@ -355,6 +355,7 @@ function createWindow(): BrowserWindow {
 
   // Create the browser window.
   win = new BrowserWindow(windowOptions);
+  windowState.trackWindowPlacement(win);
 
   windowState.restoreMainWindowBounds(win);
 
