@@ -18,6 +18,17 @@ const CMP_WINDOW_HEIGHT = 600;
 const CMP_SHOW_DELAY_MS = 2500;
 
 /**
+ * How long the consent tool gets to load before the window gives up and closes itself. The tool is
+ * a third party script that ad blockers commonly block, and without it the page never asks to be
+ * closed, which would leave an invisible modal window blocking the app.
+ */
+const CMP_LOAD_TIMEOUT_MS = 10000;
+const CMP_LOAD_POLL_MS = 500;
+
+/** Evaluated in the consent page. The tool defines `__cmp` once its script has loaded. */
+const CMP_READY_SCRIPT = "typeof window.__cmp !== 'undefined'";
+
+/**
  * Runs the ad network's consent tool.
  *
  * The ad script runs in "app" cmp mode, which means it never renders consent ui inline. Instead the
@@ -124,12 +135,42 @@ export class WagoCmpWindowService {
       this._resolveClosed = resolve;
     });
 
-    const showTimer = setTimeout(() => {
-      if (!window.isDestroyed()) {
-        log.info("[cmp-window] consent page is still up, showing it");
-        window.show();
+    const openedAt = Date.now();
+    let showTimer: ReturnType<typeof setTimeout> | undefined;
+
+    // Only show the window once the consent tool is actually running. Showing a modal for a page
+    // whose tool failed to load would block every click on the app with nothing visible to dismiss.
+    const showWhenReady = () => {
+      showTimer = undefined;
+      if (window.isDestroyed()) {
+        return;
       }
-    }, CMP_SHOW_DELAY_MS);
+
+      void window.webContents
+        .executeJavaScript(CMP_READY_SCRIPT)
+        .catch(() => false)
+        .then((ready: boolean) => {
+          if (window.isDestroyed()) {
+            return;
+          }
+
+          if (ready) {
+            log.info("[cmp-window] consent page is still up, showing it");
+            window.show();
+            return;
+          }
+
+          if (Date.now() - openedAt >= CMP_LOAD_TIMEOUT_MS) {
+            log.warn("[cmp-window] consent tool did not load (blocked?), closing the consent page");
+            window.destroy();
+            return;
+          }
+
+          showTimer = setTimeout(showWhenReady, CMP_LOAD_POLL_MS);
+        });
+    };
+
+    showTimer = setTimeout(showWhenReady, CMP_SHOW_DELAY_MS);
 
     window.on("closed", () => {
       clearTimeout(showTimer);
