@@ -3,6 +3,7 @@ import * as log from "electron-log";
 import { join } from "path";
 
 import { IPC_WAGO_ADS_CMP_CLOSE } from "../../../src/common/constants";
+import { describeBounds } from "../../window-state";
 import { AD_PARTITION } from "./wago-ad-view.service";
 
 const CMP_URL = "https://addons.wago.io/app-cmp.html";
@@ -155,7 +156,9 @@ export class WagoCmpWindowService {
           }
 
           if (ready) {
-            log.info("[cmp-window] consent page is still up, showing it");
+            log.info(
+              `[cmp-window] consent page is still up, showing it at ${describeBounds(window.getBounds())}, parent at ${describeBounds(this._parent.getBounds())}`,
+            );
             window.show();
             return;
           }
