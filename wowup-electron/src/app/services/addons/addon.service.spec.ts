@@ -109,7 +109,7 @@ describe("AddonService", () => {
       defaultAutoUpdate: true,
     };
 
-    provider = jasmine.createSpyObj<AddonProvider>("AddonProvider", ["getById", "isValidAddonId"]);
+    provider = jasmine.createSpyObj<AddonProvider>("AddonProvider", ["getById", "getAll", "isValidAddonId"]);
     provider.isValidAddonId.and.returnValue(true);
 
     addonStorage = jasmine.createSpyObj<AddonStorageService>("AddonStorageService", [
@@ -725,6 +725,102 @@ describe("AddonService", () => {
 
         expect(enqueuedIds()).toEqual(["1001"]);
       });
+    });
+  });
+
+  describe("getDependencyDetails", () => {
+    const required = (...externalIds: string[]) =>
+      externalIds.map((externalAddonId) => ({ externalAddonId, type: AddonDependencyType.Required }));
+
+    beforeEach(() => {
+      provider.getAll.and.callFake((_installation, ids) =>
+        Promise.resolve({
+          searchResults: ids
+            .filter((id) => id !== "9999")
+            .map((id) =>
+              createSearchResult({
+                externalId: id,
+                name: `Addon ${id}`,
+                files: [createFile({ folders: [`Addon${id}`] })],
+              }),
+            ),
+          errors: [],
+        }),
+      );
+    });
+
+    it("should fetch the names of dependencies that are not installed in one call", async () => {
+      const details = await service.getDependencyDetails(required("2002", "3003"), "Curse", installation);
+
+      expect(details).toEqual([
+        { externalAddonId: "2002", name: "Addon 2002", installed: false },
+        { externalAddonId: "3003", name: "Addon 3003", installed: false },
+      ]);
+      expect(provider.getAll).toHaveBeenCalledOnceWith(installation, ["2002", "3003"]);
+    });
+
+    it("should use installed addons without asking the provider", async () => {
+      installed.push(createAddon({ id: "dep", name: "Syndicator", externalId: "2002" }));
+
+      const details = await service.getDependencyDetails(required("2002"), "Curse", installation);
+
+      expect(details).toEqual([{ externalAddonId: "2002", name: "Syndicator", installed: true }]);
+      expect(provider.getAll).not.toHaveBeenCalled();
+    });
+
+    it("should only fetch the dependencies that are not installed, keeping the given order", async () => {
+      installed.push(
+        createAddon({
+          id: "dep",
+          name: "Syndicator (Wago)",
+          providerName: "Wago",
+          externalId: "wago-syndicator",
+          externalIds: [{ providerName: "Curse", id: "3003" }],
+        }),
+      );
+
+      const details = await service.getDependencyDetails(required("2002", "3003"), "Curse", installation);
+
+      expect(details.map((d) => [d.name, d.installed])).toEqual([
+        ["Addon 2002", false],
+        ["Syndicator (Wago)", true],
+      ]);
+      expect(provider.getAll).toHaveBeenCalledOnceWith(installation, ["2002"]);
+    });
+
+    it("should mark a dependency installed when its folders already are", async () => {
+      installed.push(
+        createAddon({ id: "manual", providerName: "Unknown", externalId: "", installedFolderList: ["Addon2002"] }),
+      );
+
+      const details = await service.getDependencyDetails(required("2002"), "Curse", installation);
+
+      expect(details).toEqual([{ externalAddonId: "2002", name: "Addon 2002", installed: true }]);
+    });
+
+    it("should fall back to the id when the provider cannot resolve a dependency", async () => {
+      const details = await service.getDependencyDetails(required("9999", "2002"), "Curse", installation);
+
+      expect(details.map((d) => d.name)).toEqual(["9999", "Addon 2002"]);
+    });
+
+    it("should fall back to ids when the provider call fails", async () => {
+      provider.getAll.and.rejectWith(new Error("network"));
+
+      const details = await service.getDependencyDetails(required("2002"), "Curse", installation);
+
+      expect(details).toEqual([{ externalAddonId: "2002", name: "2002", installed: false }]);
+    });
+
+    it("should fall back to ids when the provider is missing", async () => {
+      const details = await service.getDependencyDetails(required("2002"), "Nope", installation);
+
+      expect(details).toEqual([{ externalAddonId: "2002", name: "2002", installed: false }]);
+    });
+
+    it("should return nothing for no dependencies", async () => {
+      expect(await service.getDependencyDetails([], "Curse", installation)).toEqual([]);
+      expect(addonStorage.getAllForInstallationIdAsync).not.toHaveBeenCalled();
     });
   });
 

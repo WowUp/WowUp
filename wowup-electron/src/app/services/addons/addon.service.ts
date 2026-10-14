@@ -68,6 +68,12 @@ import { AddonInstallService, InstallQueueItem, InstallType } from "./addon-inst
 import { strIsNotNullOrEmpty } from "../../utils/string.utils";
 import { delayMs } from "../../utils/time.utils";
 
+export interface AddonDependencyDetail {
+  externalAddonId: string;
+  name: string;
+  installed: boolean;
+}
+
 export enum ScanUpdateType {
   Start,
   Update,
@@ -493,11 +499,74 @@ export class AddonService {
   }
 
   private isDependencyInstalled(externalAddonId: string, providerName: string, installedAddons: Addon[]): boolean {
-    return installedAddons.some(
+    return this.findInstalledDependency(externalAddonId, providerName, installedAddons) !== undefined;
+  }
+
+  private findInstalledDependency(
+    externalAddonId: string,
+    providerName: string,
+    installedAddons: Addon[],
+  ): Addon | undefined {
+    return installedAddons.find(
       (ia) =>
         (ia.providerName === providerName && ia.externalId === externalAddonId) ||
         !!ia.externalIds?.some((ext) => ext.providerName === providerName && ext.id === externalAddonId),
     );
+  }
+
+  /**
+   * Resolve the name of each dependency and whether it is already installed, in the order given.
+   * Installed addons are used first, the rest are fetched from the provider in a single call.
+   * A dependency the provider cannot resolve falls back to its id for a name.
+   */
+  public async getDependencyDetails(
+    dependencies: AddonDependency[],
+    providerName: string,
+    installation: WowInstallation,
+  ): Promise<AddonDependencyDetail[]> {
+    if (!dependencies.length) {
+      return [];
+    }
+
+    const installedAddons = await this._addonStorage.getAllForInstallationIdAsync(installation.id);
+    const details = dependencies.map((dependency): AddonDependencyDetail => {
+      const installedAddon = this.findInstalledDependency(dependency.externalAddonId, providerName, installedAddons);
+      return {
+        externalAddonId: dependency.externalAddonId,
+        name: installedAddon?.name ?? dependency.externalAddonId,
+        installed: installedAddon !== undefined,
+      };
+    });
+
+    const unresolved = details.filter((detail) => !detail.installed);
+    const provider = this._addonProviderService.getProvider(providerName);
+    if (!unresolved.length || !provider) {
+      return details;
+    }
+
+    try {
+      const result = await provider.getAll(
+        installation,
+        unresolved.map((detail) => detail.externalAddonId),
+      );
+      const installedFolders = installedAddons.flatMap((ia) => ia.installedFolderList ?? []);
+
+      for (const detail of unresolved) {
+        const searchResult = result.searchResults.find((sr) => sr.externalId === detail.externalAddonId);
+        if (!searchResult) {
+          continue;
+        }
+
+        detail.name = searchResult.name;
+        // Same check installDependencies uses, so the dialog agrees with what an install would do
+        const latestFile = SearchResults.getLatestFile(searchResult, installation.defaultAddonChannelType);
+        detail.installed = _.intersection(latestFile?.folders ?? [], installedFolders).length > 0;
+      }
+    } catch (e) {
+      console.error(`[DependencyDetails] failed to resolve dependencies`, e);
+    }
+
+    return details;
   }
 
   public async processAutoUpdates(): Promise<Addon[]> {
