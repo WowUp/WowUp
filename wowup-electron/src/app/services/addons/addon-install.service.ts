@@ -1,6 +1,6 @@
 import * as _ from "lodash";
 import { Injectable } from "@angular/core";
-import { from, mergeMap, Subject } from "rxjs";
+import { catchError, EMPTY, from, mergeMap, Subject } from "rxjs";
 import slug from "slug";
 import { join as pathJoin } from "path";
 import { Addon, AddonExternalId, getGameVersionList, Toc, WowClientType } from "wowup-lib-core";
@@ -77,16 +77,26 @@ export class AddonInstallService {
     private _addonStorage: AddonStorageService,
     private _analyticsService: AnalyticsService,
   ) {
-    // Setup our install queue pump here
-    this._installQueue.pipe(mergeMap((item) => from(this.processInstallQueue(item)), 3)).subscribe({
-      next: (addonName) => {
+    // Setup our install queue pump here. An error escaping one item must not reach the outer
+    // pipe, or the subscription ends and every later item waits forever.
+    this._installQueue
+      .pipe(
+        mergeMap(
+          (item) =>
+            from(this.processInstallQueue(item)).pipe(
+              catchError((error: Error) => {
+                console.error(error);
+                item.completion.reject(error);
+                this._installErrorSrc.next(error);
+                return EMPTY;
+              }),
+            ),
+          3,
+        ),
+      )
+      .subscribe((addonName) => {
         console.log("Install complete", addonName);
-      },
-      error: (error: Error) => {
-        console.error(error);
-        this._installErrorSrc.next(error);
-      },
-    });
+      });
   }
 
   public enqueue(queueItem: InstallQueueItem): void {
@@ -104,29 +114,29 @@ export class AddonInstallService {
       `'${addon.installedVersion ?? ""}' -> '${addon.latestVersion ?? ""}'`,
     );
 
-    const installation = this._warcraftInstallationService.getWowInstallation(addon.installationId);
-    if (!installation) {
-      throw new Error(`Installation not found: ${addon.installationId ?? ""}`);
-    }
-
-    const addonProvider = this._addonProviderService.getProvider(addon.providerName ?? "");
-    if (!addonProvider) {
-      throw new Error(`Addon provider not found: ${addon.providerName ?? ""}`);
-    }
-
     const downloadFileName = `${slug(addon.name)}.zip`;
-
-    onUpdate?.call(this, AddonInstallState.Downloading, 25);
-    this._addonInstalledSrc.next({
-      addon,
-      installState: AddonInstallState.Downloading,
-      progress: 25,
-    });
 
     let downloadedFilePath = "";
     let unzippedDirectory = "";
 
     try {
+      const installation = this._warcraftInstallationService.getWowInstallation(addon.installationId);
+      if (!installation) {
+        throw new Error(`Installation not found: ${addon.installationId ?? ""}`);
+      }
+
+      const addonProvider = this._addonProviderService.getProvider(addon.providerName ?? "");
+      if (!addonProvider) {
+        throw new Error(`Addon provider not found: ${addon.providerName ?? ""}`);
+      }
+
+      onUpdate?.call(this, AddonInstallState.Downloading, 25);
+      this._addonInstalledSrc.next({
+        addon,
+        installState: AddonInstallState.Downloading,
+        progress: 25,
+      });
+
       const downloadAuth = await addonProvider.getDownloadAuth();
       console.debug(`Download auth for ${addon.name}:`, downloadAuth);
 
@@ -235,8 +245,6 @@ export class AddonInstallService {
       await this._addonStorage.setAsync(addon.id, addon);
 
       this.trackInstallAction(queueItem.installType, addon);
-
-      //   await this.installDependencies(addon, onUpdate);
 
       await this.backfillAddon(addon);
 
@@ -650,63 +658,4 @@ export class AddonInstallService {
   ): Promise<Addon | undefined> {
     return await this._addonStorage.getByExternalIdAsync(externalId, providerName, installationId);
   }
-
-  //   public async installDependencies(
-  //     addon: Addon,
-  //     onUpdate: (installState: AddonInstallState, progress: number) => void = () => {}
-  //   ): Promise<void> {
-  //     if (!addon.dependencies || !addon.providerName || !addon.installationId) {
-  //       console.warn(`Invalid addon: ${addon.id ?? ""}`);
-  //       return;
-  //     }
-
-  //     const requiredDependencies = this.getRequiredDependencies(addon);
-  //     if (!requiredDependencies.length) {
-  //       console.log(`${addon.name}: No required dependencies found`);
-  //       return;
-  //     }
-
-  //     const maxCt = requiredDependencies.length;
-  //     let currentCt = 0;
-  //     for (const dependency of requiredDependencies) {
-  //       currentCt += 1;
-  //       const percent = (currentCt / maxCt) * 100;
-
-  //       onUpdate?.call(this, AddonInstallState.Installing, percent);
-
-  //       // If the dependency is already installed, skip it
-  //       const existingAddon = await this.getByExternalId(
-  //         dependency.externalAddonId,
-  //         addon.providerName,
-  //         addon.installationId
-  //       );
-  //       if (existingAddon) {
-  //         continue;
-  //       }
-
-  //       const installation = this._warcraftInstallationService.getWowInstallation(addon.installationId);
-  //       if (!installation) {
-  //         throw new Error("Installation not found");
-  //       }
-
-  //       const dependencyAddon = await this.getAddon(
-  //         dependency.externalAddonId,
-  //         addon.providerName,
-  //         installation
-  //       ).toPromise();
-
-  //       if (!dependencyAddon || !dependencyAddon.id) {
-  //         console.warn(
-  //           `No addon was found EID: ${dependency.externalAddonId} CP: ${addon.providerName ?? ""} CT: ${
-  //             addon.clientType
-  //           }`
-  //         );
-  //         continue;
-  //       }
-
-  //       await this._addonStorage.setAsync(dependencyAddon.id, dependencyAddon);
-
-  //       await this.installAddon(dependencyAddon);
-  //     }
-  //   }
 }
