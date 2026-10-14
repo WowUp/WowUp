@@ -63,6 +63,26 @@
   }
 }
 
+.addon-dependencies {
+  padding: 0.5em;
+  margin-bottom: 0.5em;
+
+  .dependency-toggle {
+    cursor: pointer;
+    user-select: none;
+  }
+
+  .dependency-chevron {
+    width: 14px;
+    height: 14px;
+  }
+
+  .dependency-list {
+    margin: 0.25em 0 0 0;
+    padding-left: 2.5em;
+  }
+}
+
 .id-link {
   &:hover {
     text-decoration: underline;

@@ -68,6 +68,12 @@ import { AddonInstallService, InstallQueueItem, InstallType } from "./addon-inst
 import { strIsNotNullOrEmpty } from "../../utils/string.utils";
 import { delayMs } from "../../utils/time.utils";
 
+export interface AddonDependencyDetail {
+  externalAddonId: string;
+  name: string;
+  installed: boolean;
+}
+
 export enum ScanUpdateType {
   Start,
   Update,
@@ -115,6 +121,8 @@ export class AddonService {
   private readonly _syncingSrc = new BehaviorSubject<boolean>(false);
 
   private _activeInstalls: AddonUpdateEvent[] = [];
+  /** installationId|providerName|externalId of each dependency being installed right now */
+  private readonly _pendingDependencyInstalls = new Set<string>();
 
   public readonly addonAction$ = this._addonActionSrc.asObservable();
   public readonly addonInstalled$ = this._addonInstallService.addonInstalled$;
@@ -418,63 +426,147 @@ export class AddonService {
     return this._addonStorage.getAvailableForUpdate(wowInstallation?.id);
   }
 
-  public async installDependencies(
-    addon: Addon,
-    onUpdate: (installState: AddonInstallState, progress: number) => void = () => {},
-  ): Promise<void> {
-    if (!addon.dependencies || !addon.providerName || !addon.installationId) {
-      console.warn(`Invalid addon: ${addon.id ?? ""}`);
-      return;
-    }
-
+  /**
+   * Install every required dependency of the addon that is not already present in its installation.
+   * Dependencies are looked up with the addon's own provider, installing a dependency installs its
+   * dependencies in turn. A dependency that fails is logged and skipped, it never fails the addon.
+   */
+  public async installDependencies(addon: Addon): Promise<void> {
     const requiredDependencies = this.getRequiredDependencies(addon);
     if (!requiredDependencies.length) {
-      console.log(`${addon.name}: No required dependencies found`);
       return;
     }
 
-    const maxCt = requiredDependencies.length;
-    let currentCt = 0;
-    for (const dependency of requiredDependencies) {
-      currentCt += 1;
-      const percent = (currentCt / maxCt) * 100;
-
-      onUpdate?.call(this, AddonInstallState.Installing, percent);
-
-      // If the dependency is already installed, skip it
-      const existingAddon = await this.getByExternalId(
-        dependency.externalAddonId,
-        addon.providerName,
-        addon.installationId,
-      );
-      if (existingAddon) {
-        continue;
-      }
-
-      const installation = this._warcraftInstallationService.getWowInstallation(addon.installationId);
-      if (!installation) {
-        throw new Error("Installation not found");
-      }
-
-      const dependencyAddon = await this.getAddon(
-        dependency.externalAddonId,
-        addon.providerName,
-        installation,
-      ).toPromise();
-
-      if (!dependencyAddon || !dependencyAddon.id) {
-        console.warn(
-          `No addon was found EID: ${dependency.externalAddonId} CP: ${addon.providerName ?? ""} CT: ${
-            addon.clientType
-          }`,
-        );
-        continue;
-      }
-
-      await this._addonStorage.setAsync(dependencyAddon.id, dependencyAddon);
-
-      await this.installAddon(dependencyAddon);
+    const providerName = addon.providerName ?? "";
+    const installation = this._warcraftInstallationService.getWowInstallation(addon.installationId);
+    const provider = this._addonProviderService.getProvider(providerName);
+    if (!installation || !provider) {
+      console.warn(`[InstallDependencies] ${addon.name}: installation or provider not found`);
+      return;
     }
+
+    for (const dependency of requiredDependencies) {
+      // Another install already pulling in the same dependency will finish it, so there is no need to wait
+      const pendingKey = `${installation.id}|${providerName}|${dependency.externalAddonId}`;
+      if (this._pendingDependencyInstalls.has(pendingKey)) {
+        continue;
+      }
+
+      this._pendingDependencyInstalls.add(pendingKey);
+      try {
+        await this.installDependency(dependency, providerName, provider, installation, addon);
+      } catch (e) {
+        console.error(`[InstallDependencies] ${addon.name}: failed to install ${dependency.externalAddonId}`, e);
+      } finally {
+        this._pendingDependencyInstalls.delete(pendingKey);
+      }
+    }
+  }
+
+  private async installDependency(
+    dependency: AddonDependency,
+    providerName: string,
+    provider: AddonProvider,
+    installation: WowInstallation,
+    parent: Addon,
+  ): Promise<void> {
+    const installedAddons = await this._addonStorage.getAllForInstallationIdAsync(installation.id);
+    if (this.isDependencyInstalled(dependency.externalAddonId, providerName, installedAddons)) {
+      return;
+    }
+
+    const searchResult = await provider.getById(dependency.externalAddonId, installation);
+    const latestFile = SearchResults.getLatestFile(searchResult, installation.defaultAddonChannelType);
+    if (!searchResult || !latestFile) {
+      console.warn(`[InstallDependencies] ${parent.name}: dependency not found ${dependency.externalAddonId}`);
+      return;
+    }
+
+    // The same folders may already be installed under another provider, or by hand
+    const installedFolders = installedAddons.flatMap((ia) => ia.installedFolderList ?? []);
+    if (_.intersection(latestFile.folders, installedFolders).length > 0) {
+      return;
+    }
+
+    const dependencyAddon = this.createAddon(searchResult, latestFile, installation);
+    if (!dependencyAddon?.id) {
+      return;
+    }
+
+    console.log(`[InstallDependency] ${parent.name} requires ${dependencyAddon.name}`);
+    await this._addonStorage.setAsync(dependencyAddon.id, dependencyAddon);
+    await this.installAddon(dependencyAddon);
+  }
+
+  private isDependencyInstalled(externalAddonId: string, providerName: string, installedAddons: Addon[]): boolean {
+    return this.findInstalledDependency(externalAddonId, providerName, installedAddons) !== undefined;
+  }
+
+  private findInstalledDependency(
+    externalAddonId: string,
+    providerName: string,
+    installedAddons: Addon[],
+  ): Addon | undefined {
+    return installedAddons.find(
+      (ia) =>
+        (ia.providerName === providerName && ia.externalId === externalAddonId) ||
+        !!ia.externalIds?.some((ext) => ext.providerName === providerName && ext.id === externalAddonId),
+    );
+  }
+
+  /**
+   * Resolve the name of each dependency and whether it is already installed, in the order given.
+   * Installed addons are used first, the rest are fetched from the provider in a single call.
+   * A dependency the provider cannot resolve falls back to its id for a name.
+   */
+  public async getDependencyDetails(
+    dependencies: AddonDependency[],
+    providerName: string,
+    installation: WowInstallation,
+  ): Promise<AddonDependencyDetail[]> {
+    if (!dependencies.length) {
+      return [];
+    }
+
+    const installedAddons = await this._addonStorage.getAllForInstallationIdAsync(installation.id);
+    const details = dependencies.map((dependency): AddonDependencyDetail => {
+      const installedAddon = this.findInstalledDependency(dependency.externalAddonId, providerName, installedAddons);
+      return {
+        externalAddonId: dependency.externalAddonId,
+        name: installedAddon?.name ?? dependency.externalAddonId,
+        installed: installedAddon !== undefined,
+      };
+    });
+
+    const unresolved = details.filter((detail) => !detail.installed);
+    const provider = this._addonProviderService.getProvider(providerName);
+    if (!unresolved.length || !provider) {
+      return details;
+    }
+
+    try {
+      const result = await provider.getAll(
+        installation,
+        unresolved.map((detail) => detail.externalAddonId),
+      );
+      const installedFolders = installedAddons.flatMap((ia) => ia.installedFolderList ?? []);
+
+      for (const detail of unresolved) {
+        const searchResult = result.searchResults.find((sr) => sr.externalId === detail.externalAddonId);
+        if (!searchResult) {
+          continue;
+        }
+
+        detail.name = searchResult.name;
+        // Same check installDependencies uses, so the dialog agrees with what an install would do
+        const latestFile = SearchResults.getLatestFile(searchResult, installation.defaultAddonChannelType);
+        detail.installed = _.intersection(latestFile?.folders ?? [], installedFolders).length > 0;
+      }
+    } catch (e) {
+      console.error(`[DependencyDetails] failed to resolve dependencies`, e);
+    }
+
+    return details;
   }
 
   public async processAutoUpdates(): Promise<Addon[]> {
@@ -531,6 +623,9 @@ export class AddonService {
 
     await this.installOrUpdateAddon(addon, "install", onUpdate, originalAddon);
     await this._addonStorage.setAsync(addon.id, addon);
+
+    // Runs after the queue item has settled, so dependency installs never wait on the slot this one holds
+    await this.installDependencies(addon);
   }
 
   public async installOrUpdateAddon(
@@ -1005,8 +1100,6 @@ export class AddonService {
   }
 
   private async syncProviderAddons(installation: WowInstallation, addons: Addon[], addonProvider: AddonProvider) {
-
-
     const providerAddonIds = this.getExternalIdsForProvider(addonProvider, addons);
     if (!providerAddonIds.length) {
       return;
