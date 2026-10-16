@@ -20,6 +20,9 @@
               "src/assets"
             ],
             "styles": [
+              "node_modules/@fontsource/roboto/300.css",
+              "node_modules/@fontsource/roboto/400.css",
+              "node_modules/@fontsource/roboto/500.css",
               "src/styles.scss"
             ],
             "scripts": [],
@@ -149,6 +152,9 @@
             "karmaConfig": "src/karma.conf.js",
             "scripts": [],
             "styles": [
+              "node_modules/@fontsource/roboto/300.css",
+              "node_modules/@fontsource/roboto/400.css",
+              "node_modules/@fontsource/roboto/500.css",
               "src/styles.scss"
             ],
             "assets": [
