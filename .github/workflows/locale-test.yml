@@ -39,6 +39,13 @@ jobs:
         cd ./wowup-electron
         npm i --force
 
+    # Ubuntu runners block the unprivileged user namespaces Electron's sandbox would otherwise use,
+    # so the karma Electron launcher aborts unless the setuid helper is set up the way it asks.
+    - name: Configure Electron sandbox
+      run: |
+        sudo chown root:root ./wowup-electron/node_modules/electron/dist/chrome-sandbox
+        sudo chmod 4755 ./wowup-electron/node_modules/electron/dist/chrome-sandbox
+
     - name: Lint
       run: |
         cd ./wowup-electron
