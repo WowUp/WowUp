@@ -19,6 +19,16 @@ export function onMenuZoomReset(win: BrowserWindow): void {
   win?.webContents.send(IPC_MENU_ZOOM_RESET_CHANNEL);
 }
 
+// Not role: "toggleDevTools", that targets whichever webContents has focus, so once the overwolf
+// ad view had been clicked the shortcut opened the ad's devtools instead of the app's.
+function createToggleDevToolsItem(win: BrowserWindow, config: MenuConfig): MenuItemConstructorOptions {
+  return {
+    label: config.toggleDevToolsLabel,
+    click: () => win?.webContents.toggleDevTools(),
+    accelerator: "CommandOrControl+Shift+I",
+  };
+}
+
 function createMacMenuItems(win: BrowserWindow, config?: MenuConfig): Array<MenuItemConstructorOptions | MenuItem> {
   if (config === undefined) {
     return [];
@@ -29,7 +39,7 @@ function createMacMenuItems(win: BrowserWindow, config?: MenuConfig): Array<Menu
     submenu: [
       { label: config.reloadLabel, role: "reload" },
       { label: config.forceReloadLabel, role: "forceReload" },
-      { label: config.toggleDevToolsLabel, role: "toggleDevTools", accelerator: "CommandOrControl+Shift+I" },
+      createToggleDevToolsItem(win, config),
       { type: "separator" },
     ],
   };
@@ -79,7 +89,7 @@ function createLinuxMenuItems(win: BrowserWindow, config?: MenuConfig): Array<Me
     submenu: [
       { label: config.reloadLabel, role: "reload" },
       { label: config.forceReloadLabel, role: "forceReload" },
-      { label: config.toggleDevToolsLabel, role: "toggleDevTools", accelerator: "CommandOrControl+Shift+I" },
+      createToggleDevToolsItem(win, config),
     ],
   };
 
@@ -116,7 +126,7 @@ function createWindowsMenuItems(win: BrowserWindow, config?: MenuConfig): Array<
   
   const viewMenu: MenuItemConstructorOptions = {
     label: config.viewLabel,
-    submenu: [{ label: config.toggleDevToolsLabel, role: "toggleDevTools", accelerator: "CommandOrControl+Shift+I" }],
+    submenu: [createToggleDevToolsItem(win, config)],
   };
 
   const submenu = viewMenu.submenu as MenuItemConstructorOptions[];

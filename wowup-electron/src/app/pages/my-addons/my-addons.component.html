@@ -163,7 +163,11 @@
       {{ "PAGES.MY_ADDONS.ADDON_CONTEXT_MENU.CHANNEL_SUBMENU_TITLE" | translate }}
     </button>
     <!-- PROVIDER SUBMENU -->
-    <button *ngIf="addonUtils.hasMultipleProviders(listItem.addon)" mat-menu-item [matMenuTriggerFor]="addonProviders">
+    <button
+      *ngIf="addonUtils.hasMultipleProviders(listItem.addon, isProviderAvailable)"
+      mat-menu-item
+      [matMenuTriggerFor]="addonProviders"
+    >
       {{ "PAGES.MY_ADDONS.ADDON_CONTEXT_MENU.PROVIDER_SUBMENU_TITLE" | translate }}
     </button>
     <!-- SHOW FOLDER -->
@@ -219,7 +223,7 @@
         (change)="onSelectedProviderChange($event, listItem)"
       >
         <mat-radio-button
-          *ngFor="let provider of addonUtils.getAllProviders(listItem.addon)"
+          *ngFor="let provider of addonUtils.getAllProviders(listItem.addon, isProviderAvailable)"
           class="mat-menu-item"
           [value]="provider.providerName"
         >

@@ -3,6 +3,7 @@ import * as log from "electron-log";
 import { join } from "path";
 
 import { IPC_WAGO_ADS_CMP_CLOSE } from "../../../src/common/constants";
+import { describeBounds } from "../../window-state";
 import { AD_PARTITION } from "./wago-ad-view.service";
 
 const CMP_URL = "https://addons.wago.io/app-cmp.html";
@@ -16,6 +17,17 @@ const CMP_WINDOW_HEIGHT = 600;
  * not modal yet either, so the app stays clickable while the page makes up its mind.
  */
 const CMP_SHOW_DELAY_MS = 2500;
+
+/**
+ * How long the consent tool gets to load before the window gives up and closes itself. The tool is
+ * a third party script that ad blockers commonly block, and without it the page never asks to be
+ * closed, which would leave an invisible modal window blocking the app.
+ */
+const CMP_LOAD_TIMEOUT_MS = 10000;
+const CMP_LOAD_POLL_MS = 500;
+
+/** Evaluated in the consent page. The tool defines `__cmp` once its script has loaded. */
+const CMP_READY_SCRIPT = "typeof window.__cmp !== 'undefined'";
 
 /**
  * Runs the ad network's consent tool.
@@ -124,12 +136,44 @@ export class WagoCmpWindowService {
       this._resolveClosed = resolve;
     });
 
-    const showTimer = setTimeout(() => {
-      if (!window.isDestroyed()) {
-        log.info("[cmp-window] consent page is still up, showing it");
-        window.show();
+    const openedAt = Date.now();
+    let showTimer: ReturnType<typeof setTimeout> | undefined;
+
+    // Only show the window once the consent tool is actually running. Showing a modal for a page
+    // whose tool failed to load would block every click on the app with nothing visible to dismiss.
+    const showWhenReady = () => {
+      showTimer = undefined;
+      if (window.isDestroyed()) {
+        return;
       }
-    }, CMP_SHOW_DELAY_MS);
+
+      void window.webContents
+        .executeJavaScript(CMP_READY_SCRIPT)
+        .catch(() => false)
+        .then((ready: boolean) => {
+          if (window.isDestroyed()) {
+            return;
+          }
+
+          if (ready) {
+            log.info(
+              `[cmp-window] consent page is still up, showing it at ${describeBounds(window.getBounds())}, parent at ${describeBounds(this._parent.getBounds())}`,
+            );
+            window.show();
+            return;
+          }
+
+          if (Date.now() - openedAt >= CMP_LOAD_TIMEOUT_MS) {
+            log.warn("[cmp-window] consent tool did not load (blocked?), closing the consent page");
+            window.destroy();
+            return;
+          }
+
+          showTimer = setTimeout(showWhenReady, CMP_LOAD_POLL_MS);
+        });
+    };
+
+    showTimer = setTimeout(showWhenReady, CMP_SHOW_DELAY_MS);
 
     window.on("closed", () => {
       clearTimeout(showTimer);

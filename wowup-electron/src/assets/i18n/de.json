@@ -194,7 +194,7 @@
       "ANNIVERSARY": "Burning Crusade Anniversary",
       "BETA": "The War Within Beta",
       "CLASSIC": "Mists of Pandaria Classic",
-      "CLASSICBETA": "MoP Classic Beta",
+      "CLASSICBETA": "World of Warcraft: Forever",
       "CLASSICERA": "World of Warcraft Classic",
       "CLASSICERAPTR": "PTR (Classic Era)",
       "CLASSICPTR": "PTR (MoP Classic)",
@@ -234,10 +234,10 @@
     },
     "ERRORS": {
       "ACCOUNT_PUSH_TOGGLE_FAILED_ERROR": "Sofortige Updates für deinen Account konnten nicht eingeschaltet werden. Bitte versuche es später erneut oder schreibe uns auf Discord.",
-      "ADDON_INSTALL_ERROR": "Addon '{addonName}' konnte nicht installiert werden. Versuche es später erneut.",
+      "ADDON_INSTALL_ERROR": "Addon „{addonName}“ konnte nicht installiert werden. Versuche es später erneut.",
       "ADDON_INSTALL_NETWORK_ERROR": "Failed to download {addonName} due to a network error. This can be caused by an unstable connection or IPv6 issues on your network — try disabling IPv6 on your network adapter if this keeps happening.",
       "ADDON_SCAN_ERROR": "Beim Abgleichen deiner Addon-Ordner mit {providerName} ist ein Fehler aufgetreten. Versuche es später erneut.",
-      "ADDON_SYNC_ERROR": "Beim Überprüfen auf Aktualisierungen von '{providerName}' ist ein Fehler aufgetreten.",
+      "ADDON_SYNC_ERROR": "Beim Überprüfen auf Aktualisierungen von „{providerName}“ ist ein Fehler aufgetreten.",
       "ADDON_SYNC_FULL_ERROR": "[{installationName}]: Beim Überprüfen auf Aktualisierungen von {addonName} von {providerName} ist ein Fehler aufgetreten. Versuche es später erneut.",
       "CHANGE_PROVIDER_ERROR": "Anbieterwechsel von {addonName} nach {providerName} fehlgeschlagen",
       "GITHUB_LIMIT_ERROR": "Du hast dein GitHub-API-Limit von {max} Anforderungen erreicht.\nBitte warten bis {reset} und versuche es erneut.",
@@ -290,9 +290,9 @@
       "ADDON_INSTALLING": "Addon wird installiert",
       "CANCEL_BUTTON": "Schließen",
       "ERRORS": {
-        "ADDON_NOT_FOUND": "Für das Protokoll '{protocol}' wurde kein Addon gefunden",
+        "ADDON_NOT_FOUND": "Für das Protokoll „{protocol}“ wurde kein Addon gefunden",
         "GENERIC": "Fehler beim Abrufen der Daten für das Protokoll: {protocol}",
-        "NO_VALID_WOW_INSTALLATIONS": "Kein WoW-Client für Protokoll '{protocol}' installiert"
+        "NO_VALID_WOW_INSTALLATIONS": "Kein WoW-Client für Protokoll „{protocol}“ installiert"
       },
       "INSTALL_BUTTON": "Installieren",
       "TITLE": "Das Addon von {providerName} installieren"
