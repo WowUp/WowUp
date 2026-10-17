@@ -15,12 +15,13 @@ import { WowUpService } from "../wowup/wowup.service";
 import { AddonProviderFactory } from "./addon.provider.factory";
 import { nanoid } from "nanoid";
 import { FileService } from "../files/file.service";
-import { WowInstallation } from "wowup-lib-core";
+import { WowInstallation, WowUpAddonProvider } from "wowup-lib-core";
 import { TocService } from "../toc/toc.service";
 
 import {
   ADDON_PROVIDER_CURSEFORGE,
   ADDON_PROVIDER_CURSEFORGEV2,
+  ADDON_PROVIDER_HUB,
   ADDON_PROVIDER_RAIDERIO,
   ADDON_PROVIDER_TUKUI,
   ADDON_PROVIDER_UNKNOWN,
@@ -32,6 +33,7 @@ import {
 } from "../../../common/constants";
 import { AddonStorageService } from "../storage/addon-storage.service";
 import { AnalyticsService } from "../analytics/analytics.service";
+import { AddonScanApiService } from "../api/addon-scan-api.service";
 import { getEnumName } from "wowup-lib-core";
 
 export type InstallType = "install" | "update" | "remove";
@@ -76,6 +78,7 @@ export class AddonInstallService {
     private _tocService: TocService,
     private _addonStorage: AddonStorageService,
     private _analyticsService: AnalyticsService,
+    private _addonScanApiService: AddonScanApiService,
   ) {
     // Setup our install queue pump here. An error escaping one item must not reach the outer
     // pipe, or the subscription ends and every later item waits forever.
@@ -252,6 +255,8 @@ export class AddonInstallService {
         await this.reconcileExternalIds(addon, queueItem.originalAddon);
       }
 
+      await this.addHubExternalId(addon);
+
       await this.reconcileAddonFolders(addon);
 
       queueItem.completion.resolve();
@@ -421,6 +426,47 @@ export class AddonInstallService {
       await this.saveAddon(addon);
     } catch (e) {
       console.error(e);
+    }
+  }
+
+  /**
+   * The hub has no toc field and can only be matched by fingerprint, so an addon installed from
+   * another provider never learns its hub id from its tocs. Ask the hub about the installed
+   * folders instead. Best effort: a hub failure must never fail the install.
+   */
+  private async addHubExternalId(addon: Addon): Promise<void> {
+    if (
+      addon.providerName === ADDON_PROVIDER_HUB ||
+      !addon.installationId ||
+      !addon.installedFolderList?.length ||
+      addon.externalIds?.some((extId) => extId.providerName === ADDON_PROVIDER_HUB)
+    ) {
+      return;
+    }
+
+    const hubProvider = this._addonProviderService.getProvider<WowUpAddonProvider>(ADDON_PROVIDER_HUB);
+    const installation = this._warcraftInstallationService.getWowInstallation(addon.installationId);
+    if (!hubProvider?.enabled || !installation) {
+      return;
+    }
+
+    try {
+      const addonFolderPath = this._warcraftService.getAddonFolderPath(installation);
+      const folderPaths = addon.installedFolderList.map((folderName) => pathJoin(addonFolderPath, folderName));
+      const scanResults = await this._addonScanApiService.getScanResults(folderPaths, ["wowup"]);
+      const fingerprints = scanResults.map((result) => result.wowup?.fingerprint).filter((fp): fp is string => !!fp);
+
+      const hubIds = await hubProvider.getAddonIdsByFingerprints(fingerprints);
+      const hubId = fingerprints.map((fp) => hubIds.get(fp)).find((id) => id !== undefined);
+      if (!hubId) {
+        return;
+      }
+
+      addon.externalIds = addon.externalIds ?? [];
+      this.insertExternalId(addon.externalIds, ADDON_PROVIDER_HUB, hubId);
+      await this.saveAddon(addon);
+    } catch (e) {
+      console.error(`Failed to look up hub id for ${addon.name}`, e);
     }
   }
 
