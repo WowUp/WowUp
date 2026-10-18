@@ -18,6 +18,10 @@ const CHANGELOGS: ChangeLog[] = [
   {
     Version: "2.24.1",
     html: `
+    <h4>Features</h4>
+    <ul>
+    <li>Add World of Warcraft: Forever support</li>
+    </ul>
     <h4>Fixes</h4>
     <ul>
     <li>Fix WowUp freezing on startup and ignoring clicks when an ad blocker or ad-blocking DNS is in use (Wago version)</li>
