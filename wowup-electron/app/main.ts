@@ -546,9 +546,16 @@ function createWindow(): BrowserWindow {
 
   win.webContents.on("did-fail-load", () => {
     log.info("did-fail-load");
-    if (loadFailCount < 5) {
+    // When serving, the dev server is usually still compiling on the first load. Keep retrying it rather
+    // than falling back to dist/, which is a stale build that may not match the main process.
+    const maxLoadFails = argv.serve ? 60 : 5;
+    if (loadFailCount < maxLoadFails) {
       loadFailCount += 1;
-      loadMainUrl(win).catch((e) => log.error(e));
+      if (argv.serve) {
+        setTimeout(() => loadServeUrl(win), 2000);
+      } else {
+        loadMainUrl(win).catch((e) => log.error(e));
+      }
     } else {
       log.error(`Failed to load too many times, exiting`);
       app.quit();
@@ -560,12 +567,20 @@ function createWindow(): BrowserWindow {
     require("electron-reload")(__dirname, {
       electron: require(join(app.getAppPath(), "node_modules", "electron")),
     });
-    win.loadURL("http://localhost:4200").catch((e) => log.error(e));
+    loadServeUrl(win);
   } else {
     loadMainUrl(win).catch((e) => log.error(e));
   }
 
   return win;
+}
+
+function loadServeUrl(window: BrowserWindow | null): void {
+  if (window === null || window.isDestroyed()) {
+    return;
+  }
+
+  window.loadURL("http://localhost:4200").catch((e) => log.error(e));
 }
 
 async function loadMainUrl(window: BrowserWindow | null): Promise<void> {
