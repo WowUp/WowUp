@@ -33,6 +33,8 @@ export function getWowClientFolderName(clientType: WowClientType): string {
       return constants.WOW_CLASSIC_ERA_PTR_FOLDER;
     case WowClientType.Anniversary:
       return constants.WOW_ANNIVERSARY_FOLDER;
+    case WowClientType.Forever:
+      return constants.WOW_FOREVER_FOLDER;
     default:
       return "";
   }

@@ -28,7 +28,8 @@ export function getTocForGameType(tocFileNames: string[], clientType: WowClientT
     case WowClientType.Anniversary:
       matchedToc = tocFileNames.find((tfn) => /.*[-_](tbc|bcc)\.toc$/gi.test(tfn)) || '';
       break;
-    case WowClientType.ClassicBeta: // TODO the correct WoW Forever Beta suffix is not yet known, so we will treat it as mainline for now
+    case WowClientType.Forever:
+    case WowClientType.ClassicBeta:
       matchedToc = tocFileNames.find((tfn) => /.*[-_](forever|camelot)\.toc$/gi.test(tfn)) || '';
       break;
     default:
