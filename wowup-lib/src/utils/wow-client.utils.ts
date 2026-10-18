@@ -32,6 +32,7 @@ export function getWowGameType(clientType: WowClientType): WowGameType {
     case WowClientType.Classic:
     case WowClientType.ClassicPtr:
       return WowGameType.Mists;
+    case WowClientType.Forever:
     case WowClientType.ClassicBeta:
       return WowGameType.Forever;
     case WowClientType.Anniversary:
@@ -53,6 +54,7 @@ export function getWowMajorVersion(clientType: WowClientType): string {
     case WowClientType.Classic:
     case WowClientType.ClassicPtr:
       return WowMajorVersion.Mists;
+    case WowClientType.Forever:
     case WowClientType.ClassicBeta:
       return WowMajorVersion.Forever;
     case WowClientType.Anniversary:

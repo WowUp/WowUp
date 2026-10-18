@@ -94,7 +94,7 @@ const GAME_TYPE_LISTS = [
   {
     flavor: "wow-forever",
     typeId: 88568,
-    matches: [WowClientType.ClassicBeta],
+    matches: [WowClientType.Forever, WowClientType.ClassicBeta],
   },
 ];
 

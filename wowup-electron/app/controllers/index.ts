@@ -18,6 +18,7 @@ import { getWebContentsLabels } from "../services/metrics/web-contents-labels";
 import { sampleWindow } from "../services/metrics/window-sample";
 import { AddonScanService } from "../services/scan/addon-scan.service";
 import { nodeHashAlgorithms } from "../services/scan/hash-algorithms";
+import { WarcraftInstallationService } from "../services/warcraft/warcraft-installation.service";
 import { WarcraftPlatformWin } from "../services/warcraft/warcraft-platform.win";
 import { WarcraftPlatformMac } from "../services/warcraft/warcraft-platform.mac";
 import { WarcraftPlatformLinux } from "../services/warcraft/warcraft-platform.linux";
@@ -60,7 +61,7 @@ export function registerControllers(deps: ControllerDeps): void {
   const controllers: IpcController[] = [
     new AddonController(deps.addonStore),
     new WarcraftController(getPlatformImpl(), deps.preferenceStore, tocService),
-    new WarcraftInstallationController(deps.preferenceStore),
+    new WarcraftInstallationController(new WarcraftInstallationService(deps.preferenceStore)),
     new TocController(tocService),
     new AddonScanController(new AddonScanService({ hashes: nodeHashAlgorithms, log }), () =>
       metricsService.logRendererMemory("renderers after scan"),

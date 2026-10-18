@@ -404,6 +404,7 @@ export class GitHubAddonProvider extends AddonProvider {
       case WowClientType.RetailPtr:
       case WowClientType.RetailXPtr:
         return "mainline";
+      case WowClientType.Forever:
       case WowClientType.ClassicBeta: // confirmed https://github.com/BigWigsMods/packager/commit/7391c8ded01a14ff084dfa28ef09e52b0470c3cb
         return "forever";
       default:
@@ -462,13 +463,14 @@ export class GitHubAddonProvider extends AddonProvider {
       case WowClientType.RetailPtr:
       case WowClientType.RetailXPtr:
       case WowClientType.Beta:
-        return !isClassic && !isBurningCrusade && !isWotlk && !isCataclysm;
+        return !isClassic && !isBurningCrusade && !isWotlk && !isCataclysm && !isForever;
       case WowClientType.ClassicEra:
       case WowClientType.ClassicEraPtr:
         return isClassic;
       case WowClientType.Classic:
       case WowClientType.ClassicPtr:
         return isMists;
+      case WowClientType.Forever:
       case WowClientType.ClassicBeta:
         return isForever;
       case WowClientType.Anniversary:
@@ -499,7 +501,7 @@ export class GitHubAddonProvider extends AddonProvider {
   }
 
   private isForever(asset: GitHubAsset): boolean {
-    return /[-_](forever|camelot)\.zip$/i.test(asset.name); // TODO get the correct WoW Forever suffix when known
+    return /[-_](forever|camelot)\.zip$/i.test(asset.name);
   }
 
   private getAddonName(addonId: string): string {

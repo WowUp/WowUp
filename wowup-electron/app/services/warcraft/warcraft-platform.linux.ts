@@ -7,6 +7,7 @@ import {
   WOW_CLASSIC_BETA_FOLDER,
   WOW_CLASSIC_ERA_FOLDER,
   WOW_CLASSIC_ERA_PTR_FOLDER,
+  WOW_FOREVER_FOLDER,
   WOW_RETAIL_XPTR_FOLDER,
 } from "../../../src/common/constants";
 import { InstalledProduct, WowClientType } from "wowup-lib-core";
@@ -66,6 +67,7 @@ export class WarcraftPlatformLinux implements WarcraftPlatform {
   public getExecutableName(clientType: WowClientType): string {
     switch (clientType) {
       case WowClientType.Retail:
+      case WowClientType.Forever: // WoW Forever ships the retail binary, it is told apart by its install folder
         return WOW_RETAIL_NAME;
       case WowClientType.ClassicEra:
       case WowClientType.Classic:
@@ -89,7 +91,7 @@ export class WarcraftPlatformLinux implements WarcraftPlatform {
     const binaryName = path.basename(binaryPath);
     switch (binaryName) {
       case WOW_RETAIL_NAME:
-        return WowClientType.Retail;
+        return binaryPath.toLowerCase().includes(WOW_FOREVER_FOLDER) ? WowClientType.Forever : WowClientType.Retail;
       case WOW_CLASSIC_NAME:
         if (binaryPath.toLowerCase().includes(WOW_CLASSIC_ERA_FOLDER)) {
           return WowClientType.ClassicEra;
