@@ -8,6 +8,7 @@ import { TranslateService } from "@ngx-translate/core";
 
 import { ADDON_PROVIDER_UNKNOWN } from "../../../../common/constants";
 import { AddonViewModel } from "../../../business-objects/addon-view-model";
+import { AddonProviderFactory } from "../../../services/addons/addon.provider.factory";
 import { DialogFactory } from "../../../services/dialog/dialog.factory";
 import { SessionService } from "../../../services/session/session.service";
 import * as AddonUtils from "../../../utils/addon.utils";
@@ -59,8 +60,11 @@ export class MyAddonsAddonCellComponent implements AgRendererComponent {
   );
 
   public readonly hasMultipleProviders$ = this.listItem$.pipe(
-    map((item) => (item.addon === undefined ? false : AddonUtils.hasMultipleProviders(item.addon))),
+    map((item) => item.addon !== undefined && AddonUtils.hasMultipleProviders(item.addon, this.isProviderAvailable)),
   );
+
+  private readonly isProviderAvailable: AddonUtils.ProviderAvailability = (providerName) =>
+    this._addonProviderService.isProviderAvailable(providerName);
 
   public readonly autoUpdateEnabled$ = this.listItem$.pipe(map((item) => item.addon?.autoUpdateEnabled ?? false));
 
@@ -123,6 +127,7 @@ export class MyAddonsAddonCellComponent implements AgRendererComponent {
     private _translateService: TranslateService,
     private _dialogFactory: DialogFactory,
     public sessionService: SessionService,
+    private _addonProviderService: AddonProviderFactory,
   ) {}
 
   public agInit(params: ICellRendererParams): void {

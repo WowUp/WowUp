@@ -180,6 +180,8 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
   public contextMenuPosition = { x: "0px", y: "0px" };
   public overlayNoRowsTemplate = "";
   public addonUtils = AddonUtils;
+  public readonly isProviderAvailable: AddonUtils.ProviderAvailability = (providerName) =>
+    this._addonProviderService.isProviderAvailable(providerName);
   public overlayRef: OverlayRef | null = null;
 
   public wowInstallations$: Observable<WowInstallation[]>;

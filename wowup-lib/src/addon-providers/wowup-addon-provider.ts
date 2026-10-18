@@ -110,6 +110,31 @@ export class WowUpAddonProvider extends AddonProvider {
     }
   }
 
+  /**
+   * Look up which hub addon each folder fingerprint belongs to, without building an addon from it.
+   * Lets an addon installed from another provider learn its hub id, since the hub has no toc field
+   * and can only be matched by fingerprint.
+   * @returns fingerprint to hub addon id, only for fingerprints the hub knows
+   */
+  public async getAddonIdsByFingerprints(fingerprints: string[]): Promise<Map<string, string>> {
+    const addonIds = new Map<string, string>();
+    const uniqueFingerprints = uniq(fingerprints.filter((fp) => !!fp));
+    if (uniqueFingerprints.length === 0) {
+      return addonIds;
+    }
+
+    const response = await this.getAddonsByFingerprints(uniqueFingerprints);
+    for (const exactMatch of response?.exactMatches ?? []) {
+      for (const addonFolder of exactMatch.matched_release?.addonFolders ?? []) {
+        if (uniqueFingerprints.includes(addonFolder.fingerprint) && !addonIds.has(addonFolder.fingerprint)) {
+          addonIds.set(addonFolder.fingerprint, exactMatch.id.toString());
+        }
+      }
+    }
+
+    return addonIds;
+  }
+
   public override async getDescription(installation: WowInstallation, externalId: string): Promise<string> {
     try {
       const response = await this.getAddonById(externalId);

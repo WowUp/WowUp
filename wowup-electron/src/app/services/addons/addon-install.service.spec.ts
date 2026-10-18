@@ -1,18 +1,21 @@
 /* eslint-disable @typescript-eslint/unbound-method, @typescript-eslint/no-unsafe-argument */
-import { join as pathJoin } from "path";
+import { basename, join as pathJoin } from "path";
 import {
   Addon,
   AddonChannelType,
   AddonDependencyType,
   AddonProvider,
+  AddonScanResult,
   WowClientType,
   WowInstallation,
+  WowUpAddonProvider,
 } from "wowup-lib-core";
 
 import { USER_ACTION_ADDON_INSTALL } from "../../../common/constants";
 import { AddonInstallState } from "../../models/wowup/addon-install-state";
 import { AddonUpdateEvent } from "../../models/wowup/addon-update-event";
 import { AnalyticsService } from "../analytics/analytics.service";
+import { AddonScanApiService } from "../api/addon-scan-api.service";
 import { DownloadService } from "../download/download.service";
 import { FileService } from "../files/file.service";
 import { AddonStorageService } from "../storage/addon-storage.service";
@@ -53,6 +56,8 @@ describe("AddonInstallService", () => {
   let tocService: jasmine.SpyObj<TocService>;
   let addonStorage: jasmine.SpyObj<AddonStorageService>;
   let analyticsService: jasmine.SpyObj<AnalyticsService>;
+  let addonScanApiService: jasmine.SpyObj<AddonScanApiService>;
+  let hubProvider: jasmine.SpyObj<WowUpAddonProvider>;
 
   let service: AddonInstallService;
 
@@ -170,6 +175,24 @@ describe("AddonInstallService", () => {
 
     analyticsService = jasmine.createSpyObj<AnalyticsService>("AnalyticsService", ["trackAction"]);
 
+    addonScanApiService = jasmine.createSpyObj<AddonScanApiService>("AddonScanApiService", ["getScanResults"]);
+    addonScanApiService.getScanResults.and.callFake((filePaths) =>
+      Promise.resolve(
+        filePaths.map((path) => ({
+          path,
+          wowup: { fingerprint: `fp-${basename(path)}` } as AddonScanResult,
+        })),
+      ),
+    );
+
+    hubProvider = jasmine.createSpyObj<WowUpAddonProvider>("WowUpAddonProvider", [
+      "getAddonIdsByFingerprints",
+      "isValidAddonId",
+    ]);
+    hubProvider.getAddonIdsByFingerprints.and.resolveTo(new Map());
+    hubProvider.isValidAddonId.and.returnValue(true);
+    (hubProvider as { enabled: boolean }).enabled = true;
+
     service = new AddonInstallService(
       warcraftInstallationService,
       addonProviderFactory,
@@ -180,6 +203,7 @@ describe("AddonInstallService", () => {
       tocService,
       addonStorage,
       analyticsService,
+      addonScanApiService,
     );
   });
 
@@ -411,6 +435,84 @@ describe("AddonInstallService", () => {
       await runInstall(addon, "update", jasmine.createSpy("onUpdate"), original);
 
       expect(addon.externalIds).toContain({ id: "abc", providerName: "Wago" });
+    });
+  });
+
+  describe("hub external id", () => {
+    beforeEach(() => {
+      addonProviderFactory.getProvider.and.callFake(((name: string) =>
+        name === "Curse" ? provider : name === "WowUpHub" ? hubProvider : undefined) as any);
+      fileService.listDirectories.and.resolveTo(["Baganator"]);
+    });
+
+    it("should add the hub id of an addon installed from another provider", async () => {
+      hubProvider.getAddonIdsByFingerprints.and.resolveTo(new Map([["fp-Baganator", "50"]]));
+      const addon = createAddon();
+
+      const { result } = await runInstall(addon);
+
+      await expectAsync(result).toBeResolved();
+      expect(addonScanApiService.getScanResults).toHaveBeenCalledWith(
+        [pathJoin(ADDON_FOLDER_PATH, "Baganator")],
+        ["wowup"],
+      );
+      expect(hubProvider.getAddonIdsByFingerprints).toHaveBeenCalledWith(["fp-Baganator"]);
+      expect(addon.externalIds).toContain({ id: "50", providerName: "WowUpHub" });
+      expect(addonStorage.setAsync).toHaveBeenCalledWith(addon.id, addon);
+    });
+
+    it("should leave the external ids alone when the hub does not know the addon", async () => {
+      const addon = createAddon();
+
+      await runInstall(addon);
+
+      expect(addon.externalIds).toEqual([{ id: "1001", providerName: "Curse" }]);
+    });
+
+    it("should still finish the install when the hub lookup fails", async () => {
+      hubProvider.getAddonIdsByFingerprints.and.rejectWith(new Error("hub down"));
+      spyOn(console, "error");
+      const addon = createAddon();
+
+      const { result, onUpdate } = await runInstall(addon);
+
+      await expectAsync(result).toBeResolved();
+      expect(onUpdate).toHaveBeenCalledWith(AddonInstallState.Complete, 100);
+      expect(addon.externalIds?.some((extId) => extId.providerName === "WowUpHub")).toBeFalse();
+    });
+
+    it("should not ask the hub about an addon installed from the hub", async () => {
+      const addon = createAddon({
+        providerName: "WowUpHub",
+        externalId: "50",
+        externalIds: [{ id: "50", providerName: "WowUpHub" }],
+      });
+      addonProviderFactory.getProvider.and.callFake(((name: string) =>
+        name === "WowUpHub" ? hubProvider : undefined) as any);
+
+      await runInstall(addon);
+
+      expect(hubProvider.getAddonIdsByFingerprints).not.toHaveBeenCalled();
+    });
+
+    it("should not ask the hub again when the hub id is already known", async () => {
+      const original = createAddon({ id: "old", externalIds: [{ id: "50", providerName: "WowUpHub" }] });
+      const addon = createAddon();
+
+      await runInstall(addon, "update", jasmine.createSpy("onUpdate"), original);
+
+      expect(hubProvider.getAddonIdsByFingerprints).not.toHaveBeenCalled();
+      expect(addon.externalIds).toContain({ id: "50", providerName: "WowUpHub" });
+    });
+
+    it("should not ask the hub when the hub provider is turned off", async () => {
+      (hubProvider as { enabled: boolean }).enabled = false;
+      const addon = createAddon();
+
+      await runInstall(addon);
+
+      expect(addonScanApiService.getScanResults).not.toHaveBeenCalled();
+      expect(hubProvider.getAddonIdsByFingerprints).not.toHaveBeenCalled();
     });
   });
 
