@@ -6,6 +6,7 @@ import { AfterViewInit, Component, Inject, OnInit } from "@angular/core";
 import { UntypedFormControl } from "@angular/forms";
 import { MAT_DIALOG_DATA, MatDialogRef } from "@angular/material/dialog";
 
+import { AddonInstallState } from "../../../models/wowup/addon-install-state";
 import { AddonService } from "../../../services/addons/addon.service";
 import { SessionService } from "../../../services/session/session.service";
 import { WarcraftInstallationService } from "../../../services/warcraft/warcraft-installation.service";
@@ -98,21 +99,33 @@ export class InstallFromProtocolDialogComponent implements OnInit, AfterViewInit
     try {
       this.isInstalling = true;
 
-      const totalInstalls = selectedInstallations.length;
-      let installIdx = 0;
-      for (const installation of selectedInstallations) {
-        await this._addonService.installPotentialAddon(
-          this.addon,
-          installation,
-          (state, progress) => {
-            console.debug("Install Progress", progress);
-            this.installProgress = (installIdx * 100 + progress) / totalInstalls;
-          },
-          targetFile,
-        );
-        installIdx += 1;
-        this._sessionService.notifyTargetFileInstallComplete();
-      }
+      // The install promises also wait on required dependencies, which can take minutes. The dialog is
+      // done once the addon itself is in, the dependencies carry on with their own rows in the grid.
+      const progressByInstallation = new Map<string, number>(selectedInstallations.map((inst) => [inst.id, 0]));
+      const onProgress = (installationId: string, state: AddonInstallState, progress: number) => {
+        console.debug("Install Progress", progress);
+        // Errors report 100 as well, only a completed install counts as done
+        progressByInstallation.set(installationId, state === AddonInstallState.Complete ? 100 : Math.min(progress, 99));
+
+        const values = [...progressByInstallation.values()];
+        this.installProgress = _.sum(values) / values.length;
+        if (values.every((value) => value === 100)) {
+          this.isComplete = true;
+          this.isInstalling = false;
+        }
+      };
+
+      await Promise.all(
+        selectedInstallations.map(async (installation) => {
+          await this._addonService.installPotentialAddon(
+            this.addon,
+            installation,
+            (state, progress) => onProgress(installation.id, state, progress),
+            targetFile,
+          );
+          this._sessionService.notifyTargetFileInstallComplete();
+        }),
+      );
 
       this.isComplete = true;
     } catch (e) {
