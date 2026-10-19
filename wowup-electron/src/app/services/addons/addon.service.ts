@@ -430,6 +430,7 @@ export class AddonService {
    * Install every required dependency of the addon that is not already present in its installation.
    * Dependencies are looked up with the addon's own provider, installing a dependency installs its
    * dependencies in turn. A dependency that fails is logged and skipped, it never fails the addon.
+   * All of them are resolved first and then queued together, so every one shows as pending at once.
    */
   public async installDependencies(addon: Addon): Promise<void> {
     const requiredDependencies = this.getRequiredDependencies(addon);
@@ -445,6 +446,10 @@ export class AddonService {
       return;
     }
 
+    // Folders claimed by dependencies resolved so far, so two of them never install the same folder
+    const claimedFolders: string[] = [];
+    const resolved: Array<{ pendingKey: string; dependencyAddon: Addon }> = [];
+
     for (const dependency of requiredDependencies) {
       // Another install already pulling in the same dependency will finish it, so there is no need to wait
       const pendingKey = `${installation.id}|${providerName}|${dependency.externalAddonId}`;
@@ -454,48 +459,72 @@ export class AddonService {
 
       this._pendingDependencyInstalls.add(pendingKey);
       try {
-        await this.installDependency(dependency, providerName, provider, installation, addon);
+        const result = await this.resolveDependency(
+          dependency,
+          providerName,
+          provider,
+          installation,
+          addon,
+          claimedFolders,
+        );
+        if (result) {
+          resolved.push({ pendingKey, dependencyAddon: result.dependencyAddon });
+          claimedFolders.push(...result.folders);
+          continue;
+        }
       } catch (e) {
-        console.error(`[InstallDependencies] ${addon.name}: failed to install ${dependency.externalAddonId}`, e);
-      } finally {
-        this._pendingDependencyInstalls.delete(pendingKey);
+        console.error(`[InstallDependencies] ${addon.name}: failed to resolve ${dependency.externalAddonId}`, e);
       }
+      this._pendingDependencyInstalls.delete(pendingKey);
     }
+
+    await Promise.all(
+      resolved.map(async ({ pendingKey, dependencyAddon }) => {
+        try {
+          console.log(`[InstallDependency] ${addon.name} requires ${dependencyAddon.name}`);
+          await this._addonStorage.setAsync(dependencyAddon.id, dependencyAddon);
+          await this.installAddon(dependencyAddon);
+        } catch (e) {
+          console.error(`[InstallDependencies] ${addon.name}: failed to install ${dependencyAddon.externalId}`, e);
+        } finally {
+          this._pendingDependencyInstalls.delete(pendingKey);
+        }
+      }),
+    );
   }
 
-  private async installDependency(
+  /**
+   * The addon to install for a dependency along with the folders it will install, or undefined when
+   * it is already present or cannot be found.
+   */
+  private async resolveDependency(
     dependency: AddonDependency,
     providerName: string,
     provider: AddonProvider,
     installation: WowInstallation,
     parent: Addon,
-  ): Promise<void> {
+    claimedFolders: string[],
+  ): Promise<{ dependencyAddon: Addon; folders: string[] } | undefined> {
     const installedAddons = await this._addonStorage.getAllForInstallationIdAsync(installation.id);
     if (this.isDependencyInstalled(dependency.externalAddonId, providerName, installedAddons)) {
-      return;
+      return undefined;
     }
 
     const searchResult = await provider.getById(dependency.externalAddonId, installation);
     const latestFile = SearchResults.getLatestFile(searchResult, installation.defaultAddonChannelType);
     if (!searchResult || !latestFile) {
       console.warn(`[InstallDependencies] ${parent.name}: dependency not found ${dependency.externalAddonId}`);
-      return;
+      return undefined;
     }
 
     // The same folders may already be installed under another provider, or by hand
     const installedFolders = installedAddons.flatMap((ia) => ia.installedFolderList ?? []);
-    if (_.intersection(latestFile.folders, installedFolders).length > 0) {
-      return;
+    if (_.intersection(latestFile.folders, [...installedFolders, ...claimedFolders]).length > 0) {
+      return undefined;
     }
 
     const dependencyAddon = this.createAddon(searchResult, latestFile, installation);
-    if (!dependencyAddon?.id) {
-      return;
-    }
-
-    console.log(`[InstallDependency] ${parent.name} requires ${dependencyAddon.name}`);
-    await this._addonStorage.setAsync(dependencyAddon.id, dependencyAddon);
-    await this.installAddon(dependencyAddon);
+    return dependencyAddon?.id ? { dependencyAddon, folders: latestFile.folders } : undefined;
   }
 
   private isDependencyInstalled(externalAddonId: string, providerName: string, installedAddons: Addon[]): boolean {
@@ -652,13 +681,8 @@ export class AddonService {
       onUpdate?.call(this, installState, progress);
     };
 
+    // addonInstalled$ gets its pending event from the queue itself
     onUpdate?.call(this, AddonInstallState.Pending, 0);
-    // const updateEvent: AddonUpdateEvent = {
-    //   addon,
-    //   installState: AddonInstallState.Pending,
-    //   progress: 0,
-    // };
-    // this._addonInstalledSrc.next(updateEvent);
 
     // create a ref for resolving or rejecting once the queue grabs this.
     let completion = { resolve: () => {}, reject: () => {} };

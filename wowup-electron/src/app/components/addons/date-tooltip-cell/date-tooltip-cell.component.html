@@ -1,1 +1,1 @@
-<span [matTooltip]="time$ | async | localeDate">{{ relativeTime$ | async }}</span>
+<span [matTooltip]="time$ | async | localeDate" [matTooltipDisabled]="!params.value">{{ relativeTime$ | async }}</span>

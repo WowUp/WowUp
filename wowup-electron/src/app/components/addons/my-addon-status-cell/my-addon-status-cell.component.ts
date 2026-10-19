@@ -69,6 +69,16 @@ export class MyAddonStatusCellComponent implements AgRendererComponent, OnDestro
     this.showStatusText = this.listItem?.isUpToDate() || (this.listItem?.addon?.isIgnored ?? true);
     this.statusText = this.getStatusText(this.listItem?.addon);
     this.isIgnored = this.listItem.addon?.isIgnored ?? true;
+
+    // A row can be (re)created part way through an install, pick up where it is
+    const installStatus = this.listItem?.addon?.id
+      ? this._addonService.getInstallStatus(this.listItem.addon.id)
+      : undefined;
+    if (installStatus) {
+      this.installState = installStatus.installState;
+      this.installProgress = installStatus.progress;
+      this.showStatusText = false;
+    }
   }
 
   public ngOnDestroy(): void {

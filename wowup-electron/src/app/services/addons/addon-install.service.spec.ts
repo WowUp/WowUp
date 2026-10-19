@@ -277,7 +277,7 @@ describe("AddonInstallService", () => {
         AddonInstallState.Complete,
       ];
       expect(onUpdate.calls.allArgs().map((args) => args[0])).toEqual(expectedStates);
-      expect(events.map((e) => e.installState)).toEqual(expectedStates);
+      expect(events.map((e) => e.installState)).toEqual([AddonInstallState.Pending, ...expectedStates]);
       expect(events[events.length - 1].progress).toEqual(100);
     });
 
@@ -350,6 +350,37 @@ describe("AddonInstallService", () => {
       await expectAsync(second.result).toBeResolved();
     });
 
+    it("should report items waiting for a free slot as pending", async () => {
+      const pending: Array<() => void> = [];
+      downloadService.downloadZipFile.and.callFake(
+        () => new Promise<string>((resolve) => pending.push(() => resolve(DOWNLOADED_ZIP_PATH))),
+      );
+      const events: AddonUpdateEvent[] = [];
+      service.addonInstalled$.subscribe((e) => events.push(e));
+
+      const deferreds = [1, 2, 3, 4].map((i) => {
+        const deferred = createDeferred();
+        service.enqueue({
+          addon: createAddon({ id: `addon-${i}`, name: `Addon ${i}` }),
+          onUpdate: () => {},
+          completion: deferred.completion,
+          installType: "install",
+        });
+        return deferred;
+      });
+
+      await new Promise((r) => setTimeout(r));
+      const statesOf = (id: string) => events.filter((e) => e.addon.id === id).map((e) => e.installState);
+      expect(statesOf("addon-1")).toEqual([AddonInstallState.Pending, AddonInstallState.Downloading]);
+      expect(statesOf("addon-4")).toEqual([AddonInstallState.Pending]);
+
+      pending.forEach((resolve) => resolve());
+      await deferreds[0].promise;
+      await new Promise((r) => setTimeout(r));
+      pending.forEach((resolve) => resolve());
+      await Promise.all(deferreds.map((d) => d.promise));
+    });
+
     it("should run at most three installs at the same time", async () => {
       const pending: Array<() => void> = [];
       downloadService.downloadZipFile.and.callFake(
@@ -387,7 +418,7 @@ describe("AddonInstallService", () => {
 
       await expectAsync(result).toBeRejectedWithError(/Installation not found/);
       expect(onUpdate).toHaveBeenCalledWith(AddonInstallState.Error, 100);
-      expect(events.map((e) => e.installState)).toEqual([AddonInstallState.Error]);
+      expect(events.map((e) => e.installState)).toEqual([AddonInstallState.Pending, AddonInstallState.Error]);
       expect(downloadService.downloadZipFile).not.toHaveBeenCalled();
     });
 

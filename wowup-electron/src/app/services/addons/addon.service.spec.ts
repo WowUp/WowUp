@@ -481,6 +481,26 @@ describe("AddonService", () => {
       expect(enqueued[0].addon.downloadUrl).toEqual("https://example.test/2002.zip");
     });
 
+    it("should queue every dependency before any of them has finished", async () => {
+      autoComplete = false;
+
+      const done = service.installDependencies(createAddon(requiring("2002", "3003")));
+      await new Promise((r) => setTimeout(r));
+
+      expect(enqueuedIds()).toEqual(["2002", "3003"]);
+      enqueued.forEach((item) => item.completion.resolve());
+      await expectAsync(done).toBeResolved();
+    });
+
+    it("should install only one of two dependencies that ship the same folder", async () => {
+      publish("2002", [], ["Shared"]);
+      publish("3003", [], ["Shared"]);
+
+      await service.installDependencies(createAddon(requiring("2002", "3003")));
+
+      expect(enqueuedIds()).toEqual(["2002"]);
+    });
+
     it("should look dependencies up with the parent's provider and installation", async () => {
       await service.installDependencies(createAddon(requiring("2002")));
 

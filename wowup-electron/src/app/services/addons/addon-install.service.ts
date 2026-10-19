@@ -91,6 +91,13 @@ export class AddonInstallService {
                 console.error(error);
                 item.completion.reject(error);
                 this._installErrorSrc.next(error);
+                // Settle the row too, it would show as installing forever otherwise
+                this._addonInstalledSrc.next({
+                  addon: item.addon,
+                  installState: AddonInstallState.Error,
+                  progress: 100,
+                  error,
+                });
                 return EMPTY;
               }),
             ),
@@ -103,6 +110,12 @@ export class AddonInstallService {
   }
 
   public enqueue(queueItem: InstallQueueItem): void {
+    // Lets the grids show a row as pending while it waits for a free slot in the queue
+    this._addonInstalledSrc.next({
+      addon: queueItem.addon,
+      installState: AddonInstallState.Pending,
+      progress: 0,
+    });
     this._installQueue.next(queueItem);
   }
 
