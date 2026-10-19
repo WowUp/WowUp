@@ -49,6 +49,7 @@ import { PUSH_NOTIFICATION_EVENT, pushEvents } from "./push";
 import { getAddonStore, getPreferenceStore, initializeStoreIpcHandlers } from "./stores";
 import { registerControllers } from "./controllers";
 import * as windowState from "./window-state";
+import { setAsDefaultProtocolClient } from "./utils/protocol-client";
 
 import { validateGpuCache } from "./utils/gpu-cache-buster";
 import { AppEnv } from "./env/environment";
@@ -158,7 +159,7 @@ if (!singleInstanceLock) {
 createAppMenu(win);
 
 // WowUp Protocol Handler
-app.setAsDefaultProtocolClient(APP_PROTOCOL_NAME);
+setAsDefaultProtocolClient(APP_PROTOCOL_NAME);
 
 // Set the app ID so that our notifications work correctly on Windows
 app.setAppUserModelId(AppEnv.buildFlavor === "ow" ? APP_USER_MODEL_ID_CF : APP_USER_MODEL_ID);
