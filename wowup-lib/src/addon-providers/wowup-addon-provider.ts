@@ -415,7 +415,10 @@ export class WowUpAddonProvider extends AddonProvider {
       dependencies: [],
       changelog: release.body,
       externalId: release.id.toString(),
-      title: release.toc_title ?? matchingVersion?.title,
+      title:
+        (matchingVersion && release.toc_titles?.[matchingVersion.game_type]) ??
+        release.toc_title ??
+        matchingVersion?.title,
       authors: matchingVersion?.authors,
     };
   }
@@ -445,7 +448,8 @@ export class WowUpAddonProvider extends AddonProvider {
       );
     }
 
-    const name = matchingVersion?.title || scanResult.exactMatch?.repository_name;
+    const name =
+      matchedRelease.toc_titles?.[gameType] || matchingVersion?.title || scanResult.exactMatch?.repository_name;
     const version = matchingVersion?.version || scanResult.exactMatch?.matched_release?.tag_name || '';
     const authors = matchingVersion?.authors || scanResult.exactMatch?.owner_name || '';
     const interfaceVer = [matchingVersion?.interface];

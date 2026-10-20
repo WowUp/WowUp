@@ -21,6 +21,8 @@ export interface WowUpAddonReleaseRepresentation {
   body: string;
   game_versions: AddonReleaseGameVersion[];
   toc_title?: string;
+  /** Main folder toc title per WowGameType, preferred over toc_title when present */
+  toc_titles?: { [gameType: string]: string };
   download_url: string;
   published_at: Date;
   addonFolders?: WowUpAddonReleaseFolderRepresentation[];
