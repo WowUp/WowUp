@@ -2,7 +2,7 @@ import { dialog } from "electron";
 import { app, BrowserWindow, BrowserWindowConstructorOptions, powerMonitor } from "electron";
 import * as log from "electron-log/main";
 import { find } from "lodash";
-import * as minimist from "minimist";
+import minimist = require("minimist");
 import { arch as osArch, release as osRelease, type as osType } from "os";
 import { join } from "path";
 import { pathToFileURL } from "url";

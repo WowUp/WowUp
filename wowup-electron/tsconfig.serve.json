@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "outDir": "./app-build",
+    "noEmit": true,
     "rootDir": ".",
     "sourceMap": true,
     "declaration": false,

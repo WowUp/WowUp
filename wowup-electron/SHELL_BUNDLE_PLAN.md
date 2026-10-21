@@ -184,7 +184,8 @@ No behavior change; just introduces the seam.
       `app/utils/` into `app/shell/` (the bundle still uses it for the in-app protocol
       toggles in `ipc-events.ts`), and the shell has its own `WOWUP_PROTOCOL_NAME`, kept
       equal to `APP_PROTOCOL_NAME` by a spec. Specs are exempt from the rule. The
-      bootstrap's `require("../main")` is the one intended crossing and isn't an import.
+      bootstrap's `require()` of the bundle's `main.js` is the one intended crossing and
+      isn't an import (since Phase 2 it's by runtime path, not a relative module).
 - [x] `ng lint` now actually lints all of `app/`: its pattern was `app/**.ts`, which
       only matched top-level files, so `app/controllers/`, `app/services/`, etc. had
       never been linted (they turned out clean).
@@ -199,22 +200,46 @@ No behavior change; just introduces the seam.
       route into `main.log`, and a second instance with a `wowup://` link exits without
       loading `main.js` while the running instance receives the link.
 
-## Phase 2 — Make main-process code location-independent ⏳ not started
+## Phase 2 — Make main-process code location-independent 🚧 in progress
 
-- [ ] Add a shell-paths helper (`bundleRoot`, `shellRoot`, `nativeAddonPath`) and route
-      every hard-coded path through it:
-  - [ ] `app/main.ts:592` — `dist/index.html` → bundle `renderer/index.html`.
-  - [ ] `app/main.ts:327` — `preload.js` → bundle.
-  - [ ] `app/ipc-events.ts:216`, `app/system-tray.ts:21`,
-        `app/services/ads/wago-ad-view.service.ts:181`,
-        `app/services/ads/wago-cmp-window.service.ts:127` — `assets/` → bundle.
-  - [ ] `app/services/scan/hash-algorithms.ts:20` — native addon → **shell**.
-  - [ ] `app/utils/protocol-client.ts:14` — must resolve to the **shell's** app path.
-- [ ] Bundle main + preload with esbuild into single files (externals: `electron`,
-      `*.node`, `win-ca`); keep `tsc -p tsconfig.serve.json` for type-checking.
-- [ ] Confirm `npm run test:main` still passes against the bundled output where relevant.
-- [ ] Add a lint rule or test that flags new `app.getAppPath()` / `__dirname` uses
-      outside the shell-paths helper.
+- [x] The shell publishes `paths` on `WowUpShell` (`shellRoot`, `bundleRoot`,
+      `nativeAddon`); for now both roots are `app.getAppPath()`. App code resolves files
+      through `app/bundle-paths.ts`, which owns the bundle's layout (`dist/` and
+      `assets/` under `bundleRoot`, `preload.js` next to the bundled `main.js`), so
+      Phase 3's move to `renderer/` is a one-line change there. Routed through it:
+  - [x] `main.ts` — renderer `dist/index.html`, `preload.js`, the Linux window icon, and
+        the dev-only `electron-reload` paths.
+  - [x] `ipc-events.ts` (`IPC_GET_ASSET_FILE_PATH`), `system-tray.ts`,
+        `wago-ad-view.service.ts`, `wago-cmp-window.service.ts` — `assets/` → bundle.
+  - [x] `hash-algorithms.ts` — native addon → `shell.paths.nativeAddon`.
+  - [x] `shell/protocol-client.ts` keeps `app.getAppPath()`: it's shell code, so that
+        is already the shell's path.
+- [x] `scripts/build-main.js` (esbuild, pinned `0.20.1` dev dependency) builds two
+      separate bundles: the shell (`app/shell/bootstrap.ts` → `app-build/shell/`) and
+      the app (`app/main.ts` + `app/preload.ts` → `app-build/bundle/`). It clears
+      `app-build/` first. `package.json` `main` is now `app-build/shell/bootstrap.js`,
+      which loads `<bundleRoot>/app-build/bundle/main.js` by runtime path.
+      `electron:serve-tsc` / `ow:electron:serve-tsc` run `tsc -p tsconfig.serve.json`
+      (now `noEmit`, type-check only) and then the build script.
+- [x] Externals, loaded from `node_modules` at runtime: `electron`, `electron-log`
+      (initialized once by the shell, shared with the bundle), `electron-updater`
+      (updates the shell), `win-ca` (loads `.node` files and `roots.exe` from its own
+      folder), `electron-reload` (dev only). Everything else is bundled.
+- [x] Four call sites used `import * as X` on a callable/constructable CommonJS module
+      (`minimist`, `electron-store`, `adm-zip`, `globrex`), which works with tsc's output
+      but crashes once bundled; switched to `import X = require(...)`, the form
+      `ipc-events.ts` already used. The build now has no warnings.
+- [x] `npm run test:main` passes (specs still compile with tsc, unaffected by bundling).
+- [x] `no-restricted-syntax` in `.eslintrc.js` flags `app.getAppPath()` and
+      `__dirname`/`__filename` in `app/**` outside `app/shell/` and `bundle-paths.ts`.
+- [x] Verified on Windows, both flavors, isolated `--user-data-dir`: starts through
+      the shell bundle, preload runs (`win-ca loaded`), renderer loads, tray icon
+      resolves via `bundle-paths`; ow flavor second-instance + `wowup://` handoff still
+      works.
+- [ ] Not exercised: the native addon (only loaded during a curseforge fingerprint
+      scan in the ow flavor) and the wago ad/consent windows' preload scripts. Both now
+      resolve through `bundle-paths`; check them in the next full manual test.
+- [ ] Verify on mac.
 
 ## Phase 3 — Bundle build + signing in CI ⏳ not started
 
@@ -246,6 +271,10 @@ No behavior change; just introduces the seam.
 
 - [ ] Bootstrap selects bundles from `userData/bundles/<version>/` by `shellApi` and
       version, skipping quarantined ones.
+- [ ] Make the bundle's externals (see Phase 2) resolve from the shell's `node_modules`:
+      once a bundle loads from `userData`, Node won't find them by walking up from the
+      bundle's folder (e.g. add the shell's `node_modules` to the bundle module's lookup
+      paths).
 - [ ] Per-launch sha256 + ed25519 verification; fall back to the baked-in bundle on
       failure (and log why).
 - [ ] Booting marker + `markHealthy()` (called by the bundle when the main window is

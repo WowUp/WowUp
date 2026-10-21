@@ -17,7 +17,7 @@
     "name": "WowUp LLC",
     "email": "zakrn@wowup.io"
   },
-  "main": "app-build/app/shell/bootstrap.js",
+  "main": "app-build/shell/bootstrap.js",
   "overwolf": {
     "disablePM": true,
     "adsOptimization": {
@@ -37,7 +37,7 @@
     "build:dev": "npm run build -- -c dev",
     "build:prod": "npm run build -- -c production",
     "ng:serve": "npm run build:lib && ng serve -c dev",
-    "electron:serve-tsc": "cross-env BUILD_FLAVOR=wago npm run build:injectenv && tsc -p tsconfig.serve.json",
+    "electron:serve-tsc": "cross-env BUILD_FLAVOR=wago npm run build:injectenv && tsc -p tsconfig.serve.json && node scripts/build-main.js",
     "electron:serve": "cross-env BUILD_FLAVOR=wago npm run build:injectenv && wait-on tcp:4200 && npm run electron:serve-tsc && npx electron . --serve",
     "electron:local": "npm run build:prod && npx electron .",
     "electron:build": "npm run build:prod && electron-builder build",
@@ -51,7 +51,7 @@
     "ow:build:dev": "npm run ow:build -- -c ow-dev",
     "ow:build:prod": "npm run ow:build -- -c ow-production",
     "ow:ng:serve": "npm run build:lib && ng serve -c ow-dev",
-    "ow:electron:serve-tsc": "cross-env BUILD_FLAVOR=ow npm run build:injectenv && tsc -p tsconfig.serve.json",
+    "ow:electron:serve-tsc": "cross-env BUILD_FLAVOR=ow npm run build:injectenv && tsc -p tsconfig.serve.json && node scripts/build-main.js",
     "ow:electron:serve": "cross-env BUILD_FLAVOR=ow npm run build:injectenv && wait-on tcp:4200 && npm run ow:electron:serve-tsc && npx ow-electron . --serve",
     "ow:electron:local": "npm run ow:build:prod && npx ow-electron .",
     "ow:electron:build": "npm run ow:build:prod && ow-electron-builder build",
@@ -162,6 +162,7 @@
     "electron-builder": "26.16.1",
     "electron-notarize": "1.2.2",
     "electron-reload": "2.0.0-alpha.1",
+    "esbuild": "0.20.1",
     "eslint": "^8.57.0",
     "eslint-config-prettier": "9.1.0",
     "eslint-plugin-import": "2.28.1",

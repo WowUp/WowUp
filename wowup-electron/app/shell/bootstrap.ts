@@ -8,7 +8,8 @@ import { SHELL_API_VERSION, setShell } from "./shell-api";
 // The signed shell's entry point. Only what has to happen before, or independently of, the app bundle
 // belongs here; everything else lives in main.ts. See SHELL_BUNDLE_PLAN.md.
 // Nothing in app/shell may import app code (enforced in .eslintrc.js): the bundle can update without the
-// shell, so the shell must not compile in a copy of code that may since have changed.
+// shell, so the shell must not compile in a copy of code that may since have changed. The shell and the
+// bundle are built separately by scripts/build-main.js.
 
 // LOGGING SETUP
 // Override the default log path so they aren't a pain to find on Mac
@@ -50,6 +51,6 @@ if (!app.requestSingleInstanceLock()) {
   });
 
   // Loaded synchronously so the bundle's open-url and second-instance listeners are attached before
-  // Electron can deliver either event.
-  require("../main");
+  // Electron can deliver either event. Required by runtime path so the shell build never pulls it in.
+  require(join(bundleRoot, "app-build", "bundle", "main.js"));
 }

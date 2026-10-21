@@ -4,8 +4,8 @@ import * as fsp from "fs/promises";
 import { max, sumBy } from "lodash";
 import * as path from "path";
 import * as crypto from "crypto";
-import * as AdmZip from "adm-zip";
-import * as globrex from "globrex";
+import AdmZip = require("adm-zip");
+import globrex = require("globrex");
 
 import { TreeNode } from "../src/common/models/ipc-events";
 import { GetDirectoryTreeOptions } from "../src/common/models/ipc-request";

@@ -1,5 +1,5 @@
 import { ipcMain, IpcMainInvokeEvent } from "electron";
-import * as Store from "electron-store";
+import Store = require("electron-store");
 import {
   ADDON_STORE_NAME,
   IPC_STORE_GET_ALL,
