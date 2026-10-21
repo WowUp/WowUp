@@ -50,10 +50,6 @@ function sign(configuration) {
   // const totpSecret = isNonProd ? process.env.WINDOWS_SIGN_USER_TOTP_NONPROD : process.env.WINDOWS_SIGN_USER_TOTP_PROD;
 
   console.debug(`Signing file ${configuration.path}`);
-  console.debug(`Using credential ID: ${credentialId} (${credentialId.length})`);
-  console.debug(`Using username: ${username} (${username.length})`);
-  console.debug(`Using password ${password} (${password.length})`);
-  console.debug(`Using TOTP secret: ${totpSecret} (${totpSecret.length})`);
 
   // we move signed files to a file named tmp.exe because our product name
   // contains a space, meaning our .exe contains a space, which CodeSignTool
