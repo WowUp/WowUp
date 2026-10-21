@@ -193,7 +193,11 @@ No behavior change; just introduces the seam.
       `wowup://` link exits in ~1s without loading `main.js`, and the running instance
       receives the link via `second-instance`.
 - [ ] Verify on mac: launch, `open-url` protocol launches, and dock re-activation.
-- [ ] Verify the `ow` flavor (`npm run ow:start`) starts through the bootstrap.
+- [x] Verified the `ow` flavor on Windows (`ow:electron:serve-tsc`, then `ow-electron .`
+      against `dist/` with an isolated `--user-data-dir`, after the boundary commit):
+      starts through the bootstrap with `buildFlavor: "ow"`, Overwolf's log lines still
+      route into `main.log`, and a second instance with a `wowup://` link exits without
+      loading `main.js` while the running instance receives the link.
 
 ## Phase 2 — Make main-process code location-independent ⏳ not started
 
