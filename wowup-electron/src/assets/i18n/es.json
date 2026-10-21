@@ -651,7 +651,16 @@
   "WTF_BACKUP": {
     "APPLY_CONFIRMATION": {
       "MESSAGE": "¿Quiere restaurar esta copia de seguridad a su configuración de interfaz?\n\nAsegúrese que World of Warcraft no está en funcionamiento antes de iniciar la restauración.\n\nEsta operación no se puede deshacer.",
-      "TITLE": "¿Restaurar copia de seguridad de la configuración WTF?"
+      "TITLE": "¿Restaurar copia de seguridad de la configuración WTF?",
+      "CANCEL_BUTTON": "Cancel",
+      "DIFFERENT_FLAVOR": "This backup was made for a different WoW version. Only continue if it is for this installation.",
+      "KEEP_CONFIG": "Keep this computer's graphics and display settings (Config.wtf)",
+      "KEEP_CONFIG_HELP": "Config.wtf holds resolution, graphics API and window mode, which can differ between computers. Addon settings, keybinds and macros are restored either way.",
+      "NO_CONFIG": "This backup doesn't include Config.wtf, so your current graphics and display settings will not be kept.",
+      "OTHER_DEVICE": "This backup was made on another computer. Its graphics and display settings may not fit this one.",
+      "RESTORE_BUTTON": "Restore",
+      "THIS_DEVICE": "This backup was made on this computer.",
+      "UNKNOWN_DEVICE": "This backup doesn't say which computer made it."
     },
     "BACKUP_APPLY_SUCCESS": "Copia de seguridad restaurada con éxito: {name}",
     "BACKUP_COUNT_TEXT": "Se {count, plural, =1{encontró} other{encontraron}} {count} {count, plural, =1{copia de seguridad} other{copias de seguridad}}",
