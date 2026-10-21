@@ -14,7 +14,6 @@ import {
 import * as log from "electron-log/main";
 import globrex = require("globrex");
 import * as _ from "lodash";
-import * as nodeDiskInfo from "node-disk-info";
 import * as path from "path";
 import { Transform } from "stream";
 import * as yauzl from "yauzl";
@@ -43,7 +42,6 @@ import {
   IPC_IS_DEFAULT_PROTOCOL_CLIENT,
   IPC_LIST_DIR_RECURSIVE,
   IPC_LIST_DIRECTORIES_CHANNEL,
-  IPC_LIST_DISKS_WIN32,
   IPC_LIST_ENTRIES,
   IPC_LIST_FILES_CHANNEL,
   IPC_MAXIMIZE_WINDOW,
@@ -515,17 +513,6 @@ export function initializeIpcHandlers(window: BrowserWindow): void {
   handle(IPC_QUIT_APP, () => {
     log.info(`[QuitApp]`);
     app.quit();
-  });
-
-  handle(IPC_LIST_DISKS_WIN32, async () => {
-    const diskInfos = await nodeDiskInfo.getDiskInfo();
-    // Cant pass complex objects over the wire, make them simple
-    return diskInfos.map((di) => {
-      return {
-        mounted: di.mounted,
-        filesystem: di.filesystem,
-      };
-    });
   });
 
   handle(IPC_WINDOW_LEAVE_FULLSCREEN, () => {

@@ -64,7 +64,6 @@ declare type RendererChannels =
   | "leave-full-screen"
   | "list-dir-recursive"
   | "list-directories"
-  | "list-disks-win32"
   | "list-entries"
   | "list-files"
   | "maximize-window"
