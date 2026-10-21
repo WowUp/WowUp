@@ -12,6 +12,6 @@
     "types": ["node"],
     "lib": ["es2017", "es2016", "es2015", "dom"]
   },
-  "files": ["app/main.ts", "app/preload.ts"],
+  "files": ["app/shell/bootstrap.ts", "app/main.ts", "app/preload.ts"],
   "exclude": ["node_modules", "**/*.spec.ts"]
 }

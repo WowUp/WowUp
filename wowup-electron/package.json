@@ -17,7 +17,7 @@
     "name": "WowUp LLC",
     "email": "zakrn@wowup.io"
   },
-  "main": "app-build/app/main.js",
+  "main": "app-build/app/shell/bootstrap.js",
   "overwolf": {
     "disablePM": true,
     "adsOptimization": {

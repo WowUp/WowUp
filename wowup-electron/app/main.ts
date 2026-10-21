@@ -9,7 +9,6 @@ import { pathToFileURL } from "url";
 import { inspect } from "util";
 
 import {
-  APP_PROTOCOL_NAME,
   APP_USER_MODEL_ID,
   APP_USER_MODEL_ID_CF,
   COLLAPSE_TO_TRAY_PREFERENCE_KEY,
@@ -49,19 +48,15 @@ import { PUSH_NOTIFICATION_EVENT, pushEvents } from "./push";
 import { getAddonStore, getPreferenceStore, initializeStoreIpcHandlers } from "./stores";
 import { registerControllers } from "./controllers";
 import * as windowState from "./window-state";
-import { setAsDefaultProtocolClient } from "./utils/protocol-client";
+import { getShell } from "./shell/shell-api";
 
 import { validateGpuCache } from "./utils/gpu-cache-buster";
 import { AppEnv } from "./env/environment";
 
-// LOGGING SETUP
-// Override the default log path so they aren't a pain to find on Mac
-const LOG_PATH = join(app.getPath("userData"), "logs");
-app.setAppLogsPath(LOG_PATH);
-log.initialize();
-log.transports.file.resolvePathFn = (variables) => {
-  return join(LOG_PATH, variables.fileName ?? "log-file.txt");
-};
+// Started by app/shell/bootstrap.ts, which has already set up logging, taken the single instance lock and
+// registered the protocol handler.
+const shell = getShell();
+const LOG_PATH = shell.logPath;
 log.info("Main starting");
 log.info(`Electron: ${process.versions.electron}`);
 log.info(`BinaryPath: ${app.getPath("exe")}`);
@@ -121,45 +116,32 @@ let loadFailCount = 0;
 
 initializeDefaultPreferences();
 
-// Only allow one instance of the app to run at a time, focus running window if user opens a 2nd time
-// Adapted from https://github.com/electron/electron/blob/master/docs/api/app.md#apprequestsingleinstancelock
-const singleInstanceLock = app.requestSingleInstanceLock();
-if (!singleInstanceLock) {
-  // app.quit() is async and does not stop this module from continuing, which let the losing instance
-  // still build a full window (IPC handlers, updater, ads) only to have its load aborted by the quit.
-  // Exit immediately instead. See https://github.com/WowUp/WowUp/issues/1379
-  log.info("Another instance holds the single instance lock, exiting");
-  app.exit(0);
-} else {
-  app.on("second-instance", (evt, args) => {
-    log.info(`Second instance detected`, args);
-    // Someone tried to run a second instance, we should focus our window.
-    if (!win) {
-      log.warn("Second instance launched, but no window found");
-      return;
-    }
+// The shell holds the single instance lock; focus the running window if the user opens a 2nd time
+app.on("second-instance", (evt, args) => {
+  log.info(`Second instance detected`, args);
+  // Someone tried to run a second instance, we should focus our window.
+  if (!win) {
+    log.warn("Second instance launched, but no window found");
+    return;
+  }
 
-    windowState.restoreWindow(win);
+  windowState.restoreWindow(win);
 
-    win.focus();
+  win.focus();
 
-    // Find the first protocol arg if any exist
-    const customProtocol = find(args, (arg) => isProtocol(arg));
-    if (customProtocol) {
-      log.info(`Custom protocol detected: ${customProtocol}`);
-      // If we did get a custom protocol notify the app
-      win.webContents.send(IPC_CUSTOM_PROTOCOL_RECEIVED, customProtocol);
-    } else {
-      log.info(`No custom protocol detected`);
-    }
-  });
-}
+  // Find the first protocol arg if any exist
+  const customProtocol = find(args, (arg) => isProtocol(arg));
+  if (customProtocol) {
+    log.info(`Custom protocol detected: ${customProtocol}`);
+    // If we did get a custom protocol notify the app
+    win.webContents.send(IPC_CUSTOM_PROTOCOL_RECEIVED, customProtocol);
+  } else {
+    log.info(`No custom protocol detected`);
+  }
+});
 
 // APP MENU SETUP
 createAppMenu(win);
-
-// WowUp Protocol Handler
-setAsDefaultProtocolClient(APP_PROTOCOL_NAME);
 
 // Set the app ID so that our notifications work correctly on Windows
 app.setAppUserModelId(AppEnv.buildFlavor === "ow" ? APP_USER_MODEL_ID_CF : APP_USER_MODEL_ID);
@@ -199,10 +181,6 @@ function getProtocol(arg: string) {
 app
   .whenReady()
   .then(() => {
-    if (!singleInstanceLock) {
-      return;
-    }
-
     powerMonitor.on("resume", () => {
       log.info("powerMonitor resume");
       win?.webContents?.send(IPC_POWER_MONITOR_RESUME);
@@ -470,6 +448,8 @@ function createWindow(): BrowserWindow {
   });
 
   win.once("ready-to-show", () => {
+    shell.markHealthy();
+
     if (canStartHidden()) {
       return;
     }
@@ -594,10 +574,6 @@ async function loadMainUrl(window: BrowserWindow | null): Promise<void> {
 }
 
 async function onActivate() {
-  if (!singleInstanceLock) {
-    return;
-  }
-
   // On OS X it's common to re-create a window in the app when the
   // dock icon is clicked and there are no other windows open.
   if (platform.isMac) {
