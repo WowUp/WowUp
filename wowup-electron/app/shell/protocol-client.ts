@@ -1,5 +1,8 @@
 import { app } from "electron";
 
+/** Same value as APP_PROTOCOL_NAME in src/common/constants; the shell can't import app code */
+export const WOWUP_PROTOCOL_NAME = "wowup";
+
 /**
  * Registered handlers launch the bare executable with only the link as an argument. Running unpackaged
  * (`electron . --serve`) that executable is electron itself, which then takes the link for the app path

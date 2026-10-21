@@ -113,7 +113,7 @@ import {
   isDefaultProtocolClient,
   removeAsDefaultProtocolClient,
   setAsDefaultProtocolClient,
-} from "./utils/protocol-client";
+} from "./shell/protocol-client";
 import { FsStats } from "wowup-lib-core";
 
 let PENDING_OPEN_URLS: string[] = [];

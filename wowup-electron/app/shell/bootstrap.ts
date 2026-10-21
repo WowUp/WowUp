@@ -2,12 +2,13 @@ import { app } from "electron";
 import * as log from "electron-log/main";
 import { join } from "path";
 
-import { APP_PROTOCOL_NAME } from "../../src/common/constants";
-import { setAsDefaultProtocolClient } from "../utils/protocol-client";
+import { WOWUP_PROTOCOL_NAME, setAsDefaultProtocolClient } from "./protocol-client";
 import { SHELL_API_VERSION, setShell } from "./shell-api";
 
 // The signed shell's entry point. Only what has to happen before, or independently of, the app bundle
 // belongs here; everything else lives in main.ts. See SHELL_BUNDLE_PLAN.md.
+// Nothing in app/shell may import app code (enforced in .eslintrc.js): the bundle can update without the
+// shell, so the shell must not compile in a copy of code that may since have changed.
 
 // LOGGING SETUP
 // Override the default log path so they aren't a pain to find on Mac
@@ -29,7 +30,7 @@ if (!app.requestSingleInstanceLock()) {
   app.exit(0);
 } else {
   // WowUp Protocol Handler
-  setAsDefaultProtocolClient(APP_PROTOCOL_NAME);
+  setAsDefaultProtocolClient(WOWUP_PROTOCOL_NAME);
 
   setShell({
     apiVersion: SHELL_API_VERSION,

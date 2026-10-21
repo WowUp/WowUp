@@ -58,6 +58,43 @@ module.exports = {
         "no-var": "error",
       },
     },
+    // Shell/bundle boundary, see SHELL_BUNDLE_PLAN.md. The shell ships in the signed binary and the bundle
+    // updates without it, so the shell must not compile in app code, and app code may only use the shell's
+    // published contract.
+    {
+      files: ["app/shell/**/*.ts"],
+      excludedFiles: ["*.spec.ts"],
+      rules: {
+        "no-restricted-imports": [
+          "error",
+          {
+            patterns: [
+              {
+                group: ["../*"],
+                message: "app/shell must not import app code; only files inside app/shell, packages and built-ins.",
+              },
+            ],
+          },
+        ],
+      },
+    },
+    {
+      files: ["app/**/*.ts", "src/**/*.ts"],
+      excludedFiles: ["app/shell/**", "*.spec.ts"],
+      rules: {
+        "no-restricted-imports": [
+          "error",
+          {
+            patterns: [
+              {
+                group: ["**/shell/*", "!**/shell/shell-api", "!**/shell/protocol-client"],
+                message: "Only shell-api and protocol-client are part of the shell's contract with app code.",
+              },
+            ],
+          },
+        ],
+      },
+    },
     {
       files: ["*.component.html"],
       parser: "@angular-eslint/template-parser",

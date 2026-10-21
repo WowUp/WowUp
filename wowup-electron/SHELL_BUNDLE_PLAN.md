@@ -156,19 +156,44 @@ launch (or via a "restart to update" prompt that relaunches the app).
 Everything else — providers, UI, scan/sync, the UI decoupling phases — becomes
 bundle-only.
 
-## Phase 1 — Bootstrap entry point ⏳ not started
+## Phase 1 — Bootstrap entry point 🚧 in progress
 
 No behavior change; just introduces the seam.
 
-- [ ] Add `app/shell/bootstrap.ts`, compiled to `app-build/app/shell/bootstrap.js`.
-- [ ] Move the single-instance lock and protocol registration from `main.ts` into the
+- [x] Add `app/shell/bootstrap.ts`, compiled to `app-build/app/shell/bootstrap.js`
+      (added to `tsconfig.serve.json` `files`).
+- [x] Move the single-instance lock and protocol registration from `main.ts` into the
       bootstrap; bootstrap then `require()`s the existing `main.js` from the same build.
-- [ ] Point `package.json` `main` at the bootstrap.
-- [ ] Define `SHELL_API_VERSION = 1` and expose it plus a `shell` object (paths,
-      `markHealthy()` as a no-op for now) to the bundle via a module or global set
-      before the bundle is required.
-- [ ] Verify `npm start`, protocol launches (`test:customprotocol`), and second-instance
-      handling still work on Windows and mac.
+      A losing second instance now exits before `main.js` loads at all, so it no longer
+      runs `validateGpuCache` (which could delete the running instance's GPU cache),
+      `initializeDefaultPreferences`, etc. before exiting.
+- [x] Logging setup (`setAppLogsPath`, `log.initialize()`, file path) moved into the
+      bootstrap too, since the shell needs to log before and around the bundle;
+      `main.ts` reads the path from `shell.logPath`. Phase 2 must keep `electron-log`
+      external to the bundle so both share the one initialized instance.
+- [x] Point `package.json` `main` at the bootstrap.
+- [x] `app/shell/shell-api.ts`: `SHELL_API_VERSION = 1` and the `WowUpShell` contract
+      (`apiVersion`, `logPath`, `markHealthy()` as a no-op), handed over on
+      `globalThis` so a separately built bundle can read it. `main.ts` calls
+      `markHealthy()` on the main window's `ready-to-show`. Shell paths (`bundleRoot`,
+      `shellRoot`, `nativeAddonPath`) are added in Phase 2 when something uses them.
+- [x] Shell/bundle import boundary, enforced by `no-restricted-imports` in
+      `.eslintrc.js`: nothing in `app/shell/` imports app code (only files inside
+      `app/shell/`, packages, and built-ins), and app code may only import
+      `shell/shell-api` and `shell/protocol-client`. `protocol-client.ts` moved from
+      `app/utils/` into `app/shell/` (the bundle still uses it for the in-app protocol
+      toggles in `ipc-events.ts`), and the shell has its own `WOWUP_PROTOCOL_NAME`, kept
+      equal to `APP_PROTOCOL_NAME` by a spec. Specs are exempt from the rule. The
+      bootstrap's `require("../main")` is the one intended crossing and isn't an import.
+- [x] `ng lint` now actually lints all of `app/`: its pattern was `app/**.ts`, which
+      only matched top-level files, so `app/controllers/`, `app/services/`, etc. had
+      never been linted (they turned out clean).
+- [x] Verified on Windows (`electron .` with an isolated `--user-data-dir`): app starts
+      and renders through the bootstrap; a second instance launched with a
+      `wowup://` link exits in ~1s without loading `main.js`, and the running instance
+      receives the link via `second-instance`.
+- [ ] Verify on mac: launch, `open-url` protocol launches, and dock re-activation.
+- [ ] Verify the `ow` flavor (`npm run ow:start`) starts through the bootstrap.
 
 ## Phase 2 — Make main-process code location-independent ⏳ not started
 
@@ -188,6 +213,12 @@ No behavior change; just introduces the seam.
       outside the shell-paths helper.
 
 ## Phase 3 — Bundle build + signing in CI ⏳ not started
+
+- [ ] Move the shell out of `wowup-electron` into its own package (e.g. `wowup-shell/`)
+      once the shell and bundle builds are actually separate. The shell is effectively
+      the packaging project — Electron/ow-electron, electron-builder configs, the native
+      addon (`binding.gyp`), signing scripts, installer config — so all of that moves with
+      `app/shell/`. The Phase 1 lint boundary should make the code side mechanical.
 
 - [ ] Script that assembles `bundle.asar` (`main.js`, `preload.js`, `renderer/` from
       the current UI build output, `assets/`), brotli-compresses it to `.asar.br`, and

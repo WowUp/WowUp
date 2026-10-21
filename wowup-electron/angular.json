@@ -171,7 +171,7 @@
             "eslintConfig": ".eslintrc.js",
             "lintFilePatterns": [
               "src/**/*.ts",
-              "app/**.ts"
+              "app/**/*.ts"
             ]
           }
         }
