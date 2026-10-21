@@ -14,14 +14,24 @@ describe("shell-api", () => {
   });
 
   it("returns the shell that was set", () => {
-    const shell: WowUpShell = { apiVersion: SHELL_API_VERSION, logPath: "/logs", markHealthy: () => undefined };
+    const shell: WowUpShell = {
+      apiVersion: SHELL_API_VERSION,
+      logPath: "/logs",
+      paths: { shellRoot: "/shell", bundleRoot: "/bundle", nativeAddon: "/shell/addon.node" },
+      markHealthy: () => undefined,
+    };
     setShell(shell);
 
     expect(getShell()).to.equal(shell);
   });
 
   it("hands the shell over on globalThis so a separately built bundle can read it", () => {
-    const shell: WowUpShell = { apiVersion: SHELL_API_VERSION, logPath: "/logs", markHealthy: () => undefined };
+    const shell: WowUpShell = {
+      apiVersion: SHELL_API_VERSION,
+      logPath: "/logs",
+      paths: { shellRoot: "/shell", bundleRoot: "/bundle", nativeAddon: "/shell/addon.node" },
+      markHealthy: () => undefined,
+    };
     setShell(shell);
 
     expect(shellGlobal.__wowupShell).to.equal(shell);

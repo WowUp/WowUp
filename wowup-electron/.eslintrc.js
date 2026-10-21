@@ -95,6 +95,25 @@ module.exports = {
         ],
       },
     },
+    // App code can't assume it's running from the install directory once bundles are downloaded, so files
+    // are resolved through app/bundle-paths.ts.
+    {
+      files: ["app/**/*.ts"],
+      excludedFiles: ["app/shell/**", "app/bundle-paths.ts", "*.spec.ts"],
+      rules: {
+        "no-restricted-syntax": [
+          "error",
+          {
+            selector: "CallExpression[callee.property.name='getAppPath']",
+            message: "Use app/bundle-paths.ts; the bundle may not live in the install directory.",
+          },
+          {
+            selector: "Identifier[name=/^__(dirname|filename)$/]",
+            message: "Use app/bundle-paths.ts; the bundle may not live in the install directory.",
+          },
+        ],
+      },
+    },
     {
       files: ["*.component.html"],
       parser: "@angular-eslint/template-parser",

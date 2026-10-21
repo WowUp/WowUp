@@ -49,6 +49,7 @@ import { getAddonStore, getPreferenceStore, initializeStoreIpcHandlers } from ".
 import { registerControllers } from "./controllers";
 import * as windowState from "./window-state";
 import { getShell } from "./shell/shell-api";
+import { getAssetPath, getBundleDir, getPreloadPath, getRendererIndexPath, getShellRoot } from "./bundle-paths";
 
 import { validateGpuCache } from "./utils/gpu-cache-buster";
 import { AppEnv } from "./env/environment";
@@ -302,7 +303,7 @@ function createWindow(): BrowserWindow {
     title: "WowUp" + (AppEnv.buildFlavor === "ow" ? " CF" : ""),
     titleBarStyle: "hidden",
     webPreferences: {
-      preload: join(__dirname, "preload.js"),
+      preload: getPreloadPath(),
       nodeIntegration: true,
       contextIsolation: false,
       allowRunningInsecureContent: argv.serve,
@@ -323,11 +324,7 @@ function createWindow(): BrowserWindow {
 
   // Attempt to fix the missing icon issue on Ubuntu
   if (platform.isLinux) {
-    windowOptions.icon = join(
-      app.getAppPath(),
-      "assets",
-      AppEnv.buildFlavor === "ow" ? WOWUP_LOGO_FILENAME_CF : WOWUP_LOGO_FILENAME,
-    );
+    windowOptions.icon = getAssetPath(AppEnv.buildFlavor === "ow" ? WOWUP_LOGO_FILENAME_CF : WOWUP_LOGO_FILENAME);
   }
 
   windowState.applyWindowBoundsToConfig(windowOptions);
@@ -545,8 +542,8 @@ function createWindow(): BrowserWindow {
 
   log.info(`Loading app URL: ${Date.now() - startedAt}ms`);
   if (argv.serve) {
-    require("electron-reload")(__dirname, {
-      electron: require(join(app.getAppPath(), "node_modules", "electron")),
+    require("electron-reload")(getBundleDir(), {
+      electron: require(join(getShellRoot(), "node_modules", "electron")),
     });
     loadServeUrl(win);
   } else {
@@ -569,7 +566,7 @@ async function loadMainUrl(window: BrowserWindow | null): Promise<void> {
     return;
   }
 
-  const url = pathToFileURL(join(app.getAppPath(), "dist", "index.html"));
+  const url = pathToFileURL(getRendererIndexPath());
   return await window?.loadURL(url.toString());
 }
 

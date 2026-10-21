@@ -32,9 +32,18 @@ if (!app.requestSingleInstanceLock()) {
   // WowUp Protocol Handler
   setAsDefaultProtocolClient(WOWUP_PROTOCOL_NAME);
 
+  // The bundle is built into the install directory for now; downloaded bundles arrive with bundle loading
+  const shellRoot = app.getAppPath();
+  const bundleRoot = shellRoot;
+
   setShell({
     apiVersion: SHELL_API_VERSION,
     logPath: LOG_PATH,
+    paths: {
+      shellRoot,
+      bundleRoot,
+      nativeAddon: join(shellRoot, "build", "Release", "addon.node"),
+    },
     markHealthy: () => {
       // Boot health tracking and rollback arrive with bundle loading
     },

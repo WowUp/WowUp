@@ -5,10 +5,20 @@
  */
 export const SHELL_API_VERSION = 1;
 
+export interface ShellPaths {
+  /** Install directory of the signed shell, for things that ship with the binary */
+  shellRoot: string;
+  /** Directory the app bundle was loaded from */
+  bundleRoot: string;
+  /** The native addon, which is compiled against the shell's Electron and ships with it */
+  nativeAddon: string;
+}
+
 export interface WowUpShell {
   apiVersion: number;
   /** Directory the shell pointed electron-log at */
   logPath: string;
+  paths: ShellPaths;
   /** Tells the shell this bundle started successfully, so it won't be rolled back */
   markHealthy(): void;
 }

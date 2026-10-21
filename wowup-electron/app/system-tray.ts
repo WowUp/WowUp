@@ -1,8 +1,8 @@
 import { app, BrowserWindow, Menu, Tray } from "electron";
-import * as path from "path";
 
 import { WOWUP_LOGO_FILENAME, WOWUP_LOGO_FILENAME_CF, WOWUP_LOGO_MAC_SYSTEM_TRAY } from "../src/common/constants";
 import { SystemTrayConfig } from "../src/common/wowup/models";
+import { getAssetPath } from "./bundle-paths";
 import * as platform from "./platform";
 import { restoreWindow } from "./window-state";
 import { AppEnv } from "./env/environment";
@@ -18,7 +18,7 @@ export function createTray(window: BrowserWindow, config: SystemTrayConfig): boo
     : AppEnv.buildFlavor === "ow"
       ? WOWUP_LOGO_FILENAME_CF
       : WOWUP_LOGO_FILENAME;
-  const trayIconPath = path.join(app.getAppPath(), "assets", trayIconFile);
+  const trayIconPath = getAssetPath(trayIconFile);
 
   _trayRef = new Tray(trayIconPath);
   const contextMenu = Menu.buildFromTemplate([

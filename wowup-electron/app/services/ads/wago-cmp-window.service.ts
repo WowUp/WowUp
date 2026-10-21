@@ -1,6 +1,6 @@
-import { app, BrowserWindow, ipcMain } from "electron";
+import { BrowserWindow, ipcMain } from "electron";
 import * as log from "electron-log";
-import { join } from "path";
+import { getAssetPath } from "../../bundle-paths";
 
 import { IPC_WAGO_ADS_CMP_CLOSE } from "../../../src/common/constants";
 import { describeBounds } from "../../window-state";
@@ -124,7 +124,7 @@ export class WagoCmpWindowService {
       skipTaskbar: true,
       webPreferences: {
         partition: AD_PARTITION,
-        preload: join(app.getAppPath(), "assets", "preload", "wago-cmp.js"),
+        preload: getAssetPath("preload", "wago-cmp.js"),
         contextIsolation: true,
         nodeIntegration: false,
         sandbox: true,

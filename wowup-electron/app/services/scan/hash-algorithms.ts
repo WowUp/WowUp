@@ -1,8 +1,6 @@
 import * as crypto from "crypto";
-import * as path from "path";
 
-import { app } from "electron";
-
+import { getNativeAddonPath } from "../../bundle-paths";
 import { FileHashAlgorithms } from "./folder-scan-context";
 
 interface NativeHashAddon {
@@ -17,7 +15,7 @@ let nativeAddon: NativeHashAddon | undefined;
  */
 function getNativeAddon(): NativeHashAddon {
   /* eslint-disable @typescript-eslint/no-var-requires, @typescript-eslint/no-unsafe-assignment */
-  nativeAddon ??= require(path.join(app.getAppPath(), "build/Release/addon.node")) as NativeHashAddon;
+  nativeAddon ??= require(getNativeAddonPath()) as NativeHashAddon;
   /* eslint-enable @typescript-eslint/no-var-requires, @typescript-eslint/no-unsafe-assignment */
   return nativeAddon;
 }

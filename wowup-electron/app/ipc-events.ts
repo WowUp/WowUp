@@ -109,6 +109,7 @@ import { GetDirectoryTreeRequest } from "../src/common/models/ipc-request";
 import { restoreWindow } from "./window-state";
 import { firstValueFrom, from, mergeMap, toArray } from "rxjs";
 import { downloadFile } from "./services/download/file-download";
+import { getAssetPath } from "./bundle-paths";
 import {
   isDefaultProtocolClient,
   removeAsDefaultProtocolClient,
@@ -213,7 +214,7 @@ export function initializeIpcHandlers(window: BrowserWindow): void {
   });
 
   handle(IPC_GET_ASSET_FILE_PATH, (evt, fileName: string) => {
-    return path.join(app.getAppPath(), "assets", fileName);
+    return getAssetPath(fileName);
   });
 
   handle(IPC_CREATE_DIRECTORY_CHANNEL, async (evt, directoryPath: string): Promise<boolean> => {
