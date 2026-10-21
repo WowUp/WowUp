@@ -82,8 +82,7 @@
     {
       "label": "Build.Main.OW.Compile",
       "type": "shell",
-      "command": "npx",
-      "args": ["tsc", "-p", "tsconfig.serve.json"],
+      "command": "npm run ow:electron:serve-tsc",
       "isBackground": false,
       "group": {
         "kind": "build",
