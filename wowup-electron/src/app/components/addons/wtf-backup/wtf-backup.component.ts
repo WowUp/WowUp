@@ -1,4 +1,5 @@
 import { Component, OnInit } from "@angular/core";
+import type { MatDialogRef } from "@angular/material/dialog";
 import { TranslateService } from "@ngx-translate/core";
 import { BehaviorSubject, from, of } from "rxjs";
 import { catchError, first, map, switchMap } from "rxjs/operators";
@@ -7,14 +8,30 @@ import { ElectronService } from "../../../services";
 import { DialogFactory } from "../../../services/dialog/dialog.factory";
 import { SessionService } from "../../../services/session/session.service";
 import { SnackbarService } from "../../../services/snackbar/snackbar.service";
+import { WowUpService } from "../../../services/wowup/wowup.service";
+import {
+  getWtfBackupSource,
+  hasConfigFile,
+  isDifferentClientType,
+  WtfBackupSource,
+} from "../../../services/wtf/wtf-backup-source";
 import { WtfBackup, WtfService } from "../../../services/wtf/wtf.service";
 import { formatSize } from "../../../utils/number.utils";
+import {
+  WtfRestoreDialogComponent,
+  WtfRestoreDialogData,
+  WtfRestoreDialogResult,
+} from "./wtf-restore-dialog.component";
 
 interface WtfBackupViewModel {
   title: string;
   size: string;
   date: number;
   error?: string;
+  source: WtfBackupSource;
+  differentGameType: boolean;
+  hasConfig: boolean;
+  defaultKeepConfig: boolean;
 }
 
 @Component({
@@ -39,7 +56,8 @@ export class WtfBackupComponent implements OnInit {
     private _wtfService: WtfService,
     private _snackbarService: SnackbarService,
     private _dialogFactory: DialogFactory,
-    private _translateService: TranslateService
+    private _translateService: TranslateService,
+    private _wowUpService: WowUpService,
   ) {
     this.selectedInstallation = this._sessionService.getSelectedWowInstallation();
     this.backupPath = this._wtfService.getBackupPath(this.selectedInstallation);
@@ -55,11 +73,17 @@ export class WtfBackupComponent implements OnInit {
   }
 
   public onClickApplyBackup(backup: WtfBackupViewModel): void {
-    const title: string = this._translateService.instant("WTF_BACKUP.APPLY_CONFIRMATION.TITLE");
-    const message: string = this._translateService.instant("WTF_BACKUP.APPLY_CONFIRMATION.MESSAGE", {
-      name: backup.title,
-    });
-    const dialogRef = this._dialogFactory.getConfirmDialog(title, message);
+    const data: WtfRestoreDialogData = {
+      backupName: backup.title,
+      source: backup.source,
+      differentGameType: backup.differentGameType,
+      hasConfig: backup.hasConfig,
+      defaultKeepConfig: backup.defaultKeepConfig,
+    };
+    const dialogRef: MatDialogRef<WtfRestoreDialogComponent, WtfRestoreDialogResult> = this._dialogFactory.getDialog(
+      WtfRestoreDialogComponent,
+      { data },
+    );
 
     dialogRef
       .afterClosed()
@@ -73,7 +97,9 @@ export class WtfBackupComponent implements OnInit {
           this.busy$.next(true);
           this.busyText$.next("WTF_BACKUP.BUSY_TEXT.APPLYING_BACKUP");
 
-          return from(this._wtfService.applyBackup(backup.title, this.selectedInstallation)).pipe(map(() => true));
+          return from(
+            this._wtfService.applyBackup(backup.title, this.selectedInstallation, result.keepCurrentConfig),
+          ).pipe(map(() => true));
         }),
         catchError((e) => {
           console.error(e);
@@ -85,7 +111,7 @@ export class WtfBackupComponent implements OnInit {
           });
 
           return of(false);
-        })
+        }),
       )
       .subscribe((result) => {
         this.busy$.next(false);
@@ -121,7 +147,7 @@ export class WtfBackupComponent implements OnInit {
           this.busy$.next(true);
 
           return from(this._wtfService.deleteBackup(backup.title, this.selectedInstallation)).pipe(
-            switchMap(() => from(this.loadBackups()))
+            switchMap(() => from(this.loadBackups())),
           );
         }),
         catchError((e) => {
@@ -134,7 +160,7 @@ export class WtfBackupComponent implements OnInit {
           });
 
           return of(undefined);
-        })
+        }),
       )
       .subscribe(() => {
         this.busy$.next(false);
@@ -163,8 +189,15 @@ export class WtfBackupComponent implements OnInit {
     this.busy$.next(true);
 
     try {
+      let deviceId: string | undefined;
+      try {
+        deviceId = await this._wowUpService.getDeviceId();
+      } catch (e) {
+        console.error("Failed to get device id", e);
+      }
+
       const backups = await this._wtfService.getBackupList(this.selectedInstallation);
-      const viewModels = backups.map((b) => this.toViewModel(b));
+      const viewModels = backups.map((b) => this.toViewModel(b, deviceId));
       this.backups$.next(viewModels);
     } catch (e) {
       console.error(e);
@@ -173,12 +206,18 @@ export class WtfBackupComponent implements OnInit {
     }
   }
 
-  private toViewModel(backup: WtfBackup): WtfBackupViewModel {
+  private toViewModel(backup: WtfBackup, deviceId: string | undefined): WtfBackupViewModel {
+    const source = getWtfBackupSource(backup.metadata, deviceId);
+
     return {
       title: backup.fileName,
       size: formatSize(backup.size),
       date: backup.metadata?.createdAt ?? backup.birthtimeMs,
       error: backup.error,
+      source,
+      differentGameType: isDifferentClientType(backup.metadata?.clientType, this.selectedInstallation.clientType),
+      hasConfig: hasConfigFile(backup.metadata),
+      defaultKeepConfig: source !== "this_device",
     };
   }
 }

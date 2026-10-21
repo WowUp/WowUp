@@ -1,16 +1,19 @@
 import { Injectable } from "@angular/core";
 import * as path from "path";
 import { FsStats } from "wowup-lib-core";
+import { WowClientType } from "wowup-lib-core";
 import { WowInstallation } from "wowup-lib-core";
 
 import { TreeNode } from "../../../common/models/ipc-events";
 import { FileService } from "../files/file.service";
 import { WowUpService } from "../wowup/wowup.service";
+import { hasConfigFile } from "./wtf-backup-source";
 
 const WTF_FOLDER = "WTF";
 const ACCOUNT_FOLDER = "Account";
 const SAVED_VARIABLES_FOLDER = "SavedVariables";
 const BACKUP_META_FILENAME = "wowup-meta.json";
+const CONFIG_FILENAME = "Config.wtf";
 
 export interface FileStats {
   name: string;
@@ -33,6 +36,10 @@ export interface WtfBackupMetadataFile {
   createdBy: string;
   createdAt: number;
   contents: WtfBackupMeta[];
+  /** Optional: backups made by older WowUp versions don't have these. */
+  clientType?: WowClientType;
+  /** Random id of the WowUp install that made the backup. */
+  deviceId?: string;
 }
 
 export interface WtfBackupMeta {
@@ -55,7 +62,10 @@ export interface WtfBackup {
   providedIn: "root",
 })
 export class WtfService {
-  public constructor(private _fileService: FileService, private _wowUpService: WowUpService) {}
+  public constructor(
+    private _fileService: FileService,
+    private _wowUpService: WowUpService,
+  ) {}
 
   /**
    * Get a nested tree of nodes for every file within the WTF structure
@@ -112,11 +122,7 @@ export class WtfService {
     return entries.filter((entry) => entry !== SAVED_VARIABLES_FOLDER);
   }
 
-  public async getCharacters(
-    installation: WowInstallation,
-    account: string,
-    server: string
-  ): Promise<string[]> {
+  public async getCharacters(installation: WowInstallation, account: string, server: string): Promise<string[]> {
     const serverPath = path.join(this.getAccountsPath(installation), account, server);
     const entries = await this._fileService.listDirectories(serverPath);
     return entries;
@@ -126,7 +132,7 @@ export class WtfService {
     installation: WowInstallation,
     account: string,
     server: string,
-    character: string
+    character: string,
   ): Promise<FileStats[]> {
     try {
       const characterPath = path.join(
@@ -134,7 +140,7 @@ export class WtfService {
         account,
         server,
         character,
-        SAVED_VARIABLES_FOLDER
+        SAVED_VARIABLES_FOLDER,
       );
       const entries = await this._fileService.listFiles(characterPath, "*.lua");
 
@@ -196,6 +202,7 @@ export class WtfService {
         try {
           const zipMetaTxt = await this._fileService.readFileInZip(zipFile, BACKUP_META_FILENAME);
           const zipMetaData: WtfBackupMetadataFile = JSON.parse(zipMetaTxt);
+          wtfBackup.metadata = zipMetaData;
 
           if (!Array.isArray(zipMetaData.contents)) {
             wtfBackup.error = "INVALID_CONTENTS";
@@ -259,8 +266,9 @@ export class WtfService {
   /**
    * Use the given backup zip file to carefully replace the user's existing WTF folder with what was inside the backup zip
    * This operation should support a rollback feature up on failures
+   * @param keepCurrentConfig Keep this installation's existing Config.wtf instead of the backup's.
    */
-  public async applyBackup(fileName: string, installation: WowInstallation): Promise<void> {
+  public async applyBackup(fileName: string, installation: WowInstallation, keepCurrentConfig = false): Promise<void> {
     console.time("applyBackup");
     try {
       if (!fileName.endsWith(".zip")) {
@@ -277,6 +285,9 @@ export class WtfService {
         throw new Error("path not found");
       }
 
+      const srcMeta = await this.readBackupMetadata(fullPath);
+      const keepConfigFromCurrent = keepCurrentConfig && hasConfigFile(srcMeta);
+
       const wtfPathExists = await this._fileService.pathExists(wtfPath);
       const wtfBackupPath = `${wtfPath}-wowup`;
       if (wtfPathExists) {
@@ -290,6 +301,16 @@ export class WtfService {
 
         // remove the metadata file, so that hashes will match
         await this.deleteBackupMetadataFile(installation);
+
+        // Keep this computer's graphics/display settings. Only copy when the backup has its own
+        // Config.wtf, otherwise the extra file would fail the content count check below.
+        if (keepConfigFromCurrent && wtfPathExists) {
+          const currentConfigPath = path.join(wtfPath, CONFIG_FILENAME);
+          const previousConfigPath = path.join(wtfBackupPath, CONFIG_FILENAME);
+          if (await this._fileService.pathExists(previousConfigPath)) {
+            await this._fileService.copy(previousConfigPath, currentConfigPath);
+          }
+        }
 
         // validate that what we unzipped matches what was expected
         console.log(`Validate backup result`);
@@ -309,13 +330,16 @@ export class WtfService {
     }
   }
 
+  private async readBackupMetadata(zipFile: string): Promise<WtfBackupMetadataFile> {
+    const srcMetaTxt = await this._fileService.readFileInZip(zipFile, BACKUP_META_FILENAME);
+    return JSON.parse(srcMetaTxt);
+  }
+
   /**
    * Cross check the unzipped results against the metadata we have stored in the source zip file
    */
   private async isBackupApplicationValid(zipFile: string, installation: WowInstallation) {
-    const srcMetaTxt = await this._fileService.readFileInZip(zipFile, BACKUP_META_FILENAME);
-
-    const srcMeta: WtfBackupMetadataFile = JSON.parse(srcMetaTxt);
+    const srcMeta = await this.readBackupMetadata(zipFile);
     let newMeta = await this.getBackupMetaList(installation);
 
     // since the metadata file is not considered when hashing the contents, ignore it
@@ -356,14 +380,14 @@ export class WtfService {
     await this._fileService.createDirectory(backupPath);
   }
 
-  private async createBackupMetadataFile(
-    installation: WowInstallation
-  ): Promise<[string, WtfBackupMetadataFile]> {
+  private async createBackupMetadataFile(installation: WowInstallation): Promise<[string, WtfBackupMetadataFile]> {
     const backupMetaList = await this.getBackupMetaList(installation);
     const backupMetadata: WtfBackupMetadataFile = {
       contents: backupMetaList,
       createdAt: Date.now(),
       createdBy: "manual",
+      clientType: installation.clientType,
+      deviceId: await this._wowUpService.getDeviceId(),
     };
 
     return [await this.writeWtfMetadataFile(backupMetadata, installation), backupMetadata];
@@ -384,7 +408,7 @@ export class WtfService {
 
   private async writeWtfMetadataFile(
     backupMetadata: WtfBackupMetadataFile,
-    installation: WowInstallation
+    installation: WowInstallation,
   ): Promise<string> {
     const wtfPath = this.getWtfPath(installation);
 
@@ -416,7 +440,7 @@ export class WtfService {
   private flattenTree(nodes: WtfNode[]): WtfNode[] {
     return Array.prototype.concat.apply(
       nodes,
-      nodes.map((n) => this.flattenTree(n.children))
+      nodes.map((n) => this.flattenTree(n.children)),
     );
   }
 

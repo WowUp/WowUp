@@ -651,7 +651,16 @@
   "WTF_BACKUP": {
     "APPLY_CONFIRMATION": {
       "MESSAGE": "確認要把這個備份還原到介面設定中嗎？\n\n還原之前務必關閉《魔獸世界》客戶端。\n\n此操作無法撤銷。",
-      "TITLE": "是否還原 WTF 備份？"
+      "TITLE": "是否還原 WTF 備份？",
+      "CANCEL_BUTTON": "Cancel",
+      "DIFFERENT_FLAVOR": "This backup was made for a different WoW version. Only continue if it is for this installation.",
+      "KEEP_CONFIG": "Keep this computer's graphics and display settings (Config.wtf)",
+      "KEEP_CONFIG_HELP": "Config.wtf holds resolution, graphics API and window mode, which can differ between computers. Addon settings, keybinds and macros are restored either way.",
+      "NO_CONFIG": "This backup doesn't include Config.wtf, so your current graphics and display settings will not be kept.",
+      "OTHER_DEVICE": "This backup was made on another computer. Its graphics and display settings may not fit this one.",
+      "RESTORE_BUTTON": "Restore",
+      "THIS_DEVICE": "This backup was made on this computer.",
+      "UNKNOWN_DEVICE": "This backup doesn't say which computer made it."
     },
     "BACKUP_APPLY_SUCCESS": "還原備份 {name} 成功",
     "BACKUP_COUNT_TEXT": "找到 {count} 個備份",
