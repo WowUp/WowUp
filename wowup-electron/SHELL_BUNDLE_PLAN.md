@@ -31,10 +31,13 @@ because they ship inside a new installer.
 - `SHELL_API_VERSION`: an integer bumped whenever the contract the bundle relies on
   changes (shell paths, health API, native addon interface, Electron major).
 
-**Bundle** — a single `.asar` file (Electron can `require()` from and `loadURL()` into
-asar paths natively, and one hash covers everything):
+**Bundle** — a self-contained folder, downloaded as one `.zip`. It is deliberately
+**not** an `.asar`: Electron's embedded asar integrity check (`EnableEmbeddedAsarIntegrityValidation`,
+already on in ow-electron and planned for the shell in Phase 6) aborts the app on any
+`.asar` the exe doesn't list, which would include every downloaded bundle. Contents:
 - `main.js` — all of today's `app/` code bundled with esbuild into one file;
-  `electron`, the `.node` addon, and `win-ca` stay external. Bundling matters because
+  `electron`, `electron-log`, `electron-updater`, the `.node` addon, and `win-ca` stay
+  external and resolve from the shell's `node_modules`. Bundling matters because
   the main process `require()`s lodash, electron-store, electron-log, pushy-electron,
   adm-zip, yauzl, protobufjs, etc.; a bundle must be able to upgrade those without
   depending on whatever `node_modules` the installed shell shipped.
@@ -60,11 +63,11 @@ the same bundle serves Windows, mac, and Linux.
   "channel": "stable",
   "shellApi": 1,
   "version": "2.25.0",
-  "sha256": "<hash of the compressed .asar.br download>",
-  "asarSha256": "<hash of the decompressed bundle.asar, checked on every launch>",
+  "sha256": "<hash of the .zip download>",
+  "contentSha256": "<hashBundleDirectory() of the unpacked folder, checked on every launch>",
   "urls": [
-    "https://github.com/<owner>/wowup-bundles/releases/download/wago-2.25.0/wago-2.25.0-<sha256>.asar.br",
-    "https://<mirror>.pages.dev/bundles/wago-2.25.0-<sha256>.asar.br"
+    "https://github.com/<owner>/wowup-bundles/releases/download/wago-2.25.0/wago-2.25.0-<sha256>.zip",
+    "https://<mirror>.pages.dev/bundles/wago-2.25.0-<sha256>.zip"
   ],
   "rolloutPercent": 100,
   "revoked": ["2.24.9"],
@@ -85,8 +88,8 @@ bundle is hash-checked, so hosts and mirrors only need to be available, not secu
   shell update, so bundle releases there would be mistaken for shell updates; it also
   keeps the main releases page readable.
 - **Bundles are release assets** in `wowup-bundles`: one release per bundle (tag
-  `<flavor>-<version>`, asset `<flavor>-<version>-<sha256>.asar.br`, brotli-compressed
-  with Node's built-in zlib). Published once, never replaced. Clients download via the
+  `<flavor>-<version>`, asset `<flavor>-<version>-<sha256>.zip`, ~6.7 MB). Published
+  once, never replaced. Clients download via the
   direct `github.com/.../releases/download/...` URL, never `api.github.com` (60
   requests/hour per IP without a token).
 - **Manifests are on GitHub Pages** for `wowup-bundles`, at
@@ -122,14 +125,14 @@ Client rules for manifests:
 1. Take the single-instance lock and register protocols. Load the bundle
    **synchronously, before `ready`**, so mac `open-url` and Windows second-instance
    argv still reach the bundle's handlers.
-2. Pick the newest bundle in `userData/bundles/` whose `shellApi` this shell supports
-   and that isn't quarantined.
-3. Verify on **every launch**, not just at download: sha256 the asar against
-   `asarSha256`, then
+2. Pick the newest bundle folder in `userData/bundles/` whose `shellApi` this shell
+   supports and that isn't quarantined.
+3. Verify on **every launch**, not just at download: `hashBundleDirectory()` the folder
+   against `contentSha256` (~14 MB, a few tens of ms), then
    `crypto.verify(null, manifestBytes, publicKey, signature)` (ed25519, built into
    Node — no dependency). `userData` is writable by anything running as the user, so
    this is what prevents persisting code inside the signed process.
-4. If nothing passes, use the baked-in bundle.
+4. If nothing passes, use the baked-in bundle (`resources/bundle/`).
 5. Write a "booting" marker, then `require(<bundle>/main.js)`. The bundle calls
    `shell.markHealthy()` once the main window is ready. Two consecutive boots without
    `markHealthy()` → quarantine that bundle and fall back to the previous healthy one
@@ -204,9 +207,9 @@ No behavior change; just introduces the seam.
 
 - [x] The shell publishes `paths` on `WowUpShell` (`shellRoot`, `bundleRoot`,
       `nativeAddon`); for now both roots are `app.getAppPath()`. App code resolves files
-      through `app/bundle-paths.ts`, which owns the bundle's layout (`dist/` and
-      `assets/` under `bundleRoot`, `preload.js` next to the bundled `main.js`), so
-      Phase 3's move to `renderer/` is a one-line change there. Routed through it:
+      through `app/bundle-paths.ts`, which owns the bundle's layout (at the time `dist/`
+      and `assets/` under `bundleRoot`, `preload.js` next to the bundled `main.js`;
+      Phase 3 moved everything under `bundleRoot`). Routed through it:
   - [x] `main.ts` — renderer `dist/index.html`, `preload.js`, the Linux window icon, and
         the dev-only `electron-reload` paths.
   - [x] `ipc-events.ts` (`IPC_GET_ASSET_FILE_PATH`), `system-tray.ts`,
@@ -246,42 +249,95 @@ No behavior change; just introduces the seam.
       `require` in the page.
 - [ ] Verify on mac.
 
-## Phase 3 — Bundle build + signing in CI ⏳ not started
+## Phase 3 — Bundle build + signing in CI 🚧 in progress
 
-- [ ] Move the shell out of `wowup-electron` into its own package (e.g. `wowup-shell/`)
-      once the shell and bundle builds are actually separate. The shell is effectively
-      the packaging project — Electron/ow-electron, electron-builder configs, the native
-      addon (`binding.gyp`), signing scripts, installer config — so all of that moves with
-      `app/shell/`. The Phase 1 lint boundary should make the code side mechanical.
+Steps 1–3 (local) are done; step 4 (CI publishing) needs the repo and secrets; step 5
+(moving the shell) comes last.
 
-- [ ] Script that assembles `bundle.asar` (`main.js`, `preload.js`, `renderer/` from
-      the current UI build output, `assets/`), brotli-compresses it to `.asar.br`, and
-      writes the unsigned manifest (both hashes, `urls`, `issuedAt`).
-- [ ] Generate the ed25519 key pair; private key only in CI secrets. Embed two public
-      keys (current + next, selected by `keyId`) in the shell so keys can rotate
-      without a shell release.
+**Step 1 — self-contained bundle folder + packaging**
+- [x] `app-build/bundle/` is the whole bundle: `build-main.js` writes `main.js`,
+      `preload.js` and copies `assets/`; `ng build` now outputs straight into
+      `app-build/bundle/renderer/` (`angular.json` `outputPath`). `build-main.js` no
+      longer wipes `app-build/`, only what it produces, so it can run after `ng build`.
+- [x] `bundle-paths.ts` resolves everything (including `preload.js`) from `bundleRoot`;
+      no `__dirname` left in app code, so `bundle-paths.ts` lost its lint exemption.
+- [x] `scripts/build-bundle.mts` stages `app-build/packed/bundle/` (no source maps),
+      zips it to `app-build/packed/bundle.zip` (~6.7 MB), and writes the unsigned
+      `bundle-manifest.json` (`sha256` of the zip, `contentSha256` of the folder,
+      `channel` from the version, `issuedAt`). Runs as the npm `postbuild` /
+      `postow:build` script, since appending it to `build` would receive the
+      `-- -c production` arguments meant for `ng build`.
+- [x] Bundles are folders, not `.asar` (see "Target architecture"): a packaged
+      ow-electron build aborted with `Failed to find file integrity info for
+      resources\bundle.asar` when the bundle was an asar. Format switched to
+      folder + zip, and `asarSha256` became `contentSha256`.
+
+**Step 2 — signing tools**
+- [x] `app/shell/bundle-manifest.ts`: manifest types, canonical signed bytes (sorted
+      keys, `keyId` included, `signature` excluded), `signManifest`, `verifyManifest`,
+      `hashBundleDirectory`. One source shared by the shell and the scripts: Node 24
+      runs the `scripts/*.mts` files as TypeScript directly, so the file stays
+      type-strippable with only node built-in imports. Specs cover rotation, tampering,
+      key-id swaps, unknown keys, malformed signatures, field order, and the folder hash.
+- [x] `scripts/generate-bundle-key.mts <key-id> <private-key-file>` creates the ed25519
+      pair (refuses to overwrite), prints the `BUNDLE_PUBLIC_KEYS` entry. Run it
+      yourself; store the private key as the `BUNDLE_SIGNING_KEY` secret and the id as
+      `BUNDLE_SIGNING_KEY_ID`.
+- [x] `scripts/sign-manifest.mts <manifest> [out]` signs with those env vars and
+      verifies the result against the derived public key before writing.
+- [x] `app/shell/bundle-keys.ts` holds `BUNDLE_PUBLIC_KEYS` (empty until the first key
+      is generated; checking signatures is Phase 4).
+- [ ] Generate the real key pair and add its public key (needs you).
+
+**Step 3 — installers ship their own bundle**
+- [x] All four electron-builder configs: `app.asar` now holds only
+      `app-build/shell/**/*.js` and the native addon (plus `node_modules`);
+      `app-build/packed/bundle/` ships as `resources/bundle/` and the manifest as
+      `resources/bundle-manifest.json` via `extraResources`.
+- [x] The bootstrap loads `resources/bundle/` when `app.isPackaged`, otherwise
+      `app-build/bundle/`.
+- [x] Externals resolve from the shell's `node_modules` (pulled forward from Phase 4):
+      the bootstrap prepends it to `NODE_PATH` and re-runs `Module._initPaths()`, and
+      keeps `NODE_PATH` set so renderers inherit it. Electron's renderer startup clears
+      Node's global search paths, so the preload re-runs `_initPaths()` first thing
+      (`app/preload-node-path.ts`).
+- [x] Verified with an unpacked ow-electron-builder build (`--dir`, local-ow config,
+      no signing): main, preload (`win-ca loaded`, `window.wowup` present), tray and UI
+      all load from `resources/bundle/`; unpackaged `electron .` loads
+      `app-build/bundle/renderer/`. Not yet tried: a full installer, the wago config,
+      mac, Linux.
+
+**Step 4 — CI publishing (needs the repo and secrets)**
 - [ ] Create the public `wowup-bundles` repo with GitHub Pages enabled for manifests.
 - [ ] Set up the Cloudflare Pages mirror project.
+- [ ] Decide whether ow bundles go to `wowup-bundles` (under `ow/`) or a separate repo,
+      since ow installers publish to `WowUp.CF`.
 - [ ] CI job (GitHub Actions), per flavor: build bundle → create `<flavor>-<version>`
-      release in `wowup-bundles` with the `.asar.br` asset → deploy the same file to
+      release in `wowup-bundles` with the `.zip` asset → deploy the same file to
       the mirror → sign the manifest → deploy manifests to GitHub Pages and the mirror.
-      Manifests last, so they never reference a missing file.
+      Manifests last, so they never reference a missing file. CI should also sign the
+      baked-in manifest so installers ship a signed one.
 - [ ] Promotion workflow: a manual-dispatch job that re-signs and redeploys a
       channel's manifest pointing at an existing bundle (beta → stable, rollback,
       `rolloutPercent` changes, `revoked` updates) without rebuilding.
-- [ ] electron-builder config includes the baked-in bundle + manifest in the shell
-      package for every target (wago and ow flavors).
+
+**Step 5 — move the shell into its own package**
+- [ ] Move the shell out of `wowup-electron` into its own package (e.g. `wowup-shell/`)
+      once 1–4 work. The shell is effectively the packaging project — Electron/
+      ow-electron, electron-builder configs, the native addon (`binding.gyp`), signing
+      scripts, installer config — so all of that moves with `app/shell/`. The Phase 1
+      lint boundary should make the code side mechanical.
 
 ## Phase 4 — Loader, verification, rollback ⏳ not started
 
 - [ ] Bootstrap selects bundles from `userData/bundles/<version>/` by `shellApi` and
       version, skipping quarantined ones.
-- [ ] Make the bundle's externals (see Phase 2) resolve from the shell's `node_modules`:
-      once a bundle loads from `userData`, Node won't find them by walking up from the
-      bundle's folder (e.g. add the shell's `node_modules` to the bundle module's lookup
-      paths).
-- [ ] Per-launch sha256 + ed25519 verification; fall back to the baked-in bundle on
-      failure (and log why).
+- [x] Make the bundle's externals resolve from the shell's `node_modules` — done in
+      Phase 3 step 3, since the baked-in `resources/bundle/` needed it too.
+- [ ] Per-launch `hashBundleDirectory()` + ed25519 verification (`verifyManifest`
+      against `BUNDLE_PUBLIC_KEYS`); fall back to the baked-in bundle on failure (and
+      log why). Decide whether the baked-in bundle is verified too or trusted as part of
+      the signed install.
 - [ ] Booting marker + `markHealthy()` (called by the bundle when the main window is
       ready); quarantine after two unhealthy boots.
 - [ ] Prune old bundles, keeping the active one and the last known-good one.
@@ -296,8 +352,9 @@ No behavior change; just introduces the seam.
 - [ ] Manifest acceptance rules: signature valid, `issuedAt` not older than the last
       accepted manifest, `hash(installId) % 100 < rolloutPercent`, no downgrade unless
       the current bundle is in `revoked`.
-- [ ] Download from `urls` in order, check `sha256`, decompress, check `asarSha256`,
-      and stage into `userData/bundles/<version>/`.
+- [ ] Download from `urls` in order, check `sha256`, unzip (with `adm-zip`, already
+      shipped) into `userData/bundles/<version>/`, check `contentSha256`. The zip is
+      only opened after its hash matches the signed manifest.
 - [ ] Quarantine any installed bundle listed in `revoked`.
 - [ ] Renderer "restart to update" prompt for staged bundles, alongside the existing
       shell-update UI from `app/app-updater.ts`.
@@ -305,8 +362,12 @@ No behavior change; just introduces the seam.
 ## Phase 6 — Shell hardening + cutover release ⏳ not started
 
 - [ ] Enable Electron fuses in the shell build: disable `RunAsNode` and Node CLI
-      inspect arguments, enable embedded asar integrity validation. Today no fuses are
-      set, so the signed exe can be used as a signed Node runtime.
+      inspect arguments, enable embedded asar integrity validation. Today the wago
+      flavor (stock Electron) sets none; ow-electron already enables
+      `EnableEmbeddedAsarIntegrityValidation` and `OnlyLoadAppFromAsar` but leaves
+      `RunAsNode` and the inspect arguments on, so either signed exe can be used as a
+      signed Node runtime. Bundles being folders keeps them compatible with the
+      integrity fuse.
 - [ ] Ship the shell as the last "big" signed release.
 - [ ] Document the release flow: bundle-only by default; shell releases planned around
       Electron upgrades.

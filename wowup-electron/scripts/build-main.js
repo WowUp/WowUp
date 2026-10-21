@@ -1,8 +1,9 @@
 // Builds the main process as two separately bundled pieces, see SHELL_BUNDLE_PLAN.md:
 //  - the shell:  app/shell/bootstrap.ts         -> app-build/shell/bootstrap.js
-//  - the bundle: app/main.ts and app/preload.ts -> app-build/bundle/{main,preload}.js
-// Neither includes the other: the bootstrap loads the bundle by runtime path. Type checking is done
-// separately with `tsc -p tsconfig.serve.json`.
+//  - the bundle: app/main.ts and app/preload.ts -> app-build/bundle/{main,preload}.js, plus assets/
+// Neither includes the other: the bootstrap loads the bundle by runtime path. app-build/bundle/ is the
+// whole bundle: ng build writes the UI into app-build/bundle/renderer/ and scripts/build-bundle.mts packs
+// the folder into bundle.asar. Type checking is done separately with `tsc -p tsconfig.serve.json`.
 const esbuild = require("esbuild");
 const fs = require("node:fs");
 const path = require("path");
@@ -30,13 +31,28 @@ const common = {
 };
 
 async function build() {
-  // Clear out anything left from earlier builds, including the old per-file tsc output in app-build/app
-  fs.rmSync(outRoot, { recursive: true, force: true });
+  const bundleDir = path.join(outRoot, "bundle");
+
+  // Clear out what this script produces, plus the old per-file tsc output in app-build/app. The renderer is
+  // left alone: ng build owns it and usually runs after this.
+  for (const stale of [
+    "shell",
+    "app",
+    "bundle/main.js",
+    "bundle/main.js.map",
+    "bundle/preload.js",
+    "bundle/preload.js.map",
+    "bundle/assets",
+  ]) {
+    fs.rmSync(path.join(outRoot, stale), { recursive: true, force: true });
+  }
 
   await Promise.all([
     esbuild.build({ ...common, entryPoints: ["app/shell/bootstrap.ts"], outdir: path.join(outRoot, "shell") }),
-    esbuild.build({ ...common, entryPoints: ["app/main.ts", "app/preload.ts"], outdir: path.join(outRoot, "bundle") }),
+    esbuild.build({ ...common, entryPoints: ["app/main.ts", "app/preload.ts"], outdir: bundleDir }),
   ]);
+
+  fs.cpSync(path.join(root, "assets"), path.join(bundleDir, "assets"), { recursive: true });
 }
 
 build().catch(() => {

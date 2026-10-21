@@ -1,6 +1,7 @@
 import { app } from "electron";
 import * as log from "electron-log/main";
-import { join } from "path";
+import Module = require("module");
+import { delimiter, join } from "path";
 
 import { WOWUP_PROTOCOL_NAME, setAsDefaultProtocolClient } from "./protocol-client";
 import { SHELL_API_VERSION, setShell } from "./shell-api";
@@ -33,9 +34,11 @@ if (!app.requestSingleInstanceLock()) {
   // WowUp Protocol Handler
   setAsDefaultProtocolClient(WOWUP_PROTOCOL_NAME);
 
-  // The bundle is built into the install directory for now; downloaded bundles arrive with bundle loading
+  // Packaged builds load the bundle the installer ships next to the app; dev builds load the folder that
+  // scripts/build-main.js and ng build produce. Downloaded bundles arrive with bundle loading.
   const shellRoot = app.getAppPath();
-  const bundleRoot = shellRoot;
+  const bundleRoot = app.isPackaged ? join(process.resourcesPath, "bundle") : join(shellRoot, "app-build", "bundle");
+  useShellNodeModules(shellRoot);
 
   setShell({
     apiVersion: SHELL_API_VERSION,
@@ -52,5 +55,16 @@ if (!app.requestSingleInstanceLock()) {
 
   // Loaded synchronously so the bundle's open-url and second-instance listeners are attached before
   // Electron can deliver either event. Required by runtime path so the shell build never pulls it in.
-  require(join(bundleRoot, "app-build", "bundle", "main.js"));
+  require(join(bundleRoot, "main.js"));
+}
+
+/**
+ * Lets the bundle require its externals (electron-log, win-ca, ...) from the shell's node_modules. Node only
+ * looks in node_modules folders above the requiring file, and a bundle outside the install directory has
+ * none, so the shell's are added to the global search paths. NODE_PATH stays set: renderer processes
+ * inherit it, and the bundle's preload needs the same externals.
+ */
+function useShellNodeModules(shellRoot: string): void {
+  process.env.NODE_PATH = [join(shellRoot, "node_modules"), process.env.NODE_PATH].filter(Boolean).join(delimiter);
+  (Module as unknown as { _initPaths: () => void })._initPaths();
 }

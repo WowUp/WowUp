@@ -4,11 +4,12 @@ import { getShell } from "./shell/shell-api";
 
 // Where the bundle's files live. App code resolves files through here instead of app.getAppPath() or
 // __dirname (enforced in .eslintrc.js), so the bundle can be loaded from somewhere other than the install
-// directory. See SHELL_BUNDLE_PLAN.md.
+// directory. The bundle is one self-contained folder (or bundle.asar): main.js, preload.js, renderer/ and
+// assets/. See SHELL_BUNDLE_PLAN.md.
 
-/** Directory holding the bundled main.js and preload.js */
+/** Root of the loaded bundle, holding main.js and preload.js */
 export function getBundleDir(): string {
-  return __dirname;
+  return getShell().paths.bundleRoot;
 }
 
 export function getPreloadPath(): string {
@@ -16,11 +17,11 @@ export function getPreloadPath(): string {
 }
 
 export function getRendererIndexPath(): string {
-  return join(getShell().paths.bundleRoot, "dist", "index.html");
+  return join(getBundleDir(), "renderer", "index.html");
 }
 
 export function getAssetPath(...segments: string[]): string {
-  return join(getShell().paths.bundleRoot, "assets", ...segments);
+  return join(getBundleDir(), "assets", ...segments);
 }
 
 /** The native addon ships with the shell, since it's compiled against the shell's Electron */

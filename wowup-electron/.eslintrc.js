@@ -99,7 +99,7 @@ module.exports = {
     // are resolved through app/bundle-paths.ts.
     {
       files: ["app/**/*.ts"],
-      excludedFiles: ["app/shell/**", "app/bundle-paths.ts", "*.spec.ts"],
+      excludedFiles: ["app/shell/**", "*.spec.ts"],
       rules: {
         "no-restricted-syntax": [
           "error",

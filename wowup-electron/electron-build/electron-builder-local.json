@@ -8,7 +8,11 @@
   "generateUpdatesFilesForAllChannels": true,
   "publish": ["github"],
   "nodeGypRebuild": true,
-  "files": ["dist/**/*.*", "assets/**/*.*", "app-build/**/*.js", "src/common/**/*.js", "build/Release/*.node"],
+  "files": ["app-build/shell/**/*.js", "build/Release/*.node"],
+  "extraResources": [
+    { "from": "app-build/packed/bundle", "to": "bundle" },
+    { "from": "app-build/packed/bundle-manifest.json", "to": "bundle-manifest.json" }
+  ],
   "win": {
     "icon": "electron-build/icon.ico",
     "target": ["nsis", "portable"],
