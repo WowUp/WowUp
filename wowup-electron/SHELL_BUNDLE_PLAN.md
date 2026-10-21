@@ -236,9 +236,14 @@ No behavior change; just introduces the seam.
       the shell bundle, preload runs (`win-ca loaded`), renderer loads, tray icon
       resolves via `bundle-paths`; ow flavor second-instance + `wowup://` handoff still
       works.
-- [ ] Not exercised: the native addon (only loaded during a curseforge fingerprint
-      scan in the ow flavor) and the wago ad/consent windows' preload scripts. Both now
-      resolve through `bundle-paths`; check them in the next full manual test.
+- [x] Native addon (via `shell.paths.nativeAddon`): an ow-flavor addon scan of real
+      installs matched 32 addons as CurseForge, which relies on the native murmur
+      fingerprints; no load or scan errors.
+- [x] Wago ad and consent preloads (via `getAssetPath`), wago flavor with the Wago.io
+      provider enabled: the consent window logged `[cmp-preload] init` and closed itself
+      through `window.electronAPI.closeCMP()`, and the ad view logged
+      `[wago-preload] init` and exposes `window.wago.provideApiKey` with no Node
+      `require` in the page.
 - [ ] Verify on mac.
 
 ## Phase 3 — Bundle build + signing in CI ⏳ not started
