@@ -2,6 +2,7 @@ import { UpdateCheckResult } from "electron-updater";
 import * as _ from "lodash";
 import { join } from "path";
 import { Subject } from "rxjs";
+import { v4 as uuidv4 } from "uuid";
 
 import { Injectable } from "@angular/core";
 import { TranslateService } from "@ngx-translate/core";
@@ -15,6 +16,7 @@ import {
   DEFAULT_CHANNEL_PREFERENCE_KEY_SUFFIX,
   DEFAULT_THEME,
   DEFAULT_TRUSTED_DOMAINS,
+  DEVICE_ID_PREFERENCE_KEY,
   DISABLE_IPV6_PREFERENCE_KEY,
   ENABLE_APP_BADGE_KEY,
   ENABLE_SYSTEM_NOTIFICATIONS_PREFERENCE_KEY,
@@ -54,6 +56,7 @@ export class WowUpService {
   private readonly _preferenceChangeSrc = new Subject<PreferenceChange>();
 
   private _availableVersion = "";
+  private _deviceIdPromise?: Promise<string>;
 
   public readonly updaterName = "WowUpUpdater.exe";
   public readonly applicationFolderPath: string = window.userDataPath ?? "";
@@ -68,7 +71,7 @@ export class WowUpService {
     private _preferenceStorageService: PreferenceStorageService,
     private _electronService: ElectronService,
     private _fileService: FileService,
-    private _translateService: TranslateService
+    private _translateService: TranslateService,
   ) {
     this.setDefaultClientPreferences().catch(console.error);
 
@@ -80,6 +83,32 @@ export class WowUpService {
     this.setAutoStartup()
       .then(() => console.log("loginItemSettings", this._electronService.getLoginItemSettings()))
       .catch((e) => console.error(e));
+  }
+
+  /**
+   * Identifies this WowUp install. Random, stored in preferences, and never derived from hardware or hostname.
+   * WTF backups record it so a restore can tell this computer's backups from another computer's.
+   */
+  public getDeviceId(): Promise<string> {
+    if (this._deviceIdPromise === undefined) {
+      this._deviceIdPromise = this.loadOrCreateDeviceId().catch((e) => {
+        this._deviceIdPromise = undefined;
+        throw e;
+      });
+    }
+
+    return this._deviceIdPromise;
+  }
+
+  private async loadOrCreateDeviceId(): Promise<string> {
+    const existing = await this._preferenceStorageService.getAsync(DEVICE_ID_PREFERENCE_KEY);
+    if (existing) {
+      return existing;
+    }
+
+    const deviceId = uuidv4();
+    await this._preferenceStorageService.setAsync(DEVICE_ID_PREFERENCE_KEY, deviceId);
+    return deviceId;
   }
 
   public async getApplicationVersion(): Promise<string> {
