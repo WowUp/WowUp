@@ -39,6 +39,8 @@ Status snapshot:
 3. **Phase 3 — TOC Parsing / Addon Folder Listing**: ✅ done. `TocController` (`app/controllers/toc/`) + `toc-api.service.ts`; `WarcraftController` gained `listAddons`/`getAddonFolder` (one IPC round trip per installation instead of one per file); renderer `TocService`/`WarcraftService` delegate and kept their public signatures.
 4. **Phases 4–6 — addon scan/sync, install/remove pipeline, `ipc-events.ts` cleanup**: ⏳ not started.
 
+Related: [`wowup-electron/SHELL_BUNDLE_PLAN.md`](file:///d:/GitHub/WowUp-Dev/wowup-electron/SHELL_BUNDLE_PLAN.md) tracks splitting the app into a signed shell plus a separately-signed, downloadable main/renderer bundle so most releases don't need a new code-signed binary.
+
 Note: there is no `Procedure<I, O>` / `EventChannel<P>` primitive layer — the actual pattern is the simpler `IpcController` interface + per-channel `ipcMain.handle()` calls, wired up in `registerControllers()`.
 
 ---
