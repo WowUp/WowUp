@@ -206,6 +206,11 @@ export class AddonProviderFactory {
     return undefined;
   }
 
+  /** Registered in this build and not turned off by the user */
+  public isProviderAvailable(providerName: string): boolean {
+    return this.getProvider(providerName)?.enabled === true;
+  }
+
   public getEnabledAddonProviders(): AddonProvider[] {
     const providers: AddonProvider[] = [];
 

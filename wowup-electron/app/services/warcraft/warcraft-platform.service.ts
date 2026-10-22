@@ -11,6 +11,7 @@ import {
   WOW_CLASSIC_ERA_PTR_FOLDER,
   WOW_CLASSIC_FOLDER,
   WOW_CLASSIC_PTR_FOLDER,
+  WOW_FOREVER_FOLDER,
   WOW_RETAIL_FOLDER,
   WOW_RETAIL_PTR_FOLDER,
   WOW_RETAIL_XPTR_FOLDER,
@@ -48,6 +49,8 @@ function getClientTypeForFolderName(folderName: string): WowClientType {
       return WowClientType.ClassicEraPtr;
     case WOW_ANNIVERSARY_FOLDER:
       return WowClientType.Anniversary;
+    case WOW_FOREVER_FOLDER:
+      return WowClientType.Forever;
     default:
       return WowClientType.None;
   }

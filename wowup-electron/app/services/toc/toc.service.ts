@@ -1,9 +1,17 @@
 import * as fsp from "fs/promises";
 import * as path from "path";
-import { uniq } from "lodash";
+import { findLast, uniq } from "lodash";
 
 import * as tocModels from "wowup-lib-core";
-import { AddonFolder, WowClientType, getTocForGameType2 } from "wowup-lib-core";
+import {
+  AddonFolder,
+  WowClientType,
+  WowGameType,
+  getTocForGameType2,
+  hasLoadGameTypeConditions,
+  isLoadConditionMet,
+  stripLoadConditions,
+} from "wowup-lib-core";
 
 export class TocService {
   public async parse(tocPath: string): Promise<tocModels.Toc> {
@@ -23,6 +31,7 @@ export class TocService {
       curseProjectId: this.getValue(tocModels.TOC_X_CURSE_PROJECT_ID, tocText),
       interface: this.getValueArray(tocModels.TOC_INTERFACE, tocText),
       title: this.getValue(tocModels.TOC_TITLE, tocText),
+      titles: this.getTitlesByGameType(tocText),
       website: this.getWebsite(tocText),
       version: this.getValue(tocModels.TOC_VERSION, tocText),
       partOf: this.getValue(tocModels.TOC_X_PART_OF, tocText),
@@ -96,6 +105,33 @@ export class TocService {
     return deps;
   }
 
+  /**
+   * A toc can carry several titles guarded by [AllowLoadGameType ...] conditions, the client uses the last one
+   * that applies to its game type. Only set when such conditions are present.
+   */
+  private getTitlesByGameType(tocText: string): { [gameType: string]: string } | undefined {
+    const titleRegex = /^##\s*Title\s*:/i;
+    const titleLines = tocText
+      .split(/\r?\n/)
+      .map((line) => line.trim())
+      .filter((line) => titleRegex.test(line));
+
+    if (!titleLines.some((line) => hasLoadGameTypeConditions(line))) {
+      return undefined;
+    }
+
+    const titles: { [gameType: string]: string } = {};
+    for (const gameType of Object.values(WowGameType)) {
+      const line = findLast(titleLines, (titleLine) => isLoadConditionMet(titleLine, gameType));
+      const title = line ? this.stripEncodedChars(line.replace(titleRegex, "").trim()) : "";
+      if (title) {
+        titles[gameType] = title;
+      }
+    }
+
+    return titles;
+  }
+
   private getValueArray(key: string, tocText: string): string[] {
     const value = this.getValue(key, tocText);
     return uniq(value.split(",").map((x) => x.trim()));
@@ -112,7 +148,8 @@ export class TocService {
   }
 
   private stripEncodedChars(value: string) {
-    let str = this.stripColorCode(value);
+    let str = stripLoadConditions(value);
+    str = this.stripColorCode(str);
     str = this.stripTextureCode(str);
     str = this.stripNewLineChars(str);
 

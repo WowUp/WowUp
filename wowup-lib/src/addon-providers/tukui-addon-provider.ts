@@ -247,6 +247,7 @@ export class TukUiAddonProvider extends AddonProvider {
       case WowClientType.ClassicEra:
       case WowClientType.ClassicEraPtr:
         return addon.patch.find((p) => p.startsWith(classicToken)) ?? '';
+      case WowClientType.Forever:
       case WowClientType.ClassicBeta:
         return addon.patch.find((p) => p.startsWith(foreverToken)) ?? '';
       case WowClientType.Anniversary:

@@ -180,6 +180,8 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
   public contextMenuPosition = { x: "0px", y: "0px" };
   public overlayNoRowsTemplate = "";
   public addonUtils = AddonUtils;
+  public readonly isProviderAvailable: AddonUtils.ProviderAvailability = (providerName) =>
+    this._addonProviderService.isProviderAvailable(providerName);
   public overlayRef: OverlayRef | null = null;
 
   public wowInstallations$: Observable<WowInstallation[]>;
@@ -1259,14 +1261,23 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
       return;
     }
 
+    const idx = this._baseRowDataSrc.value.findIndex((r) => r.addon?.id === evt.addon.id);
+
     if ([AddonInstallState.Complete, AddonInstallState.Error].includes(evt.installState) === false) {
       this._sessionService.setEnableControls(false);
+
+      // A fresh install (or a dependency it pulled in) gets a row right away, its cells follow the install from there
+      if (idx === -1) {
+        const listItem = new AddonViewModel(evt.addon);
+        listItem.isInstalling = true;
+        this._baseRowDataSrc.next(
+          _.orderBy([..._.cloneDeep(this._baseRowDataSrc.value), listItem], (row) => row.canonicalName),
+        );
+      }
       return;
     }
 
     let rowData = _.cloneDeep(this._baseRowDataSrc.value);
-    const idx = rowData.findIndex((r) => r.addon?.id === evt.addon.id);
-    const change = idx !== -1 || evt.installState === AddonInstallState.Complete;
 
     // If we have a new addon, just put it at the end
     if (idx === -1) {
@@ -1275,16 +1286,34 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
         console.debug("Adding new addon to list");
         rowData.push(new AddonViewModel(evt.addon));
         rowData = _.orderBy(rowData, (row) => row.canonicalName);
+        this._baseRowDataSrc.next(rowData);
       }
+    } else if (evt.installState === AddonInstallState.Error && rowData[idx].isInstalling) {
+      // The row was only there for the install, keep it only if the addon made it into storage
+      this.removeFailedInstallRow(evt.addon.id).catch((e) => console.error(e));
     } else {
       rowData.splice(idx, 1, new AddonViewModel(evt.addon));
-    }
-
-    if (change) {
       this._baseRowDataSrc.next(rowData);
     }
+
     this._sessionService.setEnableControls(this.calculateControlState());
   };
+
+  private async removeFailedInstallRow(addonId: string): Promise<void> {
+    const storedAddon = await this._addonService.getAddonById(addonId);
+    const rowData = _.cloneDeep(this._baseRowDataSrc.value);
+    const idx = rowData.findIndex((r) => r.addon?.id === addonId);
+    if (idx === -1 || !rowData[idx].isInstalling) {
+      return;
+    }
+
+    if (storedAddon) {
+      rowData.splice(idx, 1, new AddonViewModel(storedAddon));
+    } else {
+      rowData.splice(idx, 1);
+    }
+    this._baseRowDataSrc.next(rowData);
+  }
 
   private onAddonRemoved = (addonId: string) => {
     const rowData = _.cloneDeep(this._baseRowDataSrc.value);

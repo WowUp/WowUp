@@ -71,7 +71,16 @@ export class WarcraftInstallationService {
   }
 
   public async getWowInstallationsAsync(): Promise<WowInstallation[]> {
-    return await this._installationApiService.getAll();
+    const installations = await this._installationApiService.getAll();
+    // Same as the broadcast list, the saved display name may be from an older translation
+    for (const installation of installations) {
+      try {
+        installation.displayName = await this.getInstallationDisplayName(installation);
+      } catch (e) {
+        console.warn(`Failed to regenerate display name: ${installation.label}`, e);
+      }
+    }
+    return installations;
   }
 
   public getWowInstallation(installationId: string | undefined): WowInstallation | undefined {

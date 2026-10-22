@@ -15,7 +15,7 @@
 
     <div class="flex-grow-1 mr-1">
       <h2 class="m-0 title">{{ title }}</h2>
-      <h3 class="m-0">{{ "DIALOGS.ADDON_DETAILS.BY_AUTHOR" | translate : { authorName: subtitle } }}</h3>
+      <h3 class="m-0">{{ "DIALOGS.ADDON_DETAILS.BY_AUTHOR" | translate: { authorName: subtitle } }}</h3>
       <h4 class="m-0 text-2">{{ version }}</h4>
     </div>
     <mat-icon
@@ -46,11 +46,33 @@
     </ul>
   </div>
   <!-- DEPENDENCIES -->
-  <div *ngIf="hasRequiredDependencies" class="addon-dependencies rounded bg-secondary-4 text-1 row align-items-center">
-    <mat-icon svgIcon="fas:link" class="mr-1"></mat-icon>
-    <span translate [translateParams]="{ dependencyCount: requiredDependencyCount }">
-      DIALOGS.ADDON_DETAILS.DEPENDENCY_TEXT
-    </span>
+  <div *ngIf="hasRequiredDependencies" class="addon-dependencies rounded bg-secondary-4 text-1">
+    <div
+      class="dependency-toggle row align-items-center"
+      role="button"
+      tabindex="0"
+      [attr.aria-expanded]="dependenciesExpanded"
+      (click)="toggleDependencies()"
+      (keydown.enter)="toggleDependencies()"
+      (keydown.space)="$event.preventDefault(); toggleDependencies()"
+    >
+      <mat-icon svgIcon="fas:link" class="mr-1"></mat-icon>
+      <span class="flex-grow-1" translate [translateParams]="{ dependencyCount: requiredDependencyCount }">
+        DIALOGS.ADDON_DETAILS.DEPENDENCY_TEXT
+      </span>
+      <mat-icon
+        class="dependency-chevron"
+        [svgIcon]="dependenciesExpanded ? 'fas:chevron-down' : 'fas:chevron-right'"
+      ></mat-icon>
+    </div>
+    <ng-container *ngIf="dependencyDetails$ | async as dependencyDetails">
+      <ul *ngIf="dependenciesExpanded && dependencyDetails.length > 0" class="dependency-list">
+        <li *ngFor="let dependency of dependencyDetails">
+          {{ dependency.name }}
+          <span *ngIf="dependency.installed" class="text-2">({{ "COMMON.ADDON_STATUS.COMPLETE" | translate }})</span>
+        </li>
+      </ul>
+    </ng-container>
   </div>
   <!-- TABS -->
   <mat-tab-group

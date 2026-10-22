@@ -109,6 +109,11 @@ import { GetDirectoryTreeRequest } from "../src/common/models/ipc-request";
 import { restoreWindow } from "./window-state";
 import { firstValueFrom, from, mergeMap, toArray } from "rxjs";
 import { downloadFile } from "./services/download/file-download";
+import {
+  isDefaultProtocolClient,
+  removeAsDefaultProtocolClient,
+  setAsDefaultProtocolClient,
+} from "./utils/protocol-client";
 import { FsStats } from "wowup-lib-core";
 
 let PENDING_OPEN_URLS: string[] = [];
@@ -287,15 +292,15 @@ export function initializeIpcHandlers(window: BrowserWindow): void {
   });
 
   handle(IPC_IS_DEFAULT_PROTOCOL_CLIENT, (evt, protocol: string) => {
-    return app.isDefaultProtocolClient(protocol);
+    return isDefaultProtocolClient(protocol);
   });
 
   handle(IPC_SET_AS_DEFAULT_PROTOCOL_CLIENT, (evt, protocol: string) => {
-    return app.setAsDefaultProtocolClient(protocol);
+    return setAsDefaultProtocolClient(protocol);
   });
 
   handle(IPC_REMOVE_AS_DEFAULT_PROTOCOL_CLIENT, (evt, protocol: string) => {
-    return app.removeAsDefaultProtocolClient(protocol);
+    return removeAsDefaultProtocolClient(protocol);
   });
 
   handle(IPC_LIST_DIRECTORIES_CHANNEL, async (evt, filePath: string, scanSymlinks: boolean) => {

@@ -194,10 +194,11 @@
       "ANNIVERSARY": "Burning Crusade Anniversary",
       "BETA": "The War Within Beta",
       "CLASSIC": "Mists of Pandaria Classic",
-      "CLASSICBETA": "World of Warcraft: Forever",
+      "CLASSICBETA": "World of Warcraft: Forever Beta",
       "CLASSICERA": "World of Warcraft Classic",
       "CLASSICERAPTR": "PTR (Classic Era)",
       "CLASSICPTR": "PTR (MoP Classic)",
+      "FOREVER": "World of Warcraft: Forever",
       "RETAIL": "World of Warcraft",
       "RETAILPTR": "PTR (Midnight)",
       "RETAILXPTR": "PTR (TWW 11.2.7)"
@@ -234,11 +235,11 @@
     },
     "ERRORS": {
       "ACCOUNT_PUSH_TOGGLE_FAILED_ERROR": "Live-oppdateringer kunne ikke slås på for kontoen din. Vennligst prøv igjen senere eller ta kontakt med oss på Discord.",
-      "ADDON_INSTALL_ERROR": "Utvidelsen '{addonName}' kunne ikke installeres. Vennligst prøv igjen senere.",
+      "ADDON_INSTALL_ERROR": "Utvidelsen «{addonName}» kunne ikke installeres. Vennligst prøv igjen senere.",
       "ADDON_INSTALL_NETWORK_ERROR": "Failed to download {addonName} due to a network error. This can be caused by an unstable connection or IPv6 issues on your network — try disabling IPv6 on your network adapter if this keeps happening.",
       "ADDON_SCAN_ERROR": "Det oppstod en feil når vi skulle matche mappene til utvidelsen med {providerName}. Vennligst prøv igjen senere.",
       "ADDON_SYNC_ERROR": "Det oppstod en feil under søk etter oppdateringer fra {providerName}. Vennligst prøv igjen senere.",
-      "ADDON_SYNC_FULL_ERROR": "[{installationName}]: Det oppstod en feil under søk etter oppdateringer til '{addonName}' fra {providerName}. Vennligst prøv igjen senere.",
+      "ADDON_SYNC_FULL_ERROR": "[{installationName}]: Det oppstod en feil under søk etter oppdateringer til «{addonName}» fra {providerName}. Vennligst prøv igjen senere.",
       "CHANGE_PROVIDER_ERROR": "Kunne ikke endre installasjonsleverandør for {addonName} til {providerName}",
       "GITHUB_LIMIT_ERROR": "Du har nådd API-grensen til GitHub på {max} forespørsler.\nVent til {reset} og prøv igjen.",
       "GITHUB_REPOSITORY_FETCH_ERROR": "Kunne ikke sjekke etter oppdateringer for {addonName}. Vennligst verifiser at repoet er korrekt, eller sett denne utvidelsen til å være 'Ignorert'"
@@ -290,9 +291,9 @@
       "ADDON_INSTALLING": "Installerer utvidelse",
       "CANCEL_BUTTON": "Lukk",
       "ERRORS": {
-        "ADDON_NOT_FOUND": "Ingen utvidelse ble funnet via protokollen '{protocol}'",
+        "ADDON_NOT_FOUND": "Ingen utvidelse ble funnet via protokollen «{protocol}»",
         "GENERIC": "Feil ved henting av data via {protocol}-protokollen",
-        "NO_VALID_WOW_INSTALLATIONS": "Ingen WoW-klient installert for protokollen '{protocol}'"
+        "NO_VALID_WOW_INSTALLATIONS": "Ingen WoW-klient installert for protokollen «{protocol}»"
       },
       "INSTALL_BUTTON": "Installer",
       "TITLE": "Installer utvidelse fra {providerName}"
@@ -309,6 +310,7 @@
         "CATACLYSM_ASSET_NOT_FOUND": "No asset was found to download from {message}.\n\nA valid zip file ending with '-cata' is required in order for WowUp to download it.",
         "CLASSIC_ASSET_NOT_FOUND": "Ingen ressurs ble funnet for å laste ned fra {message}.\n\nEn gyldig Zip-fil som slutter på '-classic' må inkluderes i utgivelsen for at WowUp skal kunne laste den ned.",
         "FAILED_TO_CONNECT": "Kunne ikke koble til API-et. Vent litt og prøv igjen.",
+        "FOREVER_ASSET_NOT_FOUND": "No asset was found to download from {message}.\n\nA valid zip file ending with '-forever' is required in order for WowUp to download it.",
         "INSTALL_FAILED": "Noe gikk galt under forsøket på å installere utvidelsen, vennligst prøv igjen.\n\nHvis du får denne meldingen gjentatte ganger kan du be om hjelp på vår Discord i kanalen #help-me",
         "INVALID_URL": "Den angitte nettadressen er ugyldig. Eksempler på gyldige nettadresser er:\n\t- https://github.com/WowUp/WowUp.Addon\n\t- https://www.wowinterface.com/downloads/info25610-8.3-014.html\n\t- https://www.curseforge.com/wow/addons/altoholic",
         "MISTS_ASSET_NOT_FOUND": "No asset was found to download from {message}.\n\nA valid zip file ending with '-mists' is required in order for WowUp to download it.",
@@ -653,7 +655,7 @@
       "MESSAGE": "Er du sikker på at du vil gjenopprette denne sikkerhetskopien av WTF-mappen din (spill- og karakterinnstillinger)?\n\nSørg for at World of Warcraft ikke kjører før du gjenoppretter en sikkerhetskopi.\n\nDenne operasjonen kan ikke angres.",
       "TITLE": "Vil du gjenopprette sikkerhetskopi av WTF-mappen din?"
     },
-    "BACKUP_APPLY_SUCCESS": "Gjenoppretting av sikkerhetskopien '{name}' var vellykket",
+    "BACKUP_APPLY_SUCCESS": "Gjenoppretting av sikkerhetskopien «{name}» var vellykket",
     "BACKUP_COUNT_TEXT": "Fant {count} {count, plural, =1{sikkerhetskopi} other{sikkerhetskopier}}",
     "BUSY_TEXT": {
       "APPLYING_BACKUP": "Gjenoppretter sikkerhetskopien...",
@@ -663,7 +665,7 @@
     },
     "CREATE_BACKUP_BUTTON": "Opprett sikkerhetskopi",
     "DELETE_CONFIRMATION": {
-      "MESSAGE": "Er du sikker på at du vil slette sikkerhetskopi '{name}'? \nDenne handlingen kan ikke angres.",
+      "MESSAGE": "Er du sikker på at du vil slette sikkerhetskopi «{name}»? \nDenne handlingen kan ikke angres.",
       "TITLE": "Vil du slette sikkerhetskopi av WTF-mappen din?"
     },
     "DIALOG_TITLE": "Sikkerhetskopiering av WTF-innstillinger: {clientType}",

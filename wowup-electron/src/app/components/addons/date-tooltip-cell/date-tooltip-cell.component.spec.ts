@@ -49,4 +49,15 @@ describe("DateTooltipCellComponent", () => {
   it("should create", () => {
     expect(component).toBeTruthy();
   });
+
+  it("should show nothing for a row that has no date yet", () => {
+    const emptyFixture = TestBed.createComponent(DateTooltipCellComponent);
+    /* eslint-disable @typescript-eslint/no-unsafe-argument */
+    emptyFixture.componentInstance.agInit({ value: 0 } as any);
+    /* eslint-enable @typescript-eslint/no-unsafe-argument */
+    emptyFixture.detectChanges();
+
+    expect(emptyFixture.componentInstance.relativeTime$.value).toEqual("");
+    expect((emptyFixture.nativeElement as HTMLElement).textContent?.trim()).toEqual("");
+  });
 });
