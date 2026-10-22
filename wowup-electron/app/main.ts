@@ -360,10 +360,6 @@ function createWindow(): BrowserWindow {
 
   windowState.restoreMainWindowBounds(win);
 
-  if (windowState.wasMaximized()) {
-    win.maximize();
-  }
-
   appUpdater.init(win);
 
   initializeIpcHandlers(win);
@@ -487,6 +483,10 @@ function createWindow(): BrowserWindow {
 
   win.once("show", () => {
     // win.webContents.openDevTools();
+
+    if (windowState.wasMaximized()) {
+      win?.maximize();
+    }
 
     if (windowState.wasFullScreen()) {
       win?.setFullScreen(true);
