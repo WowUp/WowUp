@@ -80,6 +80,8 @@ jobs:
         if: matrix.os == 'ubuntu-latest'
         env:
           GH_TOKEN: ${{ secrets.WOWUP_CF_REPO_KEY }} # This token is provided by Actions, you do not need to create your own token
+          BUNDLE_SIGNING_KEY: ${{ secrets.BUNDLE_SIGNING_KEY }} # Signs the manifest of the bundle the installer ships
+          BUNDLE_SIGNING_KEY_ID: ${{ secrets.BUNDLE_SIGNING_KEY_ID }}
         run: |
           cd ./wowup-electron
           npm ci
@@ -122,6 +124,8 @@ jobs:
         if: matrix.os == 'macos-latest'
         env:
           GH_TOKEN: ${{ secrets.WOWUP_CF_REPO_KEY }} # This token is provided by Actions, you do not need to create your own token
+          BUNDLE_SIGNING_KEY: ${{ secrets.BUNDLE_SIGNING_KEY }} # Signs the manifest of the bundle the installer ships
+          BUNDLE_SIGNING_KEY_ID: ${{ secrets.BUNDLE_SIGNING_KEY_ID }}
           NOTARIZE_APPLE_ID: ${{ secrets.NOTARIZE_APPLE_ID }}
           NOTARIZE_APPLE_PASSWORD: ${{ secrets.NOTARIZE_APPLE_PASSWORD }}
           NOTARIZE_APPLE_TEAM_ID: ${{ secrets.NOTARIZE_APPLE_TEAM_ID }}
@@ -147,6 +151,8 @@ jobs:
         if: matrix.os == 'windows-2022'
         env:
           GH_TOKEN: ${{ secrets.WOWUP_CF_REPO_KEY }} # This token is provided by Actions, you do not need to create your own token
+          BUNDLE_SIGNING_KEY: ${{ secrets.BUNDLE_SIGNING_KEY }} # Signs the manifest of the bundle the installer ships
+          BUNDLE_SIGNING_KEY_ID: ${{ secrets.BUNDLE_SIGNING_KEY_ID }}
           WINDOWS_SIGN_USER_NAME: ${{ secrets.WINDOWS_SIGN_USER_NAME }}
           WINDOWS_SIGN_USER_PASSWORD: ${{ secrets.WINDOWS_SIGN_USER_PASSWORD }}
           WINDOWS_SIGN_CREDENTIAL_ID_PROD: ${{ secrets.WINDOWS_SIGN_CREDENTIAL_ID_PROD }}

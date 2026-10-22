@@ -100,7 +100,7 @@ bundle is hash-checked, so hosts and mirrors only need to be available, not secu
   the client's check interval; revocation and boot rollback cover the gap.
 - **One manifest per shell API version**, so older shells keep receiving the last
   bundle they can run.
-- **Mirror on Cloudflare Pages** (free, no bandwidth limit, 25 MB per file). CI deploys
+- **Mirror on Cloudflare Pages** (deferred: GitHub only for now). Free, no bandwidth limit, 25 MB per file. CI deploys
   the same bundles and manifests there; manifests list GitHub first, the mirror second.
   This covers networks that block GitHub's download domain.
 - **Promotion and rollback only touch manifests**: beta → stable is a commit that
@@ -251,8 +251,8 @@ No behavior change; just introduces the seam.
 
 ## Phase 3 — Bundle build + signing in CI 🚧 in progress
 
-Steps 1–3 (local) are done; step 4 (CI publishing) needs the repo and secrets; step 5
-(moving the shell) comes last.
+Steps 1–3 (local) are done; step 4 (CI publishing) is written and waits on the one-time
+repo/key/secret setup listed under it; step 5 (moving the shell) comes last.
 
 **Step 1 — self-contained bundle folder + packaging**
 - [x] `app-build/bundle/` is the whole bundle: `build-main.js` writes `main.js`,
@@ -307,19 +307,54 @@ Steps 1–3 (local) are done; step 4 (CI publishing) needs the repo and secrets;
       `app-build/bundle/renderer/`. Not yet tried: a full installer, the wago config,
       mac, Linux.
 
-**Step 4 — CI publishing (needs the repo and secrets)**
-- [ ] Create the public `wowup-bundles` repo with GitHub Pages enabled for manifests.
-- [ ] Set up the Cloudflare Pages mirror project.
-- [ ] Decide whether ow bundles go to `wowup-bundles` (under `ow/`) or a separate repo,
-      since ow installers publish to `WowUp.CF`.
-- [ ] CI job (GitHub Actions), per flavor: build bundle → create `<flavor>-<version>`
-      release in `wowup-bundles` with the `.zip` asset → deploy the same file to
-      the mirror → sign the manifest → deploy manifests to GitHub Pages and the mirror.
-      Manifests last, so they never reference a missing file. CI should also sign the
-      baked-in manifest so installers ship a signed one.
-- [ ] Promotion workflow: a manual-dispatch job that re-signs and redeploys a
-      channel's manifest pointing at an existing bundle (beta → stable, rollback,
-      `rolloutPercent` changes, `revoked` updates) without rebuilding.
+**Step 4 — CI publishing** (workflows written and dry-run locally; needs the one-time
+setup below before the first real run)
+- [x] Decided: both flavors publish to `WowUp/wowup-bundles` (tags and manifest paths
+      already include the flavor). The Cloudflare mirror is left out for now.
+- [x] `scripts/lib/channel-manifest.mts` (`buildChannelManifest`): the publish rules —
+      carry the channel's `revoked` list forward, refuse to go back to an older version
+      unless the current one is revoked, refuse to publish a revoked version, always
+      issue later than the current manifest, validate channel and rollout. Tested with
+      Node's built-in runner (`npm run test:scripts`, now part of `npm test`).
+- [x] `scripts/publish-manifest.mts`: writes the signed channel manifest
+      (`<flavor>/<channel>/shell-api-<N>.json`) into a checkout of the Pages repo, plus a
+      per-version record (`<flavor>/versions/<version>.json`, unsigned, with its URLs)
+      used for promotion. Refuses to record a version twice with different content.
+- [x] `compareVersions` added to `app/shell/bundle-manifest.ts` (the shell needs the same
+      ordering for its no-downgrade rule in Phase 5), with specs.
+- [x] `scripts/lib/signing.mts` (`signWithEnvKey`) is the one signing path; `build-bundle.mts`
+      now signs the manifest whenever `BUNDLE_SIGNING_KEY(_ID)` are set, so installers built
+      by the existing release workflows ship a signed manifest. Those workflows' publish steps
+      (all 9) now pass the two secrets; without them, builds stay unsigned as before.
+- [x] `.github/workflows/bundle-publish.yml` (manual: flavor, channel, rollout): builds the
+      bundle on Ubuntu, uploads `<flavor>-<version>-<sha256>.zip` as release
+      `<flavor>-<version>` in `wowup-bundles` (refuses if that release exists — bump the
+      version or promote instead), then pushes the signed manifest. No installer, no
+      code signing.
+- [x] `.github/workflows/bundle-promote.yml` (manual: flavor, version, channel, rollout,
+      revoke): re-signs a channel manifest from a version record without rebuilding —
+      beta → stable, rollout changes, rollbacks (publish the previous version with
+      `revoke` set to the bad one).
+- [x] Both share a `wowup-bundles` concurrency group so they never push at the same time;
+      inputs reach scripts through `env:`, never pasted into the shell script.
+- [x] Dry run with a throwaway key and a scratch Pages folder: signed build, publish to
+      beta, promote to stable, a refused downgrade, a rollback with revoke, a refused
+      re-publish of the revoked version and of changed content; the channel manifests
+      verify. The workflows themselves haven't run yet.
+- [ ] One-time setup (yours):
+  1. Create the **public** repo `WowUp/wowup-bundles` with at least one commit on its
+     default branch (an empty `README.md` and a `.nojekyll` file, so Pages serves files
+     as-is). Turn on GitHub Pages from the default branch, root folder; manifests will
+     be at `https://wowup.github.io/wowup-bundles/<flavor>/<channel>/shell-api-<N>.json`.
+  2. Generate the signing key: `node scripts/generate-bundle-key.mts <key-id> <file>`.
+     Add the printed entry to `BUNDLE_PUBLIC_KEYS` in `app/shell/bundle-keys.ts` and
+     commit that; then delete the private key file once it's stored as a secret.
+  3. Add secrets to `WowUp/WowUp`: `BUNDLE_SIGNING_KEY` (the whole PEM file),
+     `BUNDLE_SIGNING_KEY_ID`, and `WOWUP_BUNDLES_TOKEN` — a fine-grained token limited to
+     `WowUp/wowup-bundles` with Contents: read and write.
+  4. Run **Publish bundle** for one flavor on `beta`, and check the release, the manifest
+     commit, and the Pages URL.
+- [ ] Cloudflare Pages mirror — later, as a separate change.
 
 **Step 5 — move the shell into its own package**
 - [ ] Move the shell out of `wowup-electron` into its own package (e.g. `wowup-shell/`)
