@@ -251,8 +251,8 @@ No behavior change; just introduces the seam.
 
 ## Phase 3 — Bundle build + signing in CI 🚧 in progress
 
-Steps 1–3 (local) are done; step 4 (CI publishing) is written and waits on the one-time
-repo/key/secret setup listed under it; step 5 (moving the shell) comes last.
+Steps 1–4 are done (CI publishing works end to end); step 5 (moving the shell) comes
+last.
 
 **Step 1 — self-contained bundle folder + packaging**
 - [x] `app-build/bundle/` is the whole bundle: `build-main.js` writes `main.js`,
@@ -307,8 +307,9 @@ repo/key/secret setup listed under it; step 5 (moving the shell) comes last.
       `app-build/bundle/renderer/`. Not yet tried: a full installer, the wago config,
       mac, Linux.
 
-**Step 4 — CI publishing** (workflows written and dry-run locally; needs the one-time
-setup below before the first real run)
+**Step 4 — CI publishing** ✅ working (wago published to beta; the workflows reached
+`master` via WowUp/WowUp#1593 so they appear in Actions — run them from `release/2.25.0`
+until it merges)
 - [x] Decided: both flavors publish to `WowUp/wowup-bundles` (tags and manifest paths
       already include the flavor). The Cloudflare mirror is left out for now.
 - [x] `scripts/lib/channel-manifest.mts` (`buildChannelManifest`): the publish rules —
@@ -340,15 +341,24 @@ setup below before the first real run)
 - [x] Dry run with a throwaway key and a scratch Pages folder: signed build, publish to
       beta, promote to stable, a refused downgrade, a rollback with revoke, a refused
       re-publish of the revoked version and of changed content; the channel manifests
-      verify. The workflows themselves haven't run yet.
-- [ ] One-time setup (yours):
+      verify.
+- [x] First real run (Publish bundle, `wago`, `beta`, 100%, from `release/2.25.0`,
+      run 39718638647): released `wago-2.25.0-beta.1` (6.7 MB zip) and pushed
+      `wago/beta/shell-api-1.json` + `wago/versions/2.25.0-beta.1.json`. Checked as a
+      client would: the manifest served from `https://wowup.github.io/wowup-bundles/`
+      verifies against the `2026-a` key in `bundle-keys.ts` (a tampered copy doesn't),
+      the zip from the manifest's URL matches `sha256`, and the unzipped folder matches
+      `contentSha256`. The ow flavor hasn't been published yet.
+- [x] One-time setup:
   1. Create the **public** repo `WowUp/wowup-bundles` with at least one commit on its
      default branch (an empty `README.md` and a `.nojekyll` file, so Pages serves files
      as-is). Turn on GitHub Pages from the default branch, root folder; manifests will
      be at `https://wowup.github.io/wowup-bundles/<flavor>/<channel>/shell-api-<N>.json`.
   2. Generate the signing key: `node scripts/generate-bundle-key.mts <key-id> <file>`.
      Add the printed entry to `BUNDLE_PUBLIC_KEYS` in `app/shell/bundle-keys.ts` and
-     commit that; then delete the private key file once it's stored as a secret.
+     commit that; back the private key up (e.g. a password manager — GitHub secrets
+     can't be read back) and then delete the file. Done: `2026-a` signs, `2027-a` is the
+     offline next key.
   3. Add secrets to `WowUp/WowUp`: `BUNDLE_SIGNING_KEY` (the whole PEM file),
      `BUNDLE_SIGNING_KEY_ID`, and `WOWUP_BUNDLES_TOKEN` — a fine-grained token limited to
      `WowUp/wowup-bundles` with Contents: read and write.
