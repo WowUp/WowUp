@@ -8,7 +8,8 @@ WowUp is a World of Warcraft addon manager. This monorepo separates platform tar
 
 | Package | Tech Stack | Purpose |
 | :--- | :--- | :--- |
-| [`wowup-electron/`](file:///d:/GitHub/WowUp-Dev/wowup-electron) | Electron 40 + Angular 17 | The main desktop client application (Active/Primary). |
+| [`wowup-electron/`](file:///d:/GitHub/WowUp-Dev/wowup-electron) | Electron 43 + Angular 17 | The main desktop client application (Active/Primary). Builds the **app bundle**: main process (`app/`), preload and renderer (`src/`). Dev runs and tests start here. |
+| [`wowup-shell/`](file:///d:/GitHub/WowUp-Dev/wowup-shell) | TypeScript + electron-builder | The signed **shell** that loads the app bundle, plus everything that builds installers: Electron/ow-electron packaging, `electron-build/` configs and signing, the native addon. `contract/` is the only part app code may import. |
 | [`wowup-lib/`](file:///d:/GitHub/WowUp-Dev/wowup-lib) | TypeScript + Parcel | Shared core library (`wowup-lib-core`) consumed by the Electron app. |
 | [`v3/`](file:///d:/GitHub/WowUp-Dev/v3) | TypeScript | Next-generation client version (In early development). |
 
@@ -39,7 +40,7 @@ Status snapshot:
 3. **Phase 3 — TOC Parsing / Addon Folder Listing**: ✅ done. `TocController` (`app/controllers/toc/`) + `toc-api.service.ts`; `WarcraftController` gained `listAddons`/`getAddonFolder` (one IPC round trip per installation instead of one per file); renderer `TocService`/`WarcraftService` delegate and kept their public signatures.
 4. **Phases 4–6 — addon scan/sync, install/remove pipeline, `ipc-events.ts` cleanup**: ⏳ not started.
 
-Related: [`wowup-electron/SHELL_BUNDLE_PLAN.md`](file:///d:/GitHub/WowUp-Dev/wowup-electron/SHELL_BUNDLE_PLAN.md) tracks splitting the app into a signed shell plus a separately-signed, downloadable main/renderer bundle so most releases don't need a new code-signed binary.
+Related: [`wowup-electron/SHELL_BUNDLE_PLAN.md`](file:///d:/GitHub/WowUp-Dev/wowup-electron/SHELL_BUNDLE_PLAN.md) tracks splitting the app into a signed shell (`wowup-shell/`) plus a separately-signed, downloadable main/renderer bundle (built in `wowup-electron/`) so most releases don't need a new code-signed binary. App code resolves its files through `app/bundle-paths.ts`, never `app.getAppPath()`/`__dirname` (lint enforces this), and `electron-log`, `electron-updater` and `win-ca` are installed only in `wowup-shell` (the app resolves them from there via tsconfig `paths` and `NODE_PATH`).
 
 Note: there is no `Procedure<I, O>` / `EventChannel<P>` primitive layer — the actual pattern is the simpler `IpcController` interface + per-channel `ipcMain.handle()` calls, wired up in `registerControllers()`.
 
@@ -48,7 +49,7 @@ Note: there is no `Procedure<I, O>` / `EventChannel<P>` primitive layer — the 
 ## 🛠️ Operations & Execution Playbook
 
 ### Build Order Requirement
-Because `wowup-electron` depends on the local `wowup-lib-core` package, **`wowup-lib` must be compiled first**.
+`wowup-electron` depends on the local `wowup-lib-core` package and on `wowup-shell` (for the shell it runs in dev, and the shared packages' types), so **`wowup-lib` and `wowup-shell` must be installed first**.
 
 ```bash
 # 1. Compile the shared library
@@ -56,20 +57,26 @@ cd wowup-lib
 npm install
 npm run build
 
-# 2. Setup the Electron workspace
+# 2. Install the shell (also builds the native addon)
+cd ../wowup-shell
+npm install
+
+# 3. Setup the Electron workspace
 cd ../wowup-electron
 npm install
 npm run build:lib  # Syncs and links the shared library locally
 
-# 3. Serve the application
+# 4. Serve the application (builds the bundle and the shell, then runs ../wowup-shell with --bundle-dir)
 npm start          # Serve default flavor (wago)
 npm run ow:start   # Serve Overwolf flavor (ow)
 ```
 
-### Common Commands (wowup-electron/)
-- **Lint Code**: `npm run lint`
-- **Run Tests**: `npm test`
-- **Format Code**: `npm run pretty`
+Installers are built in `wowup-shell` from the bundle `wowup-electron` produced: `npm run build:prod` (or `ow:build:prod`) in `wowup-electron`, then e.g. `npm run electron:publish:local` (or `ow:electron:publish:local`) in `wowup-shell`.
+
+### Common Commands
+- **Lint Code**: `npm run lint` (in `wowup-electron/` and in `wowup-shell/`)
+- **Run Tests**: `npm test` (in `wowup-electron/` and in `wowup-shell/`)
+- **Format Code**: `npm run pretty` (`wowup-electron/`)
 
 ---
 

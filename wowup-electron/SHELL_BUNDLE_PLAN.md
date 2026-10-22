@@ -249,10 +249,11 @@ No behavior change; just introduces the seam.
       `require` in the page.
 - [ ] Verify on mac.
 
-## Phase 3 — Bundle build + signing in CI 🚧 in progress
+## Phase 3 — Bundle build + signing in CI ✅ done (Windows)
 
-Steps 1–4 are done (CI publishing works end to end); step 5 (moving the shell) comes
-last.
+Steps 1–5 are done: CI publishing works end to end, and the shell lives in its own
+package, `wowup-shell/`. Paths in steps 1–4 below are as they were when written; step 5
+lists where things moved. Untested: mac, Linux, and a release workflow run since the move.
 
 **Step 1 — self-contained bundle folder + packaging**
 - [x] `app-build/bundle/` is the whole bundle: `build-main.js` writes `main.js`,
@@ -366,7 +367,8 @@ until it merges)
      commit, and the Pages URL.
 - [ ] Cloudflare Pages mirror — later, as a separate change.
 
-**Step 5 — move the shell into its own package** (planned, not started)
+**Step 5 — move the shell into its own package** ✅ done (Windows; mac/Linux and a real
+CI run untested)
 
 The shell is effectively the packaging project, so `wowup-shell/` (a new top-level
 folder next to `wowup-lib/` and `wowup-electron/`) takes the shell code *and* everything
@@ -376,90 +378,107 @@ mixed with Phase 4's runtime work.
 
 Decisions:
 - **Dev stays app-centric (option A).** `npm start`, debugging and tests stay in
-  `wowup-electron`; they launch the shell from `../wowup-shell` with
-  `--bundle-dir=<wowup-electron/app-build/bundle>`. The shell honours `--bundle-dir`
-  **only when unpackaged** — a packaged app ignores it, or anyone could point an
-  installed WowUp at arbitrary code. Installer builds move to `wowup-shell`; build order
-  becomes `wowup-lib` → `wowup-electron` (bundle) → `wowup-shell` (installer).
+  `wowup-electron`; they launch `../wowup-shell` with
+  `--bundle-dir=<wowup-electron/app-build/bundle>`, using `wowup-electron`'s own
+  `electron` / `ow-electron` binaries (same versions as the shell's). The shell honours
+  `--bundle-dir` **only when unpackaged** — a packaged app ignores it, or anyone could
+  point an installed WowUp at arbitrary code. Installer builds live in `wowup-shell`;
+  build order is `wowup-lib` → `wowup-shell` install → `wowup-electron` (bundle) →
+  `wowup-shell` (installer).
 - **Externals live only in the shell.** `electron-log`, `electron-updater` and `win-ca`
-  are removed from `wowup-electron`'s dependencies. Its TypeScript resolves their types
-  from `../wowup-shell/node_modules` via tsconfig `paths`; esbuild keeps them external;
-  at runtime they resolve through the bootstrap's `NODE_PATH`, in dev and production
-  alike. This prevents a second, uninitialised `electron-log` copy in dev (Node would
-  find a local copy before `NODE_PATH`). `electron` stays a dev dependency of
-  `wowup-electron` for types; `require("electron")` is provided by Electron itself.
-- **Shared code goes in `wowup-shell/contract/`**, imported by relative path:
-  `shell-api.ts`, `protocol-client.ts`, `bundle-manifest.ts` (all stateless;
-  `shell-api.ts` hands state over on `globalThis`). Lint allows `wowup-electron` to
-  import from `contract/` and nothing else in `wowup-shell`; shell code may import its
-  own `src/` and `contract/`, never `wowup-electron`.
+  are not installed in `wowup-electron`. Its TypeScript resolves their types from
+  `../wowup-shell/node_modules` via tsconfig `paths` (root and serve configs; the
+  renderer's `src/tsconfig.app.json` sets its own `baseUrl`, so it maps the one package
+  it uses, `electron-updater`); esbuild keeps them external; at runtime they resolve
+  through the bootstrap's `NODE_PATH`, in dev and production alike; `test:main` runs
+  mocha with `NODE_PATH=../wowup-shell/node_modules`. This is required, not cosmetic:
+  with a local copy, dev crashed with "Attempted to register a second handler for
+  '__ELECTRON_LOG__'" because the bundle loaded its own second `electron-log`.
+- **Shared code is `wowup-shell/contract/`**, imported by relative path:
+  `shell-api.ts`, `protocol-client.ts`, `bundle-manifest.ts`. Lint (both packages):
+  `wowup-electron` may import `contract/` and nothing else in `wowup-shell`; shell code
+  may import its own `src/` and `contract/`, never `wowup-electron`; `contract/` may not
+  import `src/`. The protocol-name check spec lives on the app side
+  (`app/shell-contract.spec.ts`), since it compares the two packages.
 
-Target layout:
+Layout as built:
 
 ```
 wowup-shell/
-  package.json      flavor name/productName, main → build/bootstrap.js, the "overwolf"
-                    block, gypfile; deps: electron-log, electron-updater, win-ca,
-                    node-addon-api; devDeps: electron, @overwolf/ow-electron(-builder),
-                    electron-builder, esbuild, @electron/notarize, dotenv, node-gyp
+  package.json      flavor name/productName/version (set by scripts/set-flavor.js),
+                    main → dist/bootstrap.js, the "overwolf" block, gypfile;
+                    deps: electron-log, electron-updater, win-ca; devDeps: electron,
+                    @overwolf/ow-electron(-builder), electron-builder, esbuild,
+                    @electron/notarize, dotenv, node-addon-api, eslint/mocha/typescript
   src/              bootstrap.ts, bundle-keys.ts (+ specs)
   contract/         shell-api.ts, protocol-client.ts, bundle-manifest.ts (+ specs)
-  native/, binding.gyp
+  native/, binding.gyp   built to build/Release/addon.node on npm install (N-API, so
+                         the same build loads in Node for tests and in Electron)
   electron-build/   the four builder configs, sign-windows.js, after-sign*.js, icons,
-                    entitlements, .nsh, flatpak icons
-  scripts/          build-shell.js (esbuild), inject-flavor.js, generate-bundle-key.mts
+                    entitlements, .nsh, flatpak icons (+ the downloaded code_signer/)
+  scripts/          build-shell.js (esbuild → dist/), set-flavor.js,
+                    prepare-package.js, generate-bundle-key.mts
 wowup-electron/     app/, src/, assets/, angular.json, scripts/build-main.js (bundle only),
                     build-bundle.mts, publish-manifest.mts, sign-manifest.mts, lib/
 ```
 
-Checklist (each a commit that builds and passes tests on its own where possible):
-- [ ] 1. **Skeleton**: `wowup-shell/package.json`, `tsconfig.json`, eslint config (the
-      relevant subset of `wowup-electron`'s), mocha setup, `scripts/build-shell.js`
-      (esbuild, same externals rules as today's shell build). `npm install` there.
-- [ ] 2. **Move files with `git mv`** (keeps history): `app/shell/bootstrap.ts` →
-      `src/`; `bundle-keys.ts` (+spec) → `src/`; `shell-api.ts`, `protocol-client.ts`,
-      `bundle-manifest.ts` (+specs) → `contract/`; `native/`, `binding.gyp`,
-      `electron-build/` → `wowup-shell/`; `scripts/generate-bundle-key.mts` →
-      `wowup-shell/scripts/`.
-- [ ] 3. **Update imports**: app code and `wowup-electron/scripts/*` import
-      `../wowup-shell/contract/...`; replace the Phase 1 lint boundary with the
-      `contract/`-only rule; `build-main.js` stops building the shell.
-- [ ] 4. **Externals**: remove `electron-log`, `electron-updater`, `win-ca` from
-      `wowup-electron/package.json`; add tsconfig `paths` (serve, spec, and the renderer
-      tsconfig if it needs them); run `test:main` with
-      `NODE_PATH=../wowup-shell/node_modules` so specs resolve them;
-      `addon-scan.service.spec.ts` loads the addon from `../wowup-shell/build/Release/`.
-- [ ] 5. **Bootstrap**: unpackaged → `bundleRoot` from `--bundle-dir` (fail clearly if
-      missing); packaged → `resources/bundle/`, flag ignored. `protocol-client.ts`
-      forwards `--bundle-dir` (with `--serve`) when registering in dev, so `wowup://`
-      launches still find the bundle.
-- [ ] 6. **Dev workflow**: `wowup-electron` gets `build:shell` (like `build:lib`);
-      `electron:serve` / `ow:electron:serve` build the bundle and shell, then run
-      `../wowup-shell`'s electron (or ow-electron) with `--serve --bundle-dir=…`;
-      `electron-reload`'s restart still works because it re-runs the same argv. VS Code
-      Main / OW Main configs point at the shell's electron and include
-      `../wowup-shell/build/**` in source-map lookups.
-- [ ] 7. **Packaging**: installer npm scripts (`electron:publish*`, `ow:electron:publish*`,
-      `*:build:local`) move to `wowup-shell`; builder configs' `files` cover
-      `build/**` + the addon, and `extraResources` take
-      `../wowup-electron/app-build/packed/bundle` and its manifest. `inject-flavor.js`
-      sets the shell's `name`/`productName` (these decide the user data folder: `WowUp`
-      vs `WowUpCf`) and copies `version` from `wowup-electron/package.json`, so there is
-      still one version counter. `app.asar` should shrink to the shell plus three
-      packages (it's ~28 MB today because every app dependency is shipped).
-- [ ] 8. **CI**: the five release workflows become lib → `wowup-electron` (`npm ci`,
-      `build:prod` / `ow:build:prod`) → `wowup-shell` (`npm ci`, publish, with the signing
-      secrets); `bundle-publish.yml` also runs `npm ci` in `wowup-shell` (for types and
-      the shared contract). Paths in `.vscode`, `buildspec.yml`.
-- [ ] 9. **Docs**: `CLAUDE.md` repo table and build order; this plan.
-- [ ] 10. **Verify**: dev serve both flavors (incl. a `wowup://` launch and second
-      instance), `npm test` and lint in both packages, an unpacked packaged build of
-      both flavors (check `app.asar` contents and that the app runs from
-      `resources/bundle/`), a native-addon scan in ow, debugging in VS Code, and a
-      Publish bundle run (a good moment for the first `ow` publish).
+Checklist (commits `c26700f0`, `b513b75d`, `c9c776f1`, `0078bb12`, plus this doc):
+- [x] 1. **Skeleton**: package.json, tsconfig, eslint, mocha, `build-shell.js`.
+- [x] 2–6. **Move, imports, externals, `--bundle-dir`, dev workflow** — one commit,
+      since the app can't start once the bootstrap moves until the dev launch points at
+      the shell, and can't start without the externals change either:
+  - `git mv` of the shell code, keys, keygen script and the native addon (moved here
+    rather than in 7 so the ow fingerprint scan kept working). The shell's own build
+    output is `dist/`, since node-gyp owns `build/`.
+  - The bootstrap resolves `--bundle-dir` to an absolute path *before* registering the
+    protocol handler and rewrites `process.argv`, so the registered `wowup://` command
+    and relaunches work from any working directory (a first run registered the relative
+    path; fixed and verified by launching the registered command from `C:\`).
+  - `protocol-client.ts` forwards `--serve` and `--bundle-dir` when registering in dev.
+  - `electron-reload` relaunches with `process.execPath` and the original `--` switches;
+    it used to pass only the app path, which also silently dropped `--serve` before.
+  - `electron:serve-tsc` / `ow:electron:serve-tsc` also run `build:shell`; every
+    Electron launch script runs `../wowup-shell --bundle-dir=app-build/bundle`; both
+    `.vscode/launch.json` files (package and repo root) launch the shell and look for
+    source maps in `../wowup-shell/dist/`.
+  - `app/tsconfig.spec.json` pins `rootDir: "../.."` (its inputs now span both packages)
+    and `.mocharc.json` looks under `out-tsc/app-spec/wowup-electron/app/`.
+- [x] 7. **Packaging**: `electron-build/` and the installer scripts moved;
+      `prepare-package.js <flavor>` refuses to package unless `../wowup-electron`'s
+      packed bundle matches the flavor and version, then `set-flavor.js` sets the shell's
+      name/productName/repo/version. `wowup-electron`'s `inject-env.js` now calls
+      `set-flavor.js` instead of editing its own package.json, because in dev the user
+      data folder also comes from the shell's productName. `wowup-electron` dropped its
+      `postinstall` (install-app-deps), electron-builder, ow-electron-builder,
+      notarize and node-gyp. `app.asar` went from ~28 MB to 3.9 MB.
+- [x] 8. **CI**: all 9 release publish steps install `wowup-shell`, build in
+      `wowup-electron` (lib, lint, `build:prod` / `ow:build:prod`), then publish from
+      `wowup-shell`; the SSL.com tool download and `dmg-license` moved to
+      `wowup-shell`; `bundle-publish.yml` installs `wowup-shell` too; `buildspec.yml`
+      updated.
+- [x] 9. **Docs**: `CLAUDE.md` repo table, build order and commands; this section.
+- [x] 10. **Verified (Windows)**:
+  - Both packages: type check, lint, tests (20 shell + 77 app + 9 script tests — the
+    same 97 + 9 as before the split); boundary rules probed both ways.
+  - Dev, ow: starts through `../wowup-shell`, preload and tray load, the My Addons scan
+    showed 37 updates (native addon from `wowup-shell/build/Release/`), second instance
+    hands off a `wowup://` link, the registered protocol command starts the app from
+    another folder, and an `electron-reload` restart keeps `--serve` and `--bundle-dir`.
+    Dev, wago: starts and loads.
+  - Packaged (`--dir`), both flavors: ow via ow-electron-builder (local-ow config), wago
+    via electron-builder (release config, signing/exe editing off); both run from
+    `resources/bundle/`; `app.asar` holds `dist/`, `package.json` (correct
+    productName), the addon and the three shell packages only.
+  - CI sequence dry run from clean `npm ci` in both packages through `build:prod`,
+    `prepare-package` and the shell build.
+  - [ ] Not done: VS Code debugging (configs updated but not run), a real release
+    workflow run, a Publish bundle run from the new layout (needs the branch pushed),
+    mac and Linux.
 
-Not moving: `gulpfile-ow.js` and `.travis.yml` look unused (nothing references them);
-they stay put and can be deleted separately.
+Local-only follow-ups: the mac notarize hooks now read `wowup-shell/.env` instead of
+`wowup-electron/.env` — move or copy it if you notarize locally. `gulpfile-ow.js` and
+`.travis.yml` look unused (nothing references them); they stayed put and can be deleted
+separately.
 
 ## Phase 4 — Loader, verification, rollback ⏳ not started
 
