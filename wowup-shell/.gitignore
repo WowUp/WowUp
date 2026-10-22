@@ -4,3 +4,5 @@
 /out-tsc
 /release
 /release-ow
+.env
+electron-build/code_signer

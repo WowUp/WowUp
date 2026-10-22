@@ -26,25 +26,39 @@
   "scripts": {
     "build": "node scripts/build-shell.js",
     "test": "tsc -p tsconfig.spec.json && mocha",
-    "lint": "eslint \"src/**/*.ts\" \"contract/**/*.ts\""
+    "lint": "eslint \"src/**/*.ts\" \"contract/**/*.ts\"",
+    "electron:publish": "node scripts/prepare-package.js wago && npm run lint && npm run build && electron-builder -c electron-build/electron-builder.json build --publish always",
+    "electron:publish:never": "node scripts/prepare-package.js wago && npm run lint && npm run build && electron-builder -c electron-build/electron-builder.json build --publish never",
+    "electron:publish:local": "node scripts/prepare-package.js wago && npm run build && electron-builder -c electron-build/electron-builder-local.json build --publish never",
+    "electron:build:local": "node scripts/prepare-package.js wago && npm run build && electron-builder -c electron-build/electron-builder-local.json build",
+    "ow:electron:publish": "node scripts/prepare-package.js ow && npm run lint && npm run build && ow-electron-builder -c electron-build/electron-builder-ow.json build --publish always",
+    "ow:electron:publish:never": "node scripts/prepare-package.js ow && npm run lint && npm run build && ow-electron-builder -c electron-build/electron-builder-ow.json build --publish never",
+    "ow:electron:publish:vanilla": "node scripts/prepare-package.js ow && npm run lint && npm run build && electron-builder -c electron-build/electron-builder-local-ow.json build --publish always",
+    "ow:electron:publish:local": "node scripts/prepare-package.js ow && npm run build && ow-electron-builder -c electron-build/electron-builder-local-ow.json build --publish never",
+    "ow:electron:build:local": "node scripts/prepare-package.js ow && npm run build && ow-electron-builder -c electron-build/electron-builder-local.json build"
   },
   "dependencies": {
     "electron-log": "5.4.4",
     "electron-updater": "6.8.9",
-    "node-addon-api": "8.3.1",
     "win-ca": "3.5.1"
   },
   "devDependencies": {
+    "@electron/notarize": "3.1.1",
+    "@overwolf/ow-electron": "42.7.1",
+    "@overwolf/ow-electron-builder": "26.9.3",
     "@types/mocha": "10.0.1",
     "@types/node": "22.15.34",
     "@typescript-eslint/eslint-plugin": "^7.2.0",
     "@typescript-eslint/parser": "^7.2.0",
     "chai": "4.3.8",
+    "dotenv": "16.4.5",
     "electron": "43.1.1",
+    "electron-builder": "26.16.1",
     "esbuild": "0.20.1",
     "eslint": "^8.57.0",
     "eslint-config-prettier": "9.1.0",
     "mocha": "10.2.0",
+    "node-addon-api": "8.3.1",
     "prettier": "3.2.5",
     "typescript": "5.2.2"
   },

@@ -16,13 +16,6 @@ console.debug(envData);
 
 fs.writeFileSync(envPath, envData);
 
-const packagePath = path.join(__dirname, "..", "package.json");
-let packageData = fs.readFileSync(packagePath, "utf8");
-let packageJson = JSON.parse(packageData);
-
-packageJson.name = process.env.BUILD_FLAVOR === "ow" ? "wowup-cf" : "wowup";
-packageJson.productName = process.env.BUILD_FLAVOR === "ow" ? "WowUpCf" : "WowUp";
-packageJson.repository.url =
-  process.env.BUILD_FLAVOR === "ow" ? "https://github.com/WowUp/WowUp.CF.git" : "https://github.com/WowUp/WowUp.git";
-
-fs.writeFileSync(packagePath, JSON.stringify(packageJson, null, 2));
+// The app's name and productName (which decides the user data folder) belong to the shell, which is what
+// Electron actually runs, in dev and in installers
+require("../../wowup-shell/scripts/set-flavor").setFlavor(process.env.BUILD_FLAVOR);

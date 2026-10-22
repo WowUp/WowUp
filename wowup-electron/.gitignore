@@ -11,7 +11,6 @@
 src/**/*.js
 !src/karma.conf.js
 *.js.map
-!electron-build/*.js
 
 # dependencies
 /node_modules
@@ -50,5 +49,4 @@ testem.log
 # System Files
 .DS_Store
 Thumbs.db
-electron-build/code_signer
 **/*.log

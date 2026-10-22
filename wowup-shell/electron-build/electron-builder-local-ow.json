@@ -1,24 +1,28 @@
 {
-  "productName": "WowUp",
-  "appId": "io.wowup.jliddev",
+  "productName": "WowUp-CF",
+  "appId": "io.wowupcf.jliddev",
   "directories": {
-    "output": "release/"
+    "output": "release-ow/"
   },
-  "afterSign": "./electron-build/after-sign.js",
+  "afterSign": "./electron-build/after-sign-ow.js",
   "generateUpdatesFilesForAllChannels": true,
   "publish": ["github"],
   "nodeGypRebuild": true,
-  "files": ["app-build/shell/**/*.js", "build/Release/*.node"],
+  "files": ["dist/**/*.js", "build/Release/*.node"],
   "extraResources": [
-    { "from": "app-build/packed/bundle", "to": "bundle" },
-    { "from": "app-build/packed/bundle-manifest.json", "to": "bundle-manifest.json" }
+    { "from": "../wowup-electron/app-build/packed/bundle", "to": "bundle" },
+    { "from": "../wowup-electron/app-build/packed/bundle-manifest.json", "to": "bundle-manifest.json" }
   ],
+  "overwolf": {
+    "requireSigning": false,
+    "disableAdOptimization": true
+  },
   "win": {
-    "icon": "electron-build/icon.ico",
+    "icon": "electron-build/icon-cf.ico",
     "target": ["nsis", "portable"],
+    "forceCodeSigning": false,
     "signtoolOptions": {
-      "sign": "./electron-build/sign-windows.js",
-      "signingHashAlgorithms": ["sha256"]
+      "publisherName": "WowUp LLC"
     }
   },
   "nsis": {
