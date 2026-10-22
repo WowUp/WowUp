@@ -9,7 +9,7 @@ import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { parseArgs } from "node:util";
 
-import type { BundleManifest, UnsignedBundleManifest } from "../app/shell/bundle-manifest.ts";
+import type { BundleManifest, UnsignedBundleManifest } from "../../wowup-shell/contract/bundle-manifest.ts";
 import { buildChannelManifest, channelManifestPath, versionRecordPath } from "./lib/channel-manifest.mts";
 import { signWithEnvKey } from "./lib/signing.mts";
 

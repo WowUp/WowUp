@@ -2,9 +2,9 @@ import { createHash, createPrivateKey, createPublicKey, sign, verify } from "nod
 import { readdirSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 
-// The bundle manifest format, shared by the shell (which verifies manifests) and scripts/*.mts (which
-// build and sign them; Node runs this file directly, so it must stay plain, type-strippable TypeScript
-// with no imports outside node built-ins). See "Manifest" in SHELL_BUNDLE_PLAN.md.
+// The bundle manifest format, shared by the shell (which verifies manifests) and wowup-electron/scripts/*.mts
+// (which build and sign them; Node runs this file directly, so it must stay plain, type-strippable
+// TypeScript with no imports outside node built-ins). See "Manifest" in wowup-electron/SHELL_BUNDLE_PLAN.md.
 
 export interface UnsignedBundleManifest {
   flavor: string;

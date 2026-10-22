@@ -11,8 +11,12 @@ import { cpSync, existsSync, mkdirSync, readFileSync, rmSync, writeFileSync } fr
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 
-import { hashBundleDirectory, sha256Hex, type UnsignedBundleManifest } from "../app/shell/bundle-manifest.ts";
-import { SHELL_API_VERSION } from "../app/shell/shell-api.ts";
+import {
+  hashBundleDirectory,
+  sha256Hex,
+  type UnsignedBundleManifest,
+} from "../../wowup-shell/contract/bundle-manifest.ts";
+import { SHELL_API_VERSION } from "../../wowup-shell/contract/shell-api.ts";
 import { hasSigningKey, signWithEnvKey } from "./lib/signing.mts";
 
 const root = join(dirname(fileURLToPath(import.meta.url)), "..");

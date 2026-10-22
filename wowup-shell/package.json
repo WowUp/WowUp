@@ -13,7 +13,7 @@
     "name": "WowUp LLC",
     "email": "zakrn@wowup.io"
   },
-  "main": "build/bootstrap.js",
+  "main": "dist/bootstrap.js",
   "overwolf": {
     "disablePM": true,
     "adsOptimization": {
@@ -31,6 +31,7 @@
   "dependencies": {
     "electron-log": "5.4.4",
     "electron-updater": "6.8.9",
+    "node-addon-api": "8.3.1",
     "win-ca": "3.5.1"
   },
   "devDependencies": {
@@ -49,5 +50,6 @@
   },
   "engines": {
     "node": ">=16.0.0"
-  }
+  },
+  "gypfile": true
 }

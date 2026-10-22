@@ -1,4 +1,5 @@
-// Generates the ed25519 key pair that bundle manifests are signed with, see SHELL_BUNDLE_PLAN.md.
+// Generates the ed25519 key pair that bundle manifests are signed with, see
+// wowup-electron/SHELL_BUNDLE_PLAN.md.
 // Run it yourself and keep the private key out of the repository: store it as the BUNDLE_SIGNING_KEY CI
 // secret (and the key id as BUNDLE_SIGNING_KEY_ID), then delete the file.
 //
@@ -27,6 +28,6 @@ const publicKeyPem = publicKey.export({ type: "spki", format: "pem" }).toString(
 console.log(`Private key written to ${privateKeyFile}.`);
 console.log(`Store it as the BUNDLE_SIGNING_KEY secret and "${keyId}" as BUNDLE_SIGNING_KEY_ID, then delete the file.`);
 console.log("");
-console.log("Add this entry to BUNDLE_PUBLIC_KEYS in app/shell/bundle-keys.ts:");
+console.log("Add this entry to BUNDLE_PUBLIC_KEYS in wowup-shell/src/bundle-keys.ts:");
 console.log("");
 console.log(`  ${JSON.stringify(keyId)}: ${JSON.stringify(publicKeyPem)},`);

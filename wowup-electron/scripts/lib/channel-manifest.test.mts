@@ -2,7 +2,7 @@
 import assert from "node:assert/strict";
 import { describe, it } from "node:test";
 
-import type { BundleManifest, UnsignedBundleManifest } from "../../app/shell/bundle-manifest.ts";
+import type { BundleManifest, UnsignedBundleManifest } from "../../../wowup-shell/contract/bundle-manifest.ts";
 import { buildChannelManifest, type ChannelOptions } from "./channel-manifest.mts";
 
 const URL = "https://github.com/WowUp/wowup-bundles/releases/download/wago-2.25.0/wago-2.25.0-abc.zip";

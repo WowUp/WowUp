@@ -1,7 +1,7 @@
 /**
- * Contract between the signed shell (app/shell/bootstrap.ts) and the app bundle it loads.
+ * Contract between the signed shell (wowup-shell/src/bootstrap.ts) and the app bundle it loads.
  * Bump SHELL_API_VERSION whenever the bundle starts relying on something new from the shell.
- * See SHELL_BUNDLE_PLAN.md.
+ * See wowup-electron/SHELL_BUNDLE_PLAN.md.
  */
 export const SHELL_API_VERSION = 1;
 
@@ -38,7 +38,7 @@ export function setShell(shell: WowUpShell): void {
 export function getShell(): WowUpShell {
   const shell = shellGlobal()[SHELL_GLOBAL_KEY] as WowUpShell | undefined;
   if (shell === undefined) {
-    throw new Error("WowUp shell not initialized, the app must be started through app/shell/bootstrap");
+    throw new Error("WowUp shell not initialized, the app must be started through the wowup-shell bootstrap");
   }
   return shell;
 }

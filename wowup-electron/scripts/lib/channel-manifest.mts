@@ -1,6 +1,10 @@
 // Builds the manifest a channel publishes, see "Storage & delivery" in SHELL_BUNDLE_PLAN.md. Pure, so the
 // publish rules are testable: scripts/publish-manifest.mts does the file handling and signing.
-import { type BundleManifest, compareVersions, type UnsignedBundleManifest } from "../../app/shell/bundle-manifest.ts";
+import {
+  type BundleManifest,
+  compareVersions,
+  type UnsignedBundleManifest,
+} from "../../../wowup-shell/contract/bundle-manifest.ts";
 
 export interface ChannelOptions {
   channel: string;

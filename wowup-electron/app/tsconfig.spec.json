@@ -2,6 +2,7 @@
   "extends": "../tsconfig.json",
   "compilerOptions": {
     "outDir": "../out-tsc/app-spec",
+    "rootDir": "../..",
     "module": "CommonJS",
     "target": "es2017",
     "types": ["mocha", "node"]

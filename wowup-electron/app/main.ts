@@ -48,13 +48,13 @@ import { PUSH_NOTIFICATION_EVENT, pushEvents } from "./push";
 import { getAddonStore, getPreferenceStore, initializeStoreIpcHandlers } from "./stores";
 import { registerControllers } from "./controllers";
 import * as windowState from "./window-state";
-import { getShell } from "./shell/shell-api";
-import { getAssetPath, getBundleDir, getPreloadPath, getRendererIndexPath, getShellRoot } from "./bundle-paths";
+import { getShell } from "../../wowup-shell/contract/shell-api";
+import { getAssetPath, getBundleDir, getPreloadPath, getRendererIndexPath } from "./bundle-paths";
 
 import { validateGpuCache } from "./utils/gpu-cache-buster";
 import { AppEnv } from "./env/environment";
 
-// Started by app/shell/bootstrap.ts, which has already set up logging, taken the single instance lock and
+// Started by the wowup-shell bootstrap, which has already set up logging, taken the single instance lock and
 // registered the protocol handler.
 const shell = getShell();
 const LOG_PATH = shell.logPath;
@@ -542,8 +542,11 @@ function createWindow(): BrowserWindow {
 
   log.info(`Loading app URL: ${Date.now() - startedAt}ms`);
   if (argv.serve) {
+    // A main.js change relaunches the app with the same executable (electron or ow-electron) and switches
+    // (--serve, the shell's --bundle-dir); electron-reload would otherwise pass only the app path
     require("electron-reload")(getBundleDir(), {
-      electron: require(join(getShellRoot(), "node_modules", "electron")),
+      electron: process.execPath,
+      appArgv: process.argv.slice(1).filter((arg) => arg.startsWith("--")),
     });
     loadServeUrl(win);
   } else {

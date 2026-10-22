@@ -1,16 +1,18 @@
 import { app } from "electron";
 import * as log from "electron-log/main";
 import Module = require("module");
-import { delimiter, join } from "path";
+import { delimiter, join, resolve } from "path";
 
-import { WOWUP_PROTOCOL_NAME, setAsDefaultProtocolClient } from "./protocol-client";
-import { SHELL_API_VERSION, setShell } from "./shell-api";
+import { WOWUP_PROTOCOL_NAME, setAsDefaultProtocolClient } from "../contract/protocol-client";
+import { SHELL_API_VERSION, setShell } from "../contract/shell-api";
 
 // The signed shell's entry point. Only what has to happen before, or independently of, the app bundle
-// belongs here; everything else lives in main.ts. See SHELL_BUNDLE_PLAN.md.
-// Nothing in app/shell may import app code (enforced in .eslintrc.js): the bundle can update without the
-// shell, so the shell must not compile in a copy of code that may since have changed. The shell and the
-// bundle are built separately by scripts/build-main.js.
+// belongs here; everything else lives in the bundle's main.ts. See wowup-electron/SHELL_BUNDLE_PLAN.md.
+// The shell never imports app code (enforced in .eslintrc.js): the bundle can update without the shell, so
+// the shell must not compile in a copy of code that may since have changed. The bundle is built in
+// wowup-electron and loaded by runtime path.
+
+const BUNDLE_DIR_ARG = "--bundle-dir=";
 
 // LOGGING SETUP
 // Override the default log path so they aren't a pain to find on Mac
@@ -31,14 +33,13 @@ if (!app.requestSingleInstanceLock()) {
   log.info("Another instance holds the single instance lock, exiting");
   app.exit(0);
 } else {
+  const shellRoot = app.getAppPath();
+  // Before registering the protocol handler, which re-uses --bundle-dir once it's been made absolute
+  const bundleRoot = getBundleRoot();
+  useShellNodeModules(shellRoot);
+
   // WowUp Protocol Handler
   setAsDefaultProtocolClient(WOWUP_PROTOCOL_NAME);
-
-  // Packaged builds load the bundle the installer ships next to the app; dev builds load the folder that
-  // scripts/build-main.js and ng build produce. Downloaded bundles arrive with bundle loading.
-  const shellRoot = app.getAppPath();
-  const bundleRoot = app.isPackaged ? join(process.resourcesPath, "bundle") : join(shellRoot, "app-build", "bundle");
-  useShellNodeModules(shellRoot);
 
   setShell({
     apiVersion: SHELL_API_VERSION,
@@ -56,6 +57,29 @@ if (!app.requestSingleInstanceLock()) {
   // Loaded synchronously so the bundle's open-url and second-instance listeners are attached before
   // Electron can deliver either event. Required by runtime path so the shell build never pulls it in.
   require(join(bundleRoot, "main.js"));
+}
+
+/**
+ * Packaged builds load the bundle the installer ships next to the app. Dev builds load the bundle folder
+ * wowup-electron builds, which its scripts pass as --bundle-dir. That flag is only honoured unpackaged: an
+ * installed app must never load code from a path given on the command line. Downloaded bundles arrive with
+ * bundle loading.
+ */
+function getBundleRoot(): string {
+  if (app.isPackaged) {
+    return join(process.resourcesPath, "bundle");
+  }
+
+  const index = process.argv.findIndex((arg) => arg.startsWith(BUNDLE_DIR_ARG));
+  if (index === -1) {
+    throw new Error(`Start the unpackaged shell with ${BUNDLE_DIR_ARG}<wowup-electron/app-build/bundle>`);
+  }
+
+  // Made absolute in place, so anything that re-launches the app with these arguments (protocol
+  // registration, electron-reload) still finds the bundle from another working directory
+  const bundleRoot = resolve(process.argv[index].slice(BUNDLE_DIR_ARG.length));
+  process.argv[index] = `${BUNDLE_DIR_ARG}${bundleRoot}`;
+  return bundleRoot;
 }
 
 /**

@@ -1,4 +1,4 @@
-import { BundlePublicKeys } from "./bundle-manifest";
+import { BundlePublicKeys } from "../contract/bundle-manifest";
 
 /**
  * Public keys whose signed bundle manifests the shell accepts, by key id. Keep the current key and the

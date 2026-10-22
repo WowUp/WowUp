@@ -1,7 +1,6 @@
 {
   "compilerOptions": {
     "noEmit": true,
-    "rootDir": ".",
     "sourceMap": true,
     "declaration": false,
     "moduleResolution": "node",
@@ -10,8 +9,14 @@
     "target": "es2017",
     "module": "CommonJS",
     "types": ["node"],
-    "lib": ["es2017", "es2016", "es2015", "dom"]
+    "lib": ["es2017", "es2016", "es2015", "dom"],
+    "paths": {
+      "electron-log": ["../wowup-shell/node_modules/electron-log"],
+      "electron-log/*": ["../wowup-shell/node_modules/electron-log/*"],
+      "electron-updater": ["../wowup-shell/node_modules/electron-updater"],
+      "win-ca": ["../wowup-shell/node_modules/win-ca"]
+    }
   },
-  "files": ["app/shell/bootstrap.ts", "app/main.ts", "app/preload.ts"],
+  "files": ["app/main.ts", "app/preload.ts"],
   "exclude": ["node_modules", "**/*.spec.ts"]
 }

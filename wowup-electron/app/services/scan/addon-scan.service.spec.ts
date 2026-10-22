@@ -17,7 +17,7 @@ const GOLDEN_CURSE_FINGERPRINT = "3501589137";
 const GOLDEN_FILE_COUNT = 5;
 
 /* eslint-disable @typescript-eslint/no-var-requires, @typescript-eslint/no-unsafe-member-access */
-const nativeHash = require(path.join(process.cwd(), "build/Release/addon.node"));
+const nativeHash = require(path.join(process.cwd(), "../wowup-shell/build/Release/addon.node"));
 /* eslint-enable @typescript-eslint/no-var-requires */
 
 const hashes: FileHashAlgorithms = {

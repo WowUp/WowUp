@@ -7,7 +7,7 @@ import {
   signManifest,
   type UnsignedBundleManifest,
   verifyManifest,
-} from "../../app/shell/bundle-manifest.ts";
+} from "../../../wowup-shell/contract/bundle-manifest.ts";
 
 export function hasSigningKey(): boolean {
   return Boolean(process.env.BUNDLE_SIGNING_KEY && process.env.BUNDLE_SIGNING_KEY_ID);
