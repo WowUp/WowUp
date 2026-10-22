@@ -35,7 +35,13 @@
       "runtimeExecutable": "${workspaceFolder}/wowup-electron/node_modules/.bin/electron",
       "trace": "verbose",
       "outputCapture": "std",
-      "runtimeArgs": ["--serve", ".", "--remote-debugging-port=9876"],
+      "runtimeArgs": [
+        "../wowup-shell",
+        "--serve",
+        "--bundle-dir=${workspaceFolder}/wowup-electron/app-build/bundle",
+        "--remote-debugging-port=9876"
+      ],
+      "outFiles": ["${workspaceFolder}/wowup-electron/app-build/**/*.js", "${workspaceFolder}/wowup-shell/dist/**/*.js"],
       "windows": {
         "runtimeExecutable": "${workspaceFolder}/wowup-electron/node_modules/.bin/electron.cmd"
       },
@@ -58,7 +64,14 @@
       "runtimeExecutable": "${workspaceFolder}/wowup-electron/node_modules/.bin/ow-electron",
       "trace": "verbose",
       "outputCapture": "std",
-      "runtimeArgs": ["--force-cmp", "--serve", ".", "--remote-debugging-port=9876"],
+      "runtimeArgs": [
+        "--force-cmp",
+        "../wowup-shell",
+        "--serve",
+        "--bundle-dir=${workspaceFolder}/wowup-electron/app-build/bundle",
+        "--remote-debugging-port=9876"
+      ],
+      "outFiles": ["${workspaceFolder}/wowup-electron/app-build/**/*.js", "${workspaceFolder}/wowup-shell/dist/**/*.js"],
       "windows": {
         "runtimeExecutable": "${workspaceFolder}/wowup-electron/node_modules/.bin/ow-electron.cmd"
       },
