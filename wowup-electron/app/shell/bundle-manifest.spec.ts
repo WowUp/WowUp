@@ -6,6 +6,7 @@ import * as path from "path";
 
 import {
   BundleManifest,
+  compareVersions,
   getSignedBytes,
   hashBundleDirectory,
   signManifest,
@@ -92,6 +93,34 @@ describe("bundle-manifest", () => {
     const downloaded = JSON.parse(JSON.stringify(signed, null, 2)) as BundleManifest;
 
     expect(verifyManifest(downloaded, publicKeys)).to.equal(true);
+  });
+
+  describe("compareVersions", () => {
+    const ordered = [
+      "2.24.9",
+      "2.25.0-beta.1",
+      "2.25.0-beta.2",
+      "2.25.0-beta.10",
+      "2.25.0",
+      "2.25.1",
+      "2.26.0",
+      "3.0.0",
+    ];
+
+    it("orders versions oldest to newest, with prereleases before their release", () => {
+      for (let i = 0; i < ordered.length - 1; i++) {
+        expect(compareVersions(ordered[i], ordered[i + 1]), `${ordered[i]} < ${ordered[i + 1]}`).to.be.lessThan(0);
+        expect(compareVersions(ordered[i + 1], ordered[i]), `${ordered[i + 1]} > ${ordered[i]}`).to.be.greaterThan(0);
+      }
+    });
+
+    it("treats equal versions as equal", () => {
+      expect(compareVersions("2.25.0-beta.3", "2.25.0-beta.3")).to.equal(0);
+    });
+
+    it("rejects strings that aren't versions", () => {
+      expect(() => compareVersions("2.25", "2.25.0")).to.throw(/Not a version/);
+    });
   });
 
   describe("hashBundleDirectory", () => {

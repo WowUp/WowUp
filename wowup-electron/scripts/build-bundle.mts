@@ -3,7 +3,7 @@
 //  - bundle/               the bundle as it's shipped: no source maps. The installer ships it as
 //                          resources/bundle/ and the shell loads it from there.
 //  - bundle.zip            the same folder as a single download
-//  - bundle-manifest.json  the unsigned manifest; scripts/sign-manifest.mts signs it
+//  - bundle-manifest.json  the manifest, signed when BUNDLE_SIGNING_KEY(_ID) are set, unsigned otherwise
 // Bundles are folders, not .asar files: Electron's embedded asar integrity check (on in ow-electron)
 // refuses .asar files the exe doesn't list. Runs after `build` / `ow:build` as their npm post-scripts.
 import AdmZip from "adm-zip";
@@ -13,6 +13,7 @@ import { fileURLToPath } from "node:url";
 
 import { hashBundleDirectory, sha256Hex, type UnsignedBundleManifest } from "../app/shell/bundle-manifest.ts";
 import { SHELL_API_VERSION } from "../app/shell/shell-api.ts";
+import { hasSigningKey, signWithEnvKey } from "./lib/signing.mts";
 
 const root = join(dirname(fileURLToPath(import.meta.url)), "..");
 const bundleDir = join(root, "app-build", "bundle");
@@ -58,6 +59,12 @@ const manifest: UnsignedBundleManifest = {
   revoked: [],
   issuedAt: new Date().toISOString(),
 };
-writeFileSync(join(outDir, "bundle-manifest.json"), JSON.stringify(manifest, null, 2));
+// Release builds have the signing key, so installers ship a signed manifest; local builds stay unsigned
+const signed = hasSigningKey();
+writeFileSync(
+  join(outDir, "bundle-manifest.json"),
+  JSON.stringify(signed ? signWithEnvKey(manifest) : manifest, null, 2),
+);
 
-console.log(`Packaged ${flavor} ${version} bundle: ${(zipped.length / 1024 / 1024).toFixed(1)} MB zip`);
+const size = `${(zipped.length / 1024 / 1024).toFixed(1)} MB zip`;
+console.log(`Packaged ${flavor} ${version} bundle: ${size}, manifest ${signed ? "signed" : "unsigned"}`);

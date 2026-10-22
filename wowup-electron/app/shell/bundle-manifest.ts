@@ -88,6 +88,51 @@ export function verifyManifest(manifest: BundleManifest, publicKeys: BundlePubli
   }
 }
 
+/**
+ * Compares app versions like 2.25.0 and 2.25.0-beta.3: negative if a is older than b, 0 if equal,
+ * positive if newer. A prerelease sorts before its release, and prerelease parts compare numerically
+ * where both are numbers, as in semver.
+ */
+export function compareVersions(a: string, b: string): number {
+  const [aCore, aPre] = splitVersion(a);
+  const [bCore, bPre] = splitVersion(b);
+
+  for (let i = 0; i < 3; i++) {
+    if (aCore[i] !== bCore[i]) {
+      return aCore[i] - bCore[i];
+    }
+  }
+
+  if (aPre.length === 0 || bPre.length === 0) {
+    return bPre.length - aPre.length;
+  }
+
+  for (let i = 0; i < Math.max(aPre.length, bPre.length); i++) {
+    if (aPre[i] === undefined || bPre[i] === undefined) {
+      return aPre[i] === undefined ? -1 : 1;
+    }
+    const aNum = /^\d+$/.test(aPre[i]) ? Number(aPre[i]) : NaN;
+    const bNum = /^\d+$/.test(bPre[i]) ? Number(bPre[i]) : NaN;
+    if (!isNaN(aNum) && !isNaN(bNum)) {
+      if (aNum !== bNum) {
+        return aNum - bNum;
+      }
+    } else if (aPre[i] !== bPre[i]) {
+      return aPre[i] < bPre[i] ? -1 : 1;
+    }
+  }
+
+  return 0;
+}
+
+function splitVersion(version: string): [number[], string[]] {
+  const match = /^(\d+)\.(\d+)\.(\d+)(?:-([0-9A-Za-z.-]+))?$/.exec(version);
+  if (match === null) {
+    throw new Error(`Not a version: ${version}`);
+  }
+  return [[Number(match[1]), Number(match[2]), Number(match[3])], match[4] ? match[4].split(".") : []];
+}
+
 function canonicalJson(value: unknown): string {
   if (Array.isArray(value)) {
     return `[${value.map((item) => canonicalJson(item)).join(",")}]`;
