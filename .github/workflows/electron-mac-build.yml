@@ -43,7 +43,7 @@ jobs:
 
       - name: dmg-license
         run: |
-          cd ./wowup-electron
+          cd ./wowup-shell
           npm i dmg-license
 
       - name: Build Mac App
@@ -57,6 +57,12 @@ jobs:
           NOTARIZE_APPLE_PASSWORD: ${{ secrets.NOTARIZE_APPLE_PASSWORD }}
           NOTARIZE_APPLE_TEAM_ID: ${{ secrets.NOTARIZE_APPLE_TEAM_ID }}
         run: |
-          cd ./wowup-electron
+          cd ./wowup-shell
+          npm ci
+          cd ../wowup-electron
           npm i
+          npm run build:lib
+          npm run lint
+          npm run build:prod
+          cd ../wowup-shell
           npm run electron:publish

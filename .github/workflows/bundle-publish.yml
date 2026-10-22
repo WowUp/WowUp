@@ -60,8 +60,12 @@ jobs:
           FLAVOR: ${{ inputs.flavor }}
           BUNDLE_SIGNING_KEY: ${{ secrets.BUNDLE_SIGNING_KEY }}
           BUNDLE_SIGNING_KEY_ID: ${{ secrets.BUNDLE_SIGNING_KEY_ID }}
+        # wowup-shell is installed first: the app build takes the shared externals' types from it and
+        # builds the shell alongside the bundle
         run: |
-          cd ./wowup-electron
+          cd ./wowup-shell
+          npm ci
+          cd ../wowup-electron
           npm ci
           npm run build:lib
           if [ "$FLAVOR" = "ow" ]; then npm run ow:build:prod; else npm run build:prod; fi

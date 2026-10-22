@@ -49,4 +49,4 @@ jobs:
           BUNDLE_SIGNING_KEY_ID: ${{ secrets.BUNDLE_SIGNING_KEY_ID }}
           CSC_LINK: ${{ secrets.WINDOWS_CSC_LINK }}
           CSC_KEY_PASSWORD: ${{ secrets.WINDOWS_CSC_KEY_PASSWORD }}
-        run: cd ./wowup-electron && npm ci && npm run electron:publish
+        run: cd ./wowup-shell && npm ci && cd ../wowup-electron && npm ci && npm run build:lib && npm run lint && npm run build:prod && cd ../wowup-shell && npm run electron:publish

@@ -55,7 +55,7 @@ jobs:
       - name: dmg-license
         if: matrix.os == 'macos-latest'
         run: |
-          cd ./wowup-electron
+          cd ./wowup-shell
           npm i dmg-license
 
       - name: Chceckout-CF
@@ -83,8 +83,14 @@ jobs:
           BUNDLE_SIGNING_KEY: ${{ secrets.BUNDLE_SIGNING_KEY }} # Signs the manifest of the bundle the installer ships
           BUNDLE_SIGNING_KEY_ID: ${{ secrets.BUNDLE_SIGNING_KEY_ID }}
         run: |
-          cd ./wowup-electron
+          cd ./wowup-shell
           npm ci
+          cd ../wowup-electron
+          npm ci
+          npm run build:lib
+          npm run lint
+          npm run ow:build:prod
+          cd ../wowup-shell
           npm run ow:electron:publish
 
       - name: Set up signing keychain
@@ -130,14 +136,20 @@ jobs:
           NOTARIZE_APPLE_PASSWORD: ${{ secrets.NOTARIZE_APPLE_PASSWORD }}
           NOTARIZE_APPLE_TEAM_ID: ${{ secrets.NOTARIZE_APPLE_TEAM_ID }}
         run: |
-          cd ./wowup-electron
+          cd ./wowup-shell
           npm ci
+          cd ../wowup-electron
+          npm ci
+          npm run build:lib
+          npm run lint
+          npm run ow:build:prod
+          cd ../wowup-shell
           npm run ow:electron:publish
 
       - name: Get ssl.com esigner zip file and unzip
         if: matrix.os == 'windows-2022'
         run: |
-          cd ./wowup-electron/electron-build
+          cd ./wowup-shell/electron-build
           mkdir code_signer
           cd ./code_signer
           Write-Host "Downloading CodeSignTool from GitHub releases..."
@@ -159,4 +171,4 @@ jobs:
           WINDOWS_SIGN_CREDENTIAL_ID_NONPROD: ${{ secrets.WINDOWS_SIGN_CREDENTIAL_ID_NONPROD }}
           WINDOWS_SIGN_USER_TOTP_PROD: ${{ secrets.WINDOWS_SIGN_USER_TOTP_PROD }}
           WINDOWS_SIGN_USER_TOTP_NONPROD: ${{ secrets.WINDOWS_SIGN_USER_TOTP_NONPROD }}
-        run: cd ./wowup-electron && npm ci && npm run ow:electron:publish
+        run: cd ./wowup-shell && npm ci && cd ../wowup-electron && npm ci && npm run build:lib && npm run lint && npm run ow:build:prod && cd ../wowup-shell && npm run ow:electron:publish
