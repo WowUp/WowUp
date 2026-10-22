@@ -1,0 +1,125 @@
+name: Publish bundle
+# Builds one flavor's app bundle, uploads it as a release in WowUp/wowup-bundles and publishes its signed
+# manifest to a channel on that repo's GitHub Pages. No installer is built or code signed.
+# See wowup-electron/SHELL_BUNDLE_PLAN.md ("Storage & delivery").
+#
+# Secrets: WOWUP_BUNDLES_TOKEN (contents: write on WowUp/wowup-bundles), BUNDLE_SIGNING_KEY,
+# BUNDLE_SIGNING_KEY_ID, and CURSEFORGE_API_KEY for the ow flavor.
+on:
+  workflow_dispatch:
+    inputs:
+      flavor:
+        description: Flavor
+        type: choice
+        options: [wago, ow]
+      channel:
+        description: Channel
+        type: choice
+        options: [beta, stable]
+      rollout:
+        description: Rollout percent (0-100)
+        default: "100"
+
+# Publishes and promotions all write to the same Pages repo, so they run one at a time
+concurrency:
+  group: wowup-bundles
+  cancel-in-progress: false
+
+env:
+  BUNDLES_REPO: WowUp/wowup-bundles
+
+jobs:
+  publish:
+    name: Publish ${{ inputs.flavor }} bundle to ${{ inputs.channel }}
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Use Node.js 24.x
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24.x
+
+      - name: Inject Token
+        if: inputs.flavor == 'ow'
+        env:
+          CURSEFORGE_API_KEY: ${{ secrets.CURSEFORGE_API_KEY }}
+        run: |
+          cd ./wowup-electron
+          node ./inject-token.js
+
+      - name: Install lib dependencies
+        run: |
+          cd ./wowup-lib
+          npm install
+
+      - name: Build bundle
+        env:
+          FLAVOR: ${{ inputs.flavor }}
+          BUNDLE_SIGNING_KEY: ${{ secrets.BUNDLE_SIGNING_KEY }}
+          BUNDLE_SIGNING_KEY_ID: ${{ secrets.BUNDLE_SIGNING_KEY_ID }}
+        run: |
+          cd ./wowup-electron
+          npm ci
+          npm run build:lib
+          if [ "$FLAVOR" = "ow" ]; then npm run ow:build:prod; else npm run build:prod; fi
+
+      - name: Upload bundle release
+        id: release
+        env:
+          FLAVOR: ${{ inputs.flavor }}
+          GH_TOKEN: ${{ secrets.WOWUP_BUNDLES_TOKEN }}
+        run: |
+          cd ./wowup-electron
+          VERSION=$(node -p "require('./package.json').version")
+          SHA=$(node -p "require('./app-build/packed/bundle-manifest.json').sha256")
+          TAG="$FLAVOR-$VERSION"
+          ASSET="$FLAVOR-$VERSION-$SHA.zip"
+
+          # A version is published once: rebuilding it produces a different zip, so refuse rather than
+          # replace what clients may already have verified. Use the Promote bundle workflow to move an
+          # already published version between channels.
+          if gh release view "$TAG" --repo "$BUNDLES_REPO" > /dev/null 2>&1; then
+            echo "::error::$TAG is already published. Bump the version, or use the Promote bundle workflow."
+            exit 1
+          fi
+
+          cp app-build/packed/bundle.zip "$ASSET"
+          PRERELEASE=""
+          case "$VERSION" in *-*) PRERELEASE="--prerelease" ;; esac
+          gh release create "$TAG" "$ASSET" --repo "$BUNDLES_REPO" --title "$FLAVOR $VERSION" \
+            --notes "WowUp $FLAVOR app bundle $VERSION, built from $GITHUB_SHA." $PRERELEASE
+
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+          echo "url=https://github.com/$BUNDLES_REPO/releases/download/$TAG/$ASSET" >> "$GITHUB_OUTPUT"
+
+      - name: Check out wowup-bundles
+        uses: actions/checkout@v4
+        with:
+          repository: WowUp/wowup-bundles
+          token: ${{ secrets.WOWUP_BUNDLES_TOKEN }}
+          path: wowup-bundles
+
+      # After the release upload, so a manifest never points at a file that isn't there yet
+      - name: Publish manifest
+        env:
+          FLAVOR: ${{ inputs.flavor }}
+          CHANNEL: ${{ inputs.channel }}
+          ROLLOUT: ${{ inputs.rollout }}
+          VERSION: ${{ steps.release.outputs.version }}
+          URL: ${{ steps.release.outputs.url }}
+          BUNDLE_SIGNING_KEY: ${{ secrets.BUNDLE_SIGNING_KEY }}
+          BUNDLE_SIGNING_KEY_ID: ${{ secrets.BUNDLE_SIGNING_KEY_ID }}
+        run: |
+          node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON wowup-electron/scripts/publish-manifest.mts \
+            --pages-dir wowup-bundles --base wowup-electron/app-build/packed/bundle-manifest.json \
+            --channel "$CHANNEL" --rollout "$ROLLOUT" --url "$URL"
+
+          cd ./wowup-bundles
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git commit -m "Publish $FLAVOR $VERSION to $CHANNEL ($ROLLOUT%)"
+          git push

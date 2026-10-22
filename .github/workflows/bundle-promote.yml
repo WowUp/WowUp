@@ -1,0 +1,85 @@
+name: Promote bundle
+# Points a channel at an already published bundle, without rebuilding it: beta -> stable, rollout changes,
+# and rollbacks (publish the previous version and revoke the bad one). Writes a newly signed manifest to
+# WowUp/wowup-bundles' GitHub Pages. See wowup-electron/SHELL_BUNDLE_PLAN.md ("Storage & delivery").
+#
+# Secrets: WOWUP_BUNDLES_TOKEN (contents: write on WowUp/wowup-bundles), BUNDLE_SIGNING_KEY,
+# BUNDLE_SIGNING_KEY_ID.
+on:
+  workflow_dispatch:
+    inputs:
+      flavor:
+        description: Flavor
+        type: choice
+        options: [wago, ow]
+      version:
+        description: Published version to point the channel at, e.g. 2.25.0
+        required: true
+      channel:
+        description: Channel
+        type: choice
+        options: [beta, stable]
+      rollout:
+        description: Rollout percent (0-100)
+        default: "100"
+      revoke:
+        description: Versions to revoke, comma-separated (needed to go back to an older version)
+        default: ""
+
+concurrency:
+  group: wowup-bundles
+  cancel-in-progress: false
+
+jobs:
+  promote:
+    name: Point ${{ inputs.flavor }} ${{ inputs.channel }} at ${{ inputs.version }}
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Use Node.js 24.x
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24.x
+
+      - name: Check out wowup-bundles
+        uses: actions/checkout@v4
+        with:
+          repository: WowUp/wowup-bundles
+          token: ${{ secrets.WOWUP_BUNDLES_TOKEN }}
+          path: wowup-bundles
+
+      # publish-manifest.mts only uses Node built-ins, so no npm install is needed
+      - name: Publish manifest
+        env:
+          FLAVOR: ${{ inputs.flavor }}
+          VERSION: ${{ inputs.version }}
+          CHANNEL: ${{ inputs.channel }}
+          ROLLOUT: ${{ inputs.rollout }}
+          REVOKE: ${{ inputs.revoke }}
+          BUNDLE_SIGNING_KEY: ${{ secrets.BUNDLE_SIGNING_KEY }}
+          BUNDLE_SIGNING_KEY_ID: ${{ secrets.BUNDLE_SIGNING_KEY_ID }}
+        run: |
+          # The version becomes part of a file path below
+          if ! [[ "$VERSION" =~ ^[0-9]+\.[0-9]+\.[0-9]+(-[0-9A-Za-z.]+)?$ ]]; then
+            echo "::error::\"$VERSION\" isn't a version"
+            exit 1
+          fi
+
+          RECORD="wowup-bundles/$FLAVOR/versions/$VERSION.json"
+          if [ ! -f "$RECORD" ]; then
+            echo "::error::$FLAVOR $VERSION hasn't been published; run the Publish bundle workflow first"
+            exit 1
+          fi
+
+          node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON wowup-electron/scripts/publish-manifest.mts \
+            --pages-dir wowup-bundles --base "$RECORD" --channel "$CHANNEL" --rollout "$ROLLOUT" --revoke "$REVOKE"
+
+          cd ./wowup-bundles
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git commit -m "Point $FLAVOR $CHANNEL at $VERSION ($ROLLOUT%)${REVOKE:+, revoke $REVOKE}"
+          git push
