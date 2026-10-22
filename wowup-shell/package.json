@@ -1,0 +1,53 @@
+{
+  "name": "wowup-cf",
+  "productName": "WowUpCf",
+  "version": "2.25.0-beta.1",
+  "private": true,
+  "description": "World of Warcraft addon updater",
+  "homepage": "https://wowup.io",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/WowUp/WowUp.CF.git"
+  },
+  "author": {
+    "name": "WowUp LLC",
+    "email": "zakrn@wowup.io"
+  },
+  "main": "build/bootstrap.js",
+  "overwolf": {
+    "disablePM": true,
+    "adsOptimization": {
+      "disable": true
+    },
+    "logger": {
+      "enabled": true
+    }
+  },
+  "scripts": {
+    "build": "node scripts/build-shell.js",
+    "test": "tsc -p tsconfig.spec.json && mocha",
+    "lint": "eslint \"src/**/*.ts\" \"contract/**/*.ts\""
+  },
+  "dependencies": {
+    "electron-log": "5.4.4",
+    "electron-updater": "6.8.9",
+    "win-ca": "3.5.1"
+  },
+  "devDependencies": {
+    "@types/mocha": "10.0.1",
+    "@types/node": "22.15.34",
+    "@typescript-eslint/eslint-plugin": "^7.2.0",
+    "@typescript-eslint/parser": "^7.2.0",
+    "chai": "4.3.8",
+    "electron": "43.1.1",
+    "esbuild": "0.20.1",
+    "eslint": "^8.57.0",
+    "eslint-config-prettier": "9.1.0",
+    "mocha": "10.2.0",
+    "prettier": "3.2.5",
+    "typescript": "5.2.2"
+  },
+  "engines": {
+    "node": ">=16.0.0"
+  }
+}

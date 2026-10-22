@@ -1,0 +1,13 @@
+{
+  "compilerOptions": {
+    "noEmit": true,
+    "rootDir": ".",
+    "moduleResolution": "node",
+    "module": "CommonJS",
+    "target": "es2017",
+    "types": ["node"],
+    "lib": ["es2017", "es2019", "dom"]
+  },
+  "include": ["src/**/*.ts", "contract/**/*.ts"],
+  "exclude": ["node_modules", "**/*.spec.ts"]
+}
