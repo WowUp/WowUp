@@ -18,6 +18,7 @@ describe("shell-api", () => {
       apiVersion: SHELL_API_VERSION,
       logPath: "/logs",
       paths: { shellRoot: "/shell", bundleRoot: "/bundle", nativeAddon: "/shell/addon.node" },
+      bundle: { version: "2.25.0", channel: "beta", source: "builtin" },
       markHealthy: () => undefined,
     };
     setShell(shell);
@@ -30,6 +31,7 @@ describe("shell-api", () => {
       apiVersion: SHELL_API_VERSION,
       logPath: "/logs",
       paths: { shellRoot: "/shell", bundleRoot: "/bundle", nativeAddon: "/shell/addon.node" },
+      bundle: { version: "2.25.0", channel: "beta", source: "builtin" },
       markHealthy: () => undefined,
     };
     setShell(shell);

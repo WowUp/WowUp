@@ -1,12 +1,42 @@
 // Builds the shell's entry point, src/bootstrap.ts, into dist/bootstrap.js (build/ belongs to node-gyp, for
 // the native addon). The app bundle is built separately in wowup-electron and loaded by runtime path, never
 // compiled in. See wowup-electron/SHELL_BUNDLE_PLAN.md. Type checking is done with `tsc -p tsconfig.json`.
+//
+// Bakes in (see src/build-defines.d.ts):
+//  - __SHELL_FLAVOR__: from package.json's name, which scripts/set-flavor.js sets
+//  - __EXTRA_BUNDLE_KEYS__: the throwaway local key's public half, only when the bundle wowup-electron packaged
+//    is signed with it, i.e. a local build without the real signing key. Release builds trust only
+//    src/bundle-keys.ts.
+const crypto = require("node:crypto");
 const esbuild = require("esbuild");
 const fs = require("node:fs");
 const path = require("path");
 
+const LOCAL_KEY_ID = "local-test";
+
 const root = path.join(__dirname, "..");
 const outDir = path.join(root, "dist");
+const appRoot = path.join(root, "..", "wowup-electron");
+
+function getFlavor() {
+  const { name } = JSON.parse(fs.readFileSync(path.join(root, "package.json"), "utf8"));
+  return name === "wowup-cf" ? "ow" : "wago";
+}
+
+function getExtraBundleKeys() {
+  const manifestPath = path.join(appRoot, "app-build", "packed", "bundle-manifest.json");
+  const keyPath = path.join(appRoot, "app-build", "local-publish", "local-test-key.pem");
+  if (!fs.existsSync(manifestPath) || JSON.parse(fs.readFileSync(manifestPath, "utf8")).keyId !== LOCAL_KEY_ID) {
+    return {};
+  }
+
+  const publicKey = crypto
+    .createPublicKey(crypto.createPrivateKey(fs.readFileSync(keyPath, "utf8")))
+    .export({ type: "spki", format: "pem" })
+    .toString();
+  console.warn(`Local build: this shell also trusts bundles signed with the "${LOCAL_KEY_ID}" key`);
+  return { [LOCAL_KEY_ID]: publicKey };
+}
 
 async function build() {
   fs.rmSync(outDir, { recursive: true, force: true });
@@ -22,11 +52,18 @@ async function build() {
     sourcemap: true,
     // electron is provided by the runtime; electron-log is shared with the bundle, so there must be one copy
     external: ["electron", "electron-log"],
+    define: {
+      __SHELL_FLAVOR__: JSON.stringify(getFlavor()),
+      __EXTRA_BUNDLE_KEYS__: JSON.stringify(getExtraBundleKeys()),
+    },
     logLevel: "warning",
   });
 }
 
-build().catch(() => {
-  // esbuild has already printed the errors
+build().catch((e) => {
+  // esbuild has already printed its own errors
+  if (!Array.isArray(e.errors)) {
+    console.error(e.message);
+  }
   process.exit(1);
 });

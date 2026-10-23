@@ -14,11 +14,21 @@ export interface ShellPaths {
   nativeAddon: string;
 }
 
+/** The bundle the shell loaded. Its version is the app's version; app.getVersion() is the installed shell's. */
+export interface LoadedBundleInfo {
+  version: string;
+  /** The channel it was published to (beta, stable), or "dev" for an unpackaged run */
+  channel: string;
+  /** Downloaded into userData, built into the installer, or an unpackaged dev build */
+  source: "downloaded" | "builtin" | "dev";
+}
+
 export interface WowUpShell {
   apiVersion: number;
   /** Directory the shell pointed electron-log at */
   logPath: string;
   paths: ShellPaths;
+  bundle: LoadedBundleInfo;
   /** Tells the shell this bundle started successfully, so it won't be rolled back */
   markHealthy(): void;
 }
