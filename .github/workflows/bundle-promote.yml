@@ -3,8 +3,8 @@ name: Promote bundle
 # and rollbacks (publish the previous version and revoke the bad one). Writes a newly signed manifest to
 # WowUp/wowup-bundles' GitHub Pages. See wowup-electron/SHELL_BUNDLE_PLAN.md ("Storage & delivery").
 #
-# Secrets: WOWUP_BUNDLES_TOKEN (contents: write on WowUp/wowup-bundles), BUNDLE_SIGNING_KEY,
-# BUNDLE_SIGNING_KEY_ID.
+# Secrets: WOWUP_BUNDLES_TOKEN (contents: write on the bundles repo), BUNDLE_SIGNING_KEY,
+# BUNDLE_SIGNING_KEY_ID. "Bundles repo" can point at a test repo, as in the Publish bundle workflow.
 on:
   workflow_dispatch:
     inputs:
@@ -25,17 +25,29 @@ on:
       revoke:
         description: Versions to revoke, comma-separated (needed to go back to an older version)
         default: ""
+      repo:
+        description: Bundles repo (owner/name); use a test repo to try the workflow
+        default: WowUp/wowup-bundles
 
 concurrency:
-  group: wowup-bundles
+  group: bundles-${{ inputs.repo }}
   cancel-in-progress: false
 
 jobs:
   promote:
-    name: Point ${{ inputs.flavor }} ${{ inputs.channel }} at ${{ inputs.version }}
+    name: Point ${{ inputs.flavor }} ${{ inputs.channel }} at ${{ inputs.version }} in ${{ inputs.repo }}
     runs-on: ubuntu-latest
 
     steps:
+      - name: Check bundles repo
+        env:
+          BUNDLES_REPO: ${{ inputs.repo }}
+        run: |
+          if ! [[ "$BUNDLES_REPO" =~ ^[A-Za-z0-9-]+/[A-Za-z0-9._-]+$ ]]; then
+            echo "::error::\"$BUNDLES_REPO\" isn't an owner/name repository"
+            exit 1
+          fi
+
       - name: Checkout
         uses: actions/checkout@v4
 
@@ -44,10 +56,10 @@ jobs:
         with:
           node-version: 24.x
 
-      - name: Check out wowup-bundles
+      - name: Check out the bundles repo
         uses: actions/checkout@v4
         with:
-          repository: WowUp/wowup-bundles
+          repository: ${{ inputs.repo }}
           token: ${{ secrets.WOWUP_BUNDLES_TOKEN }}
           path: wowup-bundles
 

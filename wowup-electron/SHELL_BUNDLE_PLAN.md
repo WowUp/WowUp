@@ -366,6 +366,25 @@ until it merges)
   4. Run **Publish bundle** for one flavor on `beta`, and check the release, the manifest
      commit, and the Pages URL.
 - [ ] Cloudflare Pages mirror — later, as a separate change.
+- [x] **Testing publishes without touching production:**
+  - `npm run bundle:publish:local` (`scripts/publish-local.mts`) runs the Publish bundle
+    steps against local stand-ins under `app-build/local-publish/`: `releases/` for the
+    GitHub release, `pages/` for the wowup-bundles checkout. It signs with a throwaway
+    `local-test` key made on first run, serves `releases/` and `pages/` (never the key)
+    on `http://localhost:8787`, and checks the result as a client would. Options:
+    `--channel`, `--rollout`, `--revoke`, `--port`, `--serve` (keep serving, e.g. for a
+    dev build to download from in Phase 5), `--reset` (forget earlier local publishes).
+    It refuses to re-publish a version with different content, like the workflow.
+  - The publishing code it shares with CI is `scripts/lib/pages.mts`
+    (`publishToPages`), tested in `pages.test.mts`; `signing.mts` gained `signWithKey`.
+  - Both workflows take a **Bundles repo** input (default `WowUp/wowup-bundles`) to run
+    the real workflow against a test repo; each repo has its own concurrency group. The
+    test repo needs to be public with one commit, and `WOWUP_BUNDLES_TOKEN` needs access
+    to it. Manifests published there are still signed with the real key.
+  - Fixed while testing: `build-bundle.mts` read the flavor and version from the current
+    `app/env/environment.ts` / `package.json`, so packaging on its own after switching
+    flavors labelled a wago-built bundle as ow. `build-main.js` now records what it built
+    in `app-build/bundle-build.json`, and packaging uses that.
 
 **Step 5 — move the shell into its own package** ✅ done (Windows; mac/Linux and a real
 CI run untested)

@@ -3,8 +3,12 @@ name: Publish bundle
 # manifest to a channel on that repo's GitHub Pages. No installer is built or code signed.
 # See wowup-electron/SHELL_BUNDLE_PLAN.md ("Storage & delivery").
 #
-# Secrets: WOWUP_BUNDLES_TOKEN (contents: write on WowUp/wowup-bundles), BUNDLE_SIGNING_KEY,
+# Secrets: WOWUP_BUNDLES_TOKEN (contents: write on the bundles repo), BUNDLE_SIGNING_KEY,
 # BUNDLE_SIGNING_KEY_ID, and CURSEFORGE_API_KEY for the ow flavor.
+#
+# To try the workflow without publishing for real, set "Bundles repo" to a test repo of your own (public, with
+# at least one commit) and give WOWUP_BUNDLES_TOKEN access to it. Locally, `npm run bundle:publish:local` in
+# wowup-electron runs the same steps against local stand-ins.
 on:
   workflow_dispatch:
     inputs:
@@ -19,21 +23,32 @@ on:
       rollout:
         description: Rollout percent (0-100)
         default: "100"
+      repo:
+        description: Bundles repo (owner/name); use a test repo to try the workflow
+        default: WowUp/wowup-bundles
 
-# Publishes and promotions all write to the same Pages repo, so they run one at a time
+# Publishes and promotions to the same bundles repo write to the same Pages files, so they run one at a time;
+# a test repo gets its own queue
 concurrency:
-  group: wowup-bundles
+  group: bundles-${{ inputs.repo }}
   cancel-in-progress: false
 
 env:
-  BUNDLES_REPO: WowUp/wowup-bundles
+  BUNDLES_REPO: ${{ inputs.repo }}
 
 jobs:
   publish:
-    name: Publish ${{ inputs.flavor }} bundle to ${{ inputs.channel }}
+    name: Publish ${{ inputs.flavor }} bundle to ${{ inputs.channel }} in ${{ inputs.repo }}
     runs-on: ubuntu-latest
 
     steps:
+      - name: Check bundles repo
+        run: |
+          if ! [[ "$BUNDLES_REPO" =~ ^[A-Za-z0-9-]+/[A-Za-z0-9._-]+$ ]]; then
+            echo "::error::\"$BUNDLES_REPO\" isn't an owner/name repository"
+            exit 1
+          fi
+
       - name: Checkout
         uses: actions/checkout@v4
 
@@ -99,10 +114,10 @@ jobs:
           echo "version=$VERSION" >> "$GITHUB_OUTPUT"
           echo "url=https://github.com/$BUNDLES_REPO/releases/download/$TAG/$ASSET" >> "$GITHUB_OUTPUT"
 
-      - name: Check out wowup-bundles
+      - name: Check out the bundles repo
         uses: actions/checkout@v4
         with:
-          repository: WowUp/wowup-bundles
+          repository: ${{ inputs.repo }}
           token: ${{ secrets.WOWUP_BUNDLES_TOKEN }}
           path: wowup-bundles
 
