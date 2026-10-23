@@ -6,8 +6,8 @@
 //  - pages/                                                         stands in for the wowup-bundles checkout
 //  - local-test-key.pem                                             a throwaway signing key, made on first run
 // It then serves releases/ and pages/ over http://localhost and checks the result as a client would: manifest
-// signature, zip hash, folder hash after unzipping. The shell's real keys won't accept the local key, which is
-// intended: point a dev build at the local key (once bundle loading exists) to test against this server.
+// signature, zip hash, folder hash after unzipping. Only shells packaged from a locally signed bundle trust the
+// local key (see scripts/lib/local-key.mts); release builds never do.
 //
 // Uses the bundle the last `build:prod` / `ow:build:prod` packaged (app-build/packed/).
 //
@@ -17,7 +17,6 @@
 //  --serve  keep serving after the checks, e.g. for a dev build to download from
 //  --reset  forget earlier local publishes (keeps the key), e.g. after rebuilding the same version
 import AdmZip from "adm-zip";
-import { generateKeyPairSync } from "node:crypto";
 import {
   copyFileSync,
   createReadStream,
@@ -27,7 +26,6 @@ import {
   readFileSync,
   rmSync,
   statSync,
-  writeFileSync,
 } from "node:fs";
 import { createServer, type Server } from "node:http";
 import { tmpdir } from "node:os";
@@ -43,10 +41,10 @@ import {
   verifyManifest,
 } from "../../wowup-shell/contract/bundle-manifest.ts";
 import { channelManifestPath } from "./lib/channel-manifest.mts";
+import { getLocalKey, LOCAL_KEY_ID } from "./lib/local-key.mts";
 import { describePublish, publishToPages, readJson, splitList } from "./lib/pages.mts";
 import { getPublicKeyPem, signWithKey } from "./lib/signing.mts";
 
-const KEY_ID = "local-test";
 const CONTENT_TYPES: Record<string, string> = { ".json": "application/json", ".zip": "application/zip" };
 
 const root = join(dirname(fileURLToPath(import.meta.url)), "..");
@@ -67,16 +65,6 @@ const { values } = parseArgs({
 function fail(message: string): never {
   console.error(message);
   process.exit(1);
-}
-
-function getLocalKey(): string {
-  const keyFile = join(outDir, "local-test-key.pem");
-  if (!existsSync(keyFile)) {
-    mkdirSync(outDir, { recursive: true });
-    const { privateKey } = generateKeyPairSync("ed25519");
-    writeFileSync(keyFile, privateKey.export({ type: "pkcs8", format: "pem" }));
-  }
-  return readFileSync(keyFile, "utf8");
 }
 
 /** Serves releases/ and pages/ only, never the key */
@@ -133,7 +121,7 @@ if (sha256Hex(readFileSync(zipPath)) !== base.sha256) {
 }
 
 const privateKeyPem = getLocalKey();
-const publicKeys = { [KEY_ID]: getPublicKeyPem(privateKeyPem) };
+const publicKeys = { [LOCAL_KEY_ID]: getPublicKeyPem(privateKeyPem) };
 
 // The "release": published once per version, like the workflow
 const tag = `${base.flavor}-${base.version}`;
@@ -160,7 +148,7 @@ try {
       urls: [`${baseUrl}/releases/${tag}/${asset}`],
       now: new Date(),
     },
-    (manifest) => signWithKey(manifest, KEY_ID, privateKeyPem),
+    (manifest) => signWithKey(manifest, LOCAL_KEY_ID, privateKeyPem),
   );
   console.log(describePublish(result));
 } catch (e) {
@@ -173,8 +161,10 @@ console.log(`Checking ${manifestUrl} as a client would:`);
 const ok = await check(manifestUrl, publicKeys);
 
 if (values.serve) {
-  console.log(`\nServing ${baseUrl}/pages/ and ${baseUrl}/releases/ (signed with key "${KEY_ID}"); Ctrl+C to stop`);
-  console.log(`Public key for "${KEY_ID}":\n${publicKeys[KEY_ID]}`);
+  console.log(
+    `\nServing ${baseUrl}/pages/ and ${baseUrl}/releases/ (signed with key "${LOCAL_KEY_ID}"); Ctrl+C to stop`,
+  );
+  console.log(`Public key for "${LOCAL_KEY_ID}":\n${publicKeys[LOCAL_KEY_ID]}`);
 } else {
   server.close();
   process.exitCode = ok ? 0 : 1;
