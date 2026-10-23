@@ -505,14 +505,32 @@ separately.
 
 ## Phase 4 — Loader, verification, rollback ⏳ not started
 
+Decisions:
+- **The built-in bundle is checked too**, not trusted as part of the install. WowUp installs
+  per user, so the install folder is writable by anything running as the user, and once
+  Phase 6's asar integrity fuse protects `app.asar`, `resources/bundle/` (a plain folder)
+  is the part nothing else covers.
+- **If every candidate fails, refuse to start**: show an error that the installation is
+  damaged and to reinstall, and log why each bundle was rejected. Starting anyway would
+  make the check pointless.
+- **Local packaged builds sign with the local key.** Packaging without the real key signs
+  the built-in manifest with the throwaway `local-test` key (as `bundle:publish:local`
+  does) and embeds that public key in *that* shell build only, via a build-time option of
+  `build-shell.js`. Release builds (CI, with the real key) never trust it. No runtime flag
+  or environment variable can turn the check off.
+- **Unpackaged dev runs (`--bundle-dir`) skip the check**, since that path is already
+  dev-only and the bundle folder is rebuilt constantly.
+
 - [ ] Bootstrap selects bundles from `userData/bundles/<version>/` by `shellApi` and
       version, skipping quarantined ones.
 - [x] Make the bundle's externals resolve from the shell's `node_modules` — done in
       Phase 3 step 3, since the baked-in `resources/bundle/` needed it too.
 - [ ] Per-launch `hashBundleDirectory()` + ed25519 verification (`verifyManifest`
-      against `BUNDLE_PUBLIC_KEYS`); fall back to the baked-in bundle on failure (and
-      log why). Decide whether the baked-in bundle is verified too or trusted as part of
-      the signed install.
+      against `BUNDLE_PUBLIC_KEYS`) for every candidate, downloaded and built-in; try the
+      next candidate on failure (and log why); refuse to start if none pass.
+- [ ] Local packaging: sign the built-in manifest with the `local-test` key when the real
+      key isn't set, and let `build-shell.js` embed extra trusted public keys for that
+      build only.
 - [ ] Booting marker + `markHealthy()` (called by the bundle when the main window is
       ready); quarantine after two unhealthy boots.
 - [ ] Prune old bundles, keeping the active one and the last known-good one.
