@@ -503,7 +503,7 @@ Local-only follow-ups: the mac notarize hooks now read `wowup-shell/.env` instea
 `.travis.yml` look unused (nothing references them); they stayed put and can be deleted
 separately.
 
-## Phase 4 — Loader, verification, rollback ⏳ not started
+## Phase 4 — Loader, verification, rollback ✅ done (Windows, ow flavor)
 
 Decisions:
 - **The built-in bundle is checked too**, not trusted as part of the install. WowUp installs
@@ -521,21 +521,61 @@ Decisions:
 - **Unpackaged dev runs (`--bundle-dir`) skip the check**, since that path is already
   dev-only and the bundle folder is rebuilt constantly.
 
-- [ ] Bootstrap selects bundles from `userData/bundles/<version>/` by `shellApi` and
-      version, skipping quarantined ones.
+Layout: downloaded bundles live in `userData/bundles/<version>/`, each holding `bundle/`
+(the files) and `manifest.json`, beside `userData/bundles/state.json` (set-aside versions,
+the last good version, and the current boot count). The logic is
+`wowup-shell/src/bundle-loader.ts` (no Electron imports, so it's tested with real folders
+and signatures); `src/bootstrap.ts` wires it up.
+
+- [x] Selection: candidates are the downloaded bundles plus the built-in one, newest first
+      by what their manifests claim, the built-in bundle winning a tie (so a newer
+      installer beats an older download). The first that passes its checks is loaded.
 - [x] Make the bundle's externals resolve from the shell's `node_modules` — done in
       Phase 3 step 3, since the baked-in `resources/bundle/` needed it too.
-- [ ] Per-launch `hashBundleDirectory()` + ed25519 verification (`verifyManifest`
-      against `BUNDLE_PUBLIC_KEYS`) for every candidate, downloaded and built-in; try the
-      next candidate on failure (and log why); refuse to start if none pass.
-- [ ] Local packaging: sign the built-in manifest with the `local-test` key when the real
-      key isn't set, and let `build-shell.js` embed extra trusted public keys for that
-      build only.
-- [ ] Booting marker + `markHealthy()` (called by the bundle when the main window is
-      ready); quarantine after two unhealthy boots.
-- [ ] Prune old bundles, keeping the active one and the last known-good one.
-- [ ] Tests for the selection / verification / rollback logic with tampered,
-      wrong-`shellApi`, and crash-looping bundles.
+- [x] Checks on every launch, for every candidate: manifest signature against
+      `BUNDLE_PUBLIC_KEYS` (plus a local build's extra key), flavor (baked into the shell
+      as `__SHELL_FLAVOR__`), shell API, folder name matching the manifest's version, and
+      `hashBundleDirectory()` against `contentSha256`. Each rejection is logged with its
+      reason. If nothing passes, the shell shows "WowUp can't start … please reinstall"
+      and exits. The built-in check takes ~0.1 s.
+- [x] Local packaging: `build-bundle.mts` signs the built-in manifest with the real key
+      when CI sets it, otherwise with the `local-test` key (`scripts/lib/local-key.mts`,
+      shared with `bundle:publish:local`). `build-shell.js` bakes that key's public half
+      into `__EXTRA_BUNDLE_KEYS__` only when the packed manifest is signed with it, and
+      logs that it did; release builds bake in nothing extra.
+- [x] Boot health: the shell counts starts of the selected bundle in `state.json` before
+      loading it; the bundle's `markHealthy()` (already called on the main window's
+      `ready-to-show`) clears the count. A downloaded bundle reaching
+      `MAX_UNHEALTHY_BOOTS` (2) starts without becoming healthy is set aside for good
+      and the next candidate loads (the previous download first, then the built-in
+      bundle). The built-in bundle is never set aside. Saving the state is best effort,
+      so a read-only or full disk can't stop the app from starting.
+- [x] Pruning, when a downloaded bundle becomes healthy: keep it, the previous good one,
+      and newer downloads not set aside (one waiting for a restart); remove the rest,
+      including set-aside ones.
+- [x] Version reporting: the shell tells the app which bundle it loaded
+      (`shell.bundle`: version, channel, source). The version IPC (About, patch notes,
+      migrations, beta detection), the user agent and the default release channel use the
+      bundle's version; electron-updater, the GPU cache check and diagnostics keep
+      `app.getVersion()` (the shell's). The unused `isSameVersion` was removed.
+      `SHELL_API_VERSION` stays 1: no shell has shipped without these fields, and the
+      already published 2.25.0-beta.1 bundles don't read them.
+- [x] Tests: 17 in `bundle-loader.spec.ts` — selection order, tampered files, untrusted
+      key, wrong flavor / shell API / folder, nothing loadable, set-aside after repeated
+      failed starts (falling back to the previous download), healthy bundles kept,
+      built-in never set aside, unreadable state, and pruning.
+- [x] Verified with a packaged ow build (`--dir`, local key) and its own profile: normal
+      start loads the built-in bundle; a tampered `resources/bundle/main.js` is rejected
+      and the app refuses to start without running bundle code; a newer local-key-signed
+      download in `userData/bundles/` loads, preload included, and becomes `lastGood`;
+      a download at its failed-start limit is set aside and the built-in bundle loads;
+      the user agent reports the downloaded bundle's version while the shell is older.
+      Unpackaged dev runs still load `--bundle-dir` unchecked.
+- [ ] Not checked: the wago flavor's packaged build with the loader, mac and Linux, the
+      refuse-to-start dialog's appearance (only its log line), and the renderer's karma
+      tests (its TypeScript compiles). Noted while testing: one check of a just-modified
+      bundle took ~8 s, probably antivirus re-scanning the changed file; `lastGood` can
+      still name a set-aside version (harmless: it only decides what pruning keeps).
 
 ## Phase 5 — Bundle updater ⏳ not started
 
