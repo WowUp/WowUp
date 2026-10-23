@@ -490,9 +490,13 @@ Checklist (commits `c26700f0`, `b513b75d`, `c9c776f1`, `0078bb12`, plus this doc
     productName), the addon and the three shell packages only.
   - CI sequence dry run from clean `npm ci` in both packages through `build:prod`,
     `prepare-package` and the shell build.
+  - [x] Publish bundle from the new layout on GitHub (run 39899420986, also the first
+    `ow` publish): released `ow-2.25.0-beta.1` and pushed `ow/beta/shell-api-1.json`; the
+    served manifest verifies against `2026-a`, the zip and unzipped folder match their
+    hashes, the bundle is `buildFlavor: "ow"`, and the CurseForge key was injected (no
+    placeholder left).
   - [ ] Not done: VS Code debugging (configs updated but not run), a real release
-    workflow run, a Publish bundle run from the new layout (needs the branch pushed),
-    mac and Linux.
+    workflow run, mac and Linux.
 
 Local-only follow-ups: the mac notarize hooks now read `wowup-shell/.env` instead of
 `wowup-electron/.env` — move or copy it if you notarize locally. `gulpfile-ow.js` and
