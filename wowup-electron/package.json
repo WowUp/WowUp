@@ -44,6 +44,7 @@
     "ow:start": "npm-run-all -p ow:electron:serve ow:ng:serve",
     "ow:build": "cross-env BUILD_FLAVOR=ow npm run build:injectenv && npm run ow:electron:serve-tsc && ng build --base-href ./",
     "postow:build": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON scripts/build-bundle.mts",
+    "bundle:publish:local": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON scripts/publish-local.mts",
     "ow:build:dev": "npm run ow:build -- -c ow-dev",
     "ow:build:prod": "npm run ow:build -- -c ow-production",
     "ow:ng:serve": "npm run build:lib && ng serve -c ow-dev",

@@ -5,22 +5,11 @@
 //
 //   node scripts/publish-manifest.mts --pages-dir <dir> --base <manifest> --channel <beta|stable>
 //     [--rollout <0-100>] [--url <download url>]... [--revoke <version>]...
-import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
-import { dirname, join } from "node:path";
 import { parseArgs } from "node:util";
 
-import type { BundleManifest, UnsignedBundleManifest } from "../../wowup-shell/contract/bundle-manifest.ts";
-import { buildChannelManifest, channelManifestPath, versionRecordPath } from "./lib/channel-manifest.mts";
+import type { UnsignedBundleManifest } from "../../wowup-shell/contract/bundle-manifest.ts";
+import { describePublish, publishToPages, readJson, splitList } from "./lib/pages.mts";
 import { signWithEnvKey } from "./lib/signing.mts";
-
-function readJson<T>(file: string): T | undefined {
-  return existsSync(file) ? (JSON.parse(readFileSync(file, "utf8")) as T) : undefined;
-}
-
-function writeJson(file: string, value: unknown): void {
-  mkdirSync(dirname(file), { recursive: true });
-  writeFileSync(file, `${JSON.stringify(value, null, 2)}\n`);
-}
 
 try {
   const { values } = parseArgs({
@@ -46,39 +35,19 @@ try {
     throw new Error(`${baseFile} doesn't exist`);
   }
 
-  const channelFile = join(pagesDir, channelManifestPath(base.flavor, channel, base.shellApi));
-  const current = readJson<BundleManifest>(channelFile);
-
-  const manifest = buildChannelManifest(base, current, {
-    channel,
-    rolloutPercent: Number(values.rollout),
-    // Accept comma-separated lists too, which is how workflow inputs arrive
-    revoke: values.revoke
-      .flatMap((v) => v.split(","))
-      .map((v) => v.trim())
-      .filter(Boolean),
-    urls: values.url,
-    now: new Date(),
-  });
-
-  // The record of what this version is, kept so it can be promoted later. A version is published once.
-  const recordFile = join(pagesDir, versionRecordPath(base.flavor, base.version));
-  const record = readJson<UnsignedBundleManifest>(recordFile);
-  if (record !== undefined && record.sha256 !== base.sha256) {
-    throw new Error(`${base.flavor} ${base.version} was already published with different content`);
-  }
-  if (record === undefined) {
-    const { keyId: _keyId, signature: _signature, ...unsigned } = base as Partial<BundleManifest>;
-    writeJson(recordFile, { ...unsigned, urls: manifest.urls });
-  }
-
-  writeJson(channelFile, signWithEnvKey(manifest));
-
-  const previous = current ? ` (was ${current.version})` : "";
-  console.log(
-    `Published ${base.flavor} ${base.version} to ${channel}${previous}, rollout ${manifest.rolloutPercent}%, ` +
-      `revoked [${manifest.revoked.join(", ")}]`,
+  const result = publishToPages(
+    pagesDir,
+    base,
+    {
+      channel,
+      rolloutPercent: Number(values.rollout),
+      revoke: splitList(values.revoke),
+      urls: values.url,
+      now: new Date(),
+    },
+    signWithEnvKey,
   );
+  console.log(describePublish(result));
 } catch (e) {
   console.error((e as Error).message);
   process.exit(1);
