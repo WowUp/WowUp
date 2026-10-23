@@ -32,12 +32,14 @@ for (const required of ["main.js", "preload.js", "renderer/index.html", "assets"
   }
 }
 
-const version: string = JSON.parse(readFileSync(join(root, "package.json"), "utf8")).version;
-const flavor = /buildFlavor: "(\w+)"/.exec(readFileSync(join(root, "app", "env", "environment.ts"), "utf8"))?.[1];
-if (flavor === undefined) {
-  console.error("Could not read buildFlavor from app/env/environment.ts");
+// Written by scripts/build-main.js: the flavor and version the bundle's code was actually built with, which
+// app/env/environment.ts and package.json may no longer match if the bundle is packaged on its own later
+const buildInfoPath = join(root, "app-build", "bundle-build.json");
+if (!existsSync(buildInfoPath)) {
+  console.error("app-build/bundle-build.json is missing; run the build first");
   process.exit(1);
 }
+const { flavor, version } = JSON.parse(readFileSync(buildInfoPath, "utf8")) as { flavor: string; version: string };
 
 rmSync(outDir, { recursive: true, force: true });
 mkdirSync(outDir, { recursive: true });

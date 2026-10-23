@@ -49,9 +49,23 @@ async function build() {
   await esbuild.build({ ...common, entryPoints: ["app/main.ts", "app/preload.ts"], outdir: bundleDir });
 
   fs.cpSync(path.join(root, "assets"), path.join(bundleDir, "assets"), { recursive: true });
+
+  // What this build is, for scripts/build-bundle.mts: the flavor and version compiled in now, rather than
+  // whatever app/env/environment.ts and package.json say by the time the bundle is packaged
+  const flavor = /buildFlavor: "(\w+)"/.exec(
+    fs.readFileSync(path.join(root, "app", "env", "environment.ts"), "utf8"),
+  )?.[1];
+  if (flavor === undefined) {
+    throw new Error("Could not read buildFlavor from app/env/environment.ts");
+  }
+  const { version } = JSON.parse(fs.readFileSync(path.join(root, "package.json"), "utf8"));
+  fs.writeFileSync(path.join(outRoot, "bundle-build.json"), JSON.stringify({ flavor, version }, null, 2));
 }
 
-build().catch(() => {
-  // esbuild has already printed the errors
+build().catch((e) => {
+  // esbuild has already printed its own errors
+  if (!Array.isArray(e.errors)) {
+    console.error(e.message);
+  }
   process.exit(1);
 });
