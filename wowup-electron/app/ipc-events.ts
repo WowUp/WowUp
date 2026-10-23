@@ -113,6 +113,7 @@ import {
   removeAsDefaultProtocolClient,
   setAsDefaultProtocolClient,
 } from "../../wowup-shell/contract/protocol-client";
+import { getShell } from "../../wowup-shell/contract/shell-api";
 import { FsStats } from "wowup-lib-core";
 
 let PENDING_OPEN_URLS: string[] = [];
@@ -265,8 +266,9 @@ export function initializeIpcHandlers(window: BrowserWindow): void {
     getPreferenceStore().set(ZOOM_FACTOR_KEY, zoomFactor);
   });
 
+  // The app's version is the loaded bundle's; app.getVersion() is the installed shell's
   handle(IPC_GET_APP_VERSION, () => {
-    return app.getVersion();
+    return getShell().bundle.version;
   });
 
   handle(IPC_GET_LOCALE, () => {

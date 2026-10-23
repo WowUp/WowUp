@@ -610,5 +610,5 @@ function canStartHidden() {
 
 function getUserAgent() {
   const portableStr = isPortable ? " portable;" : "";
-  return `WowUp-Client/${app.getVersion()} (${osType()}; ${osRelease()}; ${osArch()}; ${AppEnv.buildFlavor === "ow" ? "CF;" : ""} ${portableStr} +https://wowup.io)`;
+  return `WowUp-Client/${shell.bundle.version} (${osType()}; ${osRelease()}; ${osArch()}; ${AppEnv.buildFlavor === "ow" ? "CF;" : ""} ${portableStr} +https://wowup.io)`;
 }

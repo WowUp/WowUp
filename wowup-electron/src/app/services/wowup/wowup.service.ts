@@ -1,4 +1,3 @@
-import { UpdateCheckResult } from "electron-updater";
 import * as _ from "lodash";
 import { join } from "path";
 import { Subject } from "rxjs";
@@ -68,7 +67,7 @@ export class WowUpService {
     private _preferenceStorageService: PreferenceStorageService,
     private _electronService: ElectronService,
     private _fileService: FileService,
-    private _translateService: TranslateService
+    private _translateService: TranslateService,
   ) {
     this.setDefaultClientPreferences().catch(console.error);
 
@@ -357,11 +356,6 @@ export class WowUpService {
 
   public checkForAppUpdate(): void {
     this._electronService.send(IPC_APP_CHECK_UPDATE);
-  }
-
-  public async isSameVersion(updateCheckResult: UpdateCheckResult): Promise<boolean> {
-    const appVersion = await this._electronService.getVersionNumber();
-    return updateCheckResult && updateCheckResult.updateInfo?.version === appVersion;
   }
 
   public installUpdate(): void {
