@@ -21,6 +21,7 @@ import {
   GET_ADDONS_SORT_ORDER,
   IPC_APP_CHECK_UPDATE,
   IPC_APP_INSTALL_UPDATE,
+  IPC_BUNDLE_UPDATE_RESTART,
   IPC_GET_APP_VERSION,
   IPC_UPDATE_APP_BADGE,
   KEEP_ADDON_DETAIL_TAB_PREFERENCE_KEY,
@@ -360,6 +361,11 @@ export class WowUpService {
 
   public installUpdate(): void {
     return this._electronService.send(IPC_APP_INSTALL_UPDATE);
+  }
+
+  /** Restarts into the newer app bundle the shell downloaded */
+  public restartForBundleUpdate(): void {
+    return this._electronService.send(IPC_BUNDLE_UPDATE_RESTART);
   }
 
   public async getTrustedDomains(): Promise<string[]> {

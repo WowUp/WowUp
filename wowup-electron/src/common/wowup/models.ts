@@ -13,6 +13,15 @@ export interface AppUpdateEvent {
   error?: string;
 }
 
+/** A newer app bundle the shell has downloaded; restarting loads it. See wowup-shell's BundleUpdateReady. */
+export interface BundleUpdateEvent {
+  version: string;
+  /** The restart can't be put off: the running bundle has been revoked, or the update is overdue */
+  important: boolean;
+  /** The update has waited longer than the app allows "Later" to put it off */
+  overdue?: boolean;
+}
+
 export interface AppUpdateDownloadProgress {
   bytesPerSecond: number;
   percent: number;

@@ -11,6 +11,8 @@ import { Injectable } from "@angular/core";
 
 import {
   IPC_APP_UPDATE_STATE,
+  IPC_BUNDLE_UPDATE_GET,
+  IPC_BUNDLE_UPDATE_READY,
   IPC_CLOSE_WINDOW,
   IPC_CUSTOM_PROTOCOL_RECEIVED,
   IPC_FOCUS_WINDOW,
@@ -45,7 +47,7 @@ import { IpcResponse } from "../../../common/models/ipc-response";
 import { ValueRequest } from "../../../common/models/value-request";
 import { ValueResponse } from "../../../common/models/value-response";
 import { MainChannels } from "../../../common/wowup";
-import { AppOptions, AppUpdateEvent } from "../../../common/wowup/models";
+import { AppOptions, AppUpdateEvent, BundleUpdateEvent } from "../../../common/wowup/models";
 import { isProtocol } from "../../utils/string.utils";
 
 @Injectable({
@@ -57,6 +59,7 @@ export class ElectronService {
   private readonly _powerMonitorSrc = new BehaviorSubject("");
   private readonly _customProtocolSrc = new BehaviorSubject("");
   private readonly _appUpdateSrc = new ReplaySubject<AppUpdateEvent>();
+  private readonly _bundleUpdateSrc = new BehaviorSubject<BundleUpdateEvent | undefined>(undefined);
   private readonly _windowResumedSrc = new Subject<void>();
   private readonly _windowFocusedSrc = new BehaviorSubject<boolean>(true);
 
@@ -68,6 +71,8 @@ export class ElectronService {
   public readonly powerMonitor$ = this._powerMonitorSrc.asObservable();
   public readonly customProtocol$ = this._customProtocolSrc.asObservable();
   public readonly appUpdate$ = this._appUpdateSrc.asObservable();
+  /** A newer app bundle that loads on restart, if the shell has downloaded one */
+  public readonly bundleUpdate$ = this._bundleUpdateSrc.asObservable();
   public readonly windowResumed$ = this._windowResumedSrc.asObservable();
   public readonly windowFocused$ = this._windowFocusedSrc.asObservable();
   public readonly isWin = process.platform === "win32";
@@ -108,6 +113,21 @@ export class ElectronService {
       console.log(updateEvt);
       this._appUpdateSrc.next(updateEvt);
     });
+
+    this.onRendererEvent(IPC_BUNDLE_UPDATE_READY, (evt, update: BundleUpdateEvent) => {
+      this._bundleUpdateSrc.next(update);
+    });
+
+    // In case the shell finished downloading before this window loaded
+    this.invoke<BundleUpdateEvent | null>(IPC_BUNDLE_UPDATE_GET)
+      .then((update) => {
+        if (update !== null && this._bundleUpdateSrc.value === undefined) {
+          this._bundleUpdateSrc.next(update);
+        }
+      })
+      .catch((e) => {
+        console.error("Failed to get the bundle update", e);
+      });
 
     this.onRendererEvent(IPC_WINDOW_MINIMIZED, () => {
       this._windowMinimizedSrc.next(true);
@@ -291,7 +311,7 @@ export class ElectronService {
 
   public async getUserDefaultSystemPreference<T = any>(
     key: string,
-    type: "string" | "boolean" | "integer" | "float" | "double" | "url" | "array" | "dictionary"
+    type: "string" | "boolean" | "integer" | "float" | "double" | "url" | "array" | "dictionary",
   ): Promise<T> {
     return await this.invoke(IPC_SYSTEM_PREFERENCES_GET_USER_DEFAULT, key, type);
   }
@@ -313,7 +333,7 @@ export class ElectronService {
 
   public sendIPCMessage<TIN extends IpcRequest, TOUT extends IpcResponse>(
     channel: string,
-    request: TIN
+    request: TIN,
   ): Promise<TOUT> {
     return new Promise((resolve, reject) => {
       window.wowup.onceRendererEvent(request.responseKey, (_evt: any, arg: TOUT) => {

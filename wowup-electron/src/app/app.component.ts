@@ -16,7 +16,7 @@ import {
   OnDestroy,
   OnInit,
 } from "@angular/core";
-import { MatDialog } from "@angular/material/dialog";
+import { MatDialog, MatDialogRef } from "@angular/material/dialog";
 import { TranslateService } from "@ngx-translate/core";
 
 import {
@@ -39,10 +39,11 @@ import {
   WOWUP_LOGO_FILENAME_CF,
   ZOOM_FACTOR_KEY,
 } from "../common/constants";
-import { AppUpdateState, MenuConfig, SystemTrayConfig } from "../common/wowup/models";
+import { AppUpdateState, BundleUpdateEvent, MenuConfig, SystemTrayConfig } from "../common/wowup/models";
 import { AppConfig } from "../environments/environment";
 import { InstallFromUrlDialogComponent } from "./components/addons/install-from-url-dialog/install-from-url-dialog.component";
 import { AlertDialogComponent } from "./components/common/alert-dialog/alert-dialog.component";
+import { ConfirmDialogComponent } from "./components/common/confirm-dialog/confirm-dialog.component";
 import {
   ConsentDialogComponent,
   ConsentDialogResult,
@@ -72,6 +73,7 @@ import { ZoomDirection } from "./utils/zoom.utils";
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
+  private _bundleUpdateDialog?: MatDialogRef<unknown>;
   private _autoUpdateInterval?: number;
   @HostListener("document:click", ["$event"])
   public onDocumentClick(event: MouseEvent) {
@@ -174,7 +176,62 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
       }
     });
 
+    this.electronService.bundleUpdate$
+      .pipe(filter((update): update is BundleUpdateEvent => update !== undefined))
+      .subscribe((update) => this.promptBundleRestart(update));
+
     this._wowUpProtocolService.initialize();
+  }
+
+  /**
+   * Restart now or later. When the running bundle was revoked, or the update was put off past its deadline (see
+   * app-updater.ts), only restart, and the dialog can't be dismissed.
+   */
+  private promptBundleRestart(update: BundleUpdateEvent): void {
+    const title = this._translateService.instant("APP.WOWUP_UPDATE.INSTALL_TITLE");
+    // A later event (overdue, or a newer bundle) replaces the prompt still showing; closed without a result
+    this._bundleUpdateDialog?.close();
+
+    if (update.important) {
+      const message = update.overdue ? "APP.WOWUP_UPDATE.BUNDLE_OVERDUE_TEXT" : "APP.WOWUP_UPDATE.BUNDLE_REQUIRED_TEXT";
+      const dialogRef = this._dialog.open(AlertDialogComponent, {
+        minWidth: 250,
+        disableClose: true,
+        data: {
+          title,
+          message: this._translateService.instant(message),
+          positiveButton: "APP.WOWUP_UPDATE.RESTART_NOW",
+        },
+      });
+      this._bundleUpdateDialog = dialogRef;
+      dialogRef
+        .afterClosed()
+        .pipe(first())
+        .subscribe((restart) => {
+          if (restart === true) {
+            this.wowUpService.restartForBundleUpdate();
+          }
+        });
+      return;
+    }
+
+    const dialogRef = this._dialog.open(ConfirmDialogComponent, {
+      data: {
+        title,
+        message: this._translateService.instant("APP.WOWUP_UPDATE.BUNDLE_READY_TEXT"),
+        positiveKey: "APP.WOWUP_UPDATE.RESTART_NOW",
+        negativeKey: "APP.WOWUP_UPDATE.LATER",
+      },
+    });
+    this._bundleUpdateDialog = dialogRef;
+    dialogRef
+      .afterClosed()
+      .pipe(first())
+      .subscribe((restart) => {
+        if (restart === true) {
+          this.wowUpService.restartForBundleUpdate();
+        }
+      });
   }
 
   public ngOnInit(): void {

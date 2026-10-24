@@ -8,6 +8,7 @@ declare type MainChannels =
   | "app-update-not-available"
   | "app-update-start-download"
   | "app-update-state"
+  | "bundle-update-ready"
   | "blur"
   | "custom-protocol-received"
   | "focus"
