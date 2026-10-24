@@ -8,6 +8,13 @@
   "generateUpdatesFilesForAllChannels": true,
   "publish": ["github"],
   "nodeGypRebuild": true,
+  "electronFuses": {
+    "runAsNode": false,
+    "enableNodeOptionsEnvironmentVariable": false,
+    "enableNodeCliInspectArguments": false,
+    "enableEmbeddedAsarIntegrityValidation": true,
+    "onlyLoadAppFromAsar": true
+  },
   "files": ["dist/**/*.js", "build/Release/*.node"],
   "extraResources": [
     { "from": "../wowup-electron/app-build/packed/bundle", "to": "bundle" },
