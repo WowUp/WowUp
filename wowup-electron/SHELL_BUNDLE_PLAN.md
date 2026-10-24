@@ -13,19 +13,37 @@ which bills per signature, and electron-builder calls the sign hook once per PE 
 files, so JS/HTML/asset changes don't inherently need it — they only need it today
 because they ship inside a new installer.
 
+## Status
+
+Phases 1–5 are done on Windows. The shell (`wowup-shell/`) loads a signed bundle
+(built in `wowup-electron/`), verifies it on every launch, rolls back bundles that fail
+to start, and downloads and stages newer bundles, which the app offers to restart into
+(required after 6 hours, or at once if the running bundle is revoked). CI publishes
+bundles to `WowUp/wowup-bundles`; both flavors have 2.25.0-beta.1 on the beta channel.
+
+Next: Phase 6 (Electron fuses, then the cutover release that ships this shell).
+Still unverified anywhere: mac and Linux, the wago flavor's packaged build with the
+loader and updater, and a real release workflow run since the shell moved. Each
+phase's "Not checked" item has the details.
+
 ## Target architecture
 
-**Signed shell** — `package.json` `main` points at `bootstrap.js` instead of
-`app-build/app/main.js`. Contains:
-- Electron / ow-electron, `build/Release/addon.node`, and dependencies that ship their
-  own binaries (e.g. `win-ca`).
-- `bootstrap.js`, which owns only what must run before or outside the bundle:
-  - `app.requestSingleInstanceLock()` (today `app/main.ts:126`).
-  - Protocol client registration (today `app/main.ts:162`; the mac
-    `CFBundleURLTypes` entry is in Info.plist regardless).
-  - Bundle selection, verification, loading, health tracking, and rollback.
-  - The bundle downloader (see "Why the shell owns the downloader").
-  - electron-updater, used for shell updates only.
+**Signed shell** — the `wowup-shell/` package, whose `main` is `dist/bootstrap.js`.
+Contains:
+- Electron / ow-electron, `build/Release/addon.node`, and the packages the bundle
+  loads from the shell's `node_modules`: `electron-log`, `electron-updater`, and
+  `win-ca` (which ships its own binaries).
+- `bootstrap.js` (`src/bootstrap.ts`), which owns only what must run before or outside
+  the bundle:
+  - `app.requestSingleInstanceLock()`.
+  - Protocol client registration (the mac `CFBundleURLTypes` entry is in Info.plist
+    regardless).
+  - Bundle selection, verification, loading, health tracking, and rollback
+    (`src/bundle-loader.ts`).
+  - The bundle updater (`src/bundle-updater.ts`; see "Why the shell owns the
+    downloader").
+- electron-updater still replaces the shell itself (installer releases). The bundle's
+  `app/app-updater.ts` drives it, loading it from the shell's `node_modules`.
 - A baked-in bundle — the one built alongside that shell release — so first run and
   fallback work offline.
 - `SHELL_API_VERSION`: an integer bumped whenever the contract the bundle relies on
@@ -66,8 +84,7 @@ the same bundle serves Windows, mac, and Linux.
   "sha256": "<hash of the .zip download>",
   "contentSha256": "<hashBundleDirectory() of the unpacked folder, checked on every launch>",
   "urls": [
-    "https://github.com/<owner>/wowup-bundles/releases/download/wago-2.25.0/wago-2.25.0-<sha256>.zip",
-    "https://<mirror>.pages.dev/bundles/wago-2.25.0-<sha256>.zip"
+    "https://github.com/WowUp/wowup-bundles/releases/download/wago-2.25.0/wago-2.25.0-<sha256>.zip"
   ],
   "rolloutPercent": 100,
   "revoked": ["2.24.9"],
@@ -79,8 +96,8 @@ the same bundle serves Windows, mac, and Linux.
 
 ## Storage & delivery
 
-Delivery must be free, so everything lives on GitHub, with Cloudflare Pages as a free
-mirror. Nothing in delivery is trusted: every manifest is ed25519-signed and every
+Delivery must be free, so everything lives on GitHub (a Cloudflare Pages mirror is
+planned for later). Nothing in delivery is trusted: every manifest is ed25519-signed and every
 bundle is hash-checked, so hosts and mirrors only need to be available, not secure.
 
 - **Dedicated public repo, `wowup-bundles`**, separate from the main repo.
@@ -112,31 +129,37 @@ bundle is hash-checked, so hosts and mirrors only need to be available, not secu
 
 Client rules for manifests:
 - **Staged rollout without a server**: take an update only if
-  `hash(installId) % 100 < rolloutPercent`.
+  `sha256("<installId>:<version>") % 100 < rolloutPercent`. The shell generates the
+  install ID. Salting with the version means the same installs aren't always first.
 - **Replay/downgrade protection**: reject a manifest whose `issuedAt` is older than the
   last accepted one, and never install a lower version than the current bundle unless
   the current one is in `revoked`. This blocks a compromised host or mirror from
   serving an old, validly-signed bundle with a known bug.
-- **Revocation**: quarantine any installed bundle listed in `revoked`, even if it's
-  currently active.
+- **Revocation**: versions in `revoked` are never loaded again (a revoked built-in
+  bundle only when nothing else can be). If the running bundle is revoked, its
+  replacement is downloaded even if it's older or outside the rollout, and the app
+  requires a restart.
 
 ## Boot sequence
 
 1. Take the single-instance lock and register protocols. Load the bundle
    **synchronously, before `ready`**, so mac `open-url` and Windows second-instance
    argv still reach the bundle's handlers.
-2. Pick the newest bundle folder in `userData/bundles/` whose `shellApi` this shell
-   supports and that isn't quarantined.
-3. Verify on **every launch**, not just at download: `hashBundleDirectory()` the folder
-   against `contentSha256` (~14 MB, a few tens of ms), then
-   `crypto.verify(null, manifestBytes, publicKey, signature)` (ed25519, built into
-   Node — no dependency). `userData` is writable by anything running as the user, so
-   this is what prevents persisting code inside the signed process.
-4. If nothing passes, use the baked-in bundle (`resources/bundle/`).
-5. Write a "booting" marker, then `require(<bundle>/main.js)`. The bundle calls
-   `shell.markHealthy()` once the main window is ready. Two consecutive boots without
-   `markHealthy()` → quarantine that bundle and fall back to the previous healthy one
-   (or the baked-in bundle).
+2. Candidates are the downloaded bundles in `userData/bundles/<version>/` plus the
+   built-in one (`resources/bundle/`), newest first by what their manifests claim. The
+   built-in bundle wins a tie, and goes last if it's revoked. Downloads that were set
+   aside or revoked are skipped.
+3. Verify each candidate on **every launch**, not just at download, built-in included:
+   the manifest's ed25519 signature (`crypto.verify`, built into Node), its flavor,
+   shell API and version, then `hashBundleDirectory()` of the folder against
+   `contentSha256` (~0.1 s). `userData` and the per-user install folder are writable by
+   anything running as the user, so this is what prevents persisting code inside the
+   signed process. The first candidate that passes is loaded.
+4. If nothing passes, show "WowUp can't start … please reinstall" and exit.
+5. Count the start in `state.json`, then `require(<bundle>/main.js)`. The bundle calls
+   `shell.markHealthy()` once the main window is ready. A download that reaches two
+   starts without `markHealthy()` is set aside, and the next candidate loads. The
+   built-in bundle is never set aside.
 
 Renderer keeps loading via `file://` (from the bundle path). Moving to a custom
 `app://` scheme would change the origin and orphan existing localStorage/IndexedDB.
@@ -145,8 +168,8 @@ Renderer keeps loading via `file://` (from the bundle path). Moving to a custom
 
 If the bundle downloaded its own successor, a broken bundle could break its own update
 path. Keeping check → download → verify → stage in the shell means a bad bundle is
-always recoverable by rollback plus the next good bundle. New bundles activate on next
-launch (or via a "restart to update" prompt that relaunches the app).
+always recoverable by rollback plus the next good bundle. New bundles activate on the
+next launch, or when the user accepts the app's restart prompt (required after 6 hours).
 
 ## What still requires a signed shell release
 
@@ -159,7 +182,7 @@ launch (or via a "restart to update" prompt that relaunches the app).
 Everything else — providers, UI, scan/sync, the UI decoupling phases — becomes
 bundle-only.
 
-## Phase 1 — Bootstrap entry point 🚧 in progress
+## Phase 1 — Bootstrap entry point ✅ done (Windows; mac unverified)
 
 No behavior change; just introduces the seam.
 
@@ -203,7 +226,7 @@ No behavior change; just introduces the seam.
       route into `main.log`, and a second instance with a `wowup://` link exits without
       loading `main.js` while the running instance receives the link.
 
-## Phase 2 — Make main-process code location-independent 🚧 in progress
+## Phase 2 — Make main-process code location-independent ✅ done (Windows; mac unverified)
 
 - [x] The shell publishes `paths` on `WowUpShell` (`shellRoot`, `bundleRoot`,
       `nativeAddon`); for now both roots are `app.getAppPath()`. App code resolves files
@@ -288,7 +311,9 @@ lists where things moved. Untested: mac, Linux, and a release workflow run since
       verifies the result against the derived public key before writing.
 - [x] `app/shell/bundle-keys.ts` holds `BUNDLE_PUBLIC_KEYS` (empty until the first key
       is generated; checking signatures is Phase 4).
-- [ ] Generate the real key pair and add its public key (needs you).
+- [x] Generate the real key pair and add its public key: `2026-a` (current, private
+      key in the `BUNDLE_SIGNING_KEY` secret) and `2027-a` (the offline next key), now
+      in `wowup-shell/src/bundle-keys.ts`.
 
 **Step 3 — installers ship their own bundle**
 - [x] All four electron-builder configs: `app.asar` now holds only
@@ -672,7 +697,7 @@ like a version.
       flavor, mac and Linux. Noted: on a fresh profile the update prompt opens underneath
       the first-run consent dialog (both still work).
 
-## Phase 6 — Shell hardening + cutover release ⏳ not started
+## Phase 6 — Shell hardening + cutover release ⏳ next
 
 - [ ] Enable Electron fuses in the shell build: disable `RunAsNode` and Node CLI
       inspect arguments, enable embedded asar integrity validation. Today the wago
