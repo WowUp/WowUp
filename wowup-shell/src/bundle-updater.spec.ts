@@ -14,7 +14,15 @@ import {
 } from "../contract/bundle-manifest";
 import { BundleUpdateReady } from "../contract/shell-api";
 import { BundleLoaderOptions, recordRevoked, selectBundle } from "./bundle-loader";
-import { BundleUpdater, checkManifest, decideUpdate, FetchFn, rolloutBucket } from "./bundle-updater";
+import {
+  BundleUpdater,
+  CHANNEL_FALLBACK_MS,
+  CHECK_INTERVAL_MS,
+  checkManifest,
+  decideUpdate,
+  FetchFn,
+  rolloutBucket,
+} from "./bundle-updater";
 
 function generateKeys(): { privateKeyPem: string; publicKeyPem: string } {
   const { publicKey, privateKey } = generateKeyPairSync("ed25519");
@@ -324,6 +332,80 @@ describe("bundle-updater", () => {
 
       expect(ready).to.be.empty;
       expect(requests).to.have.length(1);
+    });
+  });
+
+  describe("start", () => {
+    interface Timer {
+      fn: () => void;
+      ms: number;
+    }
+
+    /** Calls start() with stand-in timers, so the test can fire them itself */
+    function startWithTimers(
+      updater: BundleUpdater,
+      fallbackChannel: string,
+    ): { timeouts: Timer[]; intervals: Timer[] } {
+      const timeouts: Timer[] = [];
+      const intervals: Timer[] = [];
+      const realSetTimeout = global.setTimeout;
+      const realSetInterval = global.setInterval;
+      global.setTimeout = ((fn: () => void, ms: number) => timeouts.push({ fn, ms })) as unknown as typeof setTimeout;
+      global.setInterval = ((fn: () => void, ms: number) =>
+        intervals.push({ fn, ms })) as unknown as typeof setInterval;
+      try {
+        updater.start(fallbackChannel);
+      } finally {
+        global.setTimeout = realSetTimeout;
+        global.setInterval = realSetInterval;
+      }
+      return { timeouts, intervals };
+    }
+
+    it("falls back to the loaded bundle's channel when the app doesn't set one", async () => {
+      publish("2.25.1");
+      const updater = createUpdater();
+      const ready: BundleUpdateReady[] = [];
+      updater.onReady((update) => ready.push(update));
+
+      const { timeouts } = startWithTimers(updater, "beta");
+      expect(timeouts.map((timer) => timer.ms)).to.deep.equal([CHANNEL_FALLBACK_MS]);
+      expect(requests).to.be.empty;
+
+      timeouts[0].fn();
+      await updater.checkNow();
+
+      expect(ready).to.deep.equal([{ version: "2.25.1", important: false }]);
+    });
+
+    it("keeps the channel the app set instead of falling back", async () => {
+      publish("2.25.1");
+      const updater = createUpdater();
+
+      const { timeouts } = startWithTimers(updater, "stable");
+      updater.setChannel("beta");
+      await updater.checkNow();
+      timeouts[0].fn();
+      await updater.checkNow();
+
+      expect(requests.map((request) => request.url)).to.not.include(`${BASE_URL}/wago/stable/shell-api-1.json`);
+    });
+
+    it(`checks again every ${CHECK_INTERVAL_MS / 3600000} hours`, async () => {
+      publish("2.25.1");
+      const updater = createUpdater();
+      const ready: BundleUpdateReady[] = [];
+      updater.onReady((update) => ready.push(update));
+      const { intervals } = startWithTimers(updater, "beta");
+      updater.setChannel("beta");
+      await updater.checkNow();
+
+      publish("2.25.2", { issuedAt: "2026-10-23T00:00:00.000Z" });
+      expect(intervals.map((timer) => timer.ms)).to.deep.equal([CHECK_INTERVAL_MS]);
+      intervals[0].fn();
+      await updater.checkNow();
+
+      expect(ready.map((update) => update.version)).to.deep.equal(["2.25.1", "2.25.2"]);
     });
   });
 });
