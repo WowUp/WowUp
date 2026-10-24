@@ -25,6 +25,12 @@ const common = {
   format: "cjs",
   target: "node22",
   sourcemap: true,
+  // Windows Defender takes ~12 s on the first read of the unminified 3.8 MB main.js (every fresh install or
+  // bundle update, before any window can show); minified it takes ~0.3 s. Names are kept so stack traces in
+  // logs stay readable.
+  minifyWhitespace: true,
+  minifySyntax: true,
+  keepNames: true,
   external,
   logLevel: "warning",
 };
