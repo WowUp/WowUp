@@ -21,7 +21,7 @@ to start, and downloads and stages newer bundles, which the app offers to restar
 (required after 6 hours, or at once if the running bundle is revoked). CI publishes
 bundles to `WowUp/wowup-bundles`; both flavors have 2.25.0-beta.1 on the beta channel.
 
-Next: Phase 6 (Electron fuses, then the cutover release that ships this shell).
+Next: the cutover release that ships this shell (Phase 6). The fuses are done.
 Still unverified anywhere: mac and Linux, and a real release workflow run since the
 shell moved. Each
 phase's "Not checked" item has the details.
@@ -714,18 +714,64 @@ like a version.
         again every 4 hours. Shell: 68 passing.
 - [ ] Not checked: mac and Linux.
 
-## Phase 6 — Shell hardening + cutover release ⏳ next
+## Phase 6 — Shell hardening + cutover release 🚧 in progress
 
-- [ ] Enable Electron fuses in the shell build: disable `RunAsNode` and Node CLI
-      inspect arguments, enable embedded asar integrity validation. Today the wago
-      flavor (stock Electron) sets none; ow-electron already enables
-      `EnableEmbeddedAsarIntegrityValidation` and `OnlyLoadAppFromAsar` but leaves
-      `RunAsNode` and the inspect arguments on, so either signed exe can be used as a
-      signed Node runtime. Bundles being folders keeps them compatible with the
-      integrity fuse.
-- [ ] Ship the shell as the last "big" signed release.
-- [ ] Document the release flow: bundle-only by default; shell releases planned around
-      Electron upgrades.
+- [x] Electron fuses, set with electron-builder's `electronFuses` in all four
+      `wowup-shell/electron-build/electron-builder*.json` configs (both builders flip
+      them right before signing): `runAsNode`, `enableNodeOptionsEnvironmentVariable`
+      and `enableNodeCliInspectArguments` off; `enableEmbeddedAsarIntegrityValidation`
+      and `onlyLoadAppFromAsar` on (ow-electron-builder forces those two on Windows
+      anyway). Cookie encryption (one-way) and `file://` privileges (the renderer
+      loads from `file://`) are left at their defaults. Nothing in the app uses
+      `ELECTRON_RUN_AS_NODE`, `NODE_OPTIONS`, `fork` or `--inspect`, and `NODE_PATH`,
+      which the shell relies on, isn't covered by any fuse. Dev runs use the
+      unpackaged Electron, so debugging is unaffected.
+- [x] Verified with packaged `--dir` builds of both flavors (wago packaged with a no-op
+      signing hook, so the resource editing a release does still runs after the
+      integrity hash is embedded). `@electron/fuses read` shows the fuses flipped. Both
+      start normally, load the built-in bundle (preload and `win-ca` included), and wago
+      downloaded and then loaded a newer bundle folder. Each fuse blocks its target,
+      with the stock Electron binary as a control that allows it: a run-as-node
+      script, a `NODE_OPTIONS --require` script and an `--inspect` debugger all do
+      nothing against the fused exes (the app just starts). An `app.asar` with an
+      edited `dist/bootstrap.js` stops at "Integrity check failed for asar archive"
+      before any shell code runs.
+- [ ] Ship the shell as the last "big" signed release: a `publish:never` run of the
+      release workflows first (not run since the shell moved), then the release.
+- [x] Release flow, below.
+
+### Release flow
+
+Every version, bundle or shell, comes from `wowup-electron/package.json`. A bundle
+version is published once and never replaced, so bump the version for every publish,
+however small.
+
+**Bundle-only release** (the default: providers, UI, scan/sync, anything in `app/` or
+`src/`):
+1. Bump the version on the release branch and push.
+2. Run **Publish bundle** (`bundle-publish.yml`) per flavor, usually to `beta` first.
+   It builds the bundle, signs its manifest with `BUNDLE_SIGNING_KEY`, uploads the zip
+   as a release in `WowUp/wowup-bundles` and points the channel's manifest at it. Use
+   `rollout` below 100 to stage it.
+3. Installs pick it up within ~4 hours (Pages caches manifests for up to ~10 minutes),
+   ask to restart, and require it after 6 hours.
+4. To widen a rollout or move a version to `stable`, run **Promote bundle**
+   (`bundle-promote.yml`) with the published version: it only rewrites the manifest.
+
+**Pulling a bad bundle**: run **Promote bundle** with the last good version and the bad
+one in `revoke`. Installs running the bad version download the good one even if it's
+older or outside the rollout, and must restart. A revoked version is never loaded
+again.
+
+**Shell release** (needs Authenticode signing and new installers): only for an
+Electron / ow-electron upgrade, native addon changes, protocol or installer changes,
+or bootstrap changes. Bump `SHELL_API_VERSION` when bundles start relying on something
+new from the shell, so older shells keep getting the last bundle they can run.
+1. Run the release workflows (`electron-*-build.yml`). They build the bundle, embed it
+   in the installers and publish the installers to the main repo, where
+   electron-updater finds them.
+2. Also run **Publish bundle** for the same version, so installs that already have
+   that shell can get it as a bundle update too.
 
 ## Open questions
 
