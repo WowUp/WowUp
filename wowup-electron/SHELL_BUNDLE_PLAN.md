@@ -22,8 +22,8 @@ to start, and downloads and stages newer bundles, which the app offers to restar
 bundles to `WowUp/wowup-bundles`; both flavors have 2.25.0-beta.1 on the beta channel.
 
 Next: Phase 6 (Electron fuses, then the cutover release that ships this shell).
-Still unverified anywhere: mac and Linux, the wago flavor's packaged build with the
-loader and updater, and a real release workflow run since the shell moved. Each
+Still unverified anywhere: mac and Linux, and a real release workflow run since the
+shell moved. Each
 phase's "Not checked" item has the details.
 
 ## Target architecture
@@ -596,9 +596,9 @@ and signatures); `src/bootstrap.ts` wires it up.
       a download at its failed-start limit is set aside and the built-in bundle loads;
       the user agent reports the downloaded bundle's version while the shell is older.
       Unpackaged dev runs still load `--bundle-dir` unchecked.
-- [ ] Not checked: the wago flavor's packaged build with the loader, mac and Linux, the
-      refuse-to-start dialog's appearance (only its log line), and the renderer's karma
-      tests (its TypeScript compiles). Noted while testing: one check of a just-modified
+- [ ] Not checked: mac and Linux (the wago packaged build and the renderer's karma tests
+      were checked in Phase 5), and the refuse-to-start dialog's appearance (only its log
+      line). Noted while testing: one check of a just-modified
       bundle took ~8 s, probably antivirus re-scanning the changed file; `lastGood` can
       still name a set-aside version (harmless: it only decides what pruning keeps).
 
@@ -692,10 +692,27 @@ like a version.
       it's already running. After publishing beta.1 with beta.2 revoked, a profile running
       beta.2 fetched beta.1 and showed the required prompt (Escape and the backdrop don't
       close it). Restarting skipped revoked beta.2 and loaded built-in beta.1.
-- [ ] Not checked: the footer button after Later, the 30 s channel fallback, the 4 h timer,
-      switching channel in the options, rollouts below 100% against a server, the wago
-      flavor, mac and Linux. Noted: on a fresh profile the update prompt opens underneath
-      the first-run consent dialog (both still work).
+- [x] Follow-up checks with a packaged wago build (`--dir`, local key, signing turned
+      off with `-c.win.signAndEditExecutable=false`, since the wago local config signs
+      through eSigner), fresh profile:
+  - [x] wago flavor: the update flow (built-in beta.1 downloaded beta.2, prompt,
+        restart into it, preload still loads `win-ca` from the shell) and the revoke flow
+        (beta.2 revoked, beta.1 fetched, required prompt, restart into the built-in
+        bundle) both behave as in ow.
+  - [x] Rollout: at 0% the check logged "rolled out to 0%, not here yet" and downloaded
+        nothing. At 100% the next start downloaded it.
+  - [x] First run: the update prompt waits for the first-run dialogs (it's held until
+        the app's `showPreLoad$` turns false), so it no longer opens underneath the
+        consent dialog. After consent (accepted with telemetry off), the prompt appeared.
+        The installed version's patch notes open on top of it, which is harmless.
+  - [x] Footer: after Later, "Restart to update" restarted into the update.
+  - [x] Switching channel: picking Stable in Options (and confirming) made the shell
+        check `stable` straight away, and it staged the beta.3 published only there.
+  - [x] Channel fallback and the 4 h timer: unit tests in `bundle-updater.spec.ts` drive
+        `start()` with stand-in timers. Without `setChannel()` it checks the loaded
+        bundle's channel after 30 s, it keeps the app's channel when set, and it checks
+        again every 4 hours. Shell: 68 passing.
+- [ ] Not checked: mac and Linux.
 
 ## Phase 6 — Shell hardening + cutover release ⏳ next
 
