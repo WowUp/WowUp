@@ -2,8 +2,8 @@
 /// <reference path="../typings.d.ts" />
 
 import * as _ from "lodash";
-import { BehaviorSubject, from, of } from "rxjs";
-import { catchError, delay, filter, first, map, switchMap } from "rxjs/operators";
+import { BehaviorSubject, combineLatest, from, of } from "rxjs";
+import { catchError, delay, distinctUntilChanged, filter, first, map, switchMap } from "rxjs/operators";
 import { Addon } from "wowup-lib-core";
 
 import { OverlayContainer } from "@angular/cdk/overlay";
@@ -176,8 +176,13 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
       }
     });
 
-    this.electronService.bundleUpdate$
-      .pipe(filter((update): update is BundleUpdateEvent => update !== undefined))
+    // Held until the first-run dialogs are done, so the prompt doesn't open underneath them
+    combineLatest([this.electronService.bundleUpdate$, this.showPreLoad$])
+      .pipe(
+        filter(([update, showPreLoad]) => update !== undefined && !showPreLoad),
+        map(([update]) => update),
+        distinctUntilChanged(),
+      )
       .subscribe((update) => this.promptBundleRestart(update));
 
     this._wowUpProtocolService.initialize();
