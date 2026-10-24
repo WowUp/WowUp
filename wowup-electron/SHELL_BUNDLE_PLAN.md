@@ -775,8 +775,9 @@ new from the shell, so older shells keep getting the last bundle they can run.
 
 ## Open questions
 
-- **Overwolf flavor**: does ow-electron / Overwolf distribution policy allow loading
-  code that isn't in the package? May need the ow flavor to stay on full releases.
+- ~~**Overwolf flavor**: does ow-electron / Overwolf distribution policy allow loading
+  code that isn't in the package?~~ Resolved: Overwolf doesn't review WowUp's app, so
+  the ow flavor uses bundle updates like wago.
 - **MSIX**: an `appx` target signs the whole package with one signature and supports
   differential updates — worth evaluating for shell releases, but it changes install
   location and replaces the electron-updater/NSIS flow.
