@@ -20,6 +20,12 @@ describe("shell-api", () => {
       paths: { shellRoot: "/shell", bundleRoot: "/bundle", nativeAddon: "/shell/addon.node" },
       bundle: { version: "2.25.0", channel: "beta", source: "builtin" },
       markHealthy: () => undefined,
+      updates: {
+        setChannel: () => undefined,
+        checkNow: () => Promise.resolve(),
+        onReady: () => undefined,
+        restart: () => undefined,
+      },
     };
     setShell(shell);
 
@@ -33,6 +39,12 @@ describe("shell-api", () => {
       paths: { shellRoot: "/shell", bundleRoot: "/bundle", nativeAddon: "/shell/addon.node" },
       bundle: { version: "2.25.0", channel: "beta", source: "builtin" },
       markHealthy: () => undefined,
+      updates: {
+        setChannel: () => undefined,
+        checkNow: () => Promise.resolve(),
+        onReady: () => undefined,
+        restart: () => undefined,
+      },
     };
     setShell(shell);
 

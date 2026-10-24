@@ -5,7 +5,14 @@ import * as os from "os";
 import * as path from "path";
 
 import { hashBundleDirectory, signManifest, UnsignedBundleManifest } from "../contract/bundle-manifest";
-import { BundleLoaderOptions, markBundleHealthy, MAX_UNHEALTHY_BOOTS, selectBundle } from "./bundle-loader";
+import {
+  BundleLoaderOptions,
+  getDownloadedStatus,
+  markBundleHealthy,
+  MAX_UNHEALTHY_BOOTS,
+  recordRevoked,
+  selectBundle,
+} from "./bundle-loader";
 
 function generateKeys(): { privateKeyPem: string; publicKeyPem: string } {
   const { publicKey, privateKey } = generateKeyPairSync("ed25519");
@@ -231,6 +238,70 @@ describe("bundle-loader", () => {
     });
   });
 
+  describe("revocation", () => {
+    it("skips a revoked download", () => {
+      addBuiltIn("2.25.0");
+      addDownloaded("2.25.1");
+      recordRevoked(options.bundlesDir, ["2.25.1"]);
+
+      const { bundle, rejected } = selectBundle(options);
+
+      expect(bundle?.source).to.equal("builtin");
+      expect(rejected.map((r) => r.reason)).to.deep.equal(["revoked"]);
+    });
+
+    it("loads an older download over a revoked built-in bundle", () => {
+      addBuiltIn("2.25.1");
+      addDownloaded("2.25.0");
+      recordRevoked(options.bundlesDir, ["2.25.1"]);
+
+      expect(selectedVersion()).to.equal("2.25.0");
+    });
+
+    it("still loads a revoked built-in bundle when nothing else can be", () => {
+      addBuiltIn("2.25.1");
+      recordRevoked(options.bundlesDir, ["2.25.1"]);
+
+      expect(selectBundle(options).bundle?.source).to.equal("builtin");
+    });
+
+    it("keeps what was revoked before", () => {
+      recordRevoked(options.bundlesDir, ["2.25.1"]);
+      recordRevoked(options.bundlesDir, ["2.25.2"]);
+      addBuiltIn("2.25.0");
+      addDownloaded("2.25.1");
+      addDownloaded("2.25.2");
+
+      expect(selectBundle(options).bundle?.source).to.equal("builtin");
+    });
+  });
+
+  describe("getDownloadedStatus", () => {
+    it("tells installed, unusable and missing versions apart", () => {
+      addDownloaded("2.25.1");
+      const tampered = addDownloaded("2.25.2");
+      tamper(tampered);
+      addDownloaded("2.25.3");
+      recordRevoked(options.bundlesDir, ["2.25.3"]);
+
+      expect(getDownloadedStatus(options, "2.25.1")).to.equal("installed");
+      expect(getDownloadedStatus(options, "2.25.2")).to.be.undefined;
+      expect(getDownloadedStatus(options, "2.25.3")).to.equal("unusable");
+      expect(getDownloadedStatus(options, "2.25.4")).to.be.undefined;
+    });
+  });
+
+  it("ignores folders not named like a version", () => {
+    addBuiltIn("2.25.0");
+    addDownloaded("2.25.1");
+    fs.renameSync(path.join(options.bundlesDir, "2.25.1"), path.join(options.bundlesDir, ".staging"));
+
+    const { bundle, rejected } = selectBundle(options);
+
+    expect(bundle?.source).to.equal("builtin");
+    expect(rejected).to.be.empty;
+  });
+
   describe("markBundleHealthy", () => {
     it("keeps the running bundle and the previous good one, and removes the rest", () => {
       addBuiltIn("2.25.0");
@@ -262,6 +333,40 @@ describe("bundle-loader", () => {
 
       expect(fs.existsSync(path.join(options.bundlesDir, "2.25.2"))).to.equal(false);
       expect(fs.existsSync(path.join(options.bundlesDir, "2.25.1"))).to.equal(true);
+    });
+
+    it("removes revoked bundles, even the previous good one", () => {
+      addBuiltIn("2.25.0");
+      addDownloaded("2.25.1");
+      addDownloaded("2.25.2");
+      addDownloaded("2.25.3");
+      fs.writeFileSync(
+        path.join(options.bundlesDir, "state.json"),
+        JSON.stringify({ quarantined: [], lastGood: "2.25.1", revoked: ["2.25.1", "2.25.3"] }),
+      );
+
+      const { bundle } = selectBundle(options);
+      expect(bundle?.manifest.version).to.equal("2.25.2");
+      markBundleHealthy(options, bundle);
+
+      const left = fs.readdirSync(options.bundlesDir).filter((f) => f !== "state.json");
+      expect(left).to.deep.equal(["2.25.2"]);
+    });
+
+    it("keeps a revoked running bundle and the older replacement waiting for a restart", () => {
+      addBuiltIn("2.25.0");
+      addDownloaded("2.25.1");
+      addDownloaded("2.25.2");
+      const { bundle } = selectBundle(options);
+      expect(bundle?.manifest.version).to.equal("2.25.2");
+      // The updater learns 2.25.2 is revoked and stages 2.25.1 before the window is ready
+      recordRevoked(options.bundlesDir, ["2.25.2"]);
+
+      markBundleHealthy(options, bundle);
+
+      const left = fs.readdirSync(options.bundlesDir).filter((f) => f !== "state.json");
+      expect(left.sort()).to.deep.equal(["2.25.1", "2.25.2"]);
+      expect(selectedVersion()).to.equal("2.25.1");
     });
 
     it("leaves downloads alone when the built-in bundle is running", () => {

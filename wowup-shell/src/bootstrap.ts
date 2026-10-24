@@ -1,13 +1,14 @@
-import { app, dialog } from "electron";
+import { app, dialog, net } from "electron";
 import * as log from "electron-log/main";
 import { readFileSync } from "fs";
 import Module = require("module");
 import { delimiter, join, resolve } from "path";
 
 import { WOWUP_PROTOCOL_NAME, setAsDefaultProtocolClient } from "../contract/protocol-client";
-import { LoadedBundleInfo, SHELL_API_VERSION, setShell } from "../contract/shell-api";
+import { LoadedBundleInfo, SHELL_API_VERSION, setShell, ShellUpdates } from "../contract/shell-api";
 import { BUNDLE_PUBLIC_KEYS } from "./bundle-keys";
 import { BundleLoaderOptions, markBundleHealthy, selectBundle } from "./bundle-loader";
+import { BundleUpdater } from "./bundle-updater";
 
 // The signed shell's entry point. Only what has to happen before, or independently of, the app bundle
 // belongs here; everything else lives in the bundle's main.ts. See wowup-electron/SHELL_BUNDLE_PLAN.md.
@@ -58,6 +59,7 @@ if (!app.requestSingleInstanceLock()) {
       },
       bundle: bundle.info,
       markHealthy: bundle.markHealthy,
+      updates: bundle.updates,
     });
 
     // Loaded synchronously so the bundle's open-url and second-instance listeners are attached before
@@ -70,6 +72,7 @@ interface StartingBundle {
   root: string;
   info: LoadedBundleInfo;
   markHealthy: () => void;
+  updates: ShellUpdates;
 }
 
 /**
@@ -103,6 +106,20 @@ function selectInstalledBundle(): StartingBundle | undefined {
 
   const { version, channel } = bundle.manifest;
   log.info(`Loading ${bundle.source} bundle ${version} (${channel}) from ${bundle.root}`);
+
+  const updater = new BundleUpdater({
+    loader: options,
+    baseUrls: __BUNDLE_UPDATE_URLS__,
+    currentVersion: version,
+    // Electron's fetch, so the system proxy applies; it needs the app to be ready
+    fetch: async (url, init) => {
+      await app.whenReady();
+      return net.fetch(url, init);
+    },
+    log,
+  });
+  updater.start(channel);
+
   return {
     root: bundle.root,
     info: { version, channel, source: bundle.source },
@@ -112,6 +129,12 @@ function selectInstalledBundle(): StartingBundle | undefined {
       } catch (e) {
         log.warn("Failed to record the bundle as healthy", e);
       }
+    },
+    updates: {
+      setChannel: (updateChannel) => updater.setChannel(updateChannel),
+      checkNow: () => updater.checkNow(),
+      onReady: (listener) => updater.onReady(listener),
+      restart,
     },
   };
 }
@@ -137,7 +160,21 @@ function getDevBundle(): StartingBundle {
     root,
     info: { version: readDevVersion(root), channel: "dev", source: "dev" },
     markHealthy: () => {},
+    // Nothing to update to: the bundle folder is rebuilt by wowup-electron's scripts
+    updates: {
+      setChannel: () => {},
+      checkNow: () => Promise.resolve(),
+      onReady: () => {},
+      restart,
+    },
   };
+}
+
+/** Through the normal quit path (before-quit and friends), so the bundle saves its state as usual */
+function restart(): void {
+  log.info("Restarting to load the newest bundle");
+  app.relaunch();
+  app.quit();
 }
 
 /** scripts/build-main.js records what it built next to the bundle folder */

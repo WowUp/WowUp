@@ -13,7 +13,7 @@ import {
 // wowup-electron/SHELL_BUNDLE_PLAN.md. No Electron imports, so it can be tested with plain folders.
 //
 // Downloaded bundles live in <bundlesDir>/<version>/, each holding bundle/ (the files) and manifest.json, next
-// to <bundlesDir>/state.json. The bundle built into the installer is a candidate too, and is checked the same
+// to <bundlesDir>/state.json. Folders not named like a version (the updater's .staging/) are ignored. The bundle built into the installer is a candidate too, and is checked the same
 // way: the install folder is writable by anything running as the user.
 
 /** A bundle that fails to mark itself healthy this many starts in a row is set aside */
@@ -47,6 +47,8 @@ export interface Selection {
 interface BundleState {
   /** Downloaded versions set aside after failing to start */
   quarantined: string[];
+  /** Versions a channel manifest has revoked; see recordRevoked() */
+  revoked: string[];
   /** The last downloaded version that started cleanly */
   lastGood?: string;
   /** The bundle being started, and how many starts in a row it has had without marking itself healthy */
@@ -67,11 +69,16 @@ export function selectBundle(options: BundleLoaderOptions): Selection {
   const state = readState(options.bundlesDir);
   const rejected: Rejection[] = [];
 
-  for (const candidate of listCandidates(options)) {
+  for (const candidate of listCandidates(options, state.revoked)) {
     const id = bundleId(candidate);
 
     if (candidate.source === "downloaded" && state.quarantined.includes(candidate.folder ?? "")) {
       rejected.push({ root: candidate.root, reason: "set aside after failing to start" });
+      continue;
+    }
+
+    if (candidate.source === "downloaded" && state.revoked.includes(candidate.folder ?? "")) {
+      rejected.push({ root: candidate.root, reason: "revoked" });
       continue;
     }
 
@@ -104,20 +111,30 @@ export function selectBundle(options: BundleLoaderOptions): Selection {
 
 /**
  * Called once the loaded bundle's window is ready: clears the boot count, remembers it as the last good bundle,
- * and removes downloaded bundles that are no longer needed. Kept: this one, the previous good one (to fall back
- * to), and anything newer that isn't set aside (a download waiting for a restart).
+ * and removes downloaded bundles that are no longer needed. Never removes the running bundle, whose files are
+ * still in use. Otherwise kept: the previous good one (to fall back to) and anything newer (a download waiting
+ * for a restart), unless set aside or revoked. While the running bundle is itself revoked, older downloads are
+ * kept too, since its replacement may be older.
  */
 export function markBundleHealthy(options: BundleLoaderOptions, bundle: SelectedBundle): void {
   const state = readState(options.bundlesDir);
   state.booting = undefined;
 
   if (bundle.source === "downloaded") {
-    const keep = new Set([bundle.manifest.version, state.lastGood]);
-    state.lastGood = bundle.manifest.version;
+    const running = bundle.manifest.version;
+    const runningRevoked = state.revoked.includes(running);
+    const previousGood = state.lastGood;
+    if (!runningRevoked) {
+      state.lastGood = running;
+    }
 
     for (const folder of listFolders(options.bundlesDir)) {
-      const newer = isVersion(folder) && compareVersions(folder, bundle.manifest.version) > 0;
-      if (keep.has(folder) || (newer && !state.quarantined.includes(folder))) {
+      if (folder === running) {
+        continue;
+      }
+      const unusable = state.quarantined.includes(folder) || state.revoked.includes(folder);
+      const wanted = runningRevoked || folder === previousGood || compareVersions(folder, running) > 0;
+      if (!unusable && wanted) {
         continue;
       }
       rmSync(join(options.bundlesDir, folder), { recursive: true, force: true });
@@ -127,8 +144,47 @@ export function markBundleHealthy(options: BundleLoaderOptions, bundle: Selected
   writeState(options.bundlesDir, state);
 }
 
-/** Candidates newest first by what their manifests claim; the built-in bundle wins a tie */
-function listCandidates(options: BundleLoaderOptions): Candidate[] {
+/**
+ * Records versions a channel manifest has revoked. Revoked downloads are no longer loaded and are removed by the
+ * next pruning; a revoked built-in bundle is only loaded when nothing else can be.
+ */
+export function recordRevoked(bundlesDir: string, versions: string[]): void {
+  const state = readState(bundlesDir);
+  const revoked = [...new Set([...state.revoked, ...versions])];
+  if (revoked.length !== state.revoked.length) {
+    writeState(bundlesDir, { ...state, revoked });
+  }
+}
+
+/**
+ * Whether a downloaded version is already there and passes its checks ("installed"), or must not be loaded
+ * again ("unusable": set aside after failing to start, or revoked); undefined when it's worth downloading.
+ */
+export function getDownloadedStatus(
+  options: BundleLoaderOptions,
+  version: string,
+): "installed" | "unusable" | undefined {
+  const state = readState(options.bundlesDir);
+  if (state.quarantined.includes(version) || state.revoked.includes(version)) {
+    return "unusable";
+  }
+
+  const dir = join(options.bundlesDir, version);
+  const candidate: Candidate = {
+    source: "downloaded",
+    root: join(dir, "bundle"),
+    manifestPath: join(dir, "manifest.json"),
+    folder: version,
+    claimedVersion: version,
+  };
+  return existsSync(dir) && typeof checkCandidate(candidate, options) !== "string" ? "installed" : undefined;
+}
+
+/**
+ * Candidates newest first by what their manifests claim; the built-in bundle wins a tie, unless it's revoked, in
+ * which case it goes last
+ */
+function listCandidates(options: BundleLoaderOptions, revoked: string[]): Candidate[] {
   const downloaded: Candidate[] = listFolders(options.bundlesDir).map((folder) => {
     const manifestPath = join(options.bundlesDir, folder, "manifest.json");
     return {
@@ -146,10 +202,13 @@ function listCandidates(options: BundleLoaderOptions): Candidate[] {
     claimedVersion: readManifest(options.builtIn.manifestPath)?.version,
   };
 
-  return [builtIn, ...downloaded].sort((a, b) => {
+  const sorted = [builtIn, ...downloaded].sort((a, b) => {
     const order = compareClaimed(b.claimedVersion, a.claimedVersion);
     return order !== 0 ? order : a.source === "builtin" ? -1 : b.source === "builtin" ? 1 : 0;
   });
+  return revoked.includes(builtIn.claimedVersion ?? "")
+    ? [...sorted.filter((candidate) => candidate !== builtIn), builtIn]
+    : sorted;
 }
 
 /** The verified manifest, or why the candidate can't be loaded */
@@ -201,7 +260,7 @@ function listFolders(dir: string): string[] {
     return [];
   }
   return readdirSync(dir, { withFileTypes: true })
-    .filter((entry) => entry.isDirectory())
+    .filter((entry) => entry.isDirectory() && isVersion(entry.name))
     .map((entry) => entry.name);
 }
 
@@ -216,9 +275,13 @@ function readManifest(path: string): BundleManifest | undefined {
 function readState(bundlesDir: string): BundleState {
   try {
     const state = JSON.parse(readFileSync(join(bundlesDir, "state.json"), "utf8")) as Partial<BundleState>;
-    return { ...state, quarantined: Array.isArray(state.quarantined) ? state.quarantined : [] };
+    return {
+      ...state,
+      quarantined: Array.isArray(state.quarantined) ? state.quarantined : [],
+      revoked: Array.isArray(state.revoked) ? state.revoked : [],
+    };
   } catch {
-    return { quarantined: [] };
+    return { quarantined: [], revoked: [] };
   }
 }
 

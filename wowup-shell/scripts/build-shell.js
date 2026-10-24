@@ -7,12 +7,16 @@
 //  - __EXTRA_BUNDLE_KEYS__: the throwaway local key's public half, only when the bundle wowup-electron packaged
 //    is signed with it, i.e. a local build without the real signing key. Release builds trust only
 //    src/bundle-keys.ts.
+//  - __BUNDLE_UPDATE_URLS__: where to check for newer bundles; for that same local build, the
+//    `bundle:publish:local --serve` server instead of the real one
 const crypto = require("node:crypto");
 const esbuild = require("esbuild");
 const fs = require("node:fs");
 const path = require("path");
 
 const LOCAL_KEY_ID = "local-test";
+const RELEASE_UPDATE_URL = "https://wowup.github.io/wowup-bundles";
+const LOCAL_UPDATE_URL = "http://localhost:8787/pages";
 
 const root = path.join(__dirname, "..");
 const outDir = path.join(root, "dist");
@@ -23,10 +27,14 @@ function getFlavor() {
   return name === "wowup-cf" ? "ow" : "wago";
 }
 
-function getExtraBundleKeys() {
+function isLocalBuild() {
   const manifestPath = path.join(appRoot, "app-build", "packed", "bundle-manifest.json");
+  return fs.existsSync(manifestPath) && JSON.parse(fs.readFileSync(manifestPath, "utf8")).keyId === LOCAL_KEY_ID;
+}
+
+function getExtraBundleKeys() {
   const keyPath = path.join(appRoot, "app-build", "local-publish", "local-test-key.pem");
-  if (!fs.existsSync(manifestPath) || JSON.parse(fs.readFileSync(manifestPath, "utf8")).keyId !== LOCAL_KEY_ID) {
+  if (!isLocalBuild()) {
     return {};
   }
 
@@ -55,6 +63,7 @@ async function build() {
     define: {
       __SHELL_FLAVOR__: JSON.stringify(getFlavor()),
       __EXTRA_BUNDLE_KEYS__: JSON.stringify(getExtraBundleKeys()),
+      __BUNDLE_UPDATE_URLS__: JSON.stringify(isLocalBuild() ? [LOCAL_UPDATE_URL] : [RELEASE_UPDATE_URL]),
     },
     logLevel: "warning",
   });

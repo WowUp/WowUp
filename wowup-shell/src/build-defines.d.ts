@@ -8,3 +8,9 @@ declare const __SHELL_FLAVOR__: string;
  * throwaway local key. Always empty in release builds.
  */
 declare const __EXTRA_BUNDLE_KEYS__: Record<string, string>;
+
+/**
+ * Hosts to check for newer bundles, in order. A local build checks the `bundle:publish:local --serve` server
+ * (http://localhost:8787/pages) instead of wowup-bundles' GitHub Pages.
+ */
+declare const __BUNDLE_UPDATE_URLS__: string[];

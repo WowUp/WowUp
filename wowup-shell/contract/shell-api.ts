@@ -23,6 +23,24 @@ export interface LoadedBundleInfo {
   source: "downloaded" | "builtin" | "dev";
 }
 
+/** A newer bundle the shell has downloaded and verified; the next launch loads it */
+export interface BundleUpdateReady {
+  version: string;
+  /** The running bundle has been revoked, so the restart shouldn't be put off */
+  important: boolean;
+}
+
+/** The shell's bundle updater. Unpackaged dev runs don't check for updates. */
+export interface ShellUpdates {
+  /** The release channel to take bundles from ("beta", "stable"); changing it checks right away */
+  setChannel(channel: string): void;
+  checkNow(): Promise<void>;
+  /** Called once a newer bundle is ready, and right away if one already is */
+  onReady(listener: (update: BundleUpdateReady) => void): void;
+  /** Quits through the normal quit path and starts again, loading the newest bundle */
+  restart(): void;
+}
+
 export interface WowUpShell {
   apiVersion: number;
   /** Directory the shell pointed electron-log at */
@@ -31,6 +49,7 @@ export interface WowUpShell {
   bundle: LoadedBundleInfo;
   /** Tells the shell this bundle started successfully, so it won't be rolled back */
   markHealthy(): void;
+  updates: ShellUpdates;
 }
 
 const SHELL_GLOBAL_KEY = "__wowupShell";
