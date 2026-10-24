@@ -577,20 +577,100 @@ and signatures); `src/bootstrap.ts` wires it up.
       bundle took ~8 s, probably antivirus re-scanning the changed file; `lastGood` can
       still name a set-aside version (harmless: it only decides what pruning keeps).
 
-## Phase 5 — Bundle updater ⏳ not started
+## Phase 5 — Bundle updater ✅ done (Windows, ow flavor)
 
-- [ ] Shell polls `/<flavor>/<channel>/shell-api-<N>.json` (channel from the existing
-      release-channel preference) using conditional requests, trying each manifest
-      host in order.
-- [ ] Manifest acceptance rules: signature valid, `issuedAt` not older than the last
-      accepted manifest, `hash(installId) % 100 < rolloutPercent`, no downgrade unless
-      the current bundle is in `revoked`.
-- [ ] Download from `urls` in order, check `sha256`, unzip (with `adm-zip`, already
-      shipped) into `userData/bundles/<version>/`, check `contentSha256`. The zip is
-      only opened after its hash matches the signed manifest.
-- [ ] Quarantine any installed bundle listed in `revoked`.
-- [ ] Renderer "restart to update" prompt for staged bundles, alongside the existing
-      shell-update UI from `app/app-updater.ts`.
+Decisions:
+- **Applying an update**: once a bundle is downloaded and verified, the app asks "Restart
+  now / Later". Later just leaves it staged, and the next launch loads it (the loader
+  already picks the newest bundle that passes its checks).
+- **A revoked running bundle** gets the same prompt without Later, and it can't be
+  dismissed.
+- **Later has a 6-hour limit**, so support doesn't have to deal with many old versions.
+  The clock starts when the update is ready, not when Later is pressed, and a newer bundle
+  arriving in the meantime doesn't reset it. When it runs out, the prompt comes back
+  without Later and can't be dismissed. The app owns this (`app-updater.ts`), so changing
+  the limit only takes a bundle. It's checked against the wall clock every minute, so
+  sleep and hibernation don't stretch it.
+- **When to check**: at startup, then every 4 hours. The footer's "check for updates"
+  button checks bundles too.
+- **No splash window.** A fresh install or update used to sit ~12 s before any window,
+  but that was Windows Defender scanning the unminified 3.8 MB `main.js` on its first
+  read. `build-main.js` now minifies whitespace and syntax (names kept, so logged stack
+  traces stay readable): 2.8 MB, scanned in ~0.3 s, and a fresh packaged install reaches
+  the bundle's main in ~0.5 s. Revisit a splash only if a real installer still shows a
+  long blank start.
+- **Channel**: the release channel is an app preference, so the app tells the shell
+  (`shell.updates.setChannel()`) at startup and whenever the user changes it. Until it
+  does, the shell falls back after 30 s to the channel of the bundle it loaded, so a
+  bundle that never calls it (like the published 2.25.0-beta.1) still gets updates.
+- **Install ID**: nothing suitable existed, so the shell generates a random one and keeps
+  it in `userData/bundles/updater.json`, next to the last accepted `issuedAt` per channel.
+- **Rollout bucket** is `sha256("<installId>:<version>") % 100 < rolloutPercent`. Salting
+  with the version means the same installs aren't always first in line.
+- **Unzipping**: the shell bundles its own `adm-zip` into `bootstrap.js`. The bundle's copy
+  can't be used, because the shell must not depend on bundle code.
+- **Where to check**: release builds use `https://wowup.github.io/wowup-bundles`. A local
+  build whose built-in bundle is signed with `local-test` uses
+  `http://localhost:8787/pages` instead (the `bundle:publish:local --serve` server). This
+  is baked in at build time by `build-shell.js`, like the extra key.
+- **`SHELL_API_VERSION` stays 1**: no shell has shipped without `shell.updates`, and the
+  published 2.25.0-beta.1 bundles don't use it.
+
+Layout: `wowup-shell/src/bundle-updater.ts` (no Electron imports; fetch, timers and the
+log are injected, so it's tested against real folders and signed manifests) is wired up in
+`src/bootstrap.ts`. Downloads unpack into `userData/bundles/.staging/` and are renamed to
+`userData/bundles/<version>/` once they check out. The loader ignores folders not named
+like a version.
+
+- [x] Shell polls `<base>/<flavor>/<channel>/shell-api-<N>.json` with conditional requests
+      (ETag / Last-Modified, kept in memory, re-using the cached manifest on a 304),
+      through Electron's `net.fetch` so the system proxy applies. It tries each base URL
+      in order. Unpackaged dev runs don't check.
+- [x] Manifest acceptance: signature, flavor, shell API and channel match. `issuedAt` is
+      not older than the last accepted one for that channel. Rollout bucket as above.
+      Newer than the running bundle, or anything when the running bundle is in `revoked`
+      (which also bypasses the rollout). Already installed means just say it's ready; set
+      aside or revoked here means skip it.
+- [x] Download from `urls` in order and check `sha256` before opening the zip. Unzip into
+      staging, check `contentSha256`, write the manifest beside it, then rename into place.
+- [x] Revocation: versions listed in `revoked` are recorded in `state.json`. The loader
+      skips revoked downloads, and tries a revoked built-in bundle only after everything
+      else: a revoked bundle is buggy, not tampered with, so it beats refusing to start.
+      Pruning removes revoked and set-aside downloads but never the running bundle. While
+      the running bundle is revoked, pruning also keeps older downloads, because its
+      replacement may be older (found end to end: the first rule deleted both).
+- [x] Shell API: `shell.updates` with `setChannel()`, `checkNow()`, `onReady()` (version,
+      important) and `restart()` (`app.relaunch()` + `app.quit()`, so `before-quit` runs
+      and close-to-tray doesn't block it).
+- [x] App: `app-updater.ts` sets the channel at startup and on `set-release-channel`, and
+      checks bundles from the footer's check button. It forwards ready updates to the
+      renderer (`bundle-update-ready`, plus `bundle-update-get` for a window that loads
+      later). The renderer asks "Restart now / Later" (only Restart, not dismissible,
+      when important). While an update is waiting, a footer button offers the restart.
+- [x] Restart deadline: 6 hours after an update is ready, `app-updater.ts` re-sends it as
+      important and overdue. The renderer replaces any prompt still showing with the
+      required one ("has been waiting for a while"). The first prompt says WowUp will ask
+      to restart within 6 hours. Verified in a packaged build with the limit temporarily
+      set to 90 s: after Later, the footer offered the restart, and the required prompt
+      came back 116 s after the update was ready (90 s plus up to one minute's check).
+      Restart loaded the update.
+      New strings are in `en.json` only; other languages fall back to English.
+- [x] Tests: 13 in `bundle-updater.spec.ts` (acceptance, rollout, download and staging,
+      bad zip or contents, URL and host fallback, already installed, 304 re-use, replayed
+      manifest, revoked running bundle, revoked version not downloaded) and 8 more loader
+      tests (revocation, `getDownloadedStatus`, non-version folders, pruning). Shell: 65
+      passing. App: lint, main (77), scripts (14) and renderer karma (6223) pass.
+- [x] End to end with a packaged ow build (`--dir`, local key) against
+      `bundle:publish:local --serve`, own profile. A fresh install with built-in
+      2.25.0-beta.1 downloaded and staged the published beta.2 within ~4 s of start and
+      prompted. "Restart now" relaunched into downloaded beta.2, whose own check then said
+      it's already running. After publishing beta.1 with beta.2 revoked, a profile running
+      beta.2 fetched beta.1 and showed the required prompt (Escape and the backdrop don't
+      close it). Restarting skipped revoked beta.2 and loaded built-in beta.1.
+- [ ] Not checked: the footer button after Later, the 30 s channel fallback, the 4 h timer,
+      switching channel in the options, rollouts below 100% against a server, the wago
+      flavor, mac and Linux. Noted: on a fresh profile the update prompt opens underneath
+      the first-run consent dialog (both still work).
 
 ## Phase 6 — Shell hardening + cutover release ⏳ not started
 
