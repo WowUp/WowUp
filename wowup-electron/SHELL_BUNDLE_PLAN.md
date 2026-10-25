@@ -775,9 +775,12 @@ again.
 Electron / ow-electron upgrade, native addon changes, protocol or installer changes,
 or bootstrap changes. Bump `SHELL_API_VERSION` when bundles start relying on something
 new from the shell, so older shells keep getting the last bundle they can run.
-1. Run the release workflows (`electron-*-build.yml`). They build the bundle, embed it
-   in the installers and publish the installers to the main repo, where
-   electron-updater finds them.
+1. Run **Build WowUp Electron All** (`electron-all-build.yml`, wago) and **Build WowUp
+   Electron All CF** (`electron-ow-all-build.yml`, ow). Each builds the bundle, embeds
+   it in Windows, mac and Linux installers (Windows signed through SSL.com), and uploads
+   them as a draft release to `WowUp/WowUp` or `WowUp/WowUp.CF`, where electron-updater
+   finds them once published. If one platform fails, **Re-run failed jobs** reruns only
+   that one, without signing Windows again.
 2. Also run **Publish bundle** for the same version, so installs that already have
    that shell can get it as a bundle update too.
 
