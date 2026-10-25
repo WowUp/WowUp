@@ -736,6 +736,14 @@ like a version.
       nothing against the fused exes (the app just starts). An `app.asar` with an
       edited `dist/bootstrap.js` stops at "Integrity check failed for asar archive"
       before any shell code runs.
+- [x] Updater against the real hosts: `BUNDLE_UPDATE_URL` at build time (comma-separated)
+      points a local build at other manifest hosts; manifests are still checked against
+      the trusted keys. A packaged ow build with a local 2.25.0-beta.0 built in, pointed
+      at `https://wowup.github.io/wowup-bundles`, fetched the live beta manifest, took the
+      published ow 2.25.0-beta.1 (signed with `2026-a`) through GitHub's release download
+      redirect, verified and staged it in ~10 s. After a restart it loaded that bundle,
+      which predates `setChannel()`, and the shell fell back to its `beta` channel after
+      exactly 30 s ("already running"). Nothing was published for this.
 - [ ] Ship the shell as the last "big" signed release: a `publish:never` run of the
       release workflows first (not run since the shell moved), then the release.
 - [x] Release flow, below.
