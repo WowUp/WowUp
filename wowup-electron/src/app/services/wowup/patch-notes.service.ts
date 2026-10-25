@@ -16,6 +16,15 @@ export class PatchNotesService {
 
 const CHANGELOGS: ChangeLog[] = [
   {
+    Version: "2.25.3",
+    html: `
+    <h4>Changes</h4>
+    <ul>
+    <li>Options > About now also shows the version of the installed WowUp shell, which can be older than the app itself after an in-app update</li>
+    </ul>
+    `,
+  },
+  {
     Version: "2.25.2",
     html: `
     <h4>Changes</h4>
