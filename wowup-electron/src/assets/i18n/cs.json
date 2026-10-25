@@ -328,9 +328,6 @@
       "SUPPORTED_SOURCES": "Podporuje WowInterface a GitHub",
       "TITLE": "URL adresa pro instalaci addonu"
     },
-    "NEW_VERSION_POPUP": {
-      "TITLE": "Patch Notes {versionNumber}"
-    },
     "PERMISSIONS": {
       "CURSEFORGE": {
         "DESCRIPTION_AD_LINK": "ad vendors",

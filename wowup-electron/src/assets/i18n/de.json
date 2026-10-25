@@ -328,9 +328,6 @@
       "SUPPORTED_SOURCES": "Unterstützt WowInterface und GitHub",
       "TITLE": "Installation eines Addons über eine externe URL"
     },
-    "NEW_VERSION_POPUP": {
-      "TITLE": "Neu in Version {versionNumber}"
-    },
     "PERMISSIONS": {
       "CURSEFORGE": {
         "DESCRIPTION_AD_LINK": "Werbepartner",

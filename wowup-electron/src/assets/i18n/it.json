@@ -328,9 +328,6 @@
       "SUPPORTED_SOURCES": "(Supporta WowInterface e GitHub)",
       "TITLE": "Installa un Addon tramite URL"
     },
-    "NEW_VERSION_POPUP": {
-      "TITLE": "Note della Patch {versionNumber}"
-    },
     "PERMISSIONS": {
       "CURSEFORGE": {
         "DESCRIPTION_AD_LINK": "ad vendors",

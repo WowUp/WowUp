@@ -328,9 +328,6 @@
       "SUPPORTED_SOURCES": "WowInterface 와 GitHub 주소가 지원됩니다",
       "TITLE": "설치할 애드온 URL 주소"
     },
-    "NEW_VERSION_POPUP": {
-      "TITLE": "Patch Notes {versionNumber}"
-    },
     "PERMISSIONS": {
       "CURSEFORGE": {
         "DESCRIPTION_AD_LINK": "ad vendors",

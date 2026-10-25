@@ -328,9 +328,6 @@
       "SUPPORTED_SOURCES": "支持 WowInterface 和 GitHub",
       "TITLE": "从 URL 安装"
     },
-    "NEW_VERSION_POPUP": {
-      "TITLE": "更新记录 {versionNumber}"
-    },
     "PERMISSIONS": {
       "CURSEFORGE": {
         "DESCRIPTION_AD_LINK": "ad vendors",

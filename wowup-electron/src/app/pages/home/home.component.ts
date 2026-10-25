@@ -17,7 +17,6 @@ import {
 } from "../../../common/constants";
 import { AppConfig } from "../../../environments/environment";
 import { InstallFromProtocolDialogComponent } from "../../components/addons/install-from-protocol-dialog/install-from-protocol-dialog.component";
-import { PatchNotesDialogComponent } from "../../components/common/patch-notes-dialog/patch-notes-dialog.component";
 import { AddonScanError } from "../../errors";
 import { AddonInstallState } from "../../models/wowup/addon-install-state";
 import { AddonUpdateEvent } from "../../models/wowup/addon-update-event";
@@ -120,7 +119,6 @@ export class HomeComponent implements AfterViewInit, OnDestroy {
         switchMap((installations) => {
           return from(this.migrateAddons(installations)).pipe(map(() => installations));
         }),
-        map(() => this.showNewVersionNotesPopup()),
       )
       .subscribe(() => {
         this.appReady = true;
@@ -154,16 +152,6 @@ export class HomeComponent implements AfterViewInit, OnDestroy {
   private destroyAppUpdateCheck() {
     window.clearInterval(this._appUpdateInterval);
     this._appUpdateInterval = undefined;
-  }
-
-  private async showNewVersionNotesPopup(): Promise<void> {
-    const shouldShow = await this._wowupService.shouldShowNewVersionNotes();
-    if (!shouldShow) {
-      return;
-    }
-
-    await this._dialogFactory.getDialog(PatchNotesDialogComponent).afterClosed().toPromise();
-    await this._wowupService.setNewVersionNotes();
   }
 
   private async migrateAddons(installations: WowInstallation[]) {
