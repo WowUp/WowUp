@@ -16,6 +16,19 @@ export class PatchNotesService {
 
 const CHANGELOGS: ChangeLog[] = [
   {
+    Version: "2.25.1",
+    html: `
+    <h4>Changes</h4>
+    <ul>
+    <li>Patch notes no longer pop up after WowUp updates. You can still read them under Options > About</li>
+    </ul>
+    <h4>Fixes</h4>
+    <ul>
+    <li>Fix updating or reinstalling an addon not installing addons its newer versions require</li>
+    </ul>
+    `,
+  },
+  {
     Version: "2.25.0",
     html: `
     <h4>Features</h4>
