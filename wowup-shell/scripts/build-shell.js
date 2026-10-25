@@ -8,7 +8,9 @@
 //    is signed with it, i.e. a local build without the real signing key. Release builds trust only
 //    src/bundle-keys.ts.
 //  - __BUNDLE_UPDATE_URLS__: where to check for newer bundles; for that same local build, the
-//    `bundle:publish:local --serve` server instead of the real one
+//    `bundle:publish:local --serve` server instead of the real one. BUNDLE_UPDATE_URL (comma-separated)
+//    overrides both, e.g. to try a local build against the real hosts. It only changes where manifests come
+//    from: they're still checked against the trusted keys.
 const crypto = require("node:crypto");
 const esbuild = require("esbuild");
 const fs = require("node:fs");
@@ -46,6 +48,18 @@ function getExtraBundleKeys() {
   return { [LOCAL_KEY_ID]: publicKey };
 }
 
+function getUpdateUrls() {
+  const override = (process.env.BUNDLE_UPDATE_URL ?? "")
+    .split(",")
+    .map((url) => url.trim().replace(/\/+$/, ""))
+    .filter(Boolean);
+  if (override.length > 0) {
+    console.warn(`This shell checks for bundle updates at ${override.join(", ")} (BUNDLE_UPDATE_URL)`);
+    return override;
+  }
+  return isLocalBuild() ? [LOCAL_UPDATE_URL] : [RELEASE_UPDATE_URL];
+}
+
 async function build() {
   fs.rmSync(outDir, { recursive: true, force: true });
 
@@ -63,7 +77,7 @@ async function build() {
     define: {
       __SHELL_FLAVOR__: JSON.stringify(getFlavor()),
       __EXTRA_BUNDLE_KEYS__: JSON.stringify(getExtraBundleKeys()),
-      __BUNDLE_UPDATE_URLS__: JSON.stringify(isLocalBuild() ? [LOCAL_UPDATE_URL] : [RELEASE_UPDATE_URL]),
+      __BUNDLE_UPDATE_URLS__: JSON.stringify(getUpdateUrls()),
     },
     logLevel: "warning",
   });

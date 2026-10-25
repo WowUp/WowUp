@@ -11,6 +11,7 @@ declare const __EXTRA_BUNDLE_KEYS__: Record<string, string>;
 
 /**
  * Hosts to check for newer bundles, in order. A local build checks the `bundle:publish:local --serve` server
- * (http://localhost:8787/pages) instead of wowup-bundles' GitHub Pages.
+ * (http://localhost:8787/pages) instead of wowup-bundles' GitHub Pages. BUNDLE_UPDATE_URL at build time
+ * overrides both.
  */
 declare const __BUNDLE_UPDATE_URLS__: string[];
