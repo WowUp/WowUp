@@ -11,7 +11,6 @@ import { ClientSelectorComponent } from "../components/common/client-selector/cl
 import { ConfirmDialogComponent } from "../components/common/confirm-dialog/confirm-dialog.component";
 import { ConsentDialogComponent } from "../components/common/consent-dialog/consent-dialog.component";
 import { ExternalUrlConfirmationDialogComponent } from "../components/common/external-url-confirmation-dialog/external-url-confirmation-dialog.component";
-import { PatchNotesDialogComponent } from "../components/common/patch-notes-dialog/patch-notes-dialog.component";
 import { ProgressButtonComponent } from "../components/common/progress-button/progress-button.component";
 import { TelemetryDialogComponent } from "../components/common/telemetry-dialog/telemetry-dialog.component";
 import { WebViewComponent } from "../components/common/webview/webview.component";
@@ -29,7 +28,6 @@ import { ProgressBarComponent } from "../components/common/progress-bar/progress
     AlertDialogComponent,
     AnimatedLogoComponent,
     ExternalUrlConfirmationDialogComponent,
-    PatchNotesDialogComponent,
     TelemetryDialogComponent,
     ConsentDialogComponent,
     CellWrapTextComponent,
@@ -46,7 +44,6 @@ import { ProgressBarComponent } from "../components/common/progress-bar/progress
     AlertDialogComponent,
     AnimatedLogoComponent,
     ExternalUrlConfirmationDialogComponent,
-    PatchNotesDialogComponent,
     TelemetryDialogComponent,
     ConsentDialogComponent,
     CellWrapTextComponent,

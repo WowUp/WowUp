@@ -328,9 +328,6 @@
       "SUPPORTED_SOURCES": "Поддерживаются WowInterface и GitHub",
       "TITLE": "Ссылка на установку модификации"
     },
-    "NEW_VERSION_POPUP": {
-      "TITLE": "Список изменений в версии {versionNumber}"
-    },
     "PERMISSIONS": {
       "CURSEFORGE": {
         "DESCRIPTION_AD_LINK": "поставщики рекламы",

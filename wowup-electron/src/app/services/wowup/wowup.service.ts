@@ -31,7 +31,6 @@ import {
   START_MINIMIZED_PREFERENCE_KEY,
   START_WITH_SYSTEM_PREFERENCE_KEY,
   TRUSTED_DOMAINS_KEY,
-  UPDATE_NOTES_POPUP_VERSION_KEY,
   USE_HARDWARE_ACCELERATION_PREFERENCE_KEY,
   USE_SYMLINK_MODE_PREFERENCE_KEY,
   WOWUP_RELEASE_CHANNEL_PREFERENCE_KEY,
@@ -325,16 +324,6 @@ export class WowUpService {
   public getClientDefaultAddonChannelKey(clientType: WowClientType): string {
     const typeName = getEnumName(WowClientType, clientType);
     return `${typeName}${DEFAULT_CHANNEL_PREFERENCE_KEY_SUFFIX}`.toLowerCase();
-  }
-
-  public async shouldShowNewVersionNotes(): Promise<boolean> {
-    const popupVersion = await this._preferenceStorageService.getAsync(UPDATE_NOTES_POPUP_VERSION_KEY);
-    return popupVersion !== (await this._electronService.getVersionNumber());
-  }
-
-  public async setNewVersionNotes(): Promise<void> {
-    const versionNumber = await this._electronService.getVersionNumber();
-    await this._preferenceStorageService.setAsync(UPDATE_NOTES_POPUP_VERSION_KEY, versionNumber);
   }
 
   public async shouldMigrateAddons(): Promise<boolean> {

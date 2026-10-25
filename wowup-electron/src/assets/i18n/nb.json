@@ -328,9 +328,6 @@
       "SUPPORTED_SOURCES": "Støtter WowInterface og GitHub",
       "TITLE": "Installer utvidelse fra URL"
     },
-    "NEW_VERSION_POPUP": {
-      "TITLE": "Nytt i versjon {versionNumber}"
-    },
     "PERMISSIONS": {
       "CURSEFORGE": {
         "DESCRIPTION_AD_LINK": "ad vendors",
