@@ -628,16 +628,19 @@ export class AddonService {
     return addons.length > 0;
   }
 
-  public updateAddon(
+  public async updateAddon(
     addon: Addon,
     onUpdate: (installState: AddonInstallState, progress: number) => void = () => {},
     originalAddon: Addon | undefined = undefined,
   ): Promise<void> {
     if (typeof addon !== "object") {
-      return Promise.resolve(undefined);
+      return undefined;
     }
 
-    return this.installOrUpdateAddon(addon, "update", onUpdate, originalAddon);
+    await this.installOrUpdateAddon(addon, "update", onUpdate, originalAddon);
+
+    // A newer release can require addons the installed one did not
+    await this.installDependencies(addon);
   }
 
   public async installAddon(
@@ -1181,6 +1184,12 @@ export class AddonService {
         // Check for a new download URL
         if (strIsNotNullOrEmpty(latestFile?.downloadUrl) && latestFile.downloadUrl !== addon.downloadUrl) {
           addon.downloadUrl = latestFile.downloadUrl || addon.downloadUrl;
+        }
+
+        // Kept in step with the download URL, so an install or update pulls in what the file it downloads requires.
+        // Refreshed even when the release has not changed, to heal records saved from an older file.
+        if (Array.isArray(latestFile.dependencies)) {
+          addon.dependencies = latestFile.dependencies.map(this.createAddonDependency);
         }
 
         if (Array.isArray(result.fundingLinks)) {

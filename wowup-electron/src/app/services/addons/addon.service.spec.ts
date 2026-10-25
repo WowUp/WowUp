@@ -109,7 +109,9 @@ describe("AddonService", () => {
       defaultAutoUpdate: true,
     };
 
-    provider = jasmine.createSpyObj<AddonProvider>("AddonProvider", ["getById", "getAll", "isValidAddonId"]);
+    provider = jasmine.createSpyObj<AddonProvider>("AddonProvider", ["getById", "getAll", "isValidAddonId"], {
+      name: "Curse",
+    });
     provider.isValidAddonId.and.returnValue(true);
 
     addonStorage = jasmine.createSpyObj<AddonStorageService>("AddonStorageService", [
@@ -164,8 +166,14 @@ describe("AddonService", () => {
       id === installation.id ? installation : undefined,
     );
 
-    addonProviderFactory = jasmine.createSpyObj<AddonProviderFactory>("AddonProviderFactory", ["getProvider"]);
+    addonProviderFactory = jasmine.createSpyObj<AddonProviderFactory>("AddonProviderFactory", [
+      "getProvider",
+      "getBatchAddonProviders",
+      "getStandardAddonProviders",
+    ]);
     addonProviderFactory.getProvider.and.callFake(((name: string) => (name === "Curse" ? provider : undefined)) as any);
+    addonProviderFactory.getBatchAddonProviders.and.returnValue([]);
+    addonProviderFactory.getStandardAddonProviders.and.returnValue([provider]);
 
     service = new AddonService(
       addonStorage,
@@ -286,6 +294,80 @@ describe("AddonService", () => {
       await service.updateAddon(createAddon());
 
       expect(enqueued[0].installType).toEqual("update");
+    });
+
+    it("should update the addon before installing its missing dependencies", async () => {
+      provider.getById.and.resolveTo(
+        createSearchResult({
+          externalId: "2002",
+          name: "Mouse Media",
+          files: [createFile({ folders: ["MouseMedia"] })],
+        }),
+      );
+
+      await service.updateAddon(
+        createAddon({ dependencies: [{ externalAddonId: "2002", type: AddonDependencyType.Required }] }),
+      );
+
+      expect(enqueued.map((item) => [item.addon.externalId, item.installType])).toEqual([
+        ["1001", "update"],
+        ["2002", "install"],
+      ]);
+    });
+
+    it("should not install dependencies that are already installed", async () => {
+      installed = [createAddon({ id: "dep-1", name: "Mouse Media", externalId: "2002" })];
+
+      await service.updateAddon(
+        createAddon({ dependencies: [{ externalAddonId: "2002", type: AddonDependencyType.Required }] }),
+      );
+
+      expect(enqueued.map((item) => item.addon.externalId)).toEqual(["1001"]);
+      expect(provider.getById).not.toHaveBeenCalled();
+    });
+  });
+
+  describe("syncClient", () => {
+    const required = (externalAddonId: string) => ({ externalAddonId, type: AddonDependencyType.Required });
+
+    function syncWithLatestFile(addon: Addon, file: AddonSearchResultFile): Promise<void> {
+      installed = [addon];
+      provider.getAll.and.resolveTo({ searchResults: [createSearchResult({ files: [file] })], errors: [] });
+      return service.syncClient(installation);
+    }
+
+    it("should take the dependencies of a newer release", async () => {
+      const addon = createAddon({ externalLatestReleaseId: "5000", latestVersion: "1.0.0", dependencies: [] });
+
+      await syncWithLatestFile(addon, createFile({ externalId: "5001", dependencies: [required("2002")] }));
+
+      expect(addon.externalLatestReleaseId).toEqual("5001");
+      expect(addon.dependencies).toEqual([required("2002")]);
+    });
+
+    it("should refresh the dependencies of a record saved from an older file", async () => {
+      const addon = createAddon({ externalLatestReleaseId: "5001", dependencies: [] });
+
+      await syncWithLatestFile(addon, createFile({ externalId: "5001", dependencies: [required("2002")] }));
+
+      expect(addon.dependencies).toEqual([required("2002")]);
+      expect(addonStorage.setAsync).toHaveBeenCalledWith(addon.id, addon);
+    });
+
+    it("should drop dependencies the latest release no longer has", async () => {
+      const addon = createAddon({ externalLatestReleaseId: "5000", dependencies: [required("2002")] });
+
+      await syncWithLatestFile(addon, createFile({ externalId: "5001", dependencies: [] }));
+
+      expect(addon.dependencies).toEqual([]);
+    });
+
+    it("should keep the dependencies when the provider does not report any", async () => {
+      const addon = createAddon({ externalLatestReleaseId: "5000", dependencies: [required("2002")] });
+
+      await syncWithLatestFile(addon, createFile({ externalId: "5001", dependencies: undefined }));
+
+      expect(addon.dependencies).toEqual([required("2002")]);
     });
   });
 
@@ -740,10 +822,10 @@ describe("AddonService", () => {
         expect(enqueuedIds()).toEqual(["1001"]);
       });
 
-      it("should not install dependencies on update", async () => {
+      it("should install required dependencies after updating the addon", async () => {
         await service.updateAddon(createAddon(requiring("2002")));
 
-        expect(enqueuedIds()).toEqual(["1001"]);
+        expect(enqueuedIds()).toEqual(["1001", "2002"]);
       });
     });
   });
