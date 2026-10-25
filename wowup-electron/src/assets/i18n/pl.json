@@ -169,10 +169,12 @@
     },
     "ADDON_STATUS": {
       "BACKINGUP": "Tworzenie kopii zapasowej",
+      "CHECKING_DEPENDENCIES": "Sprawdzanie zależności",
       "COMPLETE": "Zainstalowany",
       "DOWNLOADING": "Pobieranie",
       "ERROR": "Błąd",
       "INSTALLING": "Instalowanie",
+      "INSTALLING_DEPENDENCIES": "Zależności {completed}/{total}",
       "PENDING": "W toku",
       "RETRY": "Retrying...",
       "UNINSTALLING": "Odinstalowanie",

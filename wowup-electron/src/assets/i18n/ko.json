@@ -169,10 +169,12 @@
     },
     "ADDON_STATUS": {
       "BACKINGUP": "백업 중",
+      "CHECKING_DEPENDENCIES": "종속성 확인 중",
       "COMPLETE": "설치됨",
       "DOWNLOADING": "다운로드 중",
       "ERROR": "에러",
       "INSTALLING": "설치 중",
+      "INSTALLING_DEPENDENCIES": "종속성 {completed}/{total}",
       "PENDING": "일시정지됨",
       "RETRY": "Retrying...",
       "UNINSTALLING": "삭제 중",

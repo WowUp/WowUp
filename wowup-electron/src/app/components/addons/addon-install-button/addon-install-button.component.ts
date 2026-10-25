@@ -6,9 +6,9 @@ import { TranslateService } from "@ngx-translate/core";
 
 import { AddonInstallState } from "../../../models/wowup/addon-install-state";
 import { AddonUpdateEvent } from "../../../models/wowup/addon-update-event";
-import { AddonService } from "../../../services/addons/addon.service";
+import { AddonService, DependencyInstallEvent, DependencyInstallState } from "../../../services/addons/addon.service";
 import { SessionService } from "../../../services/session/session.service";
-import { AddonSearchResult } from "wowup-lib-core";
+import { Addon, AddonSearchResult } from "wowup-lib-core";
 
 @Component({
   selector: "app-addon-install-button",
@@ -21,6 +21,7 @@ export class AddonInstallButtonComponent implements OnInit, OnDestroy {
   @Output() public onViewUpdated: EventEmitter<boolean> = new EventEmitter();
 
   private readonly _destroy$ = new Subject<boolean>();
+  private _showingDependencies = false;
 
   public disableButton$ = new BehaviorSubject<boolean>(false);
   public showProgress$ = new BehaviorSubject<boolean>(false);
@@ -32,11 +33,15 @@ export class AddonInstallButtonComponent implements OnInit, OnDestroy {
     private _addonService: AddonService,
     private _sessionService: SessionService,
     private _translate: TranslateService,
-    private _cdRef: ChangeDetectorRef
+    private _cdRef: ChangeDetectorRef,
   ) {
     this._addonService.addonInstalled$
       .pipe(takeUntil(this._destroy$), filter(this.isSameAddon))
       .subscribe(this.onAddonInstalledUpdate);
+
+    this._addonService.dependencyInstall$
+      .pipe(takeUntil(this._destroy$), filter(this.isSameAddon))
+      .subscribe(this.onDependencyInstallUpdate);
   }
 
   public ngOnInit(): void {
@@ -57,8 +62,14 @@ export class AddonInstallButtonComponent implements OnInit, OnDestroy {
           this.buttonText$.next(this._translate.instant("COMMON.ADDON_STATE.UNAVAILABLE") as string);
         } else {
           this.buttonText$.next(
-            this.getButtonText(isInstalled ? AddonInstallState.Complete : AddonInstallState.Unknown)
+            this.getButtonText(isInstalled ? AddonInstallState.Complete : AddonInstallState.Unknown),
           );
+        }
+
+        // A row can be (re)created while the addon's dependencies are still installing
+        const dependencyStatus = this.getDependencyInstallStatus();
+        if (dependencyStatus) {
+          this.onDependencyInstallUpdate(dependencyStatus);
         }
       })
       .catch((e) => console.error(e));
@@ -119,6 +130,15 @@ export class AddonInstallButtonComponent implements OnInit, OnDestroy {
   }
 
   private onAddonInstalledUpdate = (evt: AddonUpdateEvent): void => {
+    // The addon itself is done, but it isn't installed until its dependencies are
+    const dependencyStatus =
+      evt.installState === AddonInstallState.Complete ? this.getDependencyInstallStatus() : undefined;
+    if (dependencyStatus) {
+      this.onDependencyInstallUpdate(dependencyStatus);
+      return;
+    }
+
+    this._showingDependencies = false;
     this.showProgress$.next(this.getIsButtonActive(evt.installState));
     this.disableButton$.next(this.getIsButtonDisabled(evt.installState));
     this.progressValue$.next(evt.progress);
@@ -127,7 +147,45 @@ export class AddonInstallButtonComponent implements OnInit, OnDestroy {
     this._cdRef.detectChanges();
   };
 
-  private isSameAddon = (evt: AddonUpdateEvent): boolean => {
+  private onDependencyInstallUpdate = (evt: DependencyInstallEvent): void => {
+    if (evt.state === DependencyInstallState.Complete) {
+      // Only finish what this button showed, an addon that failed to install also drops its dependencies
+      if (this._showingDependencies) {
+        this._showingDependencies = false;
+        this.onAddonInstalledUpdate({ addon: evt.addon, installState: AddonInstallState.Complete, progress: 100 });
+      }
+      return;
+    }
+
+    this._showingDependencies = true;
+    const progress = evt.total > 0 ? (evt.completed / evt.total) * 100 : 0;
+    this.showProgress$.next(true);
+    this.disableButton$.next(true);
+    this.progressValue$.next(progress);
+    this.buttonText$.next(this.getDependencyStateText(evt));
+    this.onViewUpdated.emit(true);
+    this._cdRef.detectChanges();
+  };
+
+  private getDependencyStateText(evt: DependencyInstallEvent): string {
+    if (evt.state === DependencyInstallState.Resolving) {
+      return this._translate.instant("COMMON.ADDON_STATUS.CHECKING_DEPENDENCIES") as string;
+    }
+
+    return this._translate.instant("COMMON.ADDON_STATUS.INSTALLING_DEPENDENCIES", {
+      completed: evt.completed,
+      total: evt.total,
+    }) as string;
+  }
+
+  private getDependencyInstallStatus(): DependencyInstallEvent | undefined {
+    const selectedInstallation = this._sessionService.getSelectedWowInstallation();
+    return this._addonService
+      .getDependencyInstallStatuses()
+      .find((status) => this.isSameAddon(status) && status.addon.installationId === selectedInstallation?.id);
+  }
+
+  private isSameAddon = (evt: { addon: Addon }): boolean => {
     return (
       evt.addon.externalId === this.addonSearchResult.externalId &&
       evt.addon.providerName === this.addonSearchResult.providerName

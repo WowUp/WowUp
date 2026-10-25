@@ -51,8 +51,17 @@ export class SessionService {
   public readonly myAddonsCompactVersion$ = this._myAddonsCompactVersionSrc.asObservable();
   public readonly adSpace$ = this._adSpaceSrc.asObservable(); // TODO this should be driven by the enabled providers
   public readonly enableControls$ = combineLatest([this._enableControlsSrc, this._addonService.syncing$]).pipe(
-    map(([enable, syncing]) => enable && !syncing)
+    map(([enable, syncing]) => enable && !syncing),
   );
+  /**
+   * The My Addons and Get Addons tabs stay usable while addons install, My Addons is where the
+   * progress of every install shows, including dependencies that were not in the search results
+   */
+  public readonly enableAddonTabs$ = combineLatest([
+    this._enableControlsSrc,
+    this._addonService.syncing$,
+    this._addonService.installing$,
+  ]).pipe(map(([enable, syncing, installing]) => (enable || installing) && !syncing));
   public readonly debugAdFrame$ = new Subject<boolean>();
   public readonly currentTheme$ = this._currentThemeSrc.asObservable();
   public readonly rescanComplete$ = this._rescanCompleteSrc.asObservable();
@@ -69,7 +78,7 @@ export class SessionService {
     private _wowUpAccountService: WowUpAccountService,
     private _wowUpService: WowUpService,
     private _addonService: AddonService,
-    private _addonProviderService: AddonProviderFactory
+    private _addonProviderService: AddonProviderFactory,
   ) {
     this._preferenceStorageService
       .getObjectAsync<DetailsTabType>(SELECTED_DETAILS_TAB_KEY)

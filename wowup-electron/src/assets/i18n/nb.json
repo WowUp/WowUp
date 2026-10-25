@@ -169,10 +169,12 @@
     },
     "ADDON_STATUS": {
       "BACKINGUP": "Sikkerhetskopierer",
+      "CHECKING_DEPENDENCIES": "Sjekker avhengigheter",
       "COMPLETE": "Installert",
       "DOWNLOADING": "Laster ned",
       "ERROR": "Feil",
       "INSTALLING": "Installerer",
+      "INSTALLING_DEPENDENCIES": "Avhengigheter {completed}/{total}",
       "PENDING": "Venter",
       "RETRY": "Retrying...",
       "UNINSTALLING": "Avinstallerer",

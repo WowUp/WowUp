@@ -169,10 +169,12 @@
     },
     "ADDON_STATUS": {
       "BACKINGUP": "Backup wird erstellt",
+      "CHECKING_DEPENDENCIES": "Abhängigkeiten werden geprüft",
       "COMPLETE": "Installiert",
       "DOWNLOADING": "Herunterladen...",
       "ERROR": "Fehler",
       "INSTALLING": "Installieren...",
+      "INSTALLING_DEPENDENCIES": "Abhängigkeiten {completed}/{total}",
       "PENDING": "Ausstehend",
       "RETRY": "Retrying...",
       "UNINSTALLING": "Deinstallieren...",

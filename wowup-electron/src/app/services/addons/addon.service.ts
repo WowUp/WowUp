@@ -2,7 +2,7 @@ import * as _ from "lodash";
 
 import * as path from "path";
 import { BehaviorSubject, firstValueFrom, forkJoin, from, Observable, of, Subject } from "rxjs";
-import { catchError, filter, first, map, switchMap, tap } from "rxjs/operators";
+import { catchError, distinctUntilChanged, filter, first, map, switchMap, tap } from "rxjs/operators";
 import { v4 as uuidv4 } from "uuid";
 
 import { Injectable } from "@angular/core";
@@ -74,6 +74,20 @@ export interface AddonDependencyDetail {
   installed: boolean;
 }
 
+export enum DependencyInstallState {
+  Resolving,
+  Installing,
+  Complete,
+}
+
+/** Progress of the required dependencies an addon install pulled in, the addon is the parent */
+export interface DependencyInstallEvent {
+  addon: Addon;
+  state: DependencyInstallState;
+  total: number;
+  completed: number;
+}
+
 export enum ScanUpdateType {
   Start,
   Update,
@@ -123,6 +137,10 @@ export class AddonService {
   private _activeInstalls: AddonUpdateEvent[] = [];
   /** installationId|providerName|externalId of each dependency being installed right now */
   private readonly _pendingDependencyInstalls = new Set<string>();
+  /** Dependency progress of each parent addon whose dependencies are still being installed, by addon id */
+  private readonly _activeDependencyInstalls = new Map<string, DependencyInstallEvent>();
+  private readonly _dependencyInstallSrc = new Subject<DependencyInstallEvent>();
+  private readonly _installingSrc = new BehaviorSubject<boolean>(false);
 
   public readonly addonAction$ = this._addonActionSrc.asObservable();
   public readonly addonInstalled$ = this._addonInstallService.addonInstalled$;
@@ -135,6 +153,9 @@ export class AddonService {
   public readonly anyUpdatesAvailable$ = this._anyUpdatesAvailableSrc.asObservable();
   public readonly addonProviderChange$ = this._addonProviderChangeSrc.asObservable();
   public readonly syncing$ = this._syncingSrc.asObservable();
+  public readonly dependencyInstall$ = this._dependencyInstallSrc.asObservable();
+  /** True while any install, or the dependencies one pulled in, is still running */
+  public readonly installing$ = this._installingSrc.pipe(distinctUntilChanged());
 
   public constructor(
     private _addonStorage: AddonStorageService,
@@ -203,9 +224,14 @@ export class AddonService {
 
   public isInstalling(addonId?: string): boolean {
     if (!addonId) {
-      return this._activeInstalls.length > 0;
+      return this._activeInstalls.length > 0 || this._activeDependencyInstalls.size > 0;
     }
     return this._activeInstalls.find((install) => install.addon.id === addonId) !== undefined;
+  }
+
+  /** Progress of every addon whose dependencies are still being installed */
+  public getDependencyInstallStatuses(): DependencyInstallEvent[] {
+    return [...this._activeDependencyInstalls.values()];
   }
 
   public getInstallStatus(addonId: string): AddonUpdateEvent | undefined {
@@ -431,6 +457,7 @@ export class AddonService {
    * Dependencies are looked up with the addon's own provider, installing a dependency installs its
    * dependencies in turn. A dependency that fails is logged and skipped, it never fails the addon.
    * All of them are resolved first and then queued together, so every one shows as pending at once.
+   * Progress is reported on dependencyInstall$ with the addon as the parent.
    */
   public async installDependencies(addon: Addon): Promise<void> {
     const requiredDependencies = this.getRequiredDependencies(addon);
@@ -438,74 +465,121 @@ export class AddonService {
       return;
     }
 
+    let progress: DependencyInstallEvent = {
+      addon,
+      state: DependencyInstallState.Resolving,
+      total: requiredDependencies.length,
+      completed: 0,
+    };
+    this.updateDependencyInstall(progress);
+
+    try {
+      const resolved = await this.resolveDependencies(addon, requiredDependencies);
+      if (!resolved.length) {
+        return;
+      }
+
+      progress = { ...progress, state: DependencyInstallState.Installing, total: resolved.length };
+      this.updateDependencyInstall(progress);
+
+      await Promise.all(
+        resolved.map(async ({ pendingKey, dependencyAddon }) => {
+          try {
+            console.log(`[InstallDependency] ${addon.name} requires ${dependencyAddon.name}`);
+            await this._addonStorage.setAsync(dependencyAddon.id, dependencyAddon);
+            await this.installAddon(dependencyAddon);
+          } catch (e) {
+            console.error(`[InstallDependencies] ${addon.name}: failed to install ${dependencyAddon.externalId}`, e);
+          } finally {
+            this._pendingDependencyInstalls.delete(pendingKey);
+            progress = { ...progress, completed: progress.completed + 1 };
+            this.updateDependencyInstall(progress);
+          }
+        }),
+      );
+    } finally {
+      this.updateDependencyInstall({ ...progress, state: DependencyInstallState.Complete });
+    }
+  }
+
+  /**
+   * The dependencies of the addon that need installing, looked up with its provider all at once.
+   * Each one returned holds its pending key until its install is done.
+   */
+  private async resolveDependencies(
+    addon: Addon,
+    requiredDependencies: AddonDependency[],
+  ): Promise<Array<{ pendingKey: string; dependencyAddon: Addon }>> {
     const providerName = addon.providerName ?? "";
     const installation = this._warcraftInstallationService.getWowInstallation(addon.installationId);
     const provider = this._addonProviderService.getProvider(providerName);
     if (!installation || !provider) {
       console.warn(`[InstallDependencies] ${addon.name}: installation or provider not found`);
-      return;
+      return [];
     }
 
-    // Folders claimed by dependencies resolved so far, so two of them never install the same folder
-    const claimedFolders: string[] = [];
+    const installedAddons = await this._addonStorage.getAllForInstallationIdAsync(installation.id);
+
+    const lookups = await Promise.all(
+      requiredDependencies.map(async (dependency) => {
+        // Another install already pulling in the same dependency will finish it, so there is no need to wait
+        const pendingKey = `${installation.id}|${providerName}|${dependency.externalAddonId}`;
+        if (this._pendingDependencyInstalls.has(pendingKey)) {
+          return undefined;
+        }
+
+        this._pendingDependencyInstalls.add(pendingKey);
+        try {
+          const found = await this.findDependency(
+            dependency,
+            providerName,
+            provider,
+            installation,
+            addon,
+            installedAddons,
+          );
+          return { pendingKey, found };
+        } catch (e) {
+          console.error(`[InstallDependencies] ${addon.name}: failed to resolve ${dependency.externalAddonId}`, e);
+          return { pendingKey, found: undefined };
+        }
+      }),
+    );
+
+    // The same folders may already be installed under another provider, or by hand, or claimed by
+    // a dependency earlier in the list, so two of them never install the same folder
+    const claimedFolders = installedAddons.flatMap((ia) => ia.installedFolderList ?? []);
     const resolved: Array<{ pendingKey: string; dependencyAddon: Addon }> = [];
 
-    for (const dependency of requiredDependencies) {
-      // Another install already pulling in the same dependency will finish it, so there is no need to wait
-      const pendingKey = `${installation.id}|${providerName}|${dependency.externalAddonId}`;
-      if (this._pendingDependencyInstalls.has(pendingKey)) {
+    for (const lookup of lookups) {
+      if (!lookup) {
         continue;
       }
 
-      this._pendingDependencyInstalls.add(pendingKey);
-      try {
-        const result = await this.resolveDependency(
-          dependency,
-          providerName,
-          provider,
-          installation,
-          addon,
-          claimedFolders,
-        );
-        if (result) {
-          resolved.push({ pendingKey, dependencyAddon: result.dependencyAddon });
-          claimedFolders.push(...result.folders);
-          continue;
-        }
-      } catch (e) {
-        console.error(`[InstallDependencies] ${addon.name}: failed to resolve ${dependency.externalAddonId}`, e);
+      const { pendingKey, found } = lookup;
+      if (found && _.intersection(found.folders, claimedFolders).length === 0) {
+        resolved.push({ pendingKey, dependencyAddon: found.dependencyAddon });
+        claimedFolders.push(...found.folders);
+        continue;
       }
       this._pendingDependencyInstalls.delete(pendingKey);
     }
 
-    await Promise.all(
-      resolved.map(async ({ pendingKey, dependencyAddon }) => {
-        try {
-          console.log(`[InstallDependency] ${addon.name} requires ${dependencyAddon.name}`);
-          await this._addonStorage.setAsync(dependencyAddon.id, dependencyAddon);
-          await this.installAddon(dependencyAddon);
-        } catch (e) {
-          console.error(`[InstallDependencies] ${addon.name}: failed to install ${dependencyAddon.externalId}`, e);
-        } finally {
-          this._pendingDependencyInstalls.delete(pendingKey);
-        }
-      }),
-    );
+    return resolved;
   }
 
   /**
    * The addon to install for a dependency along with the folders it will install, or undefined when
    * it is already present or cannot be found.
    */
-  private async resolveDependency(
+  private async findDependency(
     dependency: AddonDependency,
     providerName: string,
     provider: AddonProvider,
     installation: WowInstallation,
     parent: Addon,
-    claimedFolders: string[],
+    installedAddons: Addon[],
   ): Promise<{ dependencyAddon: Addon; folders: string[] } | undefined> {
-    const installedAddons = await this._addonStorage.getAllForInstallationIdAsync(installation.id);
     if (this.isDependencyInstalled(dependency.externalAddonId, providerName, installedAddons)) {
       return undefined;
     }
@@ -514,12 +588,6 @@ export class AddonService {
     const latestFile = SearchResults.getLatestFile(searchResult, installation.defaultAddonChannelType);
     if (!searchResult || !latestFile) {
       console.warn(`[InstallDependencies] ${parent.name}: dependency not found ${dependency.externalAddonId}`);
-      return undefined;
-    }
-
-    // The same folders may already be installed under another provider, or by hand
-    const installedFolders = installedAddons.flatMap((ia) => ia.installedFolderList ?? []);
-    if (_.intersection(latestFile.folders, [...installedFolders, ...claimedFolders]).length > 0) {
       return undefined;
     }
 
@@ -653,8 +721,25 @@ export class AddonService {
       return undefined;
     }
 
-    await this.installOrUpdateAddon(addon, "install", onUpdate, originalAddon);
-    await this._addonStorage.setAsync(addon.id, addon);
+    // Track the dependencies from the start, so nothing reads as done between the addon's own
+    // install completing and its dependencies being looked up
+    const requiredDependencies = this.getRequiredDependencies(addon);
+    if (requiredDependencies.length) {
+      this.updateDependencyInstall(
+        { addon, state: DependencyInstallState.Resolving, total: requiredDependencies.length, completed: 0 },
+        false,
+      );
+    }
+
+    try {
+      await this.installOrUpdateAddon(addon, "install", onUpdate, originalAddon);
+      await this._addonStorage.setAsync(addon.id, addon);
+    } catch (e) {
+      if (requiredDependencies.length) {
+        this.updateDependencyInstall({ addon, state: DependencyInstallState.Complete, total: 0, completed: 0 });
+      }
+      throw e;
+    }
 
     // Runs after the queue item has settled, so dependency installs never wait on the slot this one holds
     await this.installDependencies(addon);
@@ -720,7 +805,22 @@ export class AddonService {
     } else {
       this._activeInstalls.splice(itemIdx, 1, updateEvent);
     }
+    this._installingSrc.next(this.isInstalling());
   };
+
+  /** Track the dependency progress of a parent addon, a Complete state drops it before anyone hears about it */
+  private updateDependencyInstall(evt: DependencyInstallEvent, notify = true): void {
+    if (evt.state === DependencyInstallState.Complete) {
+      this._activeDependencyInstalls.delete(evt.addon.id);
+    } else {
+      this._activeDependencyInstalls.set(evt.addon.id, evt);
+    }
+    this._installingSrc.next(this.isInstalling());
+
+    if (notify) {
+      this._dependencyInstallSrc.next(evt);
+    }
+  }
 
   public async logDebugData(): Promise<void> {
     const curseProvider = this._addonProviderService.getProvider<CurseAddonProvider>(ADDON_PROVIDER_CURSEFORGE);
