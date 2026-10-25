@@ -55,7 +55,7 @@ import { AddonUpdateEvent } from "../../models/wowup/addon-update-event";
 import { ColumnState } from "../../models/wowup/column-state";
 import { RelativeDurationPipe } from "../../pipes/relative-duration-pipe";
 import { ElectronService } from "../../services";
-import { AddonService } from "../../services/addons/addon.service";
+import { AddonService, DependencyInstallState } from "../../services/addons/addon.service";
 import { DialogFactory } from "../../services/dialog/dialog.factory";
 import { SessionService } from "../../services/session/session.service";
 import { SnackbarService } from "../../services/snackbar/snackbar.service";
@@ -301,6 +301,11 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
       )
       .subscribe();
 
+    // An install isn't done until the dependencies it pulled in are, the controls stay locked until then
+    const dependencyInstallSub = this._addonService.dependencyInstall$
+      .pipe(filter((evt) => evt.state === DependencyInstallState.Complete))
+      .subscribe(() => this._sessionService.setEnableControls(this.calculateControlState()));
+
     const addonRemovedSub = this._addonService.addonRemoved$
       .pipe(
         map((evt) => this.onAddonRemoved(evt)),
@@ -340,6 +345,7 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
       this._sessionService.targetFileInstallComplete$.pipe(switchMap(() => from(this.onRefresh()))).subscribe(),
       pushUpdateSub,
       addonInstalledSub,
+      dependencyInstallSub,
       addonRemovedSub,
     );
 

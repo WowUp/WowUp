@@ -23,7 +23,7 @@ import { WarcraftService } from "../warcraft/warcraft.service";
 import { WowUpService } from "../wowup/wowup.service";
 import { AddonFingerprintService } from "./addon-fingerprint.service";
 import { AddonInstallService, InstallQueueItem } from "./addon-install.service";
-import { AddonService } from "./addon.service";
+import { AddonService, DependencyInstallEvent, DependencyInstallState } from "./addon.service";
 import { AddonProviderFactory } from "./addon.provider.factory";
 
 const ADDON_FOLDER_PATH = pathJoin("wow", "_retail_", "Interface", "AddOns");
@@ -750,6 +750,98 @@ describe("AddonService", () => {
 
       expect(provider.getById).not.toHaveBeenCalled();
       expect(enqueued.length).toEqual(0);
+    });
+
+    it("should look every dependency up before any lookup has answered", async () => {
+      provider.getById.and.returnValue(new Promise(() => {}));
+
+      void service.installDependencies(createAddon(requiring("2002", "3003")));
+      await new Promise((r) => setTimeout(r));
+
+      expect(provider.getById.calls.allArgs().map((args) => args[0])).toEqual(["2002", "3003"]);
+    });
+
+    describe("progress", () => {
+      function progressOf(events: DependencyInstallEvent[]) {
+        return events.map((e) => [e.addon.externalId, e.state, e.completed, e.total]);
+      }
+
+      it("should report resolving, then each dependency as it finishes, then complete", async () => {
+        const events: DependencyInstallEvent[] = [];
+        service.dependencyInstall$.subscribe((e) => events.push(e));
+
+        await service.installDependencies(createAddon(requiring("2002", "3003")));
+
+        expect(progressOf(events)).toEqual([
+          ["1001", DependencyInstallState.Resolving, 0, 2],
+          ["1001", DependencyInstallState.Installing, 0, 2],
+          ["1001", DependencyInstallState.Installing, 1, 2],
+          ["1001", DependencyInstallState.Installing, 2, 2],
+          ["1001", DependencyInstallState.Complete, 2, 2],
+        ]);
+      });
+
+      it("should count only the dependencies that need installing", async () => {
+        installed.push(createAddon({ id: "dep", externalId: "2002" }));
+        const events: DependencyInstallEvent[] = [];
+        service.dependencyInstall$.subscribe((e) => events.push(e));
+
+        await service.installDependencies(createAddon(requiring("2002", "3003")));
+
+        expect(events.filter((e) => e.state === DependencyInstallState.Installing).map((e) => e.total)).toEqual([1, 1]);
+      });
+
+      it("should report complete when no dependency needs installing", async () => {
+        const events: DependencyInstallEvent[] = [];
+        service.dependencyInstall$.subscribe((e) => events.push(e));
+
+        await service.installDependencies(createAddon({ ...requiring("2002"), providerName: "Nope" }));
+
+        expect(events.map((e) => e.state)).toEqual([DependencyInstallState.Resolving, DependencyInstallState.Complete]);
+        expect(service.getDependencyInstallStatuses()).toEqual([]);
+      });
+
+      it("should report nothing for an addon without dependencies", async () => {
+        const events: DependencyInstallEvent[] = [];
+        service.dependencyInstall$.subscribe((e) => events.push(e));
+
+        await service.installAddon(createAddon({ dependencies: [] }));
+
+        expect(events).toEqual([]);
+      });
+
+      it("should keep an addon installing from the start of its install until its dependencies are done", async () => {
+        autoComplete = false;
+        const installing: boolean[] = [];
+        service.installing$.subscribe((value) => installing.push(value));
+
+        const promise = service.installAddon(createAddon(requiring("2002")));
+        expect(service.isInstalling()).toBeTrue();
+        expect(service.getDependencyInstallStatuses().map((e) => e.state)).toEqual([DependencyInstallState.Resolving]);
+
+        await new Promise((r) => setTimeout(r));
+        enqueued[0].completion.resolve();
+        await new Promise((r) => setTimeout(r));
+        expect(service.isInstalling()).toBeTrue();
+        expect(service.getDependencyInstallStatuses().map((e) => e.state)).toEqual([DependencyInstallState.Installing]);
+
+        enqueued[1].completion.resolve();
+        await promise;
+        expect(service.isInstalling()).toBeFalse();
+        expect(service.getDependencyInstallStatuses()).toEqual([]);
+        expect(installing).toEqual([false, true, false]);
+      });
+
+      it("should drop the addon's dependency progress when the addon itself fails", async () => {
+        addonInstallService.enqueue.and.callFake((item) => {
+          enqueued.push(item);
+          item.completion.reject(new Error("bad zip"));
+        });
+
+        await expectAsync(service.installAddon(createAddon(requiring("2002")))).toBeRejectedWithError("bad zip");
+        expect(service.getDependencyInstallStatuses()).toEqual([]);
+        expect(service.isInstalling()).toBeFalse();
+      });
     });
 
     describe("wired into installs", () => {

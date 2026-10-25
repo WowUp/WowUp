@@ -176,10 +176,12 @@
     },
     "ADDON_STATUS": {
       "BACKINGUP": "Backing Up",
+      "CHECKING_DEPENDENCIES": "Checking dependencies",
       "COMPLETE": "Installed",
       "DOWNLOADING": "Downloading",
       "ERROR": "Error",
       "INSTALLING": "Installing",
+      "INSTALLING_DEPENDENCIES": "Dependencies {completed}/{total}",
       "PENDING": "Pending",
       "RETRY": "Retrying...",
       "UNINSTALLING": "Uninstalling",

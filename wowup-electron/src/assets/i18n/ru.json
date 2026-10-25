@@ -169,10 +169,12 @@
     },
     "ADDON_STATUS": {
       "BACKINGUP": "Резервирование",
+      "CHECKING_DEPENDENCIES": "Проверка зависимостей",
       "COMPLETE": "Установлена",
       "DOWNLOADING": "Загрузка",
       "ERROR": "Ошибка",
       "INSTALLING": "Установка",
+      "INSTALLING_DEPENDENCIES": "Зависимости {completed}/{total}",
       "PENDING": "В ожидании",
       "RETRY": "Retrying...",
       "UNINSTALLING": "Удаление",

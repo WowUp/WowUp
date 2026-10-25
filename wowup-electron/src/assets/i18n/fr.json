@@ -169,10 +169,12 @@
     },
     "ADDON_STATUS": {
       "BACKINGUP": "Sauvegarde",
+      "CHECKING_DEPENDENCIES": "Vérification des dépendances",
       "COMPLETE": "Installé",
       "DOWNLOADING": "Téléchargement",
       "ERROR": "Erreur",
       "INSTALLING": "Installation",
+      "INSTALLING_DEPENDENCIES": "Dépendances {completed}/{total}",
       "PENDING": "En attente",
       "RETRY": "Retrying...",
       "UNINSTALLING": "Désinstallation",

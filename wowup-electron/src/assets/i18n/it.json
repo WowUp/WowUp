@@ -169,10 +169,12 @@
     },
     "ADDON_STATUS": {
       "BACKINGUP": "Backup in corso...",
+      "CHECKING_DEPENDENCIES": "Verifica delle dipendenze",
       "COMPLETE": "Installato",
       "DOWNLOADING": "Download in corso...",
       "ERROR": "Errore",
       "INSTALLING": "Installazione in corso...",
+      "INSTALLING_DEPENDENCIES": "Dipendenze {completed}/{total}",
       "PENDING": "In attesa",
       "RETRY": "Retrying...",
       "UNINSTALLING": "Disinstallazione in corso...",

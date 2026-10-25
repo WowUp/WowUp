@@ -169,10 +169,12 @@
     },
     "ADDON_STATUS": {
       "BACKINGUP": "Zálohuji",
+      "CHECKING_DEPENDENCIES": "Kontrola závislostí",
       "COMPLETE": "Nainstalován",
       "DOWNLOADING": "Stahuji",
       "ERROR": "Chyba",
       "INSTALLING": "Instaluji",
+      "INSTALLING_DEPENDENCIES": "Závislosti {completed}/{total}",
       "PENDING": "Čekající",
       "RETRY": "Retrying...",
       "UNINSTALLING": "Odinstalovávaný",
