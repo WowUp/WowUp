@@ -60,6 +60,7 @@ declare type RendererChannels =
   | "get-locale"
   | "get-login-item-settings"
   | "get-pending-open-urls"
+  | "get-shell-version"
   | "get-zoom-factor"
   | "is-default-protocol-client"
   | "leave-full-screen"

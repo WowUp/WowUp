@@ -365,6 +365,7 @@
     "ABOUT": {
       "ATTRIBUTIONS_TITLE": "Atribuciones",
       "CHANGE_LOG_SECTION_LABEL": "Registro de cambios",
+      "SHELL_VERSION": "Shell v{version}",
       "TITLE": "WowUp.io",
       "WEBSITE_LINK_LABEL": "¡Visite la página web!"
     },

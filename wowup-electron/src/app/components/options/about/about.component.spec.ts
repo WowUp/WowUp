@@ -4,7 +4,7 @@ import { BehaviorSubject } from "rxjs";
 import { HttpClient, HttpClientModule } from "@angular/common/http";
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { NoopAnimationsModule } from "@angular/platform-browser/animations";
-import { TranslateCompiler, TranslateLoader, TranslateModule } from "@ngx-translate/core";
+import { TranslateCompiler, TranslateLoader, TranslateModule, TranslateService } from "@ngx-translate/core";
 
 import { httpLoaderFactory } from "../../../app.module";
 import { ElectronService } from "../../../services";
@@ -30,6 +30,7 @@ describe("AboutComponent", () => {
     wowupService = jasmine.createSpyObj("WowUpService", [""]);
     electronServiceSpy = jasmine.createSpyObj("ElectronService", [""], {
       getVersionNumber: () => Promise.resolve("2.0.0"),
+      getShellVersion: () => Promise.resolve("1.9.0"),
     });
 
     sessionService = jasmine.createSpyObj("SessionService", [""], {
@@ -81,5 +82,18 @@ describe("AboutComponent", () => {
 
   it("should create", () => {
     expect(component).toBeTruthy();
+  });
+
+  it("should show the app version and the shell version", async () => {
+    const translate = TestBed.inject(TranslateService);
+    translate.setTranslation("en", { PAGES: { ABOUT: { SHELL_VERSION: "Shell v{version}" } } }, true);
+    translate.use("en");
+
+    await fixture.whenStable();
+    fixture.detectChanges();
+
+    const element = fixture.nativeElement as HTMLElement;
+    expect(element.querySelector(".version")?.textContent?.trim()).toEqual("v2.0.0");
+    expect(element.querySelector(".shell-version")?.textContent?.trim()).toEqual("Shell v1.9.0");
   });
 });

@@ -30,6 +30,7 @@ import {
   IPC_DOWNLOAD_FILE_CHANNEL,
   IPC_FOCUS_WINDOW,
   IPC_GET_APP_VERSION,
+  IPC_GET_SHELL_VERSION,
   IPC_GET_HOME_DIR,
   IPC_GET_ASSET_FILE_PATH,
   IPC_GET_DIRECTORY_TREE,
@@ -269,6 +270,10 @@ export function initializeIpcHandlers(window: BrowserWindow): void {
   // The app's version is the loaded bundle's; app.getVersion() is the installed shell's
   handle(IPC_GET_APP_VERSION, () => {
     return getShell().bundle.version;
+  });
+
+  handle(IPC_GET_SHELL_VERSION, () => {
+    return app.getVersion();
   });
 
   handle(IPC_GET_LOCALE, () => {

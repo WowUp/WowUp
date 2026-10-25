@@ -365,6 +365,7 @@
     "ABOUT": {
       "ATTRIBUTIONS_TITLE": "Attributions",
       "CHANGE_LOG_SECTION_LABEL": "변경 이력",
+      "SHELL_VERSION": "Shell v{version}",
       "TITLE": "WowUp.io",
       "WEBSITE_LINK_LABEL": "웹사이트로 이동"
     },

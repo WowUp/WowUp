@@ -365,6 +365,7 @@
     "ABOUT": {
       "ATTRIBUTIONS_TITLE": "Atributy",
       "CHANGE_LOG_SECTION_LABEL": "Změny",
+      "SHELL_VERSION": "Shell v{version}",
       "TITLE": "WowUp.io",
       "WEBSITE_LINK_LABEL": "Navštivte naše webové stránky!"
     },

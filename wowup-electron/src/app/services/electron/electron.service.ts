@@ -17,6 +17,7 @@ import {
   IPC_CUSTOM_PROTOCOL_RECEIVED,
   IPC_FOCUS_WINDOW,
   IPC_GET_APP_VERSION,
+  IPC_GET_SHELL_VERSION,
   IPC_GET_LAUNCH_ARGS,
   IPC_GET_LOCALE,
   IPC_GET_LOGIN_ITEM_SETTINGS,
@@ -259,6 +260,11 @@ export class ElectronService {
 
   public getVersionNumber(): Promise<string> {
     return this.invoke(IPC_GET_APP_VERSION);
+  }
+
+  /** The installed shell's version, which can trail the app's (the loaded bundle's) */
+  public getShellVersion(): Promise<string> {
+    return this.invoke(IPC_GET_SHELL_VERSION);
   }
 
   public async minimizeWindow(): Promise<void> {

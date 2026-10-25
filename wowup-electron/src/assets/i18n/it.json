@@ -365,6 +365,7 @@
     "ABOUT": {
       "ATTRIBUTIONS_TITLE": "Riconoscimenti",
       "CHANGE_LOG_SECTION_LABEL": "Changelog",
+      "SHELL_VERSION": "Shell v{version}",
       "TITLE": "WowUp.io",
       "WEBSITE_LINK_LABEL": "Dai un'occhiata al sito!"
     },

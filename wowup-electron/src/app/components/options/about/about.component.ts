@@ -33,6 +33,7 @@ export class AboutComponent implements OnDestroy, AfterViewChecked {
 
   public changeLogs: ChangeLog[] = [];
   public versionNumber = from(this.electronService.getVersionNumber());
+  public shellVersionNumber = from(this.electronService.getShellVersion());
 
   public constructor(
     public wowUpService: WowUpService,

@@ -79,6 +79,7 @@ export const IPC_GET_ZOOM_FACTOR = "get-zoom-factor";
 export const IPC_SET_ZOOM_LIMITS = "set-zoom-limits";
 export const IPC_SET_ZOOM_FACTOR = "set-zoom-factor";
 export const IPC_GET_APP_VERSION = "get-app-version";
+export const IPC_GET_SHELL_VERSION = "get-shell-version";
 export const IPC_GET_LOCALE = "get-locale";
 export const IPC_GET_LAUNCH_ARGS = "get-launch-args";
 export const IPC_GET_LOGIN_ITEM_SETTINGS = "get-login-item-settings";

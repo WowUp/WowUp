@@ -365,6 +365,7 @@
     "ABOUT": {
       "ATTRIBUTIONS_TITLE": "图源",
       "CHANGE_LOG_SECTION_LABEL": "更新记录",
+      "SHELL_VERSION": "Shell v{version}",
       "TITLE": "WowUp.io",
       "WEBSITE_LINK_LABEL": "访问网站！"
     },
