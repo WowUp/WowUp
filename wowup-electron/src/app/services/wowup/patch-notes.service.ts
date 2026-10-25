@@ -16,6 +16,24 @@ export class PatchNotesService {
 
 const CHANGELOGS: ChangeLog[] = [
   {
+    Version: "2.25.0",
+    html: `
+    <h4>Features</h4>
+    <ul>
+    <li>Most WowUp updates now download in the background as a small update and finish with a quick restart, instead of a full reinstall</li>
+    </ul>
+    <h4>Changes</h4>
+    <ul>
+    <li>When an update is ready, WowUp asks you to restart now or later. If you choose later, WowUp asks again after 6 hours and the restart can't be put off</li>
+    <li>WowUp now checks that its files haven't been changed or damaged every time it starts</li>
+    </ul>
+    <h4>Fixes</h4>
+    <ul>
+    <li>Fix World of Warcraft installations not being found automatically on recent Windows 11 builds</li>
+    </ul>
+    `,
+  },
+  {
     Version: "2.24.1",
     html: `
     <h4>Features</h4>
