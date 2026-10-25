@@ -16,6 +16,20 @@ export class PatchNotesService {
 
 const CHANGELOGS: ChangeLog[] = [
   {
+    Version: "2.25.2",
+    html: `
+    <h4>Changes</h4>
+    <ul>
+    <li>Installing an addon now shows the progress of its required dependencies, and only says installed once they are all done</li>
+    <li>My Addons and Get Addons can be opened while addons are installing</li>
+    </ul>
+    <h4>Fixes</h4>
+    <ul>
+    <li>Fix WowUp looking frozen while installing an addon with dependencies that weren't in the search results</li>
+    </ul>
+    `,
+  },
+  {
     Version: "2.25.1",
     html: `
     <h4>Changes</h4>
