@@ -141,6 +141,10 @@ export class AddonService {
   private readonly _activeDependencyInstalls = new Map<string, DependencyInstallEvent>();
   private readonly _dependencyInstallSrc = new Subject<DependencyInstallEvent>();
   private readonly _installingSrc = new BehaviorSubject<boolean>(false);
+  /** Rescan running right now for each installation, by installation id */
+  private readonly _activeRescans = new Map<string, Promise<Addon[]>>();
+  /** Rescan waiting for the running one to finish, by installation id */
+  private readonly _queuedRescans = new Map<string, Promise<Addon[]>>();
 
   public readonly addonAction$ = this._addonActionSrc.asObservable();
   public readonly addonInstalled$ = this._addonInstallService.addonInstalled$;
@@ -1025,11 +1029,43 @@ export class AddonService {
     return await this._addonStorage.getAllForInstallationIdAsync(installation.id);
   }
 
-  public async rescanInstallation(installation: WowInstallation): Promise<Addon[]> {
+  /**
+   * Scan the installation's addon folders and replace its saved addons with the result.
+   * Only one scan runs per installation at a time: a call made while one is running waits for it
+   * and then scans again, so overlapping scans can't each save a copy of every addon (#1561).
+   */
+  public rescanInstallation(installation: WowInstallation): Promise<Addon[]> {
     if (!installation) {
-      return [];
+      return Promise.resolve([]);
     }
 
+    const queued = this._queuedRescans.get(installation.id);
+    if (queued !== undefined) {
+      return queued;
+    }
+
+    const active = this._activeRescans.get(installation.id);
+    if (active === undefined) {
+      return this.startRescan(installation);
+    }
+
+    const next = active
+      .catch(() => undefined)
+      .then(() => {
+        this._queuedRescans.delete(installation.id);
+        return this.startRescan(installation);
+      });
+    this._queuedRescans.set(installation.id, next);
+    return next;
+  }
+
+  private startRescan(installation: WowInstallation): Promise<Addon[]> {
+    const rescan = this.scanAndReplaceAddons(installation).finally(() => this._activeRescans.delete(installation.id));
+    this._activeRescans.set(installation.id, rescan);
+    return rescan;
+  }
+
+  private async scanAndReplaceAddons(installation: WowInstallation): Promise<Addon[]> {
     console.debug(`[addon-service] rescanInstallation: ${installation.displayName}`);
     // Fetch existing installation addons
     let addons = await this._addonStorage.getAllForInstallationIdAsync(installation.id);
@@ -1037,13 +1073,11 @@ export class AddonService {
     // Collect info on filesystem addons
     const newAddons = await this.scanAddons(installation, addons);
 
-    await this._addonStorage.removeAllForInstallationAsync(installation.id);
-
     // Map the old installation addon settings to the new ones
     addons = this.updateAddons(addons, newAddons);
 
     console.debug(`addons: ${addons.length} for ${installation.displayName}`);
-    await this._addonStorage.saveAll(addons);
+    await this._addonStorage.replaceAllForInstallation(installation.id, addons);
 
     this._addonActionSrc.next({ type: "scan" });
 
@@ -1063,13 +1097,17 @@ export class AddonService {
       return [];
     }
 
-    let addons = await this._addonStorage.getAllForInstallationIdAsync(installation.id);
-
-    if (rescan || addons.length === 0) {
-      addons = await this.rescanInstallation(installation);
+    if (rescan) {
+      return await this.rescanInstallation(installation);
     }
 
-    return addons;
+    const addons = await this._addonStorage.getAllForInstallationIdAsync(installation.id);
+    if (addons.length > 0) {
+      return addons;
+    }
+
+    // Nothing saved yet: share a scan that's already running rather than starting another
+    return await (this._activeRescans.get(installation.id) ?? this.rescanInstallation(installation));
   }
 
   public async getAddonForProtocol(protocol: string): Promise<ProtocolSearchResult | undefined> {

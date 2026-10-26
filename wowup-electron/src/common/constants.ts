@@ -92,6 +92,7 @@ export const IPC_REMOVE_AS_DEFAULT_PROTOCOL_CLIENT = "remove-as-default-protocol
 export const IPC_REQUEST_INSTALL_FROM_URL = "request-install-from-url";
 export const IPC_CUSTOM_PROTOCOL_RECEIVED = "custom-protocol-received";
 export const IPC_ADDONS_SAVE_ALL = "addons-save-all";
+export const IPC_ADDONS_REPLACE_ALL_FOR_INSTALLATION = "addons-replace-all-for-installation";
 export const IPC_ADDONS_GET_ALL_FOR_INSTALLATION = "addons-get-all-for-installation";
 export const IPC_ADDONS_GET_ALL_FOR_PROVIDER = "addons-get-all-for-provider";
 export const IPC_ADDONS_GET_ALL = "addons-get-all";
