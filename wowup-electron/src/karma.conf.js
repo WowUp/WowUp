@@ -1,6 +1,10 @@
 // Karma configuration file, see link for more information
 // https://karma-runner.github.io/0.13/config/configuration-file.html
 
+// Without a terminal (CI, agents), "progress" prints a line per spec and specs' console.log calls are
+// relayed, which adds up to megabytes of output; "dots" and no console capture keep it to the failures.
+const interactive = Boolean(process.stdout.isTTY); // undefined would be skipped by config.set's merge
+
 module.exports = function (config) {
   config.set({
     basePath: "",
@@ -14,13 +18,15 @@ module.exports = function (config) {
     ],
     client: {
       clearContext: false, // leave Jasmine Spec Runner output visible in browser
+      captureConsole: interactive,
     },
     coverageIstanbulReporter: {
       dir: require("path").join(__dirname, "../coverage"),
       reports: ["html", "lcovonly"],
       fixWebpackSourcePaths: true,
     },
-    reporters: ["progress", "kjhtml"],
+    reporters: interactive ? ["progress", "kjhtml"] : ["dots"],
+    browserConsoleLogOptions: { terminal: interactive },
     port: 9876,
     colors: true,
     logLevel: config.LOG_INFO,

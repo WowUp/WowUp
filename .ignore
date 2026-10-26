@@ -1,0 +1,3 @@
+# Read by ripgrep (and so by Claude Code's Grep/Glob), not by git: keeps searches out of
+# large generated files that are still committed.
+package-lock.json
