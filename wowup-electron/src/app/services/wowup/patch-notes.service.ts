@@ -16,6 +16,15 @@ export class PatchNotesService {
 
 const CHANGELOGS: ChangeLog[] = [
   {
+    Version: "2.25.4",
+    html: `
+    <h4>Fixes</h4>
+    <ul>
+    <li>Fix My Addons sometimes listing every addon more than once, for example after an update</li>
+    </ul>
+    `,
+  },
+  {
     Version: "2.25.3",
     html: `
     <h4>Changes</h4>
