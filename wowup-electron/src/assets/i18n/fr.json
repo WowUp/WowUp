@@ -58,7 +58,10 @@
         "SELECT_ALL": "Tout sélectionner",
         "UNDO": "Annuler"
       },
+      "HIDE": "Masquer",
+      "HIDE_OTHERS": "Masquer les autres",
       "QUIT": "Quitter",
+      "SHOW_ALL": "Tout afficher",
       "VIEW": {
         "FORCE_RELOAD": "Forcer le rechargement",
         "LABEL": "Voir",
@@ -70,8 +73,11 @@
         "ZOOM_RESET": "Réinitialiser le zoom"
       },
       "WINDOW": {
+        "BRING_ALL_TO_FRONT": "Tout ramener au premier plan",
         "CLOSE": "Fermer",
-        "LABEL": "Fenêtre"
+        "LABEL": "Fenêtre",
+        "MINIMIZE": "Placer dans le Dock",
+        "ZOOM": "Réduire/agrandir"
       }
     },
     "AUTO_UPDATE_FEW_NOTIFICATION_BODY": "Mise à jour automatique de \r\n{addonNames}",

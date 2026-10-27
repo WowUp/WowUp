@@ -19,7 +19,11 @@ export function onMenuZoomReset(win: BrowserWindow): void {
   win?.webContents.send(IPC_MENU_ZOOM_RESET_CHANNEL);
 }
 
-function createMacMenuItems(win: BrowserWindow, config?: MenuConfig): Array<MenuItemConstructorOptions | MenuItem> {
+export function createMacMenuItems(
+  win: BrowserWindow,
+  config?: MenuConfig,
+  appName = app.name,
+): Array<MenuItemConstructorOptions | MenuItem> {
   if (config === undefined) {
     return [];
   }
@@ -39,10 +43,18 @@ function createMacMenuItems(win: BrowserWindow, config?: MenuConfig): Array<Menu
 
   viewMenuArr.push({ type: "separator" }, { label: config.toggleFullScreenLabel, role: "togglefullscreen" });
 
+  // macOS only provides the standard app/window shortcuts (Cmd+H, Cmd+Alt+H, Cmd+M) through menu
+  // items with these roles, so leaving them out of the menu disables the shortcuts too.
   return [
     {
-      label: app.name,
-      submenu: [{ label: config.quitLabel, role: "quit" }],
+      label: appName,
+      submenu: [
+        { label: config.hideLabel, role: "hide" },
+        { label: config.hideOthersLabel, role: "hideOthers" },
+        { label: config.showAllLabel, role: "unhide" },
+        { type: "separator" },
+        { label: config.quitLabel, role: "quit" },
+      ],
     },
     {
       label: config.editLabel,
@@ -60,10 +72,15 @@ function createMacMenuItems(win: BrowserWindow, config?: MenuConfig): Array<Menu
     {
       label: config.windowLabel,
       submenu: [
+        { label: config.windowMinimizeLabel, role: "minimize" },
+        { label: config.windowZoomLabel, role: "zoom" },
+        { type: "separator" },
         {
           label: config.windowCloseLabel,
           role: "close" /*click: () => win?.close(), accelerator: "CommandOrControl+w"*/,
         },
+        { type: "separator" },
+        { label: config.windowBringAllToFrontLabel, role: "front" },
       ],
     },
   ];

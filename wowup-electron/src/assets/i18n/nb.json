@@ -58,7 +58,10 @@
         "SELECT_ALL": "Velg alt",
         "UNDO": "Angre"
       },
+      "HIDE": "Skjul",
+      "HIDE_OTHERS": "Skjul andre",
       "QUIT": "Avslutt",
+      "SHOW_ALL": "Vis alle",
       "VIEW": {
         "FORCE_RELOAD": "Tving omlasting",
         "LABEL": "Vis",
@@ -70,8 +73,11 @@
         "ZOOM_RESET": "Tilbakestill zoom"
       },
       "WINDOW": {
+        "BRING_ALL_TO_FRONT": "Legg alle fremst",
         "CLOSE": "Lukk",
-        "LABEL": "Vindu"
+        "LABEL": "Vindu",
+        "MINIMIZE": "Minimer",
+        "ZOOM": "Zoom"
       }
     },
     "AUTO_UPDATE_FEW_NOTIFICATION_BODY": "Automatisk oppdatert\r\n{addonNames}",
