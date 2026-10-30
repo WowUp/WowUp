@@ -527,6 +527,9 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
 
     // APP MENU
     const quitKey = "APP.APP_MENU.QUIT";
+    const hideKey = "APP.APP_MENU.HIDE";
+    const hideOthersKey = "APP.APP_MENU.HIDE_OTHERS";
+    const showAllKey = "APP.APP_MENU.SHOW_ALL";
 
     // EDIT MENU
     const editKey = "APP.APP_MENU.EDIT.LABEL";
@@ -550,6 +553,9 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
     // WINDOW MENU
     const windowKey = "APP.APP_MENU.WINDOW.LABEL";
     const windowCloseKey = "APP.APP_MENU.WINDOW.CLOSE";
+    const windowMinimizeKey = "APP.APP_MENU.WINDOW.MINIMIZE";
+    const windowZoomKey = "APP.APP_MENU.WINDOW.ZOOM";
+    const windowBringAllToFrontKey = "APP.APP_MENU.WINDOW.BRING_ALL_TO_FRONT";
 
     const result = await this._translateService
       .get([
@@ -562,6 +568,9 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
         cutKey,
         forceReloadKey,
         quitKey,
+        hideKey,
+        hideOthersKey,
+        showAllKey,
         redoKey,
         reloadKey,
         selectAllKey,
@@ -571,6 +580,9 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
         pasteKey,
         windowKey,
         windowCloseKey,
+        windowMinimizeKey,
+        windowZoomKey,
+        windowBringAllToFrontKey,
       ])
       .toPromise();
 
@@ -585,6 +597,9 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
       forceReloadLabel: result[forceReloadKey],
       pasteLabel: result[pasteKey],
       quitLabel: result[quitKey],
+      hideLabel: result[hideKey],
+      hideOthersLabel: result[hideOthersKey],
+      showAllLabel: result[showAllKey],
       redoLabel: result[redoKey],
       reloadLabel: result[reloadKey],
       selectAllLabel: result[selectAllKey],
@@ -593,6 +608,9 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
       undoLabel: result[undoKey],
       windowLabel: result[windowKey],
       windowCloseLabel: result[windowCloseKey],
+      windowMinimizeLabel: result[windowMinimizeKey],
+      windowZoomLabel: result[windowZoomKey],
+      windowBringAllToFrontLabel: result[windowBringAllToFrontKey],
     };
 
     try {

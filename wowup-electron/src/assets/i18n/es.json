@@ -58,7 +58,10 @@
         "SELECT_ALL": "Seleccionar todo",
         "UNDO": "Deshacer"
       },
+      "HIDE": "Ocultar",
+      "HIDE_OTHERS": "Ocultar otros",
       "QUIT": "Salir",
+      "SHOW_ALL": "Mostrar todo",
       "VIEW": {
         "FORCE_RELOAD": "Forzar recarga",
         "LABEL": "Ver",
@@ -70,8 +73,11 @@
         "ZOOM_RESET": "Restablecer zoom"
       },
       "WINDOW": {
+        "BRING_ALL_TO_FRONT": "Traer todo al frente",
         "CLOSE": "Cerrar",
-        "LABEL": "Ventana"
+        "LABEL": "Ventana",
+        "MINIMIZE": "Minimizar",
+        "ZOOM": "Zoom"
       }
     },
     "AUTO_UPDATE_FEW_NOTIFICATION_BODY": "{addonNames}",

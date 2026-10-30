@@ -58,7 +58,10 @@
         "SELECT_ALL": "SelectAll",
         "UNDO": "Undo"
       },
+      "HIDE": "Skrýt",
+      "HIDE_OTHERS": "Skrýt ostatní",
       "QUIT": "Quit",
+      "SHOW_ALL": "Zobrazit vše",
       "VIEW": {
         "FORCE_RELOAD": "Force Reload",
         "LABEL": "Zobrazit",
@@ -70,8 +73,11 @@
         "ZOOM_RESET": "Resetovat přiblížení"
       },
       "WINDOW": {
+        "BRING_ALL_TO_FRONT": "Přenést vše do popředí",
         "CLOSE": "Close",
-        "LABEL": "Window"
+        "LABEL": "Window",
+        "MINIMIZE": "Minimalizovat",
+        "ZOOM": "Zvětšit"
       }
     },
     "AUTO_UPDATE_FEW_NOTIFICATION_BODY": "Automaticky aktualizovány\r\n{addonNames}",
