@@ -12,7 +12,6 @@ export function mockPreload(): void {
     openExternal: async () => {},
     openPath: () => Promise.resolve(""),
     rendererInvoke: () => Promise.resolve(undefined),
-    rendererSendSync: () => undefined,
     rendererOff: () => {},
     rendererOn: () => {},
     rendererSend: () => {},
