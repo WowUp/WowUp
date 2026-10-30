@@ -13,7 +13,7 @@ import { WowUpService } from "../wowup/wowup.service";
 })
 export class AnalyticsService {
   private readonly installIdPreferenceKey = "install_id";
-  private readonly _installId: string;
+  private _installId?: string;
   private readonly _telemetryEnabledSrc = new BehaviorSubject(false);
 
   private _insights?: ApplicationInsights;
@@ -49,7 +49,11 @@ export class AnalyticsService {
     private _electronService: ElectronService,
     private _wowUpService: WowUpService,
   ) {
-    this._installId = this.loadInstallId();
+    this.loadInstallId()
+      .then((installId) => {
+        this._installId = installId;
+      })
+      .catch(console.error);
 
     this.getTelemetryEnabled()
       .then((enabled) => {
@@ -87,8 +91,8 @@ export class AnalyticsService {
     this.track(name, properties);
   }
 
-  private loadInstallId() {
-    let installId = this._preferenceStorageService.getSync(this.installIdPreferenceKey);
+  private async loadInstallId(): Promise<string> {
+    let installId = await this._preferenceStorageService.getAsync(this.installIdPreferenceKey);
     if (installId) {
       return installId;
     }

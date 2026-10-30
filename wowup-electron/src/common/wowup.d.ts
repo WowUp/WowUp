@@ -128,7 +128,6 @@ declare global {
       onRendererEvent: (channel: string, listener: (event: IpcRendererEvent, ...args: any[]) => void) => void;
       onceRendererEvent: (channel: string, listener: (event: IpcRendererEvent, ...args: any[]) => void) => void;
       rendererSend: (channel: string, ...args: any[]) => void;
-      rendererSendSync: (channel: string, ...args: any[]) => any;
       rendererInvoke: (channel: string, ...args: any[]) => Promise<any>;
       rendererOff: (channel: string, listener: (...args: any[]) => void) => void;
       rendererOn: (channel: string, listener: (event: IpcRendererEvent, ...args: any[]) => void) => void;
