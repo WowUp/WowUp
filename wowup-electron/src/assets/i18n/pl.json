@@ -58,7 +58,10 @@
         "SELECT_ALL": "Zaznacz wszystko",
         "UNDO": "Cofnij"
       },
+      "HIDE": "Ukryj",
+      "HIDE_OTHERS": "Ukryj pozostałe",
       "QUIT": "Wyjdź",
+      "SHOW_ALL": "Pokaż wszystko",
       "VIEW": {
         "FORCE_RELOAD": "Wymuś odświeżanie",
         "LABEL": "Widok",
@@ -70,8 +73,11 @@
         "ZOOM_RESET": "Reset lupy"
       },
       "WINDOW": {
+        "BRING_ALL_TO_FRONT": "Przenieś wszystko na wierzch",
         "CLOSE": "Zamknij",
-        "LABEL": "Okno"
+        "LABEL": "Okno",
+        "MINIMIZE": "Minimalizuj",
+        "ZOOM": "Powiększ"
       }
     },
     "AUTO_UPDATE_FEW_NOTIFICATION_BODY": "Automatycznie zaktaulizowane\r\n{addonNames}",

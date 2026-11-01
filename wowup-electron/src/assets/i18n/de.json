@@ -58,7 +58,10 @@
         "SELECT_ALL": "Alles auswählen",
         "UNDO": "Rückgängig"
       },
+      "HIDE": "Ausblenden",
+      "HIDE_OTHERS": "Andere ausblenden",
       "QUIT": "Beenden",
+      "SHOW_ALL": "Alle einblenden",
       "VIEW": {
         "FORCE_RELOAD": "Neuladen erzwingen",
         "LABEL": "Ansicht",
@@ -70,8 +73,11 @@
         "ZOOM_RESET": "Zoom zurücksetzen"
       },
       "WINDOW": {
+        "BRING_ALL_TO_FRONT": "Alle nach vorne bringen",
         "CLOSE": "Schließen",
-        "LABEL": "Fenster"
+        "LABEL": "Fenster",
+        "MINIMIZE": "Im Dock ablegen",
+        "ZOOM": "Zoomen"
       }
     },
     "AUTO_UPDATE_FEW_NOTIFICATION_BODY": "Automatisch aktualisiert\r\n{addonNames}",

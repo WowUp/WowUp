@@ -58,7 +58,10 @@
         "SELECT_ALL": "全选",
         "UNDO": "撤销"
       },
+      "HIDE": "隐藏",
+      "HIDE_OTHERS": "隐藏其他",
       "QUIT": "退出",
+      "SHOW_ALL": "全部显示",
       "VIEW": {
         "FORCE_RELOAD": "强制刷新",
         "LABEL": "视图",
@@ -70,8 +73,11 @@
         "ZOOM_RESET": "原始大小"
       },
       "WINDOW": {
+        "BRING_ALL_TO_FRONT": "前置全部窗口",
         "CLOSE": "关闭",
-        "LABEL": "窗口"
+        "LABEL": "窗口",
+        "MINIMIZE": "最小化",
+        "ZOOM": "缩放"
       }
     },
     "AUTO_UPDATE_FEW_NOTIFICATION_BODY": "{addonNames}\r\n已自动更新",

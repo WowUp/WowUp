@@ -58,7 +58,10 @@
         "SELECT_ALL": "Selecionar tudo",
         "UNDO": "Desfazer"
       },
+      "HIDE": "Ocultar",
+      "HIDE_OTHERS": "Ocultar Outros",
       "QUIT": "Sair",
+      "SHOW_ALL": "Mostrar Tudo",
       "VIEW": {
         "FORCE_RELOAD": "Forçar recarregamento",
         "LABEL": "Visualizar",
@@ -70,8 +73,11 @@
         "ZOOM_RESET": "Redefinir Zoom"
       },
       "WINDOW": {
+        "BRING_ALL_TO_FRONT": "Trazer Tudo para a Frente",
         "CLOSE": "Fechar",
-        "LABEL": "Janela"
+        "LABEL": "Janela",
+        "MINIMIZE": "Minimizar",
+        "ZOOM": "Zoom"
       }
     },
     "AUTO_UPDATE_FEW_NOTIFICATION_BODY": "Automaticamente atualizou\r\n{addonNames}",

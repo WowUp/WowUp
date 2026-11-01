@@ -46,6 +46,9 @@ export interface MenuConfig {
   toggleDevToolsLabel: string;
   toggleFullScreenLabel: string;
   quitLabel: string;
+  hideLabel: string;
+  hideOthersLabel: string;
+  showAllLabel: string;
   undoLabel: string;
   redoLabel: string;
   cutLabel: string;
@@ -54,6 +57,9 @@ export interface MenuConfig {
   selectAllLabel: string;
   windowLabel: string;
   windowCloseLabel: string;
+  windowMinimizeLabel: string;
+  windowZoomLabel: string;
+  windowBringAllToFrontLabel: string;
 }
 
 export interface SystemTrayConfig {

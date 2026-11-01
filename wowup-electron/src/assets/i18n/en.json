@@ -58,7 +58,10 @@
         "SELECT_ALL": "SelectAll",
         "UNDO": "Undo"
       },
+      "HIDE": "Hide",
+      "HIDE_OTHERS": "Hide Others",
       "QUIT": "Quit",
+      "SHOW_ALL": "Show All",
       "VIEW": {
         "FORCE_RELOAD": "Force Reload",
         "LABEL": "View",
@@ -70,8 +73,11 @@
         "ZOOM_RESET": "Reset Zoom"
       },
       "WINDOW": {
+        "BRING_ALL_TO_FRONT": "Bring All to Front",
         "CLOSE": "Close",
-        "LABEL": "Window"
+        "LABEL": "Window",
+        "MINIMIZE": "Minimize",
+        "ZOOM": "Zoom"
       }
     },
     "AUTO_UPDATE_FEW_NOTIFICATION_BODY": "Automatically updated\r\n{addonNames}",

@@ -58,7 +58,10 @@
         "SELECT_ALL": "Выбрать всё",
         "UNDO": "Отменить"
       },
+      "HIDE": "Скрыть",
+      "HIDE_OTHERS": "Скрыть остальные",
       "QUIT": "Выход",
+      "SHOW_ALL": "Показать все",
       "VIEW": {
         "FORCE_RELOAD": "Принудительная перезагрузка",
         "LABEL": "Просмотр",
@@ -70,8 +73,11 @@
         "ZOOM_RESET": "Сброс масштабирования"
       },
       "WINDOW": {
+        "BRING_ALL_TO_FRONT": "Все окна — на передний план",
         "CLOSE": "Закрыть",
-        "LABEL": "Окно"
+        "LABEL": "Окно",
+        "MINIMIZE": "Свернуть",
+        "ZOOM": "Изменить масштаб"
       }
     },
     "AUTO_UPDATE_FEW_NOTIFICATION_BODY": "Автоматически обновлены\r\n{addonNames}",

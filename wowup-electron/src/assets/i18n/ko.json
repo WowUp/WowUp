@@ -58,7 +58,10 @@
         "SELECT_ALL": "SelectAll",
         "UNDO": "Undo"
       },
+      "HIDE": "가리기",
+      "HIDE_OTHERS": "기타 가리기",
       "QUIT": "Quit",
+      "SHOW_ALL": "모두 보기",
       "VIEW": {
         "FORCE_RELOAD": "Force Reload",
         "LABEL": "View",
@@ -70,8 +73,11 @@
         "ZOOM_RESET": "Reset Zoom"
       },
       "WINDOW": {
+        "BRING_ALL_TO_FRONT": "모두 앞으로 가져오기",
         "CLOSE": "Close",
-        "LABEL": "Window"
+        "LABEL": "Window",
+        "MINIMIZE": "최소화",
+        "ZOOM": "확대/축소"
       }
     },
     "AUTO_UPDATE_FEW_NOTIFICATION_BODY": "다음 애드온들이 자동 업데이트되었습니다.\r\n{addonNames}",

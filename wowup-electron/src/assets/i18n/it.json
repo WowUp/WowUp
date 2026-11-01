@@ -58,7 +58,10 @@
         "SELECT_ALL": "Seleziona Tutto",
         "UNDO": "Annulla"
       },
+      "HIDE": "Nascondi",
+      "HIDE_OTHERS": "Nascondi altre",
       "QUIT": "Esci",
+      "SHOW_ALL": "Mostra tutte",
       "VIEW": {
         "FORCE_RELOAD": "Forza Ricarica",
         "LABEL": "Visualizza",
@@ -70,8 +73,11 @@
         "ZOOM_RESET": "Reset Zoom"
       },
       "WINDOW": {
+        "BRING_ALL_TO_FRONT": "Porta tutto in primo piano",
         "CLOSE": "Chiudi",
-        "LABEL": "Finestra"
+        "LABEL": "Finestra",
+        "MINIMIZE": "Contrai",
+        "ZOOM": "Ridimensiona"
       }
     },
     "AUTO_UPDATE_FEW_NOTIFICATION_BODY": "Automaticamente aggiornato\r\n{addonNames}",
