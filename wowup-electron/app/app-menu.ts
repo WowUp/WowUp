@@ -19,7 +19,21 @@ export function onMenuZoomReset(win: BrowserWindow): void {
   win?.webContents.send(IPC_MENU_ZOOM_RESET_CHANNEL);
 }
 
-function createMacMenuItems(win: BrowserWindow, config?: MenuConfig): Array<MenuItemConstructorOptions | MenuItem> {
+// Not role: "toggleDevTools", that targets whichever webContents has focus, so once the overwolf
+// ad view had been clicked the shortcut opened the ad's devtools instead of the app's.
+function createToggleDevToolsItem(win: BrowserWindow, config: MenuConfig): MenuItemConstructorOptions {
+  return {
+    label: config.toggleDevToolsLabel,
+    click: () => win?.webContents.toggleDevTools(),
+    accelerator: "CommandOrControl+Shift+I",
+  };
+}
+
+export function createMacMenuItems(
+  win: BrowserWindow,
+  config?: MenuConfig,
+  appName = app.name,
+): Array<MenuItemConstructorOptions | MenuItem> {
   if (config === undefined) {
     return [];
   }
@@ -29,7 +43,7 @@ function createMacMenuItems(win: BrowserWindow, config?: MenuConfig): Array<Menu
     submenu: [
       { label: config.reloadLabel, role: "reload" },
       { label: config.forceReloadLabel, role: "forceReload" },
-      { label: config.toggleDevToolsLabel, role: "toggleDevTools", accelerator: "CommandOrControl+Shift+I" },
+      createToggleDevToolsItem(win, config),
       { type: "separator" },
     ],
   };
@@ -39,10 +53,18 @@ function createMacMenuItems(win: BrowserWindow, config?: MenuConfig): Array<Menu
 
   viewMenuArr.push({ type: "separator" }, { label: config.toggleFullScreenLabel, role: "togglefullscreen" });
 
+  // macOS only provides the standard app/window shortcuts (Cmd+H, Cmd+Alt+H, Cmd+M) through menu
+  // items with these roles, so leaving them out of the menu disables the shortcuts too.
   return [
     {
-      label: app.name,
-      submenu: [{ label: config.quitLabel, role: "quit" }],
+      label: appName,
+      submenu: [
+        { label: config.hideLabel, role: "hide" },
+        { label: config.hideOthersLabel, role: "hideOthers" },
+        { label: config.showAllLabel, role: "unhide" },
+        { type: "separator" },
+        { label: config.quitLabel, role: "quit" },
+      ],
     },
     {
       label: config.editLabel,
@@ -60,10 +82,15 @@ function createMacMenuItems(win: BrowserWindow, config?: MenuConfig): Array<Menu
     {
       label: config.windowLabel,
       submenu: [
+        { label: config.windowMinimizeLabel, role: "minimize" },
+        { label: config.windowZoomLabel, role: "zoom" },
+        { type: "separator" },
         {
           label: config.windowCloseLabel,
           role: "close" /*click: () => win?.close(), accelerator: "CommandOrControl+w"*/,
         },
+        { type: "separator" },
+        { label: config.windowBringAllToFrontLabel, role: "front" },
       ],
     },
   ];
@@ -79,7 +106,7 @@ function createLinuxMenuItems(win: BrowserWindow, config?: MenuConfig): Array<Me
     submenu: [
       { label: config.reloadLabel, role: "reload" },
       { label: config.forceReloadLabel, role: "forceReload" },
-      { label: config.toggleDevToolsLabel, role: "toggleDevTools", accelerator: "CommandOrControl+Shift+I" },
+      createToggleDevToolsItem(win, config),
     ],
   };
 
@@ -116,7 +143,7 @@ function createWindowsMenuItems(win: BrowserWindow, config?: MenuConfig): Array<
   
   const viewMenu: MenuItemConstructorOptions = {
     label: config.viewLabel,
-    submenu: [{ label: config.toggleDevToolsLabel, role: "toggleDevTools", accelerator: "CommandOrControl+Shift+I" }],
+    submenu: [createToggleDevToolsItem(win, config)],
   };
 
   const submenu = viewMenu.submenu as MenuItemConstructorOptions[];

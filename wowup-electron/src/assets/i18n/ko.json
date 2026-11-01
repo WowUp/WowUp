@@ -58,7 +58,10 @@
         "SELECT_ALL": "SelectAll",
         "UNDO": "Undo"
       },
+      "HIDE": "가리기",
+      "HIDE_OTHERS": "기타 가리기",
       "QUIT": "Quit",
+      "SHOW_ALL": "모두 보기",
       "VIEW": {
         "FORCE_RELOAD": "Force Reload",
         "LABEL": "View",
@@ -70,8 +73,11 @@
         "ZOOM_RESET": "Reset Zoom"
       },
       "WINDOW": {
+        "BRING_ALL_TO_FRONT": "모두 앞으로 가져오기",
         "CLOSE": "Close",
-        "LABEL": "Window"
+        "LABEL": "Window",
+        "MINIMIZE": "최소화",
+        "ZOOM": "확대/축소"
       }
     },
     "AUTO_UPDATE_FEW_NOTIFICATION_BODY": "다음 애드온들이 자동 업데이트되었습니다.\r\n{addonNames}",
@@ -169,10 +175,12 @@
     },
     "ADDON_STATUS": {
       "BACKINGUP": "백업 중",
+      "CHECKING_DEPENDENCIES": "종속성 확인 중",
       "COMPLETE": "설치됨",
       "DOWNLOADING": "다운로드 중",
       "ERROR": "에러",
       "INSTALLING": "설치 중",
+      "INSTALLING_DEPENDENCIES": "종속성 {completed}/{total}",
       "PENDING": "일시정지됨",
       "RETRY": "Retrying...",
       "UNINSTALLING": "삭제 중",
@@ -194,10 +202,11 @@
       "ANNIVERSARY": "Burning Crusade Anniversary",
       "BETA": "The War Within Beta",
       "CLASSIC": "Mists of Pandaria Classic",
-      "CLASSICBETA": "MoP Classic Beta",
+      "CLASSICBETA": "World of Warcraft: Forever Beta",
       "CLASSICERA": "World of Warcraft Classic",
       "CLASSICERAPTR": "PTR (Classic Era)",
       "CLASSICPTR": "PTR (MoP Classic)",
+      "FOREVER": "World of Warcraft: Forever",
       "RETAIL": "World of Warcraft",
       "RETAILPTR": "PTR (Midnight)",
       "RETAILXPTR": "PTR (TWW 11.2.7)"
@@ -309,6 +318,7 @@
         "CATACLYSM_ASSET_NOT_FOUND": "No asset was found to download from {message}.\n\nA valid zip file ending with '-cata' is required in order for WowUp to download it.",
         "CLASSIC_ASSET_NOT_FOUND": "No asset was found to download from {message}.\n\nA valid zip file ending with '-classic' is required in order for WowUp to download it.",
         "FAILED_TO_CONNECT": "API 연결 실패. 잠시 후 다시 시도해주세요.",
+        "FOREVER_ASSET_NOT_FOUND": "No asset was found to download from {message}.\n\nA valid zip file ending with '-forever' is required in order for WowUp to download it.",
         "INSTALL_FAILED": "설치 실패! 뭔가 잘못됐습니다.다시 시도해주세요.\n\n이 메세지가 반복된다면, 디스코드의 #help-me 채널에서 도움을 요청해보세요.",
         "INVALID_URL": "URL 주소 형식이 잘못되었습니다. 올바른 애드온 주소 예제: \n\t- https://github.com/WowUp/WowUp.Addon\n\t- https://www.wowinterface.com/downloads/info25610-8.3-014.html\n\t- https://www.curseforge.com/wow/addons/altoholic",
         "MISTS_ASSET_NOT_FOUND": "No asset was found to download from {message}.\n\nA valid zip file ending with '-mists' is required in order for WowUp to download it.",
@@ -325,9 +335,6 @@
       "INSTALL_SUCCESS_LABEL": "설치됨!",
       "SUPPORTED_SOURCES": "WowInterface 와 GitHub 주소가 지원됩니다",
       "TITLE": "설치할 애드온 URL 주소"
-    },
-    "NEW_VERSION_POPUP": {
-      "TITLE": "Patch Notes {versionNumber}"
     },
     "PERMISSIONS": {
       "CURSEFORGE": {
@@ -364,6 +371,7 @@
     "ABOUT": {
       "ATTRIBUTIONS_TITLE": "Attributions",
       "CHANGE_LOG_SECTION_LABEL": "변경 이력",
+      "SHELL_VERSION": "Shell v{version}",
       "TITLE": "WowUp.io",
       "WEBSITE_LINK_LABEL": "웹사이트로 이동"
     },

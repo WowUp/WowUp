@@ -26,6 +26,11 @@ jobs:
       with:
         node-version: ${{ matrix.node-version }}
 
+    - name: Install lib dependencies
+      run: |
+        cd ./wowup-lib
+        npm install
+
     - name: Install Angular CLI
       run: npm install -g @angular/cli
 
@@ -33,6 +38,16 @@ jobs:
       run: |
         cd ./wowup-electron
         npm i --force
+
+    # Ubuntu runners block the unprivileged user namespaces Electron's sandbox would otherwise use,
+    # so the karma Electron launcher aborts unless the setuid helper is set up the way it asks.
+    # Electron only downloads its binary on first use, so fetch it now to have the helper to fix.
+    - name: Configure Electron sandbox
+      run: |
+        cd ./wowup-electron
+        node node_modules/electron/install.js
+        sudo chown root:root node_modules/electron/dist/chrome-sandbox
+        sudo chmod 4755 node_modules/electron/dist/chrome-sandbox
 
     - name: Lint
       run: |

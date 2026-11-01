@@ -31,7 +31,7 @@ export class GameVersionCellComponent implements AgRendererComponent {
 
     if (wowInstall !== undefined) {
       const majorVersion = getWowMajorVersion(wowInstall.clientType);
-      const versionMatch = value.find((x) => x.startsWith(majorVersion + "."));
+      const versionMatch = value.find((x) => x.startsWith(majorVersion));
       if (versionMatch !== undefined) {
         displayVal = versionMatch;
       }

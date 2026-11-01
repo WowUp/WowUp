@@ -1,16 +1,28 @@
 import { orderBy, filter } from "lodash";
 import { Addon, AddonDependency, AddonDependencyType, AddonExternalId } from "wowup-lib-core";
 
-export function getAllProviders(addon: Addon): AddonExternalId[] {
-  return orderBy(addon.externalIds, ["providerName"], ["asc"]);
+/** Whether an external id's provider can be switched to in this build, see AddonProviderFactory.isProviderAvailable */
+export type ProviderAvailability = (providerName: string) => boolean;
+
+/**
+ * Every provider the addon can be switched to, plus its own. Ids for providers this build does not
+ * ship or the user turned off (e.g. CurseForge ids from tocs on the wago build) are left out, picking
+ * one could only fail.
+ */
+export function getAllProviders(addon: Addon, isAvailable: ProviderAvailability = () => true): AddonExternalId[] {
+  const available = filter(
+    addon.externalIds,
+    (extId) => extId.providerName === addon.providerName || isAvailable(extId.providerName),
+  );
+  return orderBy(available, ["providerName"], ["asc"]);
 }
 
-export function getProviders(addon: Addon): AddonExternalId[] {
-  return filter(getAllProviders(addon), (extId) => extId.providerName !== addon.providerName);
+export function getProviders(addon: Addon, isAvailable?: ProviderAvailability): AddonExternalId[] {
+  return filter(getAllProviders(addon, isAvailable), (extId) => extId.providerName !== addon.providerName);
 }
 
-export function hasMultipleProviders(addon: Addon): boolean {
-  return getProviders(addon).length > 0;
+export function hasMultipleProviders(addon: Addon, isAvailable?: ProviderAvailability): boolean {
+  return getProviders(addon, isAvailable).length > 0;
 }
 
 export function getAddonDependencies(

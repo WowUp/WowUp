@@ -23,6 +23,11 @@ export class DateTooltipCellComponent implements AgRendererComponent, OnDestroy 
   public agInit(params: ICellRendererParams): void {
     this.params = params;
 
+    // No date yet, e.g. an addon whose first install is still pending
+    if (!this.params.value) {
+      return;
+    }
+
     this.time$.next(this.params.value as string);
 
     combineLatest([this._electronService.windowFocused$, timer(0, 30000)])

@@ -7,7 +7,7 @@ import { v4 as uuidv4 } from "uuid";
 import { Injectable } from "@angular/core";
 import { TranslateService } from "@ngx-translate/core";
 
-import { getWowClientFolderName } from "../../../common/warcraft";
+import { getWowClientFolderName, normalizeInstallationPath } from "../../../common/warcraft";
 import { getEnumName, getWowClientGroupForType } from "wowup-lib-core";
 import { ElectronService } from "../electron/electron.service";
 import { FileService } from "../files/file.service";
@@ -71,7 +71,16 @@ export class WarcraftInstallationService {
   }
 
   public async getWowInstallationsAsync(): Promise<WowInstallation[]> {
-    return await this._installationApiService.getAll();
+    const installations = await this._installationApiService.getAll();
+    // Same as the broadcast list, the saved display name may be from an older translation
+    for (const installation of installations) {
+      try {
+        installation.displayName = await this.getInstallationDisplayName(installation);
+      } catch (e) {
+        console.warn(`Failed to regenerate display name: ${installation.label}`, e);
+      }
+    }
+    return installations;
   }
 
   public getWowInstallation(installationId: string | undefined): WowInstallation | undefined {
@@ -210,8 +219,9 @@ export class WarcraftInstallationService {
       const displayName = await this.getDisplayName(label, typeName);
 
       const fullProductPath = await this.getFullProductPath(product.location, product.clientType);
+      const normalizedProductPath = normalizeInstallationPath(fullProductPath);
 
-      if (currentInstallations.some((inst) => inst.location === fullProductPath)) {
+      if (currentInstallations.some((inst) => normalizeInstallationPath(inst.location) === normalizedProductPath)) {
         continue;
       }
 

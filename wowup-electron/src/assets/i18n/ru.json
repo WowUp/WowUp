@@ -58,7 +58,10 @@
         "SELECT_ALL": "Выбрать всё",
         "UNDO": "Отменить"
       },
+      "HIDE": "Скрыть",
+      "HIDE_OTHERS": "Скрыть остальные",
       "QUIT": "Выход",
+      "SHOW_ALL": "Показать все",
       "VIEW": {
         "FORCE_RELOAD": "Принудительная перезагрузка",
         "LABEL": "Просмотр",
@@ -70,8 +73,11 @@
         "ZOOM_RESET": "Сброс масштабирования"
       },
       "WINDOW": {
+        "BRING_ALL_TO_FRONT": "Все окна — на передний план",
         "CLOSE": "Закрыть",
-        "LABEL": "Окно"
+        "LABEL": "Окно",
+        "MINIMIZE": "Свернуть",
+        "ZOOM": "Изменить масштаб"
       }
     },
     "AUTO_UPDATE_FEW_NOTIFICATION_BODY": "Автоматически обновлены\r\n{addonNames}",
@@ -169,10 +175,12 @@
     },
     "ADDON_STATUS": {
       "BACKINGUP": "Резервирование",
+      "CHECKING_DEPENDENCIES": "Проверка зависимостей",
       "COMPLETE": "Установлена",
       "DOWNLOADING": "Загрузка",
       "ERROR": "Ошибка",
       "INSTALLING": "Установка",
+      "INSTALLING_DEPENDENCIES": "Зависимости {completed}/{total}",
       "PENDING": "В ожидании",
       "RETRY": "Retrying...",
       "UNINSTALLING": "Удаление",
@@ -194,10 +202,11 @@
       "ANNIVERSARY": "Burning Crusade Anniversary",
       "BETA": "The War Within Beta",
       "CLASSIC": "Mists of Pandaria Classic",
-      "CLASSICBETA": "MoP Classic Beta",
+      "CLASSICBETA": "World of Warcraft: Forever Beta",
       "CLASSICERA": "World of Warcraft Classic",
       "CLASSICERAPTR": "PTR (Classic Era)",
       "CLASSICPTR": "PTR (MoP Classic)",
+      "FOREVER": "World of Warcraft: Forever",
       "RETAIL": "World of Warcraft",
       "RETAILPTR": "PTR (Midnight)",
       "RETAILXPTR": "PTR (TWW 11.2.7)"
@@ -309,6 +318,7 @@
         "CATACLYSM_ASSET_NOT_FOUND": "No asset was found to download from {message}.\n\nA valid zip file ending with '-cata' is required in order for WowUp to download it.",
         "CLASSIC_ASSET_NOT_FOUND": "Не найдено ресурсов для загрузки из {message}.\n\nНеобходим верный .zip файл с окончанием '-classic', чтобы WowUp мог загрузить его.",
         "FAILED_TO_CONNECT": "Не удается подключиться к API, подождите немного и повторите попытку.",
+        "FOREVER_ASSET_NOT_FOUND": "No asset was found to download from {message}.\n\nA valid zip file ending with '-forever' is required in order for WowUp to download it.",
         "INSTALL_FAILED": "Что-то пошло не так при попытке установить модификацию, попытайтесь снова.\n\nЕсли это сообщение продолжает появляться, Вы можете получить помощь в канале #help-me нашего Discord сообщества.",
         "INVALID_URL": "Введённое значение не является правильной ссылкой. Примеры правильных ссылок для модификаций:\n\t- https://github.com/WowUp/WowUp.Addon\n\t- https://www.wowinterface.com/downloads/info25610-8.3-014.html\n\t- https://www.curseforge.com/wow/addons/altoholic",
         "MISTS_ASSET_NOT_FOUND": "No asset was found to download from {message}.\n\nA valid zip file ending with '-mists' is required in order for WowUp to download it.",
@@ -325,9 +335,6 @@
       "INSTALL_SUCCESS_LABEL": "Установлена!",
       "SUPPORTED_SOURCES": "Поддерживаются WowInterface и GitHub",
       "TITLE": "Ссылка на установку модификации"
-    },
-    "NEW_VERSION_POPUP": {
-      "TITLE": "Список изменений в версии {versionNumber}"
     },
     "PERMISSIONS": {
       "CURSEFORGE": {
@@ -364,6 +371,7 @@
     "ABOUT": {
       "ATTRIBUTIONS_TITLE": "Атрибутика",
       "CHANGE_LOG_SECTION_LABEL": "Журнал изменений",
+      "SHELL_VERSION": "Shell v{version}",
       "TITLE": "WowUp.io",
       "WEBSITE_LINK_LABEL": "Посетите наш сайт!"
     },

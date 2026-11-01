@@ -1,4 +1,3 @@
-import { UpdateCheckResult } from "electron-updater";
 import * as _ from "lodash";
 import { join } from "path";
 import { Subject } from "rxjs";
@@ -22,6 +21,7 @@ import {
   GET_ADDONS_SORT_ORDER,
   IPC_APP_CHECK_UPDATE,
   IPC_APP_INSTALL_UPDATE,
+  IPC_BUNDLE_UPDATE_RESTART,
   IPC_GET_APP_VERSION,
   IPC_UPDATE_APP_BADGE,
   KEEP_ADDON_DETAIL_TAB_PREFERENCE_KEY,
@@ -31,7 +31,6 @@ import {
   START_MINIMIZED_PREFERENCE_KEY,
   START_WITH_SYSTEM_PREFERENCE_KEY,
   TRUSTED_DOMAINS_KEY,
-  UPDATE_NOTES_POPUP_VERSION_KEY,
   USE_HARDWARE_ACCELERATION_PREFERENCE_KEY,
   USE_SYMLINK_MODE_PREFERENCE_KEY,
   WOWUP_RELEASE_CHANNEL_PREFERENCE_KEY,
@@ -68,7 +67,7 @@ export class WowUpService {
     private _preferenceStorageService: PreferenceStorageService,
     private _electronService: ElectronService,
     private _fileService: FileService,
-    private _translateService: TranslateService
+    private _translateService: TranslateService,
   ) {
     this.setDefaultClientPreferences().catch(console.error);
 
@@ -327,16 +326,6 @@ export class WowUpService {
     return `${typeName}${DEFAULT_CHANNEL_PREFERENCE_KEY_SUFFIX}`.toLowerCase();
   }
 
-  public async shouldShowNewVersionNotes(): Promise<boolean> {
-    const popupVersion = await this._preferenceStorageService.getAsync(UPDATE_NOTES_POPUP_VERSION_KEY);
-    return popupVersion !== (await this._electronService.getVersionNumber());
-  }
-
-  public async setNewVersionNotes(): Promise<void> {
-    const versionNumber = await this._electronService.getVersionNumber();
-    await this._preferenceStorageService.setAsync(UPDATE_NOTES_POPUP_VERSION_KEY, versionNumber);
-  }
-
   public async shouldMigrateAddons(): Promise<boolean> {
     const migrateVersion = await this._preferenceStorageService.getAsync(ADDON_MIGRATION_VERSION_KEY);
     return migrateVersion !== (await this._electronService.getVersionNumber());
@@ -359,13 +348,13 @@ export class WowUpService {
     this._electronService.send(IPC_APP_CHECK_UPDATE);
   }
 
-  public async isSameVersion(updateCheckResult: UpdateCheckResult): Promise<boolean> {
-    const appVersion = await this._electronService.getVersionNumber();
-    return updateCheckResult && updateCheckResult.updateInfo?.version === appVersion;
-  }
-
   public installUpdate(): void {
     return this._electronService.send(IPC_APP_INSTALL_UPDATE);
+  }
+
+  /** Restarts into the newer app bundle the shell downloaded */
+  public restartForBundleUpdate(): void {
+    return this._electronService.send(IPC_BUNDLE_UPDATE_RESTART);
   }
 
   public async getTrustedDomains(): Promise<string[]> {

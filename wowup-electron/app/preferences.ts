@@ -1,5 +1,3 @@
-import { app } from "electron";
-
 import {
   ACCT_PUSH_ENABLED_KEY,
   COLLAPSE_TO_TRAY_PREFERENCE_KEY,
@@ -15,11 +13,12 @@ import {
   WOWUP_RELEASE_CHANNEL_PREFERENCE_KEY,
 } from "../src/common/constants";
 import { WowUpReleaseChannelType } from "../src/common/wowup/wowup-release-channel-type";
+import { getShell } from "../../wowup-shell/contract/shell-api";
 import { getPreferenceStore } from "./stores";
 import * as log from "electron-log/main";
 
 export function initializeDefaultPreferences() {
-  const isBetaBuild = app.getVersion().toLowerCase().indexOf("beta") != -1;
+  const isBetaBuild = getShell().bundle.version.toLowerCase().indexOf("beta") != -1;
   const defaultReleaseChannel = isBetaBuild ? WowUpReleaseChannelType.Beta : WowUpReleaseChannelType.Stable;
 
   setDefaultPreference(ENABLE_SYSTEM_NOTIFICATIONS_PREFERENCE_KEY, true);
