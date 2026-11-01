@@ -4,9 +4,13 @@ phases:
   install:
     commands:
       - echo Install phase...
-      - cd wowup-electron
+      - cd wowup-shell
+      - npm ci
+      - cd ../wowup-electron
       - npm i
   build:
     commands:
       - echo Build phase...
+      - npm run build:prod
+      - cd ../wowup-shell
       - npm run electron:publish:never

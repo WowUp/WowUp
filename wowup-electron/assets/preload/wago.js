@@ -52,7 +52,10 @@ window.addEventListener(
     const target = e.target;
     if (target != null && target !== window && target.tagName) {
       const url = target.src || target.href || "unknown";
-      console.warn(`[wago-preload] failed to load ${target.tagName.toLowerCase()}: ${url}`);
+      // debug, not warn: this is an expected part of every ad load, and only console.log/warn/error
+      // are forwarded to the main process, so a warn here is an ipc hop and a disk write per bidder
+      // that times out. Still visible in the ad frame's own devtools.
+      console.debug(`[wago-preload] failed to load ${target.tagName.toLowerCase()}: ${url}`);
       return;
     }
 

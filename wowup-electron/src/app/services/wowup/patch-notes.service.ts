@@ -16,6 +16,105 @@ export class PatchNotesService {
 
 const CHANGELOGS: ChangeLog[] = [
   {
+    Version: "2.25.4",
+    html: `
+    <h4>Fixes</h4>
+    <ul>
+    <li>Fix My Addons sometimes listing every addon more than once, for example after an update</li>
+    </ul>
+    `,
+  },
+  {
+    Version: "2.25.3",
+    html: `
+    <h4>Changes</h4>
+    <ul>
+    <li>Options > About now also shows the version of the installed WowUp shell, which can be older than the app itself after an in-app update</li>
+    </ul>
+    `,
+  },
+  {
+    Version: "2.25.2",
+    html: `
+    <h4>Changes</h4>
+    <ul>
+    <li>Installing an addon now shows the progress of its required dependencies, and only says installed once they are all done</li>
+    <li>My Addons and Get Addons can be opened while addons are installing</li>
+    </ul>
+    <h4>Fixes</h4>
+    <ul>
+    <li>Fix WowUp looking frozen while installing an addon with dependencies that weren't in the search results</li>
+    </ul>
+    `,
+  },
+  {
+    Version: "2.25.1",
+    html: `
+    <h4>Changes</h4>
+    <ul>
+    <li>Patch notes no longer pop up after WowUp updates. You can still read them under Options > About</li>
+    </ul>
+    <h4>Fixes</h4>
+    <ul>
+    <li>Fix updating or reinstalling an addon not installing addons its newer versions require</li>
+    </ul>
+    `,
+  },
+  {
+    Version: "2.25.0",
+    html: `
+    <h4>Features</h4>
+    <ul>
+    <li>Most WowUp updates now download in the background as a small update and finish with a quick restart, instead of a full reinstall</li>
+    </ul>
+    <h4>Changes</h4>
+    <ul>
+    <li>When an update is ready, WowUp asks you to restart now or later. If you choose later, WowUp asks again after 6 hours and the restart can't be put off</li>
+    <li>WowUp now checks that its files haven't been changed or damaged every time it starts</li>
+    </ul>
+    <h4>Fixes</h4>
+    <ul>
+    <li>Fix World of Warcraft installations not being found automatically on recent Windows 11 builds</li>
+    </ul>
+    `,
+  },
+  {
+    Version: "2.24.1",
+    html: `
+    <h4>Features</h4>
+    <ul>
+    <li>Add World of Warcraft: Forever support</li>
+    </ul>
+    <h4>Fixes</h4>
+    <ul>
+    <li>Fix WowUp freezing on startup and ignoring clicks when an ad blocker or ad-blocking DNS is in use (Wago version)</li>
+    <li>Use the correct quotation marks in German and Norwegian translations</li>
+    </ul>
+    `,
+  },
+  {
+    Version: "2.24.0",
+    html: `
+    <h4>Features</h4>
+    <ul>
+    <li>Prep for World of Warcraft: Forever</li>
+    <li>Add a "Force IPv4 (disable IPv6)" setting for networks where IPv6 connectivity is broken</li>
+    </ul>
+    <h4>Changes</h4>
+    <ul>
+    <li>Update the app background artwork to World of Warcraft: Forever</li>
+    <li>Show the World of Warcraft: Forever logo on Classic Beta installations</li>
+    </ul>
+    <h4>Fixes</h4>
+    <ul>
+    <li>Fix GitHub addon updates failing to install when no personal access token is configured (@DarthWixon)</li>
+    <li>Show a clearer error when an addon install or update fails due to a network problem, and wait longer between retries</li>
+    <li>Fix ads reappearing after being disabled and overhanging the window edge</li>
+    <li>Add missing translations across supported languages</li>
+    </ul>
+    `,
+  },
+  {
     Version: "2.23.1",
     html: `
     <h4>Fixes</h4>

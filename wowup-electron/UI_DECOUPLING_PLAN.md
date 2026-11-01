@@ -38,20 +38,44 @@ Pattern for each phase:
   delegates all storage/CRUD to `WarcraftInstallationApiService` instead of talking to
   `PreferenceStorageService` directly.
 
-## Phase 3 — TOC Parsing / Addon Folder Listing ⏳ not started
+## Phase 3 — TOC Parsing / Addon Folder Listing ✅ done
 
-- Move `.toc` file parsing and addon-folder directory scanning out of the renderer
-  (currently under `src/app/services/addons/` and `src/app/utils/`) into a main-process
-  service + controller.
-- Renderer keeps only the thin API wrapper; folder/file I/O moves fully to main.
+- `TocService` (`app/services/toc/toc.service.ts`) is a straight port of the old
+  renderer parsing logic onto `fs/promises` directly (no more per-file IPC round trips
+  through the generic file channels). `TocController` (`app/controllers/toc/`) exposes
+  it as `IPC_TOC_PARSE` / `IPC_TOC_GET_ALL_TOCS`; the dead, never-called
+  `parseMetaData`/`stripColorCode`/`stripTextureCode` public methods were dropped
+  rather than ported (verified unused anywhere in the monorepo).
+- `WarcraftController` gained `listAddons`/`getAddonFolder` (backed by `fs/promises` +
+  the main-process `TocService`), replacing what used to be a chain of `FileService`
+  IPC calls (`listDirectories`, `statFiles`, `readdir` per folder, `parse` per `.toc`
+  file) driven from the renderer — that whole scan is now one IPC round trip per
+  installation instead of one per file.
+- Renderer `TocService` and `WarcraftService.listAddons`/`.getAddonFolder` now delegate
+  to `TocApiService` / `WarcraftApiService` and kept their exact public signatures, so
+  none of the ~15 call sites across `addon.service.ts`, `addon-install.service.ts`, the
+  addon providers, and `wtf-explorer.component.ts` needed to change.
+- `TocService.getTocForGameType2` stayed client-side, unmigrated on purpose: it's pure
+  data transformation over already-parsed `Toc[]` with no filesystem or Node dependency,
+  so it isn't "business logic coupled to Electron" in the sense this plan cares about —
+  same rationale as keeping `TranslateService`-based display names client-side in Phase 2.
 
-## Phase 4 — Addon Scan / Sync ⏳ not started
+## Phase 4 — Addon Scan / Sync 🚧 in progress
 
-- Move addon scanning/sync orchestration (matching installed folders to known addons,
-  fingerprinting) out of `src/app/services/addons/addon.service.ts` into main.
+- ✅ **Fingerprinting.** `AddonScanController` (`app/controllers/scan/`) + `AddonScanService`
+  (`app/services/scan/`) own folder fingerprinting behind a single
+  `IPC_ADDON_GET_SCAN_RESULTS` channel that takes the sources it should produce.
+  `WowUpFolderScanner`/`CurseFolderScanner` now take their filesystem access as deps from a
+  shared `FolderScanContext`, so one folder is walked once and each file read once however
+  many fingerprints are wanted — the two per-source channels it replaced each did their own
+  walk and their own reads. Renderer side is `addon-scan-api.service.ts`, consumed by
+  `AddonFingerprintService`. Fingerprint values are pinned by characterization tests in
+  `addon-scan.service.spec.ts`.
+- ⏳ **Scan/sync orchestration.** Still in `src/app/services/addons/addon.service.ts`:
+  matching scanned folders back to known addons, and the sync pipeline around it.
 - `AddonController` (`app/controllers/addon.controller.ts`) already owns addon *storage*
-  CRUD (get/save addons) — this phase extends it (or adds a sibling controller) to own
-  the scan/sync business logic too.
+  CRUD (get/save addons) — the remaining orchestration extends it (or adds a sibling
+  controller).
 
 ## Phase 5 — Install / Remove Pipeline ⏳ not started
 

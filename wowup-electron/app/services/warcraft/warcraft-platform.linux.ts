@@ -4,8 +4,10 @@ import * as path from "path";
 
 import {
   WOW_ANNIVERSARY_FOLDER,
+  WOW_CLASSIC_BETA_FOLDER,
   WOW_CLASSIC_ERA_FOLDER,
   WOW_CLASSIC_ERA_PTR_FOLDER,
+  WOW_FOREVER_FOLDER,
   WOW_RETAIL_XPTR_FOLDER,
 } from "../../../src/common/constants";
 import { InstalledProduct, WowClientType } from "wowup-lib-core";
@@ -65,6 +67,7 @@ export class WarcraftPlatformLinux implements WarcraftPlatform {
   public getExecutableName(clientType: WowClientType): string {
     switch (clientType) {
       case WowClientType.Retail:
+      case WowClientType.Forever: // WoW Forever ships the retail binary, it is told apart by its install folder
         return WOW_RETAIL_NAME;
       case WowClientType.ClassicEra:
       case WowClientType.Classic:
@@ -77,9 +80,8 @@ export class WarcraftPlatformLinux implements WarcraftPlatform {
       case WowClientType.ClassicEraPtr:
         return WOW_CLASSIC_PTR_NAME;
       case WowClientType.Beta:
+      case WowClientType.ClassicBeta: // WoW Forever Beta is the same binary as WoW Beta, so we can return the same name for both
         return WOW_RETAIL_BETA_NAME;
-      case WowClientType.ClassicBeta:
-        return WOW_CLASSIC_BETA_NAME;
       default:
         return "";
     }
@@ -89,7 +91,7 @@ export class WarcraftPlatformLinux implements WarcraftPlatform {
     const binaryName = path.basename(binaryPath);
     switch (binaryName) {
       case WOW_RETAIL_NAME:
-        return WowClientType.Retail;
+        return binaryPath.toLowerCase().includes(WOW_FOREVER_FOLDER) ? WowClientType.Forever : WowClientType.Retail;
       case WOW_CLASSIC_NAME:
         if (binaryPath.toLowerCase().includes(WOW_CLASSIC_ERA_FOLDER)) {
           return WowClientType.ClassicEra;
@@ -107,7 +109,9 @@ export class WarcraftPlatformLinux implements WarcraftPlatform {
           ? WowClientType.ClassicEraPtr
           : WowClientType.ClassicPtr;
       case WOW_RETAIL_BETA_NAME:
-        return WowClientType.Beta;
+        return binaryPath.toLowerCase().includes(WOW_CLASSIC_BETA_FOLDER)
+          ? WowClientType.ClassicBeta
+          : WowClientType.Beta;
       case WOW_CLASSIC_BETA_NAME:
         return WowClientType.ClassicBeta;
       default:
@@ -170,5 +174,8 @@ export class WarcraftPlatformLinux implements WarcraftPlatform {
 }
 
 async function pathExists(filePath: string): Promise<boolean> {
-  return fsp.access(filePath).then(() => true).catch(() => false);
+  return fsp
+    .access(filePath)
+    .then(() => true)
+    .catch(() => false);
 }

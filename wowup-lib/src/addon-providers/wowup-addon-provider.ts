@@ -110,6 +110,31 @@ export class WowUpAddonProvider extends AddonProvider {
     }
   }
 
+  /**
+   * Look up which hub addon each folder fingerprint belongs to, without building an addon from it.
+   * Lets an addon installed from another provider learn its hub id, since the hub has no toc field
+   * and can only be matched by fingerprint.
+   * @returns fingerprint to hub addon id, only for fingerprints the hub knows
+   */
+  public async getAddonIdsByFingerprints(fingerprints: string[]): Promise<Map<string, string>> {
+    const addonIds = new Map<string, string>();
+    const uniqueFingerprints = uniq(fingerprints.filter((fp) => !!fp));
+    if (uniqueFingerprints.length === 0) {
+      return addonIds;
+    }
+
+    const response = await this.getAddonsByFingerprints(uniqueFingerprints);
+    for (const exactMatch of response?.exactMatches ?? []) {
+      for (const addonFolder of exactMatch.matched_release?.addonFolders ?? []) {
+        if (uniqueFingerprints.includes(addonFolder.fingerprint) && !addonIds.has(addonFolder.fingerprint)) {
+          addonIds.set(addonFolder.fingerprint, exactMatch.id.toString());
+        }
+      }
+    }
+
+    return addonIds;
+  }
+
   public override async getDescription(installation: WowInstallation, externalId: string): Promise<string> {
     try {
       const response = await this.getAddonById(externalId);
@@ -390,7 +415,10 @@ export class WowUpAddonProvider extends AddonProvider {
       dependencies: [],
       changelog: release.body,
       externalId: release.id.toString(),
-      title: release.toc_title ?? matchingVersion?.title,
+      title:
+        (matchingVersion && release.toc_titles?.[matchingVersion.game_type]) ??
+        release.toc_title ??
+        matchingVersion?.title,
       authors: matchingVersion?.authors,
     };
   }
@@ -420,7 +448,8 @@ export class WowUpAddonProvider extends AddonProvider {
       );
     }
 
-    const name = matchingVersion?.title || scanResult.exactMatch?.repository_name;
+    const name =
+      matchedRelease.toc_titles?.[gameType] || matchingVersion?.title || scanResult.exactMatch?.repository_name;
     const version = matchingVersion?.version || scanResult.exactMatch?.matched_release?.tag_name || '';
     const authors = matchingVersion?.authors || scanResult.exactMatch?.owner_name || '';
     const interfaceVer = [matchingVersion?.interface];

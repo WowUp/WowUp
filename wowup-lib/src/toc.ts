@@ -23,6 +23,8 @@ export interface Toc {
   filePath: string;
   interface: string[];
   title?: string;
+  /** Title per WowGameType, only set when the toc has titles guarded by [AllowLoadGameType ...] conditions */
+  titles?: { [gameType: string]: string };
   author?: string;
   website?: string;
   version?: string;

@@ -82,8 +82,7 @@
     {
       "label": "Build.Main.OW.Compile",
       "type": "shell",
-      "command": "npx",
-      "args": ["tsc", "-p", "tsconfig.serve.json"],
+      "command": "npm run ow:electron:serve-tsc",
       "isBackground": false,
       "group": {
         "kind": "build",
@@ -107,28 +106,6 @@
       "label": "Build.Renderer",
       "type": "shell",
       "command": "npm run ng:serve",
-      "isBackground": true,
-      "group": {
-        "kind": "build",
-        "isDefault": true
-      },
-      "problemMatcher": {
-        "owner": "typescript",
-        "source": "ts",
-        "applyTo": "closedDocuments",
-        "fileLocation": ["relative", "${cwd}"],
-        "pattern": "$tsc",
-        "background": {
-          "activeOnStart": true,
-          "beginsPattern": "^.*",
-          "endsPattern": "^.*Compiled successfully.*"
-        }
-      }
-    },
-    {
-      "label": "Build.Renderer.OW",
-      "type": "shell",
-      "command": "npm run ow:ng:serve",
       "isBackground": true,
       "group": {
         "kind": "build",

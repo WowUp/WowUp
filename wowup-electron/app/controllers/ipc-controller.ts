@@ -2,6 +2,12 @@ import { ipcMain, IpcMainInvokeEvent } from "electron";
 
 export interface IpcController {
   register(): void;
+
+  /**
+   * Called once when the window these controllers were registered for goes away. Implement it if
+   * the controller owns anything that outlives an ipc call, e.g. a timer or a native view.
+   */
+  dispose?(): void;
 }
 
 /**

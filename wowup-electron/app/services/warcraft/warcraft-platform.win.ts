@@ -1,11 +1,12 @@
 import * as fsp from "fs/promises";
-import * as nodeDiskInfo from "node-disk-info";
 import * as path from "path";
 
 import {
   WOW_ANNIVERSARY_FOLDER,
+  WOW_CLASSIC_BETA_FOLDER,
   WOW_CLASSIC_ERA_FOLDER,
   WOW_CLASSIC_ERA_PTR_FOLDER,
+  WOW_FOREVER_FOLDER,
   WOW_RETAIL_XPTR_FOLDER,
 } from "../../../src/common/constants";
 import { InstalledProduct, WowClientType } from "wowup-lib-core";
@@ -44,10 +45,42 @@ const WOW_APP_NAMES_ARM64 = [
   WOW_CLASSIC_BETA_NAME_ARM64,
 ];
 
-const WINDOWS_BLIZZARD_AGENT_PATH = "ProgramData/Battle.net/Agent";
 const BLIZZARD_PRODUCT_DB_NAME = "product.db";
+const DRIVE_LETTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");
+
+export interface WarcraftPlatformWinDeps {
+  pathExists: (filePath: string) => Promise<boolean>;
+  /** %ProgramData%, where Battle.net installs its agent */
+  programData: string | undefined;
+}
+
+/**
+ * Where to look for Battle.net's product.db, in order of preference: %ProgramData% first, then the
+ * ProgramData folder on every drive letter in case the variable is missing or points elsewhere.
+ * Drives are probed by path rather than listed, since listing them needed wmic, which current
+ * Windows 11 builds no longer install.
+ */
+export function getBlizzardAgentCandidates(programData: string | undefined): string[] {
+  const driveProgramData = DRIVE_LETTERS.map((letter) => path.win32.join(`${letter}:\\`, "ProgramData"));
+  const dirs = programData ? [programData, ...driveProgramData] : driveProgramData;
+
+  // Windows paths are case-insensitive, so %ProgramData% usually duplicates one of the drive entries
+  const candidates = new Map<string, string>();
+  for (const dir of dirs) {
+    const candidate = path.win32.join(dir, "Battle.net", "Agent", BLIZZARD_PRODUCT_DB_NAME);
+    if (!candidates.has(candidate.toLowerCase())) {
+      candidates.set(candidate.toLowerCase(), candidate);
+    }
+  }
+
+  return [...candidates.values()];
+}
 
 export class WarcraftPlatformWin implements WarcraftPlatform {
+  public constructor(
+    private readonly deps: WarcraftPlatformWinDeps = { pathExists, programData: process.env.ProgramData },
+  ) {}
+
   private get isArm64(): boolean {
     return process.arch === "arm64";
   }
@@ -62,25 +95,24 @@ export class WarcraftPlatformWin implements WarcraftPlatform {
   }
 
   public async getBlizzardAgentPath(): Promise<string> {
-    try {
-      const diskInfos = await nodeDiskInfo.getDiskInfo();
-      for (const disk of diskInfos) {
-        const agentPath = path.join(disk.mounted, WINDOWS_BLIZZARD_AGENT_PATH, BLIZZARD_PRODUCT_DB_NAME);
-        if (await pathExists(agentPath)) {
-          console.log(`Found products at ${agentPath}`);
-          return agentPath;
-        }
-      }
-    } catch (e) {
-      console.error("Failed to search for blizzard products", e);
+    const candidates = getBlizzardAgentCandidates(this.deps.programData);
+
+    // Probed together rather than one by one: an unavailable network drive can take a while to fail
+    const found = await Promise.all(candidates.map((candidate) => this.deps.pathExists(candidate)));
+    const agentPath = candidates.find((_, i) => found[i]);
+    if (agentPath === undefined) {
+      console.log("No blizzard products found");
+      return "";
     }
 
-    return "";
+    console.log(`Found products at ${agentPath}`);
+    return agentPath;
   }
 
   public getExecutableName(clientType: WowClientType): string {
     switch (clientType) {
       case WowClientType.Retail:
+      case WowClientType.Forever: // WoW Forever ships the retail binary, it is told apart by its install folder
         return this.isArm64 ? WOW_RETAIL_NAME_ARM64 : WOW_RETAIL_NAME;
       case WowClientType.ClassicEra:
       case WowClientType.Classic:
@@ -93,9 +125,8 @@ export class WarcraftPlatformWin implements WarcraftPlatform {
       case WowClientType.ClassicEraPtr:
         return this.isArm64 ? WOW_CLASSIC_PTR_NAME_ARM64 : WOW_CLASSIC_PTR_NAME;
       case WowClientType.Beta:
+      case WowClientType.ClassicBeta: // WoW Forever Beta is the same binary as WoW Beta, so we can return the same name for both
         return this.isArm64 ? WOW_RETAIL_BETA_NAME_ARM64 : WOW_RETAIL_BETA_NAME;
-      case WowClientType.ClassicBeta:
-        return this.isArm64 ? WOW_CLASSIC_BETA_NAME_ARM64 : WOW_CLASSIC_BETA_NAME;
       default:
         return "";
     }
@@ -107,7 +138,9 @@ export class WarcraftPlatformWin implements WarcraftPlatform {
     switch (binaryName) {
       case WOW_RETAIL_NAME:
       case WOW_RETAIL_NAME_ARM64:
-        clientType = WowClientType.Retail;
+        clientType = binaryPath.toLowerCase().includes(WOW_FOREVER_FOLDER)
+          ? WowClientType.Forever
+          : WowClientType.Retail;
         break;
       case WOW_CLASSIC_NAME:
       case WOW_CLASSIC_NAME_ARM64:
@@ -133,7 +166,9 @@ export class WarcraftPlatformWin implements WarcraftPlatform {
         break;
       case WOW_RETAIL_BETA_NAME:
       case WOW_RETAIL_BETA_NAME_ARM64:
-        clientType = WowClientType.Beta;
+        clientType = binaryPath.toLowerCase().includes(WOW_CLASSIC_BETA_FOLDER)
+          ? WowClientType.ClassicBeta
+          : WowClientType.Beta;
         break;
       case WOW_CLASSIC_BETA_NAME:
       case WOW_CLASSIC_BETA_NAME_ARM64:

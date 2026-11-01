@@ -1,6 +1,9 @@
 // eslint-disable-next-line @typescript-eslint/triple-slash-reference
 /// <reference path="../src/common/wowup.d.ts" />
 
+// Must stay first: lets the externals below resolve when the bundle lives outside the install directory
+import "./preload-node-path";
+
 import { ipcRenderer, IpcRendererEvent, shell, OpenExternalOptions } from "electron";
 import * as log from "electron-log/renderer";
 import * as platform from "./platform";

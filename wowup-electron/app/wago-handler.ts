@@ -31,7 +31,13 @@ class WagoHandler {
         return;
       }
 
-      log.warn("[wago-handler] clearing reload timer");
+      // Only worth a line when a reload was actually pending. The ad page refreshes itself every
+      // few minutes and hands back a token each time, so an unconditional warn here was one of the
+      // largest sources of noise in the log while saying nothing.
+      if (this._tokenTimer !== undefined) {
+        log.info("[wago-handler] token received, cancelling the pending reload");
+      }
+
       this._tokenMap.set(this._webContents?.id ?? 0, true);
       this.stopTimeout();
       this._window?.webContents?.send("wago-token-received", token);
