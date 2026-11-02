@@ -628,10 +628,25 @@ export class WagoAddonProvider extends AddonProvider {
       downloadUrl: (release as any).download_link || (release as any).link,
       folders: [],
       gameVersion: "",
+      gameVersions: this.getSupportedPatches(release),
       releaseDate: new Date(release.created_at),
       version: release.label,
       dependencies: [],
     };
+  }
+
+  private getSupportedPatches(release: WagoSearchResponseRelease | WagoRelease | WagoScanRelease): string[] {
+    if ("supported_patches" in release) {
+      return release.supported_patches ?? [];
+    }
+
+    if ("supported_retail_patch" in release) {
+      return [release.supported_retail_patch, release.supported_classic_patch, release.supported_bc_patch].filter(
+        (patch) => !!patch,
+      );
+    }
+
+    return [];
   }
 
   private toAddon(

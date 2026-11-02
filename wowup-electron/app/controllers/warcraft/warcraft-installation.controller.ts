@@ -6,6 +6,7 @@ import {
   IPC_WARCRAFT_INSTALLATIONS_REMOVE,
   IPC_WARCRAFT_INSTALLATIONS_REORDER,
   IPC_WARCRAFT_INSTALLATIONS_SET_ALL,
+  IPC_WARCRAFT_INSTALLATIONS_SET_GAME_VERSIONS,
   IPC_WARCRAFT_INSTALLATIONS_SET_SELECTED,
   IPC_WARCRAFT_INSTALLATIONS_UPDATE,
 } from "../../../src/common/constants";
@@ -34,6 +35,9 @@ export class WarcraftInstallationController implements IpcController {
     );
     ipcHandle(IPC_WARCRAFT_INSTALLATIONS_SET_SELECTED, (_evt, installationId: string) =>
       this.installationService.setSelected(installationId),
+    );
+    ipcHandle(IPC_WARCRAFT_INSTALLATIONS_SET_GAME_VERSIONS, (_evt, gameVersions: Record<string, string>) =>
+      this.installationService.setGameVersions(gameVersions),
     );
   }
 }

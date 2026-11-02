@@ -8,6 +8,7 @@ import { AddonViewModel } from "../../../business-objects/addon-view-model";
 import { AddonInstallState } from "../../../models/wowup/addon-install-state";
 import { AddonUpdateEvent } from "../../../models/wowup/addon-update-event";
 import { AddonService } from "../../../services/addons/addon.service";
+import { UpdateCompatibilityService } from "../../../services/addons/update-compatibility.service";
 import { getEnumName } from "wowup-lib-core";
 import { ADDON_PROVIDER_UNKNOWN } from "../../../../common/constants";
 import { WowClientType } from "wowup-lib-core";
@@ -34,6 +35,7 @@ export class AddonUpdateButtonComponent implements OnInit, OnDestroy {
 
   public constructor(
     private _addonService: AddonService,
+    private _updateCompatibilityService: UpdateCompatibilityService,
     private _translateService: TranslateService,
     private _cdRef: ChangeDetectorRef
   ) {
@@ -107,6 +109,11 @@ export class AddonUpdateButtonComponent implements OnInit, OnDestroy {
       }
 
       if (this.listItem.needsUpdate()) {
+        const confirmed = await this._updateCompatibilityService.confirmUpdates([this.listItem.addon]);
+        if (confirmed.length === 0) {
+          return;
+        }
+
         await this._addonService.updateAddon(this.listItem.addon);
       } else {
         await this._addonService.installAddon(this.listItem.addon);

@@ -136,6 +136,7 @@ export const IPC_WARCRAFT_INSTALLATIONS_REMOVE = "warcraft-installations-remove"
 export const IPC_WARCRAFT_INSTALLATIONS_UPDATE = "warcraft-installations-update";
 export const IPC_WARCRAFT_INSTALLATIONS_REORDER = "warcraft-installations-reorder";
 export const IPC_WARCRAFT_INSTALLATIONS_SET_SELECTED = "warcraft-installations-set-selected";
+export const IPC_WARCRAFT_INSTALLATIONS_SET_GAME_VERSIONS = "warcraft-installations-set-game-versions";
 export const IPC_WARCRAFT_LIST_ADDONS = "warcraft-list-addons";
 export const IPC_WARCRAFT_GET_ADDON_FOLDER = "warcraft-get-addon-folder";
 

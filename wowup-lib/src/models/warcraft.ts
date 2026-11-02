@@ -15,6 +15,8 @@ export interface InstalledProduct {
   name: string;
   location: string;
   clientType: WowClientType;
+  /** Installed game version without the build number, e.g. "12.1.5" */
+  gameVersion?: string;
 }
 
 export interface WowInstallation {
@@ -27,4 +29,8 @@ export interface WowInstallation {
   defaultAddonChannelType: AddonChannelType;
   defaultAutoUpdate: boolean;
   availableUpdateCount?: number;
+  /** Installed game version without the build number, refreshed from Battle.net's product.db */
+  gameVersion?: string;
+  /** The gameVersion for which the user dismissed addon/game version mismatch warnings */
+  ignoredCompatibilityVersion?: string;
 }

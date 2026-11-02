@@ -23,9 +23,11 @@ import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { AddonManageDialogComponent } from "../components/addons/addon-manage-dialog/addon-manage-dialog.component";
 import { WtfBackupComponent } from "../components/addons/wtf-backup/wtf-backup.component";
 import { GameVersionCellComponent } from "../components/addons/game-version-cell/game-version-cell.component";
+import { GameVersionMismatchDialogComponent } from "../components/addons/game-version-mismatch-dialog/game-version-mismatch-dialog.component";
 
 @NgModule({
   declarations: [
+    GameVersionMismatchDialogComponent,
     AddonUpdateButtonComponent,
     AddonDetailComponent,
     DateTooltipCellComponent,
@@ -55,6 +57,7 @@ import { GameVersionCellComponent } from "../components/addons/game-version-cell
     LightboxModule,
   ],
   exports: [
+    GameVersionMismatchDialogComponent,
     AddonUpdateButtonComponent,
     AddonDetailComponent,
     DateTooltipCellComponent,

@@ -125,7 +125,9 @@ describe("AddonService", () => {
       "getByExternalIdAsync",
       "getAvailableForUpdate",
       "getAllForInstallationIdAsync",
+      "getAutoUpdateEnabled",
     ]);
+    addonStorage.getAutoUpdateEnabled.and.resolveTo([]);
     installed = [];
     addonStorage.setAsync.and.callFake((_key, value) => {
       installed = [...installed.filter((a) => a.id !== value.id), value];
@@ -161,7 +163,7 @@ describe("AddonService", () => {
 
     warcraftInstallationService = jasmine.createSpyObj<WarcraftInstallationService>(
       "WarcraftInstallationService",
-      ["getWowInstallation"],
+      ["getWowInstallation", "getWowInstallationsAsync", "refreshGameVersions"],
       {
         wowInstallations$: new Subject<WowInstallation[]>().asObservable(),
         legacyInstallationSrc$: new Subject<WowInstallation[]>().asObservable(),
@@ -170,6 +172,8 @@ describe("AddonService", () => {
     warcraftInstallationService.getWowInstallation.and.callFake((id) =>
       id === installation.id ? installation : undefined,
     );
+    warcraftInstallationService.getWowInstallationsAsync.and.callFake(() => Promise.resolve([installation]));
+    warcraftInstallationService.refreshGameVersions.and.callFake(() => Promise.resolve([installation]));
 
     addonProviderFactory = jasmine.createSpyObj<AddonProviderFactory>("AddonProviderFactory", [
       "getProvider",
@@ -332,6 +336,122 @@ describe("AddonService", () => {
     });
   });
 
+  describe("processAutoUpdates", () => {
+    function createPendingUpdate(overrides: Partial<Addon> = {}): Addon {
+      return createAddon({
+        autoUpdateEnabled: true,
+        installedVersion: "1.1.0",
+        latestVersion: "1.2.0",
+        gameVersion: ["12.1.5"],
+        ...overrides,
+      });
+    }
+
+    beforeEach(() => {
+      installation.gameVersion = "12.1.5";
+    });
+
+    it("updates addons whose release the installation can run", async () => {
+      const addon = createPendingUpdate();
+      addonStorage.getAutoUpdateEnabled.and.resolveTo([addon]);
+
+      const result = await service.processAutoUpdates();
+
+      expect(result.updated).toEqual([addon]);
+      expect(result.skipped).toEqual([]);
+      expect(enqueued.map((item) => item.addon)).toEqual([addon]);
+    });
+
+    it("holds back an update that needs a newer game version than the installation runs", async () => {
+      const addon = createPendingUpdate({ gameVersion: ["12.1.7"] });
+      addonStorage.getAutoUpdateEnabled.and.resolveTo([addon]);
+
+      const result = await service.processAutoUpdates();
+
+      expect(result.updated).toEqual([]);
+      expect(result.skipped).toEqual([addon]);
+      expect(enqueued).toEqual([]);
+    });
+
+    it("still updates the compatible addons in the same pass", async () => {
+      const tooNew = createPendingUpdate({ id: "too-new", externalId: "1", gameVersion: ["12.1.7"] });
+      const fine = createPendingUpdate({ id: "fine", externalId: "2", gameVersion: ["12.1.5"] });
+      addonStorage.getAutoUpdateEnabled.and.resolveTo([tooNew, fine]);
+
+      const result = await service.processAutoUpdates();
+
+      expect(result.updated).toEqual([fine]);
+      expect(result.skipped).toEqual([tooNew]);
+    });
+
+    it("updates once the user ignored the mismatch for the current game version", async () => {
+      installation.ignoredCompatibilityVersion = "12.1.5";
+      const addon = createPendingUpdate({ gameVersion: ["12.1.7"] });
+      addonStorage.getAutoUpdateEnabled.and.resolveTo([addon]);
+
+      const result = await service.processAutoUpdates();
+
+      expect(result.updated).toEqual([addon]);
+      expect(result.skipped).toEqual([]);
+    });
+
+    it("holds back again after the installation is patched to another game version", async () => {
+      installation.ignoredCompatibilityVersion = "12.1.5";
+      installation.gameVersion = "12.1.6";
+      const addon = createPendingUpdate({ gameVersion: ["12.1.7"] });
+      addonStorage.getAutoUpdateEnabled.and.resolveTo([addon]);
+
+      const result = await service.processAutoUpdates();
+
+      expect(result.skipped).toEqual([addon]);
+    });
+
+    it("updates when the game version of the installation is unknown", async () => {
+      installation.gameVersion = undefined;
+      const addon = createPendingUpdate({ gameVersion: ["12.1.7"] });
+      addonStorage.getAutoUpdateEnabled.and.resolveTo([addon]);
+
+      const result = await service.processAutoUpdates();
+
+      expect(result.updated).toEqual([addon]);
+    });
+
+    it("updates when the release does not say which game version it targets", async () => {
+      const addon = createPendingUpdate({ gameVersion: undefined });
+      addonStorage.getAutoUpdateEnabled.and.resolveTo([addon]);
+
+      const result = await service.processAutoUpdates();
+
+      expect(result.updated).toEqual([addon]);
+    });
+
+    it("does not hold back updates on a PTR installation", async () => {
+      installation.clientType = WowClientType.RetailPtr;
+      const addon = createPendingUpdate({ gameVersion: ["12.1.7"] });
+      addonStorage.getAutoUpdateEnabled.and.resolveTo([addon]);
+
+      const result = await service.processAutoUpdates();
+
+      expect(result.updated).toEqual([addon]);
+    });
+
+    it("reads the game versions again before deciding", async () => {
+      await service.processAutoUpdates();
+
+      expect(warcraftInstallationService.refreshGameVersions).toHaveBeenCalledTimes(1);
+    });
+
+    it("decides with the stored game version when it cannot be refreshed", async () => {
+      warcraftInstallationService.refreshGameVersions.and.rejectWith(new Error("no product.db"));
+      const addon = createPendingUpdate({ gameVersion: ["12.1.7"] });
+      addonStorage.getAutoUpdateEnabled.and.resolveTo([addon]);
+
+      const result = await service.processAutoUpdates();
+
+      expect(result.skipped).toEqual([addon]);
+    });
+  });
+
   describe("syncClient", () => {
     const required = (externalAddonId: string) => ({ externalAddonId, type: AddonDependencyType.Required });
 
@@ -373,6 +493,33 @@ describe("AddonService", () => {
       await syncWithLatestFile(addon, createFile({ externalId: "5001", dependencies: undefined }));
 
       expect(addon.dependencies).toEqual([required("2002")]);
+    });
+
+    it("should take every game version the latest release targets", async () => {
+      const addon = createAddon({ externalLatestReleaseId: "5000", gameVersion: ["12.1.0"] });
+
+      await syncWithLatestFile(
+        addon,
+        createFile({ externalId: "5001", gameVersion: "12.1.7", gameVersions: ["12.1.7", "Retail", "12.1.5"] }),
+      );
+
+      expect(addon.gameVersion).toEqual(["12.1.7", "12.1.5"]);
+    });
+
+    it("should take the game version of a release that was already known", async () => {
+      const addon = createAddon({ externalLatestReleaseId: "5001", gameVersion: ["12.1.0"] });
+
+      await syncWithLatestFile(addon, createFile({ externalId: "5001", gameVersion: "12.1.7" }));
+
+      expect(addon.gameVersion).toEqual(["12.1.7"]);
+    });
+
+    it("should keep the game version when the release does not name one", async () => {
+      const addon = createAddon({ externalLatestReleaseId: "5000", gameVersion: ["12.1.0"] });
+
+      await syncWithLatestFile(addon, createFile({ externalId: "5001", gameVersion: "" }));
+
+      expect(addon.gameVersion).toEqual(["12.1.0"]);
     });
   });
 

@@ -75,6 +75,7 @@ import { ZoomDirection } from "./utils/zoom.utils";
 export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
   private _bundleUpdateDialog?: MatDialogRef<unknown>;
   private _autoUpdateInterval?: number;
+  private _updatesOnHoldKey = "";
   @HostListener("document:click", ["$event"])
   public onDocumentClick(event: MouseEvent) {
     let currentElem: HTMLElement | null = event.target as HTMLElement;
@@ -450,11 +451,13 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
     try {
       console.log("onAutoUpdateInterval");
       await this._addonService.syncAllClients();
-      const updatedAddons = await this._addonService.processAutoUpdates();
+      const { updated: updatedAddons, skipped: skippedAddons } = await this._addonService.processAutoUpdates();
 
       await this._wowupAddonService.updateForAllClientTypes();
 
       await this.updateBadgeCount();
+
+      await this.notifyUpdatesOnHold(skippedAddons);
 
       if (!updatedAddons || updatedAddons.length === 0) {
         await this.checkQuitEnabled();
@@ -521,6 +524,38 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
 
     notification.addEventListener("click", this.onClickNotification, { once: true });
     notification.addEventListener("close", this.onAutoUpdateNotificationClosed, { once: true });
+  }
+
+  /** Tells the user once per set of held back updates, not on every hourly check */
+  private async notifyUpdatesOnHold(skippedAddons: Addon[]) {
+    const notifyAddons = skippedAddons.filter((addon) => addon.autoUpdateNotificationsEnabled === true);
+    const key = notifyAddons
+      .map((addon) => `${addon.id}:${addon.externalLatestReleaseId}`)
+      .sort()
+      .join("|");
+
+    if (key === this._updatesOnHoldKey) {
+      return;
+    }
+    this._updatesOnHoldKey = key;
+
+    if (notifyAddons.length === 0 || !(await this.wowUpService.getEnableSystemNotifications())) {
+      return;
+    }
+
+    const iconPath = await this._fileService.getAssetFilePath(
+      AppConfig.curseforge.enabled ? WOWUP_LOGO_FILENAME_CF : WOWUP_LOGO_FILENAME,
+    );
+    const translated: { [key: string]: string } = await this._translateService
+      .get(["APP.UPDATES_ON_HOLD_NOTIFICATION_TITLE", "APP.UPDATES_ON_HOLD_NOTIFICATION_BODY"])
+      .toPromise();
+
+    const notification = this.electronService.showNotification(translated["APP.UPDATES_ON_HOLD_NOTIFICATION_TITLE"], {
+      body: translated["APP.UPDATES_ON_HOLD_NOTIFICATION_BODY"],
+      icon: iconPath,
+    });
+
+    notification.addEventListener("click", this.onClickNotification, { once: true });
   }
 
   private onClickNotification = () => {

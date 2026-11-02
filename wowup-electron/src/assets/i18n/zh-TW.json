@@ -112,6 +112,8 @@
       "GROUP_LIGHT": "亮色",
       "HORDE": "部落"
     },
+    "UPDATES_ON_HOLD_NOTIFICATION_BODY": "部分插件更新需要比目前已安裝版本更新的《魔獸世界》。開啟 WowUp 查看。",
+    "UPDATES_ON_HOLD_NOTIFICATION_TITLE": "更新已暫緩",
     "WINDOW_TITLE": "WowUp.io",
     "WINDOW_TITLE_CF": "WowUp.io CF",
     "WINDOW_TITLE_FULLSCREEN": "WowUp.io - 全螢幕模式",
@@ -293,6 +295,16 @@
       "RE_SCAN_ERROR": "自動重新掃描失敗，請嘗試手動掃描。",
       "RE_SCAN_SUCCESS": "自動重新掃描完成，可以開始使用了。",
       "TITLE": "CurseForge 遷移"
+    },
+    "GAME_VERSION_MISMATCH": {
+      "ADDON_NEEDS": "{name} 需要 WoW {version}",
+      "CANCEL": "取消",
+      "IGNORE": "對此 WoW 版本忽略",
+      "INSTALLATION": "{name} (WoW {version})",
+      "MESSAGE": "這些更新是為比目前已安裝版本更新的《魔獸世界》製作的。在遊戲更新之前，可能會造成錯誤。",
+      "SKIP": "略過這些",
+      "TITLE": "更新需要較新的 WoW 版本",
+      "UPDATE_ANYWAY": "仍要更新"
     },
     "INSTALL_FROM_PROTOCOL": {
       "ADDON_INSTALLED": "插件已安裝！",
@@ -505,6 +517,7 @@
         "UPDATE_ALL_CLIENTS_BUTTON": "更新所有客戶端",
         "UPDATE_RETAIL_CLASSIC_BUTTON": "更新正式服/經典懷舊服"
       },
+      "VERSION_MISMATCH_TOOLTIP": "此更新需要 WoW {required}。你目前為 WoW {current}。",
       "WTF_BACKUP_BUTTON": "備份介面設定"
     },
     "NEWS": {
