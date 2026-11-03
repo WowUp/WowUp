@@ -18,9 +18,21 @@ const CHANGELOGS: ChangeLog[] = [
   {
     Version: "2.25.4",
     html: `
+    <h4>Features</h4>
+    <ul>
+    <li>WowUp now reads the game version installed through Battle.net and holds back addon updates that need a newer version of World of Warcraft than yours, which matters when a patch reaches your region later</li>
+    <li>Updating such an addon by hand shows a warning first, where you can update anyway, skip it, or ignore the warning until your next game patch</li>
+    <li>Automatic updates skip those addons and show a notification, and My Addons marks them with a warning icon</li>
+    </ul>
+    <h4>Changes</h4>
+    <ul>
+    <li>The Game Version column now shows the newest version for your game flavor instead of a long list</li>
+    </ul>
     <h4>Fixes</h4>
     <ul>
     <li>Fix My Addons sometimes listing every addon more than once, for example after an update</li>
+    <li>Fix the Hide, Hide Others and Minimize shortcuts (Cmd+H, Cmd+Alt+H, Cmd+M) doing nothing on macOS</li>
+    <li>Fix the submenus of the addon right-click menu in My Addons opening near the top of the menu instead of next to the item</li>
     </ul>
     `,
   },

@@ -112,6 +112,8 @@
       "GROUP_LIGHT": "Světlý",
       "HORDE": "Horda"
     },
+    "UPDATES_ON_HOLD_NOTIFICATION_BODY": "Některé aktualizace addonů vyžadují novější verzi World of Warcraft, než je nainstalovaná. Otevřete WowUp a zkontrolujte je.",
+    "UPDATES_ON_HOLD_NOTIFICATION_TITLE": "Aktualizace pozastaveny",
     "WINDOW_TITLE": "WowUp.io",
     "WINDOW_TITLE_CF": "WowUp.io CF",
     "WINDOW_TITLE_FULLSCREEN": "WowUp.io - Full Screen",
@@ -293,6 +295,16 @@
       "RE_SCAN_ERROR": "The automatic Re-Scan failed, please try again manually.",
       "RE_SCAN_SUCCESS": "The automatic Re-Scan has finished you're ready to go.",
       "TITLE": "CurseForge Migration"
+    },
+    "GAME_VERSION_MISMATCH": {
+      "ADDON_NEEDS": "{name} vyžaduje WoW {version}",
+      "CANCEL": "Zrušit",
+      "IGNORE": "Ignorovat pro tuto verzi WoW",
+      "INSTALLATION": "{name} (WoW {version})",
+      "MESSAGE": "Tyto aktualizace byly vytvořeny pro novější verzi World of Warcraft, než je nainstalovaná. Dokud se hra neaktualizuje, mohou způsobovat chyby.",
+      "SKIP": "Přeskočit tyto",
+      "TITLE": "Aktualizace vyžadují novější verzi WoW",
+      "UPDATE_ANYWAY": "Přesto aktualizovat"
     },
     "INSTALL_FROM_PROTOCOL": {
       "ADDON_INSTALLED": "Addon is installed!",
@@ -505,6 +517,7 @@
         "UPDATE_ALL_CLIENTS_BUTTON": "Aktualizovat všechny clienty",
         "UPDATE_RETAIL_CLASSIC_BUTTON": "Aktualizovat Retail/Classic"
       },
+      "VERSION_MISMATCH_TOOLTIP": "Tato aktualizace vyžaduje WoW {required}. Máte WoW {current}.",
       "WTF_BACKUP_BUTTON": "Interface Settings Backup"
     },
     "NEWS": {

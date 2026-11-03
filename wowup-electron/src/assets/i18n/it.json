@@ -112,6 +112,8 @@
       "GROUP_LIGHT": "Chiaro",
       "HORDE": "Orda"
     },
+    "UPDATES_ON_HOLD_NOTIFICATION_BODY": "Alcuni aggiornamenti degli addon richiedono una versione di World of Warcraft più recente di quella installata. Apri WowUp per controllarli.",
+    "UPDATES_ON_HOLD_NOTIFICATION_TITLE": "Aggiornamenti in sospeso",
     "WINDOW_TITLE": "WowUp.io",
     "WINDOW_TITLE_CF": "WowUp.io CF",
     "WINDOW_TITLE_FULLSCREEN": "WowUp.io - Schermo Intero",
@@ -293,6 +295,16 @@
       "RE_SCAN_ERROR": "The automatic Re-Scan failed, please try again manually.",
       "RE_SCAN_SUCCESS": "The automatic Re-Scan has finished you're ready to go.",
       "TITLE": "CurseForge Migration"
+    },
+    "GAME_VERSION_MISMATCH": {
+      "ADDON_NEEDS": "{name} richiede WoW {version}",
+      "CANCEL": "Annulla",
+      "IGNORE": "Ignora per questa versione di WoW",
+      "INSTALLATION": "{name} (WoW {version})",
+      "MESSAGE": "Questi aggiornamenti sono stati creati per una versione di World of Warcraft più recente di quella installata. Potrebbero causare errori finché il gioco non si aggiorna.",
+      "SKIP": "Salta questi",
+      "TITLE": "Gli aggiornamenti richiedono una versione più recente di WoW",
+      "UPDATE_ANYWAY": "Aggiorna comunque"
     },
     "INSTALL_FROM_PROTOCOL": {
       "ADDON_INSTALLED": "Addon installato!",
@@ -505,6 +517,7 @@
         "UPDATE_ALL_CLIENTS_BUTTON": "Aggiorna Tutti i Clients",
         "UPDATE_RETAIL_CLASSIC_BUTTON": "Aggiorna Retail/Classic"
       },
+      "VERSION_MISMATCH_TOOLTIP": "Questo aggiornamento richiede WoW {required}. Hai WoW {current}.",
       "WTF_BACKUP_BUTTON": "Interface Settings Backup"
     },
     "NEWS": {

@@ -81,6 +81,22 @@ export class WarcraftInstallationService {
     return this.setAll(installations);
   }
 
+  /** Records each installation's game version, clearing it for any installation not listed. */
+  public setGameVersions(gameVersions: Record<string, string>): WowInstallation[] {
+    const installations = this.getAll();
+
+    let changed = false;
+    for (const installation of installations) {
+      const gameVersion = gameVersions[installation.id];
+      if (installation.gameVersion !== gameVersion) {
+        installation.gameVersion = gameVersion;
+        changed = true;
+      }
+    }
+
+    return changed ? this.setAll(installations) : installations;
+  }
+
   // WoW Forever ships the retail binary, so before it was detected by folder, picking
   // _forever_/Wow.exe by hand was saved as a Retail installation. Fix those up in place.
   private migrateForeverInstallations(installations: WowInstallation[]): WowInstallation[] {

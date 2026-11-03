@@ -9,6 +9,19 @@ export class Client extends Message<Client> {
   public name = "";
 }
 
+@Type.d("VersionInfo")
+export class VersionInfo extends Message<VersionInfo> {
+  /** Full version including build, e.g. "12.1.5.70688" */
+  @Field.d(7, "string")
+  public version = "";
+}
+
+@Type.d("InstallInfo")
+export class InstallInfo extends Message<InstallInfo> {
+  @Field.d(1, VersionInfo)
+  public versionInfo?: VersionInfo;
+}
+
 @Type.d("Product")
 export class Product extends Message<Product> {
   @Field.d(1, "string")
@@ -19,6 +32,9 @@ export class Product extends Message<Product> {
 
   @Field.d(3, Client)
   public client!: Client;
+
+  @Field.d(4, InstallInfo)
+  public installInfo?: InstallInfo;
 
   @Field.d(6, "string")
   public family = "";

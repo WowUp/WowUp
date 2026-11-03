@@ -1,4 +1,11 @@
 <div class="row">
+  <mat-icon
+    *ngIf="versionMismatchTooltip"
+    class="version-mismatch-icon text-warning mr-2"
+    [matTooltip]="versionMismatchTooltip"
+    svgIcon="fas:triangle-exclamation"
+  >
+  </mat-icon>
   <app-addon-update-button
     [hidden]="hasWarning === true || showStatusText === true"
     [listItem]="listItem"

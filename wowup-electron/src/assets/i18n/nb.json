@@ -112,6 +112,8 @@
       "GROUP_LIGHT": "Lys",
       "HORDE": "Horde"
     },
+    "UPDATES_ON_HOLD_NOTIFICATION_BODY": "Noen utvidelsesoppdateringer krever en nyere versjon av World of Warcraft enn den som er installert. Åpne WowUp for å se dem.",
+    "UPDATES_ON_HOLD_NOTIFICATION_TITLE": "Oppdateringer satt på vent",
     "WINDOW_TITLE": "WowUp.io",
     "WINDOW_TITLE_CF": "WowUp.io CF",
     "WINDOW_TITLE_FULLSCREEN": "WowUp.io - Fullskjerm",
@@ -293,6 +295,16 @@
       "RE_SCAN_ERROR": "Den automatiske skannen feilet, vennligst prøv på nytt med en manuell skann.",
       "RE_SCAN_SUCCESS": "Den automatiske skannen er ferdig, og du kan fortsette.",
       "TITLE": "CurseForge-migrasjon"
+    },
+    "GAME_VERSION_MISMATCH": {
+      "ADDON_NEEDS": "{name} krever WoW {version}",
+      "CANCEL": "Avbryt",
+      "IGNORE": "Ignorer for denne WoW-versjonen",
+      "INSTALLATION": "{name} (WoW {version})",
+      "MESSAGE": "Disse oppdateringene er laget for en nyere versjon av World of Warcraft enn den som er installert. De kan gi feil helt til spillet er oppdatert.",
+      "SKIP": "Hopp over disse",
+      "TITLE": "Oppdateringene krever en nyere WoW-versjon",
+      "UPDATE_ANYWAY": "Oppdater likevel"
     },
     "INSTALL_FROM_PROTOCOL": {
       "ADDON_INSTALLED": "Utvidelsen er installert!",
@@ -505,6 +517,7 @@
         "UPDATE_ALL_CLIENTS_BUTTON": "Oppdater alle klienter",
         "UPDATE_RETAIL_CLASSIC_BUTTON": "Oppdater Retail/Classic"
       },
+      "VERSION_MISMATCH_TOOLTIP": "Denne oppdateringen krever WoW {required}. Du har WoW {current}.",
       "WTF_BACKUP_BUTTON": "Opprett sikkerhetskopi av WTF-mappen"
     },
     "NEWS": {
