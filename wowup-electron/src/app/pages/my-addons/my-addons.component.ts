@@ -56,6 +56,7 @@ import { ColumnState } from "../../models/wowup/column-state";
 import { RelativeDurationPipe } from "../../pipes/relative-duration-pipe";
 import { ElectronService } from "../../services";
 import { AddonService, DependencyInstallState } from "../../services/addons/addon.service";
+import { UpdateCompatibilityService } from "../../services/addons/update-compatibility.service";
 import { DialogFactory } from "../../services/dialog/dialog.factory";
 import { SessionService } from "../../services/session/session.service";
 import { SnackbarService } from "../../services/snackbar/snackbar.service";
@@ -256,6 +257,7 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
 
   public constructor(
     private _addonService: AddonService,
+    private _updateCompatibilityService: UpdateCompatibilityService,
     private _addonProviderService: AddonProviderFactory,
     private _addonUiService: AddonUiService,
     private _sessionService: SessionService,
@@ -635,7 +637,8 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
 
     const addons = await this._addonService.getAddons(selectedWowInstall, false);
     try {
-      const filteredAddons = _.filter(addons, (addon) => AddonUtils.needsUpdate(addon));
+      const addonsWithUpdates = _.filter(addons, (addon) => AddonUtils.needsUpdate(addon));
+      const filteredAddons = await this._updateCompatibilityService.confirmUpdates(addonsWithUpdates);
 
       const promises = _.map(filteredAddons, async (addon) => {
         try {
@@ -1120,6 +1123,11 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
       addons = addons.filter(
         (addon) => !addon.isIgnored && (AddonUtils.needsUpdate(addon) || AddonUtils.needsInstall(addon)),
       );
+
+      // Only updates can be at odds with the game version, an addon being installed has no version to keep working
+      const addonsWithUpdates = addons.filter((addon) => AddonUtils.needsUpdate(addon));
+      const confirmedUpdates = await this._updateCompatibilityService.confirmUpdates(addonsWithUpdates);
+      addons = addons.filter((addon) => !addonsWithUpdates.includes(addon) || confirmedUpdates.includes(addon));
 
       if (addons.length === 0) {
         await this.loadAddons();

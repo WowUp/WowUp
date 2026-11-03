@@ -31,6 +31,12 @@ jobs:
         cd ./wowup-lib
         npm install
 
+    # The app takes the types of electron-log, electron-updater and win-ca from wowup-shell's node_modules
+    - name: Install shell dependencies
+      run: |
+        cd ./wowup-shell
+        npm ci
+
     - name: Install Angular CLI
       run: npm install -g @angular/cli
 

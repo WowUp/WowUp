@@ -30,6 +30,7 @@ import { AddonScanError, AddonSyncError, GenericProviderError } from "../../erro
 import { AddonInstallState } from "../../models/wowup/addon-install-state";
 
 import { AddonUpdateEvent } from "../../models/wowup/addon-update-event";
+import { AddonVersionMismatch, AutoUpdateResult } from "../../models/wowup/addon-version-mismatch";
 
 import * as AddonUtils from "../../utils/addon.utils";
 import { getEnumName, getGameVersionList, WowInstallation, WowUpAddonProvider } from "wowup-lib-core";
@@ -670,21 +671,54 @@ export class AddonService {
     return details;
   }
 
-  public async processAutoUpdates(): Promise<Addon[]> {
+  public async processAutoUpdates(): Promise<AutoUpdateResult> {
     const autoUpdateAddons = await this.getAutoUpdateEnabledAddons();
     const addonsWithUpdates = autoUpdateAddons.filter((addon) => AddonUtils.needsUpdate(addon));
 
-    const tasks = addonsWithUpdates.map((addon) => {
-      if (typeof addon.id !== "string") {
-        return Promise.resolve(undefined);
-      }
-      return this.updateAddon(addon)
-        .then(() => addon)
-        .catch((e) => console.error(e));
-    });
+    // An installation can be patched since the last check, so look at what it runs now
+    const mismatches = await this.findGameVersionMismatches(addonsWithUpdates, true);
+    const skipped = mismatches.map((mismatch) => mismatch.addon);
+
+    const tasks = addonsWithUpdates
+      .filter((addon) => !skipped.includes(addon))
+      .map((addon) => {
+        if (typeof addon.id !== "string") {
+          return Promise.resolve(undefined);
+        }
+        return this.updateAddon(addon)
+          .then(() => addon)
+          .catch((e) => console.error(e));
+      });
 
     const results = await Promise.all(tasks);
-    return results.filter((res) => res !== undefined).map((res) => res as Addon);
+    return { updated: results.filter((res) => res !== undefined).map((res) => res as Addon), skipped };
+  }
+
+  /**
+   * The addons whose update targets a newer game version than their installation runs. Fails open, an
+   * addon is only listed when both versions are known, see AddonUtils.isAddonCompatibleWithInstallation.
+   * @param refresh re-read the game versions from Battle.net first, for when the answer gates an install
+   */
+  public async findGameVersionMismatches(addons: Addon[], refresh = false): Promise<AddonVersionMismatch[]> {
+    if (refresh) {
+      try {
+        await this._warcraftInstallationService.refreshGameVersions();
+      } catch (e) {
+        console.error("Failed to refresh game versions", e);
+      }
+    }
+
+    const installations = await this._warcraftInstallationService.getWowInstallationsAsync();
+
+    const mismatches: AddonVersionMismatch[] = [];
+    for (const addon of addons) {
+      const installation = installations.find((inst) => inst.id === addon.installationId);
+      if (installation && !AddonUtils.isAddonCompatibleWithInstallation(addon.gameVersion, installation)) {
+        mismatches.push({ addon, installation });
+      }
+    }
+
+    return mismatches;
   }
 
   public getAutoUpdateEnabledAddons(): Promise<Addon[]> {
@@ -1334,6 +1368,12 @@ export class AddonService {
           addon.fundingLinks = result.fundingLinks;
         }
 
+        // Describes the release on offer, so an update found before the game version was tracked gets one too
+        const latestTargetVersions = AddonUtils.getFileTargetVersions(latestFile);
+        if (latestTargetVersions.length > 0) {
+          addon.gameVersion = getGameVersionList(latestTargetVersions);
+        }
+
         // If the release ID hasn't changed we don't really need to update the whole record
         if (!!latestFile?.externalId && latestFile.externalId === addon.externalLatestReleaseId) {
           continue;
@@ -1353,12 +1393,12 @@ export class AddonService {
         addon.author = result.author;
         addon.externalChannel = getEnumName(AddonChannelType, latestFile.channelType);
 
-        if (latestFile.gameVersion) {
-          addon.gameVersion = getGameVersionList([latestFile.gameVersion]);
-        } else if (addon.gameVersion) {
-          addon.gameVersion = getGameVersionList(addon.gameVersion ?? []);
-        } else {
-          console.warn("No game version found", addon);
+        if (latestTargetVersions.length === 0) {
+          if (addon.gameVersion) {
+            addon.gameVersion = getGameVersionList(addon.gameVersion ?? []);
+          } else {
+            console.warn("No game version found", addon);
+          }
         }
 
         addon.externalUrl = result.externalUrl;

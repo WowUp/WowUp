@@ -3,6 +3,7 @@ import { AgRendererComponent } from "ag-grid-angular";
 import { ICellRendererParams } from "ag-grid-community";
 import { SessionService } from "../../../services/session/session.service";
 import { getWowMajorVersion } from "wowup-lib-core";
+import { getNewestVersionOfInstalledFlavor } from "../../../utils/addon.utils";
 
 @Component({
   selector: "app-game-version-cell",
@@ -27,6 +28,13 @@ export class GameVersionCellComponent implements AgRendererComponent {
 
   private getVersionDisplay(value: string[]): string {
     const wowInstall = this._sessionService.getSelectedWowInstallation();
+
+    // Providers list every patch a release supports, the full list is in the tooltip
+    const newest = getNewestVersionOfInstalledFlavor(value, wowInstall?.gameVersion);
+    if (newest !== undefined) {
+      return newest;
+    }
+
     let displayVal = value[0] ?? "";
 
     if (wowInstall !== undefined) {

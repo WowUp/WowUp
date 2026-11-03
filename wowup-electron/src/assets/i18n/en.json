@@ -112,6 +112,8 @@
       "GROUP_LIGHT": "Light",
       "HORDE": "Horde"
     },
+    "UPDATES_ON_HOLD_NOTIFICATION_BODY": "Some addon updates need a newer version of World of Warcraft than the one you have installed. Open WowUp to review them.",
+    "UPDATES_ON_HOLD_NOTIFICATION_TITLE": "Updates on hold",
     "WINDOW_TITLE": "WowUp.io",
     "WINDOW_TITLE_CF": "WowUp.io CF",
     "WINDOW_TITLE_FULLSCREEN": "WowUp.io - Full Screen",
@@ -300,6 +302,16 @@
       "RE_SCAN_ERROR": "The automatic Re-Scan failed, please try again manually.",
       "RE_SCAN_SUCCESS": "The automatic Re-Scan has finished you're ready to go.",
       "TITLE": "CurseForge Migration"
+    },
+    "GAME_VERSION_MISMATCH": {
+      "ADDON_NEEDS": "{name} needs WoW {version}",
+      "CANCEL": "Cancel",
+      "IGNORE": "Ignore for this WoW version",
+      "INSTALLATION": "{name} (WoW {version})",
+      "MESSAGE": "These updates were made for a newer version of World of Warcraft than the one you have installed. They may cause errors until the game updates.",
+      "SKIP": "Skip these",
+      "TITLE": "Updates need a newer WoW version",
+      "UPDATE_ANYWAY": "Update anyway"
     },
     "INSTALL_FROM_PROTOCOL": {
       "ADDON_INSTALLED": "Addon is installed!",
@@ -512,6 +524,7 @@
         "UPDATE_ALL_CLIENTS_BUTTON": "Update All Clients",
         "UPDATE_RETAIL_CLASSIC_BUTTON": "Update Retail/Classic"
       },
+      "VERSION_MISMATCH_TOOLTIP": "This update needs WoW {required}. You have WoW {current}.",
       "WTF_BACKUP_BUTTON": "Interface Settings Backup"
     },
     "NEWS": {

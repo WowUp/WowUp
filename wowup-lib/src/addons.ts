@@ -21,6 +21,8 @@ export interface AddonSearchResultFile {
   version: string;
   folders: string[];
   gameVersion: string;
+  /** Every game version the file targets, for providers that list more than one */
+  gameVersions?: string[];
   downloadUrl: string;
   releaseDate: Date;
   dependencies?: AddonSearchResultDependency[];

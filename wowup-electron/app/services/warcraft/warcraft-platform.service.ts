@@ -56,6 +56,16 @@ function getClientTypeForFolderName(folderName: string): WowClientType {
   }
 }
 
+/** Reduces a full Battle.net version ("12.1.5.70688") to the game version ("12.1.5"), undefined if malformed. */
+export function toGameVersion(fullVersion: string | undefined): string | undefined {
+  const parts = (fullVersion ?? "").trim().split(".");
+  if (parts.length < 4 || parts.slice(0, 3).some((part) => !/^\d+$/.test(part))) {
+    return undefined;
+  }
+
+  return parts.slice(0, 3).join(".");
+}
+
 export async function decodeProducts(productDbPath: string): Promise<InstalledProduct[]> {
   if (!productDbPath) {
     return [];
@@ -72,6 +82,7 @@ export async function decodeProducts(productDbPath: string): Promise<InstalledPr
         location: p.client.location,
         name: p.client.name,
         clientType: getClientTypeForFolderName(p.client.name),
+        gameVersion: toGameVersion(p.installInfo?.versionInfo?.version),
       }));
 
     return wowProducts.filter((wp) => {

@@ -199,9 +199,50 @@ export class WarcraftInstallationService {
     return installation;
   }
 
+  /**
+   * Re-reads the installed game version of every installation from Battle.net's product.db.
+   * Installations product.db does not know about are cleared, so a stale version never lingers.
+   */
+  public async refreshGameVersions(notify = true): Promise<WowInstallation[]> {
+    const installations = await this.getWowInstallationsAsync();
+    const gameVersions: Record<string, string> = {};
+
+    if (this._blizzardAgentPath) {
+      const installedProducts = await this._warcraftService.getInstalledProducts(this._blizzardAgentPath);
+      const versionsByPath = new Map<string, string>();
+      for (const product of installedProducts.values()) {
+        if (!product.gameVersion) {
+          continue;
+        }
+
+        const fullProductPath = await this.getFullProductPath(product.location, product.clientType);
+        versionsByPath.set(normalizeInstallationPath(fullProductPath), product.gameVersion);
+      }
+
+      for (const installation of installations) {
+        const gameVersion = versionsByPath.get(normalizeInstallationPath(installation.location));
+        if (gameVersion) {
+          gameVersions[installation.id] = gameVersion;
+        }
+      }
+    }
+
+    if (installations.every((installation) => installation.gameVersion === gameVersions[installation.id])) {
+      return installations;
+    }
+
+    const storedInstallations = await this._installationApiService.setGameVersions(gameVersions);
+    if (notify) {
+      this._wowInstallationsSrc.next(storedInstallations);
+    }
+
+    return storedInstallations;
+  }
+
   public async importWowInstallations(blizzardAgentPath: string): Promise<void> {
     if (!blizzardAgentPath) {
       console.log(`Cannot import wow installations, no agent path`);
+      await this.refreshGameVersionsSafe();
       const installations = await this.getWowInstallationsAsync();
       this._wowInstallationsSrc.next(installations);
       return;
@@ -243,8 +284,18 @@ export class WarcraftInstallationService {
       }
     }
 
+    await this.refreshGameVersionsSafe();
+
     const wowInstallations = await this.getWowInstallationsAsync();
     this._wowInstallationsSrc.next(wowInstallations);
+  }
+
+  private async refreshGameVersionsSafe(): Promise<void> {
+    try {
+      await this.refreshGameVersions(false);
+    } catch (e) {
+      console.error("Failed to refresh game versions", e);
+    }
   }
 
   private async getDisplayName(label: string, typeName: string): Promise<string> {

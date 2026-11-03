@@ -112,6 +112,8 @@
       "GROUP_LIGHT": "Светлые",
       "HORDE": "Орда"
     },
+    "UPDATES_ON_HOLD_NOTIFICATION_BODY": "Для некоторых обновлений модификаций нужна более новая версия World of Warcraft, чем установленная. Откройте WowUp, чтобы посмотреть их.",
+    "UPDATES_ON_HOLD_NOTIFICATION_TITLE": "Обновления отложены",
     "WINDOW_TITLE": "WowUp.io",
     "WINDOW_TITLE_CF": "WowUp.io CF",
     "WINDOW_TITLE_FULLSCREEN": "WowUp.io — Полный экран",
@@ -293,6 +295,16 @@
       "RE_SCAN_ERROR": "Автоматическое сканирование не удалось, попробуйте вручную.",
       "RE_SCAN_SUCCESS": "Автоматическое сканирование завершено, всё готово.",
       "TITLE": "Миграция с CurseForge"
+    },
+    "GAME_VERSION_MISMATCH": {
+      "ADDON_NEEDS": "{name} требует WoW {version}",
+      "CANCEL": "Отмена",
+      "IGNORE": "Игнорировать для этой версии WoW",
+      "INSTALLATION": "{name} (WoW {version})",
+      "MESSAGE": "Эти обновления созданы для более новой версии World of Warcraft, чем установленная. До обновления игры они могут вызывать ошибки.",
+      "SKIP": "Пропустить эти",
+      "TITLE": "Обновлениям нужна более новая версия WoW",
+      "UPDATE_ANYWAY": "Всё равно обновить"
     },
     "INSTALL_FROM_PROTOCOL": {
       "ADDON_INSTALLED": "Модификация установлена!",
@@ -505,6 +517,7 @@
         "UPDATE_ALL_CLIENTS_BUTTON": "Обновить все клиенты",
         "UPDATE_RETAIL_CLASSIC_BUTTON": "Обновить Актуальный/Классический"
       },
+      "VERSION_MISMATCH_TOOLTIP": "Для этого обновления нужна WoW {required}. У вас WoW {current}.",
       "WTF_BACKUP_BUTTON": "Резервное копир. настр. интерфейса"
     },
     "NEWS": {

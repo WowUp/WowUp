@@ -17,6 +17,7 @@ import { ElectronService } from "../../services";
 import { AddonService, DependencyInstallEvent, DependencyInstallState } from "../../services/addons/addon.service";
 import { SessionService } from "../../services/session/session.service";
 import { WarcraftService } from "../../services/warcraft/warcraft.service";
+import { UpdateCompatibilityService } from "../../services/addons/update-compatibility.service";
 import { WowUpAddonService } from "../../services/wowup/wowup-addon.service";
 import { WowUpService } from "../../services/wowup/wowup.service";
 import { MyAddonsComponent } from "./my-addons.component";
@@ -50,6 +51,7 @@ describe("MyAddonsComponent", () => {
   let addonServiceSpy: any;
   let warcraftServiceSpy: any;
   let warcraftInstallationService: WarcraftInstallationService;
+  let updateCompatibilityServiceSpy: jasmine.SpyObj<UpdateCompatibilityService>;
   let pushService: PushService;
   let addonUiService: AddonUiService;
   let addonProviderService: any;
@@ -115,6 +117,11 @@ describe("MyAddonsComponent", () => {
       isMac: false,
     });
 
+    updateCompatibilityServiceSpy = jasmine.createSpyObj<UpdateCompatibilityService>("UpdateCompatibilityService", [
+      "confirmUpdates",
+    ]);
+    updateCompatibilityServiceSpy.confirmUpdates.and.callFake((addons) => Promise.resolve(addons));
+
     warcraftInstallationService = jasmine.createSpyObj("WarcraftInstallationService", [""], {
       wowInstallations$: new BehaviorSubject<any[]>([]),
     });
@@ -144,6 +151,7 @@ describe("MyAddonsComponent", () => {
       set: {
         providers: [
           { provide: AddonService, useValue: addonServiceSpy },
+          { provide: UpdateCompatibilityService, useValue: updateCompatibilityServiceSpy },
           { provide: WowUpService, useValue: wowUpServiceSpy },
           { provide: WowUpAddonService, useValue: wowUpAddonServiceSpy },
           { provide: ElectronService, useValue: electronServiceSpy },
