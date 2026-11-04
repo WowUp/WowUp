@@ -4,6 +4,7 @@
   "directories": {
     "output": "release/"
   },
+  "artifactBuildCompleted": "./electron-build/appimage-update-info.js",
   "afterSign": "./electron-build/after-sign-ow.js",
   "generateUpdatesFilesForAllChannels": true,
   "publish": [
