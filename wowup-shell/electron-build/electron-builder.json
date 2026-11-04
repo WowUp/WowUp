@@ -8,18 +8,30 @@
   "generateUpdatesFilesForAllChannels": true,
   "publish": ["github"],
   "nodeGypRebuild": true,
-  "files": ["dist/**/*.*", "assets/**/*.*", "app-build/**/*.js", "src/common/**/*.js", "build/Release/*.node"],
+  "electronFuses": {
+    "runAsNode": false,
+    "enableNodeOptionsEnvironmentVariable": false,
+    "enableNodeCliInspectArguments": false,
+    "enableEmbeddedAsarIntegrityValidation": true,
+    "onlyLoadAppFromAsar": true
+  },
+  "files": ["dist/**/*.js", "build/Release/*.node"],
+  "extraResources": [
+    { "from": "../wowup-electron/app-build/packed/bundle", "to": "bundle" },
+    { "from": "../wowup-electron/app-build/packed/bundle-manifest.json", "to": "bundle-manifest.json" }
+  ],
   "win": {
     "icon": "electron-build/icon.ico",
     "target": ["nsis", "portable"],
+    "forceCodeSigning": false,
     "signtoolOptions": {
       "sign": "./electron-build/sign-windows.js",
-      "signingHashAlgorithms": ["sha256"]
+      "signingHashAlgorithms": ["sha256"],
+      "publisherName": "WowUp LLC"
     }
   },
   "nsis": {
-    "deleteAppDataOnUninstall": true,
-    "include": "./electron-build/uninstaller.nsh"
+    "deleteAppDataOnUninstall": true
   },
   "mac": {
     "icon": "electron-build/icon.icns",
@@ -29,11 +41,23 @@
         "target": "default",
         "arch": ["x64", "arm64"]
       }
-    ]
+    ],
+    "hardenedRuntime": true,
+    "entitlements": "./electron-build/entitlements.mac.plist",
+    "extendInfo": {
+      "CFBundleURLTypes": [
+        {
+          "CFBundleTypeRole": "Shell",
+          "CFBundleURLName": "CurseForge",
+          "CFBundleURLSchemes": "curseforge"
+        }
+      ]
+    }
   },
   "linux": {
     "icon": "electron-build/flatpak/",
-    "target": ["AppImage"]
+    "target": ["AppImage"],
+    "asarUnpack": "**/*.node"
   },
   "flatpak": {
     "base": "org.electronjs.Electron2.BaseApp",

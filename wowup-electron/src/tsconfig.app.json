@@ -4,18 +4,11 @@
     "outDir": "../out-tsc/app",
     "module": "es2015",
     "baseUrl": "",
-    "types": []
+    "types": [],
+    "paths": {
+      "electron-updater": ["../../wowup-shell/node_modules/electron-updater"]
+    }
   },
-  "include": [
-    "main.ts",
-    "polyfills.ts",
-    "app/**/*.ts",
-    "common/**/*.ts",
-    "environments/**/*.ts",
-  ],
-  "exclude": [
-    "**/*.spec.ts",
-    "app/**/tests/*.ts",
-    "app/**/utils/test.utils.ts",
-  ]
+  "include": ["main.ts", "polyfills.ts", "app/**/*.ts", "common/**/*.ts", "environments/**/*.ts"],
+  "exclude": ["**/*.spec.ts", "app/**/tests/*.ts", "app/**/utils/test.utils.ts"]
 }

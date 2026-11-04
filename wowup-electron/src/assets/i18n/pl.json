@@ -58,7 +58,10 @@
         "SELECT_ALL": "Zaznacz wszystko",
         "UNDO": "Cofnij"
       },
+      "HIDE": "Ukryj",
+      "HIDE_OTHERS": "Ukryj pozostałe",
       "QUIT": "Wyjdź",
+      "SHOW_ALL": "Pokaż wszystko",
       "VIEW": {
         "FORCE_RELOAD": "Wymuś odświeżanie",
         "LABEL": "Widok",
@@ -70,8 +73,11 @@
         "ZOOM_RESET": "Reset lupy"
       },
       "WINDOW": {
+        "BRING_ALL_TO_FRONT": "Przenieś wszystko na wierzch",
         "CLOSE": "Zamknij",
-        "LABEL": "Okno"
+        "LABEL": "Okno",
+        "MINIMIZE": "Minimalizuj",
+        "ZOOM": "Powiększ"
       }
     },
     "AUTO_UPDATE_FEW_NOTIFICATION_BODY": "Automatycznie zaktaulizowane\r\n{addonNames}",
@@ -169,10 +175,12 @@
     },
     "ADDON_STATUS": {
       "BACKINGUP": "Tworzenie kopii zapasowej",
+      "CHECKING_DEPENDENCIES": "Sprawdzanie zależności",
       "COMPLETE": "Zainstalowany",
       "DOWNLOADING": "Pobieranie",
       "ERROR": "Błąd",
       "INSTALLING": "Instalowanie",
+      "INSTALLING_DEPENDENCIES": "Zależności {completed}/{total}",
       "PENDING": "W toku",
       "RETRY": "Retrying...",
       "UNINSTALLING": "Odinstalowanie",
@@ -328,9 +336,6 @@
       "SUPPORTED_SOURCES": "Wspieraj WowInterface oraz GitHub",
       "TITLE": "Zainstaluj addon z URL"
     },
-    "NEW_VERSION_POPUP": {
-      "TITLE": "Opis łatki {versionNumber}"
-    },
     "PERMISSIONS": {
       "CURSEFORGE": {
         "DESCRIPTION_AD_LINK": "ad vendors",
@@ -366,6 +371,7 @@
     "ABOUT": {
       "ATTRIBUTIONS_TITLE": "Podziękowania",
       "CHANGE_LOG_SECTION_LABEL": "Lista zmian",
+      "SHELL_VERSION": "Shell v{version}",
       "TITLE": "WowUp.io",
       "WEBSITE_LINK_LABEL": "Sprawdź stronę!"
     },

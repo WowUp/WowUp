@@ -2,8 +2,8 @@
 /// <reference path="../typings.d.ts" />
 
 import * as _ from "lodash";
-import { BehaviorSubject, from, of } from "rxjs";
-import { catchError, delay, filter, first, map, switchMap } from "rxjs/operators";
+import { BehaviorSubject, combineLatest, from, of } from "rxjs";
+import { catchError, delay, distinctUntilChanged, filter, first, map, switchMap } from "rxjs/operators";
 import { Addon } from "wowup-lib-core";
 
 import { OverlayContainer } from "@angular/cdk/overlay";
@@ -16,7 +16,7 @@ import {
   OnDestroy,
   OnInit,
 } from "@angular/core";
-import { MatDialog } from "@angular/material/dialog";
+import { MatDialog, MatDialogRef } from "@angular/material/dialog";
 import { TranslateService } from "@ngx-translate/core";
 
 import {
@@ -39,10 +39,11 @@ import {
   WOWUP_LOGO_FILENAME_CF,
   ZOOM_FACTOR_KEY,
 } from "../common/constants";
-import { AppUpdateState, MenuConfig, SystemTrayConfig } from "../common/wowup/models";
+import { AppUpdateState, BundleUpdateEvent, MenuConfig, SystemTrayConfig } from "../common/wowup/models";
 import { AppConfig } from "../environments/environment";
 import { InstallFromUrlDialogComponent } from "./components/addons/install-from-url-dialog/install-from-url-dialog.component";
 import { AlertDialogComponent } from "./components/common/alert-dialog/alert-dialog.component";
+import { ConfirmDialogComponent } from "./components/common/confirm-dialog/confirm-dialog.component";
 import {
   ConsentDialogComponent,
   ConsentDialogResult,
@@ -72,7 +73,9 @@ import { ZoomDirection } from "./utils/zoom.utils";
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
+  private _bundleUpdateDialog?: MatDialogRef<unknown>;
   private _autoUpdateInterval?: number;
+  private _updatesOnHoldKey = "";
   @HostListener("document:click", ["$event"])
   public onDocumentClick(event: MouseEvent) {
     let currentElem: HTMLElement | null = event.target as HTMLElement;
@@ -174,7 +177,67 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
       }
     });
 
+    // Held until the first-run dialogs are done, so the prompt doesn't open underneath them
+    combineLatest([this.electronService.bundleUpdate$, this.showPreLoad$])
+      .pipe(
+        filter(([update, showPreLoad]) => update !== undefined && !showPreLoad),
+        map(([update]) => update),
+        distinctUntilChanged(),
+      )
+      .subscribe((update) => this.promptBundleRestart(update));
+
     this._wowUpProtocolService.initialize();
+  }
+
+  /**
+   * Restart now or later. When the running bundle was revoked, or the update was put off past its deadline (see
+   * app-updater.ts), only restart, and the dialog can't be dismissed.
+   */
+  private promptBundleRestart(update: BundleUpdateEvent): void {
+    const title = this._translateService.instant("APP.WOWUP_UPDATE.INSTALL_TITLE");
+    // A later event (overdue, or a newer bundle) replaces the prompt still showing; closed without a result
+    this._bundleUpdateDialog?.close();
+
+    if (update.important) {
+      const message = update.overdue ? "APP.WOWUP_UPDATE.BUNDLE_OVERDUE_TEXT" : "APP.WOWUP_UPDATE.BUNDLE_REQUIRED_TEXT";
+      const dialogRef = this._dialog.open(AlertDialogComponent, {
+        minWidth: 250,
+        disableClose: true,
+        data: {
+          title,
+          message: this._translateService.instant(message),
+          positiveButton: "APP.WOWUP_UPDATE.RESTART_NOW",
+        },
+      });
+      this._bundleUpdateDialog = dialogRef;
+      dialogRef
+        .afterClosed()
+        .pipe(first())
+        .subscribe((restart) => {
+          if (restart === true) {
+            this.wowUpService.restartForBundleUpdate();
+          }
+        });
+      return;
+    }
+
+    const dialogRef = this._dialog.open(ConfirmDialogComponent, {
+      data: {
+        title,
+        message: this._translateService.instant("APP.WOWUP_UPDATE.BUNDLE_READY_TEXT"),
+        positiveKey: "APP.WOWUP_UPDATE.RESTART_NOW",
+        negativeKey: "APP.WOWUP_UPDATE.LATER",
+      },
+    });
+    this._bundleUpdateDialog = dialogRef;
+    dialogRef
+      .afterClosed()
+      .pipe(first())
+      .subscribe((restart) => {
+        if (restart === true) {
+          this.wowUpService.restartForBundleUpdate();
+        }
+      });
   }
 
   public ngOnInit(): void {
@@ -388,11 +451,13 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
     try {
       console.log("onAutoUpdateInterval");
       await this._addonService.syncAllClients();
-      const updatedAddons = await this._addonService.processAutoUpdates();
+      const { updated: updatedAddons, skipped: skippedAddons } = await this._addonService.processAutoUpdates();
 
       await this._wowupAddonService.updateForAllClientTypes();
 
       await this.updateBadgeCount();
+
+      await this.notifyUpdatesOnHold(skippedAddons);
 
       if (!updatedAddons || updatedAddons.length === 0) {
         await this.checkQuitEnabled();
@@ -461,6 +526,38 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
     notification.addEventListener("close", this.onAutoUpdateNotificationClosed, { once: true });
   }
 
+  /** Tells the user once per set of held back updates, not on every hourly check */
+  private async notifyUpdatesOnHold(skippedAddons: Addon[]) {
+    const notifyAddons = skippedAddons.filter((addon) => addon.autoUpdateNotificationsEnabled === true);
+    const key = notifyAddons
+      .map((addon) => `${addon.id}:${addon.externalLatestReleaseId}`)
+      .sort()
+      .join("|");
+
+    if (key === this._updatesOnHoldKey) {
+      return;
+    }
+    this._updatesOnHoldKey = key;
+
+    if (notifyAddons.length === 0 || !(await this.wowUpService.getEnableSystemNotifications())) {
+      return;
+    }
+
+    const iconPath = await this._fileService.getAssetFilePath(
+      AppConfig.curseforge.enabled ? WOWUP_LOGO_FILENAME_CF : WOWUP_LOGO_FILENAME,
+    );
+    const translated: { [key: string]: string } = await this._translateService
+      .get(["APP.UPDATES_ON_HOLD_NOTIFICATION_TITLE", "APP.UPDATES_ON_HOLD_NOTIFICATION_BODY"])
+      .toPromise();
+
+    const notification = this.electronService.showNotification(translated["APP.UPDATES_ON_HOLD_NOTIFICATION_TITLE"], {
+      body: translated["APP.UPDATES_ON_HOLD_NOTIFICATION_BODY"],
+      icon: iconPath,
+    });
+
+    notification.addEventListener("click", this.onClickNotification, { once: true });
+  }
+
   private onClickNotification = () => {
     this.electronService.focusWindow().catch((e) => console.error(`Failed to focus window on notification click`, e));
   };
@@ -527,6 +624,9 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
 
     // APP MENU
     const quitKey = "APP.APP_MENU.QUIT";
+    const hideKey = "APP.APP_MENU.HIDE";
+    const hideOthersKey = "APP.APP_MENU.HIDE_OTHERS";
+    const showAllKey = "APP.APP_MENU.SHOW_ALL";
 
     // EDIT MENU
     const editKey = "APP.APP_MENU.EDIT.LABEL";
@@ -550,6 +650,9 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
     // WINDOW MENU
     const windowKey = "APP.APP_MENU.WINDOW.LABEL";
     const windowCloseKey = "APP.APP_MENU.WINDOW.CLOSE";
+    const windowMinimizeKey = "APP.APP_MENU.WINDOW.MINIMIZE";
+    const windowZoomKey = "APP.APP_MENU.WINDOW.ZOOM";
+    const windowBringAllToFrontKey = "APP.APP_MENU.WINDOW.BRING_ALL_TO_FRONT";
 
     const result = await this._translateService
       .get([
@@ -562,6 +665,9 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
         cutKey,
         forceReloadKey,
         quitKey,
+        hideKey,
+        hideOthersKey,
+        showAllKey,
         redoKey,
         reloadKey,
         selectAllKey,
@@ -571,6 +677,9 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
         pasteKey,
         windowKey,
         windowCloseKey,
+        windowMinimizeKey,
+        windowZoomKey,
+        windowBringAllToFrontKey,
       ])
       .toPromise();
 
@@ -585,6 +694,9 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
       forceReloadLabel: result[forceReloadKey],
       pasteLabel: result[pasteKey],
       quitLabel: result[quitKey],
+      hideLabel: result[hideKey],
+      hideOthersLabel: result[hideOthersKey],
+      showAllLabel: result[showAllKey],
       redoLabel: result[redoKey],
       reloadLabel: result[reloadKey],
       selectAllLabel: result[selectAllKey],
@@ -593,6 +705,9 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
       undoLabel: result[undoKey],
       windowLabel: result[windowKey],
       windowCloseLabel: result[windowCloseKey],
+      windowMinimizeLabel: result[windowMinimizeKey],
+      windowZoomLabel: result[windowZoomKey],
+      windowBringAllToFrontLabel: result[windowBringAllToFrontKey],
     };
 
     try {

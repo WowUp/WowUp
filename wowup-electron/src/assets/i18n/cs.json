@@ -58,7 +58,10 @@
         "SELECT_ALL": "SelectAll",
         "UNDO": "Undo"
       },
+      "HIDE": "Skrýt",
+      "HIDE_OTHERS": "Skrýt ostatní",
       "QUIT": "Quit",
+      "SHOW_ALL": "Zobrazit vše",
       "VIEW": {
         "FORCE_RELOAD": "Force Reload",
         "LABEL": "Zobrazit",
@@ -70,8 +73,11 @@
         "ZOOM_RESET": "Resetovat přiblížení"
       },
       "WINDOW": {
+        "BRING_ALL_TO_FRONT": "Přenést vše do popředí",
         "CLOSE": "Close",
-        "LABEL": "Window"
+        "LABEL": "Window",
+        "MINIMIZE": "Minimalizovat",
+        "ZOOM": "Zvětšit"
       }
     },
     "AUTO_UPDATE_FEW_NOTIFICATION_BODY": "Automaticky aktualizovány\r\n{addonNames}",
@@ -106,6 +112,8 @@
       "GROUP_LIGHT": "Světlý",
       "HORDE": "Horda"
     },
+    "UPDATES_ON_HOLD_NOTIFICATION_BODY": "Některé aktualizace addonů vyžadují novější verzi World of Warcraft, než je nainstalovaná. Otevřete WowUp a zkontrolujte je.",
+    "UPDATES_ON_HOLD_NOTIFICATION_TITLE": "Aktualizace pozastaveny",
     "WINDOW_TITLE": "WowUp.io",
     "WINDOW_TITLE_CF": "WowUp.io CF",
     "WINDOW_TITLE_FULLSCREEN": "WowUp.io - Full Screen",
@@ -169,10 +177,12 @@
     },
     "ADDON_STATUS": {
       "BACKINGUP": "Zálohuji",
+      "CHECKING_DEPENDENCIES": "Kontrola závislostí",
       "COMPLETE": "Nainstalován",
       "DOWNLOADING": "Stahuji",
       "ERROR": "Chyba",
       "INSTALLING": "Instaluji",
+      "INSTALLING_DEPENDENCIES": "Závislosti {completed}/{total}",
       "PENDING": "Čekající",
       "RETRY": "Retrying...",
       "UNINSTALLING": "Odinstalovávaný",
@@ -286,6 +296,16 @@
       "RE_SCAN_SUCCESS": "The automatic Re-Scan has finished you're ready to go.",
       "TITLE": "CurseForge Migration"
     },
+    "GAME_VERSION_MISMATCH": {
+      "ADDON_NEEDS": "{name} vyžaduje WoW {version}",
+      "CANCEL": "Zrušit",
+      "IGNORE": "Ignorovat pro tuto verzi WoW",
+      "INSTALLATION": "{name} (WoW {version})",
+      "MESSAGE": "Tyto aktualizace byly vytvořeny pro novější verzi World of Warcraft, než je nainstalovaná. Dokud se hra neaktualizuje, mohou způsobovat chyby.",
+      "SKIP": "Přeskočit tyto",
+      "TITLE": "Aktualizace vyžadují novější verzi WoW",
+      "UPDATE_ANYWAY": "Přesto aktualizovat"
+    },
     "INSTALL_FROM_PROTOCOL": {
       "ADDON_INSTALLED": "Addon is installed!",
       "ADDON_INSTALLING": "Installing addon",
@@ -328,9 +348,6 @@
       "SUPPORTED_SOURCES": "Podporuje WowInterface a GitHub",
       "TITLE": "URL adresa pro instalaci addonu"
     },
-    "NEW_VERSION_POPUP": {
-      "TITLE": "Patch Notes {versionNumber}"
-    },
     "PERMISSIONS": {
       "CURSEFORGE": {
         "DESCRIPTION_AD_LINK": "ad vendors",
@@ -366,6 +383,7 @@
     "ABOUT": {
       "ATTRIBUTIONS_TITLE": "Atributy",
       "CHANGE_LOG_SECTION_LABEL": "Změny",
+      "SHELL_VERSION": "Shell v{version}",
       "TITLE": "WowUp.io",
       "WEBSITE_LINK_LABEL": "Navštivte naše webové stránky!"
     },
@@ -499,6 +517,7 @@
         "UPDATE_ALL_CLIENTS_BUTTON": "Aktualizovat všechny clienty",
         "UPDATE_RETAIL_CLASSIC_BUTTON": "Aktualizovat Retail/Classic"
       },
+      "VERSION_MISMATCH_TOOLTIP": "Tato aktualizace vyžaduje WoW {required}. Máte WoW {current}.",
       "WTF_BACKUP_BUTTON": "Interface Settings Backup"
     },
     "NEWS": {

@@ -2,7 +2,7 @@ import * as _ from "lodash";
 
 import * as path from "path";
 import { BehaviorSubject, firstValueFrom, forkJoin, from, Observable, of, Subject } from "rxjs";
-import { catchError, filter, first, map, switchMap, tap } from "rxjs/operators";
+import { catchError, distinctUntilChanged, filter, first, map, switchMap, tap } from "rxjs/operators";
 import { v4 as uuidv4 } from "uuid";
 
 import { Injectable } from "@angular/core";
@@ -30,6 +30,7 @@ import { AddonScanError, AddonSyncError, GenericProviderError } from "../../erro
 import { AddonInstallState } from "../../models/wowup/addon-install-state";
 
 import { AddonUpdateEvent } from "../../models/wowup/addon-update-event";
+import { AddonVersionMismatch, AutoUpdateResult } from "../../models/wowup/addon-version-mismatch";
 
 import * as AddonUtils from "../../utils/addon.utils";
 import { getEnumName, getGameVersionList, WowInstallation, WowUpAddonProvider } from "wowup-lib-core";
@@ -72,6 +73,20 @@ export interface AddonDependencyDetail {
   externalAddonId: string;
   name: string;
   installed: boolean;
+}
+
+export enum DependencyInstallState {
+  Resolving,
+  Installing,
+  Complete,
+}
+
+/** Progress of the required dependencies an addon install pulled in, the addon is the parent */
+export interface DependencyInstallEvent {
+  addon: Addon;
+  state: DependencyInstallState;
+  total: number;
+  completed: number;
 }
 
 export enum ScanUpdateType {
@@ -123,6 +138,14 @@ export class AddonService {
   private _activeInstalls: AddonUpdateEvent[] = [];
   /** installationId|providerName|externalId of each dependency being installed right now */
   private readonly _pendingDependencyInstalls = new Set<string>();
+  /** Dependency progress of each parent addon whose dependencies are still being installed, by addon id */
+  private readonly _activeDependencyInstalls = new Map<string, DependencyInstallEvent>();
+  private readonly _dependencyInstallSrc = new Subject<DependencyInstallEvent>();
+  private readonly _installingSrc = new BehaviorSubject<boolean>(false);
+  /** Rescan running right now for each installation, by installation id */
+  private readonly _activeRescans = new Map<string, Promise<Addon[]>>();
+  /** Rescan waiting for the running one to finish, by installation id */
+  private readonly _queuedRescans = new Map<string, Promise<Addon[]>>();
 
   public readonly addonAction$ = this._addonActionSrc.asObservable();
   public readonly addonInstalled$ = this._addonInstallService.addonInstalled$;
@@ -135,6 +158,9 @@ export class AddonService {
   public readonly anyUpdatesAvailable$ = this._anyUpdatesAvailableSrc.asObservable();
   public readonly addonProviderChange$ = this._addonProviderChangeSrc.asObservable();
   public readonly syncing$ = this._syncingSrc.asObservable();
+  public readonly dependencyInstall$ = this._dependencyInstallSrc.asObservable();
+  /** True while any install, or the dependencies one pulled in, is still running */
+  public readonly installing$ = this._installingSrc.pipe(distinctUntilChanged());
 
   public constructor(
     private _addonStorage: AddonStorageService,
@@ -203,9 +229,14 @@ export class AddonService {
 
   public isInstalling(addonId?: string): boolean {
     if (!addonId) {
-      return this._activeInstalls.length > 0;
+      return this._activeInstalls.length > 0 || this._activeDependencyInstalls.size > 0;
     }
     return this._activeInstalls.find((install) => install.addon.id === addonId) !== undefined;
+  }
+
+  /** Progress of every addon whose dependencies are still being installed */
+  public getDependencyInstallStatuses(): DependencyInstallEvent[] {
+    return [...this._activeDependencyInstalls.values()];
   }
 
   public getInstallStatus(addonId: string): AddonUpdateEvent | undefined {
@@ -431,6 +462,7 @@ export class AddonService {
    * Dependencies are looked up with the addon's own provider, installing a dependency installs its
    * dependencies in turn. A dependency that fails is logged and skipped, it never fails the addon.
    * All of them are resolved first and then queued together, so every one shows as pending at once.
+   * Progress is reported on dependencyInstall$ with the addon as the parent.
    */
   public async installDependencies(addon: Addon): Promise<void> {
     const requiredDependencies = this.getRequiredDependencies(addon);
@@ -438,74 +470,121 @@ export class AddonService {
       return;
     }
 
+    let progress: DependencyInstallEvent = {
+      addon,
+      state: DependencyInstallState.Resolving,
+      total: requiredDependencies.length,
+      completed: 0,
+    };
+    this.updateDependencyInstall(progress);
+
+    try {
+      const resolved = await this.resolveDependencies(addon, requiredDependencies);
+      if (!resolved.length) {
+        return;
+      }
+
+      progress = { ...progress, state: DependencyInstallState.Installing, total: resolved.length };
+      this.updateDependencyInstall(progress);
+
+      await Promise.all(
+        resolved.map(async ({ pendingKey, dependencyAddon }) => {
+          try {
+            console.log(`[InstallDependency] ${addon.name} requires ${dependencyAddon.name}`);
+            await this._addonStorage.setAsync(dependencyAddon.id, dependencyAddon);
+            await this.installAddon(dependencyAddon);
+          } catch (e) {
+            console.error(`[InstallDependencies] ${addon.name}: failed to install ${dependencyAddon.externalId}`, e);
+          } finally {
+            this._pendingDependencyInstalls.delete(pendingKey);
+            progress = { ...progress, completed: progress.completed + 1 };
+            this.updateDependencyInstall(progress);
+          }
+        }),
+      );
+    } finally {
+      this.updateDependencyInstall({ ...progress, state: DependencyInstallState.Complete });
+    }
+  }
+
+  /**
+   * The dependencies of the addon that need installing, looked up with its provider all at once.
+   * Each one returned holds its pending key until its install is done.
+   */
+  private async resolveDependencies(
+    addon: Addon,
+    requiredDependencies: AddonDependency[],
+  ): Promise<Array<{ pendingKey: string; dependencyAddon: Addon }>> {
     const providerName = addon.providerName ?? "";
     const installation = this._warcraftInstallationService.getWowInstallation(addon.installationId);
     const provider = this._addonProviderService.getProvider(providerName);
     if (!installation || !provider) {
       console.warn(`[InstallDependencies] ${addon.name}: installation or provider not found`);
-      return;
+      return [];
     }
 
-    // Folders claimed by dependencies resolved so far, so two of them never install the same folder
-    const claimedFolders: string[] = [];
+    const installedAddons = await this._addonStorage.getAllForInstallationIdAsync(installation.id);
+
+    const lookups = await Promise.all(
+      requiredDependencies.map(async (dependency) => {
+        // Another install already pulling in the same dependency will finish it, so there is no need to wait
+        const pendingKey = `${installation.id}|${providerName}|${dependency.externalAddonId}`;
+        if (this._pendingDependencyInstalls.has(pendingKey)) {
+          return undefined;
+        }
+
+        this._pendingDependencyInstalls.add(pendingKey);
+        try {
+          const found = await this.findDependency(
+            dependency,
+            providerName,
+            provider,
+            installation,
+            addon,
+            installedAddons,
+          );
+          return { pendingKey, found };
+        } catch (e) {
+          console.error(`[InstallDependencies] ${addon.name}: failed to resolve ${dependency.externalAddonId}`, e);
+          return { pendingKey, found: undefined };
+        }
+      }),
+    );
+
+    // The same folders may already be installed under another provider, or by hand, or claimed by
+    // a dependency earlier in the list, so two of them never install the same folder
+    const claimedFolders = installedAddons.flatMap((ia) => ia.installedFolderList ?? []);
     const resolved: Array<{ pendingKey: string; dependencyAddon: Addon }> = [];
 
-    for (const dependency of requiredDependencies) {
-      // Another install already pulling in the same dependency will finish it, so there is no need to wait
-      const pendingKey = `${installation.id}|${providerName}|${dependency.externalAddonId}`;
-      if (this._pendingDependencyInstalls.has(pendingKey)) {
+    for (const lookup of lookups) {
+      if (!lookup) {
         continue;
       }
 
-      this._pendingDependencyInstalls.add(pendingKey);
-      try {
-        const result = await this.resolveDependency(
-          dependency,
-          providerName,
-          provider,
-          installation,
-          addon,
-          claimedFolders,
-        );
-        if (result) {
-          resolved.push({ pendingKey, dependencyAddon: result.dependencyAddon });
-          claimedFolders.push(...result.folders);
-          continue;
-        }
-      } catch (e) {
-        console.error(`[InstallDependencies] ${addon.name}: failed to resolve ${dependency.externalAddonId}`, e);
+      const { pendingKey, found } = lookup;
+      if (found && _.intersection(found.folders, claimedFolders).length === 0) {
+        resolved.push({ pendingKey, dependencyAddon: found.dependencyAddon });
+        claimedFolders.push(...found.folders);
+        continue;
       }
       this._pendingDependencyInstalls.delete(pendingKey);
     }
 
-    await Promise.all(
-      resolved.map(async ({ pendingKey, dependencyAddon }) => {
-        try {
-          console.log(`[InstallDependency] ${addon.name} requires ${dependencyAddon.name}`);
-          await this._addonStorage.setAsync(dependencyAddon.id, dependencyAddon);
-          await this.installAddon(dependencyAddon);
-        } catch (e) {
-          console.error(`[InstallDependencies] ${addon.name}: failed to install ${dependencyAddon.externalId}`, e);
-        } finally {
-          this._pendingDependencyInstalls.delete(pendingKey);
-        }
-      }),
-    );
+    return resolved;
   }
 
   /**
    * The addon to install for a dependency along with the folders it will install, or undefined when
    * it is already present or cannot be found.
    */
-  private async resolveDependency(
+  private async findDependency(
     dependency: AddonDependency,
     providerName: string,
     provider: AddonProvider,
     installation: WowInstallation,
     parent: Addon,
-    claimedFolders: string[],
+    installedAddons: Addon[],
   ): Promise<{ dependencyAddon: Addon; folders: string[] } | undefined> {
-    const installedAddons = await this._addonStorage.getAllForInstallationIdAsync(installation.id);
     if (this.isDependencyInstalled(dependency.externalAddonId, providerName, installedAddons)) {
       return undefined;
     }
@@ -514,12 +593,6 @@ export class AddonService {
     const latestFile = SearchResults.getLatestFile(searchResult, installation.defaultAddonChannelType);
     if (!searchResult || !latestFile) {
       console.warn(`[InstallDependencies] ${parent.name}: dependency not found ${dependency.externalAddonId}`);
-      return undefined;
-    }
-
-    // The same folders may already be installed under another provider, or by hand
-    const installedFolders = installedAddons.flatMap((ia) => ia.installedFolderList ?? []);
-    if (_.intersection(latestFile.folders, [...installedFolders, ...claimedFolders]).length > 0) {
       return undefined;
     }
 
@@ -598,21 +671,54 @@ export class AddonService {
     return details;
   }
 
-  public async processAutoUpdates(): Promise<Addon[]> {
+  public async processAutoUpdates(): Promise<AutoUpdateResult> {
     const autoUpdateAddons = await this.getAutoUpdateEnabledAddons();
     const addonsWithUpdates = autoUpdateAddons.filter((addon) => AddonUtils.needsUpdate(addon));
 
-    const tasks = addonsWithUpdates.map((addon) => {
-      if (typeof addon.id !== "string") {
-        return Promise.resolve(undefined);
-      }
-      return this.updateAddon(addon)
-        .then(() => addon)
-        .catch((e) => console.error(e));
-    });
+    // An installation can be patched since the last check, so look at what it runs now
+    const mismatches = await this.findGameVersionMismatches(addonsWithUpdates, true);
+    const skipped = mismatches.map((mismatch) => mismatch.addon);
+
+    const tasks = addonsWithUpdates
+      .filter((addon) => !skipped.includes(addon))
+      .map((addon) => {
+        if (typeof addon.id !== "string") {
+          return Promise.resolve(undefined);
+        }
+        return this.updateAddon(addon)
+          .then(() => addon)
+          .catch((e) => console.error(e));
+      });
 
     const results = await Promise.all(tasks);
-    return results.filter((res) => res !== undefined).map((res) => res as Addon);
+    return { updated: results.filter((res) => res !== undefined).map((res) => res as Addon), skipped };
+  }
+
+  /**
+   * The addons whose update targets a newer game version than their installation runs. Fails open, an
+   * addon is only listed when both versions are known, see AddonUtils.isAddonCompatibleWithInstallation.
+   * @param refresh re-read the game versions from Battle.net first, for when the answer gates an install
+   */
+  public async findGameVersionMismatches(addons: Addon[], refresh = false): Promise<AddonVersionMismatch[]> {
+    if (refresh) {
+      try {
+        await this._warcraftInstallationService.refreshGameVersions();
+      } catch (e) {
+        console.error("Failed to refresh game versions", e);
+      }
+    }
+
+    const installations = await this._warcraftInstallationService.getWowInstallationsAsync();
+
+    const mismatches: AddonVersionMismatch[] = [];
+    for (const addon of addons) {
+      const installation = installations.find((inst) => inst.id === addon.installationId);
+      if (installation && !AddonUtils.isAddonCompatibleWithInstallation(addon.gameVersion, installation)) {
+        mismatches.push({ addon, installation });
+      }
+    }
+
+    return mismatches;
   }
 
   public getAutoUpdateEnabledAddons(): Promise<Addon[]> {
@@ -628,16 +734,19 @@ export class AddonService {
     return addons.length > 0;
   }
 
-  public updateAddon(
+  public async updateAddon(
     addon: Addon,
     onUpdate: (installState: AddonInstallState, progress: number) => void = () => {},
     originalAddon: Addon | undefined = undefined,
   ): Promise<void> {
     if (typeof addon !== "object") {
-      return Promise.resolve(undefined);
+      return undefined;
     }
 
-    return this.installOrUpdateAddon(addon, "update", onUpdate, originalAddon);
+    await this.installOrUpdateAddon(addon, "update", onUpdate, originalAddon);
+
+    // A newer release can require addons the installed one did not
+    await this.installDependencies(addon);
   }
 
   public async installAddon(
@@ -650,8 +759,25 @@ export class AddonService {
       return undefined;
     }
 
-    await this.installOrUpdateAddon(addon, "install", onUpdate, originalAddon);
-    await this._addonStorage.setAsync(addon.id, addon);
+    // Track the dependencies from the start, so nothing reads as done between the addon's own
+    // install completing and its dependencies being looked up
+    const requiredDependencies = this.getRequiredDependencies(addon);
+    if (requiredDependencies.length) {
+      this.updateDependencyInstall(
+        { addon, state: DependencyInstallState.Resolving, total: requiredDependencies.length, completed: 0 },
+        false,
+      );
+    }
+
+    try {
+      await this.installOrUpdateAddon(addon, "install", onUpdate, originalAddon);
+      await this._addonStorage.setAsync(addon.id, addon);
+    } catch (e) {
+      if (requiredDependencies.length) {
+        this.updateDependencyInstall({ addon, state: DependencyInstallState.Complete, total: 0, completed: 0 });
+      }
+      throw e;
+    }
 
     // Runs after the queue item has settled, so dependency installs never wait on the slot this one holds
     await this.installDependencies(addon);
@@ -717,7 +843,22 @@ export class AddonService {
     } else {
       this._activeInstalls.splice(itemIdx, 1, updateEvent);
     }
+    this._installingSrc.next(this.isInstalling());
   };
+
+  /** Track the dependency progress of a parent addon, a Complete state drops it before anyone hears about it */
+  private updateDependencyInstall(evt: DependencyInstallEvent, notify = true): void {
+    if (evt.state === DependencyInstallState.Complete) {
+      this._activeDependencyInstalls.delete(evt.addon.id);
+    } else {
+      this._activeDependencyInstalls.set(evt.addon.id, evt);
+    }
+    this._installingSrc.next(this.isInstalling());
+
+    if (notify) {
+      this._dependencyInstallSrc.next(evt);
+    }
+  }
 
   public async logDebugData(): Promise<void> {
     const curseProvider = this._addonProviderService.getProvider<CurseAddonProvider>(ADDON_PROVIDER_CURSEFORGE);
@@ -922,11 +1063,43 @@ export class AddonService {
     return await this._addonStorage.getAllForInstallationIdAsync(installation.id);
   }
 
-  public async rescanInstallation(installation: WowInstallation): Promise<Addon[]> {
+  /**
+   * Scan the installation's addon folders and replace its saved addons with the result.
+   * Only one scan runs per installation at a time: a call made while one is running waits for it
+   * and then scans again, so overlapping scans can't each save a copy of every addon (#1561).
+   */
+  public rescanInstallation(installation: WowInstallation): Promise<Addon[]> {
     if (!installation) {
-      return [];
+      return Promise.resolve([]);
     }
 
+    const queued = this._queuedRescans.get(installation.id);
+    if (queued !== undefined) {
+      return queued;
+    }
+
+    const active = this._activeRescans.get(installation.id);
+    if (active === undefined) {
+      return this.startRescan(installation);
+    }
+
+    const next = active
+      .catch(() => undefined)
+      .then(() => {
+        this._queuedRescans.delete(installation.id);
+        return this.startRescan(installation);
+      });
+    this._queuedRescans.set(installation.id, next);
+    return next;
+  }
+
+  private startRescan(installation: WowInstallation): Promise<Addon[]> {
+    const rescan = this.scanAndReplaceAddons(installation).finally(() => this._activeRescans.delete(installation.id));
+    this._activeRescans.set(installation.id, rescan);
+    return rescan;
+  }
+
+  private async scanAndReplaceAddons(installation: WowInstallation): Promise<Addon[]> {
     console.debug(`[addon-service] rescanInstallation: ${installation.displayName}`);
     // Fetch existing installation addons
     let addons = await this._addonStorage.getAllForInstallationIdAsync(installation.id);
@@ -934,13 +1107,11 @@ export class AddonService {
     // Collect info on filesystem addons
     const newAddons = await this.scanAddons(installation, addons);
 
-    await this._addonStorage.removeAllForInstallationAsync(installation.id);
-
     // Map the old installation addon settings to the new ones
     addons = this.updateAddons(addons, newAddons);
 
     console.debug(`addons: ${addons.length} for ${installation.displayName}`);
-    await this._addonStorage.saveAll(addons);
+    await this._addonStorage.replaceAllForInstallation(installation.id, addons);
 
     this._addonActionSrc.next({ type: "scan" });
 
@@ -960,13 +1131,17 @@ export class AddonService {
       return [];
     }
 
-    let addons = await this._addonStorage.getAllForInstallationIdAsync(installation.id);
-
-    if (rescan || addons.length === 0) {
-      addons = await this.rescanInstallation(installation);
+    if (rescan) {
+      return await this.rescanInstallation(installation);
     }
 
-    return addons;
+    const addons = await this._addonStorage.getAllForInstallationIdAsync(installation.id);
+    if (addons.length > 0) {
+      return addons;
+    }
+
+    // Nothing saved yet: share a scan that's already running rather than starting another
+    return await (this._activeRescans.get(installation.id) ?? this.rescanInstallation(installation));
   }
 
   public async getAddonForProtocol(protocol: string): Promise<ProtocolSearchResult | undefined> {
@@ -1183,8 +1358,20 @@ export class AddonService {
           addon.downloadUrl = latestFile.downloadUrl || addon.downloadUrl;
         }
 
+        // Kept in step with the download URL, so an install or update pulls in what the file it downloads requires.
+        // Refreshed even when the release has not changed, to heal records saved from an older file.
+        if (Array.isArray(latestFile.dependencies)) {
+          addon.dependencies = latestFile.dependencies.map(this.createAddonDependency);
+        }
+
         if (Array.isArray(result.fundingLinks)) {
           addon.fundingLinks = result.fundingLinks;
+        }
+
+        // Describes the release on offer, so an update found before the game version was tracked gets one too
+        const latestTargetVersions = AddonUtils.getFileTargetVersions(latestFile);
+        if (latestTargetVersions.length > 0) {
+          addon.gameVersion = getGameVersionList(latestTargetVersions);
         }
 
         // If the release ID hasn't changed we don't really need to update the whole record
@@ -1206,12 +1393,12 @@ export class AddonService {
         addon.author = result.author;
         addon.externalChannel = getEnumName(AddonChannelType, latestFile.channelType);
 
-        if (latestFile.gameVersion) {
-          addon.gameVersion = getGameVersionList([latestFile.gameVersion]);
-        } else if (addon.gameVersion) {
-          addon.gameVersion = getGameVersionList(addon.gameVersion ?? []);
-        } else {
-          console.warn("No game version found", addon);
+        if (latestTargetVersions.length === 0) {
+          if (addon.gameVersion) {
+            addon.gameVersion = getGameVersionList(addon.gameVersion ?? []);
+          } else {
+            console.warn("No game version found", addon);
+          }
         }
 
         addon.externalUrl = result.externalUrl;

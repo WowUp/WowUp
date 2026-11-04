@@ -10,6 +10,7 @@ import { TranslateService } from "@ngx-translate/core";
 import { AddonViewModel } from "../../../business-objects/addon-view-model";
 import { AddonInstallState } from "../../../models/wowup/addon-install-state";
 import { AddonService } from "../../../services/addons/addon.service";
+import { WarcraftInstallationService } from "../../../services/warcraft/warcraft-installation.service";
 import * as AddonUtils from "../../../utils/addon.utils";
 import { AlertDialogComponent } from "../../common/alert-dialog/alert-dialog.component";
 import { Addon, AddonWarningType } from "wowup-lib-core";
@@ -25,6 +26,7 @@ export class MyAddonStatusCellComponent implements AgRendererComponent, OnDestro
   public listItem!: AddonViewModel;
   public warningType?: AddonWarningType;
   public hasWarning = false;
+  public versionMismatchTooltip = "";
   public showStatusText = false;
   public statusText = "";
   public isIgnored = false;
@@ -35,6 +37,7 @@ export class MyAddonStatusCellComponent implements AgRendererComponent, OnDestro
     private _dialog: MatDialog,
     private _addonService: AddonService,
     private _translateService: TranslateService,
+    private _warcraftInstallationService: WarcraftInstallationService,
     private _ngZone: NgZone,
   ) {
     this._addonService.addonInstalled$
@@ -69,6 +72,7 @@ export class MyAddonStatusCellComponent implements AgRendererComponent, OnDestro
     this.showStatusText = this.listItem?.isUpToDate() || (this.listItem?.addon?.isIgnored ?? true);
     this.statusText = this.getStatusText(this.listItem?.addon);
     this.isIgnored = this.listItem.addon?.isIgnored ?? true;
+    this.versionMismatchTooltip = this.getVersionMismatchTooltip(this.listItem?.addon);
 
     // A row can be (re)created part way through an install, pick up where it is
     const installStatus = this.listItem?.addon?.id
@@ -129,6 +133,23 @@ export class MyAddonStatusCellComponent implements AgRendererComponent, OnDestro
       default:
         return "COMMON.ADDON_WARNING.GENERIC_DESCRIPTION";
     }
+  }
+
+  /** Explains why the update on offer may not suit the game version, empty when it does */
+  private getVersionMismatchTooltip(addon: Addon | undefined): string {
+    if (!addon?.installationId || !AddonUtils.needsUpdate(addon)) {
+      return "";
+    }
+
+    const installation = this._warcraftInstallationService.getWowInstallation(addon.installationId);
+    if (!installation || AddonUtils.isAddonCompatibleWithInstallation(addon.gameVersion, installation)) {
+      return "";
+    }
+
+    return this._translateService.instant("PAGES.MY_ADDONS.VERSION_MISMATCH_TOOLTIP", {
+      required: AddonUtils.getRequiredGameVersion(addon.gameVersion, installation.gameVersion) ?? "",
+      current: installation.gameVersion ?? "",
+    });
   }
 
   public onWarningButton(): void {

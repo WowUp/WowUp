@@ -16,6 +16,81 @@ export class PatchNotesService {
 
 const CHANGELOGS: ChangeLog[] = [
   {
+    Version: "2.25.4",
+    html: `
+    <h4>Features</h4>
+    <ul>
+    <li>WowUp now reads the game version installed through Battle.net and holds back addon updates that need a newer version of World of Warcraft than yours, which matters when a patch reaches your region later</li>
+    <li>Updating such an addon by hand shows a warning first, where you can update anyway, skip it, or ignore the warning until your next game patch</li>
+    <li>Automatic updates skip those addons and show a notification, and My Addons marks them with a warning icon</li>
+    </ul>
+    <h4>Changes</h4>
+    <ul>
+    <li>The Game Version column now shows the newest version for your game flavor instead of a long list</li>
+    </ul>
+    <h4>Fixes</h4>
+    <ul>
+    <li>Fix My Addons sometimes listing every addon more than once, for example after an update</li>
+    <li>Fix the Hide, Hide Others and Minimize shortcuts (Cmd+H, Cmd+Alt+H, Cmd+M) doing nothing on macOS</li>
+    <li>Fix the submenus of the addon right-click menu in My Addons opening near the top of the menu instead of next to the item</li>
+    </ul>
+    `,
+  },
+  {
+    Version: "2.25.3",
+    html: `
+    <h4>Changes</h4>
+    <ul>
+    <li>Options > About now also shows the version of the installed WowUp shell, which can be older than the app itself after an in-app update</li>
+    </ul>
+    `,
+  },
+  {
+    Version: "2.25.2",
+    html: `
+    <h4>Changes</h4>
+    <ul>
+    <li>Installing an addon now shows the progress of its required dependencies, and only says installed once they are all done</li>
+    <li>My Addons and Get Addons can be opened while addons are installing</li>
+    </ul>
+    <h4>Fixes</h4>
+    <ul>
+    <li>Fix WowUp looking frozen while installing an addon with dependencies that weren't in the search results</li>
+    </ul>
+    `,
+  },
+  {
+    Version: "2.25.1",
+    html: `
+    <h4>Changes</h4>
+    <ul>
+    <li>Patch notes no longer pop up after WowUp updates. You can still read them under Options > About</li>
+    </ul>
+    <h4>Fixes</h4>
+    <ul>
+    <li>Fix updating or reinstalling an addon not installing addons its newer versions require</li>
+    </ul>
+    `,
+  },
+  {
+    Version: "2.25.0",
+    html: `
+    <h4>Features</h4>
+    <ul>
+    <li>Most WowUp updates now download in the background as a small update and finish with a quick restart, instead of a full reinstall</li>
+    </ul>
+    <h4>Changes</h4>
+    <ul>
+    <li>When an update is ready, WowUp asks you to restart now or later. If you choose later, WowUp asks again after 6 hours and the restart can't be put off</li>
+    <li>WowUp now checks that its files haven't been changed or damaged every time it starts</li>
+    </ul>
+    <h4>Fixes</h4>
+    <ul>
+    <li>Fix World of Warcraft installations not being found automatically on recent Windows 11 builds</li>
+    </ul>
+    `,
+  },
+  {
     Version: "2.24.1",
     html: `
     <h4>Features</h4>

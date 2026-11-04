@@ -1,36 +1,36 @@
 {
-  "productName": "WowUp-CF",
-  "appId": "io.wowupcf.jliddev",
+  "productName": "WowUp",
+  "appId": "io.wowup.jliddev",
   "directories": {
     "output": "release/"
   },
-  "afterSign": "./electron-build/after-sign-ow.js",
+  "afterSign": "./electron-build/after-sign.js",
   "generateUpdatesFilesForAllChannels": true,
-  "publish": [
-    {
-      "provider": "github",
-      "owner": "WowUp",
-      "repo": "WowUp.CF"
-    }
-  ],
+  "publish": ["github"],
   "nodeGypRebuild": true,
-  "files": ["dist/**/*.*", "assets/**/*.*", "app-build/**/*.js", "src/common/**/*.js", "build/Release/*.node"],
-  "overwolf": {
-    "requireSigning": false,
-    "disableAdOptimization": true
+  "electronFuses": {
+    "runAsNode": false,
+    "enableNodeOptionsEnvironmentVariable": false,
+    "enableNodeCliInspectArguments": false,
+    "enableEmbeddedAsarIntegrityValidation": true,
+    "onlyLoadAppFromAsar": true
   },
+  "files": ["dist/**/*.js", "build/Release/*.node"],
+  "extraResources": [
+    { "from": "../wowup-electron/app-build/packed/bundle", "to": "bundle" },
+    { "from": "../wowup-electron/app-build/packed/bundle-manifest.json", "to": "bundle-manifest.json" }
+  ],
   "win": {
-    "icon": "electron-build/icon-cf.ico",
+    "icon": "electron-build/icon.ico",
     "target": ["nsis", "portable"],
-    "forceCodeSigning": false,
     "signtoolOptions": {
       "sign": "./electron-build/sign-windows.js",
-      "signingHashAlgorithms": ["sha256"],
-      "publisherName": "WowUp LLC"
+      "signingHashAlgorithms": ["sha256"]
     }
   },
   "nsis": {
-    "deleteAppDataOnUninstall": true
+    "deleteAppDataOnUninstall": true,
+    "include": "./electron-build/uninstaller.nsh"
   },
   "mac": {
     "icon": "electron-build/icon.icns",
@@ -40,23 +40,11 @@
         "target": "default",
         "arch": ["x64", "arm64"]
       }
-    ],
-    "hardenedRuntime": true,
-    "entitlements": "./electron-build/entitlements.mac.plist",
-    "extendInfo": {
-      "CFBundleURLTypes": [
-        {
-          "CFBundleTypeRole": "Shell",
-          "CFBundleURLName": "CurseForge",
-          "CFBundleURLSchemes": "curseforge"
-        }
-      ]
-    }
+    ]
   },
   "linux": {
     "icon": "electron-build/flatpak/",
-    "target": ["AppImage"],
-    "asarUnpack": "**/*.node"
+    "target": ["AppImage"]
   },
   "flatpak": {
     "base": "org.electronjs.Electron2.BaseApp",

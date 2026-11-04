@@ -12,6 +12,7 @@ import { MatModule } from "../../../modules/mat-module";
 import { AddonUpdateEvent } from "../../../models/wowup/addon-update-event";
 import { ElectronService } from "../../../services";
 import { AddonService } from "../../../services/addons/addon.service";
+import { UpdateCompatibilityService } from "../../../services/addons/update-compatibility.service";
 import { AnalyticsService } from "../../../services/analytics/analytics.service";
 import { ProgressButtonComponent } from "../../common/progress-button/progress-button.component";
 import { AddonUpdateButtonComponent } from "./addon-update-button.component";
@@ -50,6 +51,10 @@ describe("AddonUpdateButtonComponent", () => {
           providers: [
             MatDialog,
             { provide: AddonService, useValue: addonServiceSpy },
+            {
+              provide: UpdateCompatibilityService,
+              useValue: jasmine.createSpyObj("UpdateCompatibilityService", ["confirmUpdates"]),
+            },
             { provide: AnalyticsService, useValue: analyticsServiceSpy },
           ],
         },

@@ -58,7 +58,10 @@
         "SELECT_ALL": "Seleziona Tutto",
         "UNDO": "Annulla"
       },
+      "HIDE": "Nascondi",
+      "HIDE_OTHERS": "Nascondi altre",
       "QUIT": "Esci",
+      "SHOW_ALL": "Mostra tutte",
       "VIEW": {
         "FORCE_RELOAD": "Forza Ricarica",
         "LABEL": "Visualizza",
@@ -70,8 +73,11 @@
         "ZOOM_RESET": "Reset Zoom"
       },
       "WINDOW": {
+        "BRING_ALL_TO_FRONT": "Porta tutto in primo piano",
         "CLOSE": "Chiudi",
-        "LABEL": "Finestra"
+        "LABEL": "Finestra",
+        "MINIMIZE": "Contrai",
+        "ZOOM": "Ridimensiona"
       }
     },
     "AUTO_UPDATE_FEW_NOTIFICATION_BODY": "Automaticamente aggiornato\r\n{addonNames}",
@@ -106,6 +112,8 @@
       "GROUP_LIGHT": "Chiaro",
       "HORDE": "Orda"
     },
+    "UPDATES_ON_HOLD_NOTIFICATION_BODY": "Alcuni aggiornamenti degli addon richiedono una versione di World of Warcraft più recente di quella installata. Apri WowUp per controllarli.",
+    "UPDATES_ON_HOLD_NOTIFICATION_TITLE": "Aggiornamenti in sospeso",
     "WINDOW_TITLE": "WowUp.io",
     "WINDOW_TITLE_CF": "WowUp.io CF",
     "WINDOW_TITLE_FULLSCREEN": "WowUp.io - Schermo Intero",
@@ -169,10 +177,12 @@
     },
     "ADDON_STATUS": {
       "BACKINGUP": "Backup in corso...",
+      "CHECKING_DEPENDENCIES": "Verifica delle dipendenze",
       "COMPLETE": "Installato",
       "DOWNLOADING": "Download in corso...",
       "ERROR": "Errore",
       "INSTALLING": "Installazione in corso...",
+      "INSTALLING_DEPENDENCIES": "Dipendenze {completed}/{total}",
       "PENDING": "In attesa",
       "RETRY": "Retrying...",
       "UNINSTALLING": "Disinstallazione in corso...",
@@ -286,6 +296,16 @@
       "RE_SCAN_SUCCESS": "The automatic Re-Scan has finished you're ready to go.",
       "TITLE": "CurseForge Migration"
     },
+    "GAME_VERSION_MISMATCH": {
+      "ADDON_NEEDS": "{name} richiede WoW {version}",
+      "CANCEL": "Annulla",
+      "IGNORE": "Ignora per questa versione di WoW",
+      "INSTALLATION": "{name} (WoW {version})",
+      "MESSAGE": "Questi aggiornamenti sono stati creati per una versione di World of Warcraft più recente di quella installata. Potrebbero causare errori finché il gioco non si aggiorna.",
+      "SKIP": "Salta questi",
+      "TITLE": "Gli aggiornamenti richiedono una versione più recente di WoW",
+      "UPDATE_ANYWAY": "Aggiorna comunque"
+    },
     "INSTALL_FROM_PROTOCOL": {
       "ADDON_INSTALLED": "Addon installato!",
       "ADDON_INSTALLING": "Installazione addon in corso...",
@@ -328,9 +348,6 @@
       "SUPPORTED_SOURCES": "(Supporta WowInterface e GitHub)",
       "TITLE": "Installa un Addon tramite URL"
     },
-    "NEW_VERSION_POPUP": {
-      "TITLE": "Note della Patch {versionNumber}"
-    },
     "PERMISSIONS": {
       "CURSEFORGE": {
         "DESCRIPTION_AD_LINK": "ad vendors",
@@ -366,6 +383,7 @@
     "ABOUT": {
       "ATTRIBUTIONS_TITLE": "Riconoscimenti",
       "CHANGE_LOG_SECTION_LABEL": "Changelog",
+      "SHELL_VERSION": "Shell v{version}",
       "TITLE": "WowUp.io",
       "WEBSITE_LINK_LABEL": "Dai un'occhiata al sito!"
     },
@@ -499,6 +517,7 @@
         "UPDATE_ALL_CLIENTS_BUTTON": "Aggiorna Tutti i Clients",
         "UPDATE_RETAIL_CLASSIC_BUTTON": "Aggiorna Retail/Classic"
       },
+      "VERSION_MISMATCH_TOOLTIP": "Questo aggiornamento richiede WoW {required}. Hai WoW {current}.",
       "WTF_BACKUP_BUTTON": "Interface Settings Backup"
     },
     "NEWS": {

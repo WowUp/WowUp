@@ -12,9 +12,14 @@ import {
   WowInstallation,
 } from "wowup-lib-core";
 
+import {
+  IPC_ADDONS_GET_ALL_FOR_INSTALLATION,
+  IPC_ADDONS_REPLACE_ALL_FOR_INSTALLATION,
+} from "../../../common/constants";
 import { AddonInstallState } from "../../models/wowup/addon-install-state";
 import { AddonUpdateEvent } from "../../models/wowup/addon-update-event";
 import { AnalyticsService } from "../analytics/analytics.service";
+import { ElectronService } from "../electron/electron.service";
 import { FileService } from "../files/file.service";
 import { AddonStorageService } from "../storage/addon-storage.service";
 import { TocService } from "../toc/toc.service";
@@ -23,7 +28,7 @@ import { WarcraftService } from "../warcraft/warcraft.service";
 import { WowUpService } from "../wowup/wowup.service";
 import { AddonFingerprintService } from "./addon-fingerprint.service";
 import { AddonInstallService, InstallQueueItem } from "./addon-install.service";
-import { AddonService } from "./addon.service";
+import { AddonService, DependencyInstallEvent, DependencyInstallState } from "./addon.service";
 import { AddonProviderFactory } from "./addon.provider.factory";
 
 const ADDON_FOLDER_PATH = pathJoin("wow", "_retail_", "Interface", "AddOns");
@@ -109,7 +114,9 @@ describe("AddonService", () => {
       defaultAutoUpdate: true,
     };
 
-    provider = jasmine.createSpyObj<AddonProvider>("AddonProvider", ["getById", "getAll", "isValidAddonId"]);
+    provider = jasmine.createSpyObj<AddonProvider>("AddonProvider", ["getById", "getAll", "isValidAddonId"], {
+      name: "Curse",
+    });
     provider.isValidAddonId.and.returnValue(true);
 
     addonStorage = jasmine.createSpyObj<AddonStorageService>("AddonStorageService", [
@@ -118,7 +125,9 @@ describe("AddonService", () => {
       "getByExternalIdAsync",
       "getAvailableForUpdate",
       "getAllForInstallationIdAsync",
+      "getAutoUpdateEnabled",
     ]);
+    addonStorage.getAutoUpdateEnabled.and.resolveTo([]);
     installed = [];
     addonStorage.setAsync.and.callFake((_key, value) => {
       installed = [...installed.filter((a) => a.id !== value.id), value];
@@ -154,7 +163,7 @@ describe("AddonService", () => {
 
     warcraftInstallationService = jasmine.createSpyObj<WarcraftInstallationService>(
       "WarcraftInstallationService",
-      ["getWowInstallation"],
+      ["getWowInstallation", "getWowInstallationsAsync", "refreshGameVersions"],
       {
         wowInstallations$: new Subject<WowInstallation[]>().asObservable(),
         legacyInstallationSrc$: new Subject<WowInstallation[]>().asObservable(),
@@ -163,9 +172,17 @@ describe("AddonService", () => {
     warcraftInstallationService.getWowInstallation.and.callFake((id) =>
       id === installation.id ? installation : undefined,
     );
+    warcraftInstallationService.getWowInstallationsAsync.and.callFake(() => Promise.resolve([installation]));
+    warcraftInstallationService.refreshGameVersions.and.callFake(() => Promise.resolve([installation]));
 
-    addonProviderFactory = jasmine.createSpyObj<AddonProviderFactory>("AddonProviderFactory", ["getProvider"]);
+    addonProviderFactory = jasmine.createSpyObj<AddonProviderFactory>("AddonProviderFactory", [
+      "getProvider",
+      "getBatchAddonProviders",
+      "getStandardAddonProviders",
+    ]);
     addonProviderFactory.getProvider.and.callFake(((name: string) => (name === "Curse" ? provider : undefined)) as any);
+    addonProviderFactory.getBatchAddonProviders.and.returnValue([]);
+    addonProviderFactory.getStandardAddonProviders.and.returnValue([provider]);
 
     service = new AddonService(
       addonStorage,
@@ -286,6 +303,223 @@ describe("AddonService", () => {
       await service.updateAddon(createAddon());
 
       expect(enqueued[0].installType).toEqual("update");
+    });
+
+    it("should update the addon before installing its missing dependencies", async () => {
+      provider.getById.and.resolveTo(
+        createSearchResult({
+          externalId: "2002",
+          name: "Mouse Media",
+          files: [createFile({ folders: ["MouseMedia"] })],
+        }),
+      );
+
+      await service.updateAddon(
+        createAddon({ dependencies: [{ externalAddonId: "2002", type: AddonDependencyType.Required }] }),
+      );
+
+      expect(enqueued.map((item) => [item.addon.externalId, item.installType])).toEqual([
+        ["1001", "update"],
+        ["2002", "install"],
+      ]);
+    });
+
+    it("should not install dependencies that are already installed", async () => {
+      installed = [createAddon({ id: "dep-1", name: "Mouse Media", externalId: "2002" })];
+
+      await service.updateAddon(
+        createAddon({ dependencies: [{ externalAddonId: "2002", type: AddonDependencyType.Required }] }),
+      );
+
+      expect(enqueued.map((item) => item.addon.externalId)).toEqual(["1001"]);
+      expect(provider.getById).not.toHaveBeenCalled();
+    });
+  });
+
+  describe("processAutoUpdates", () => {
+    function createPendingUpdate(overrides: Partial<Addon> = {}): Addon {
+      return createAddon({
+        autoUpdateEnabled: true,
+        installedVersion: "1.1.0",
+        latestVersion: "1.2.0",
+        gameVersion: ["12.1.5"],
+        ...overrides,
+      });
+    }
+
+    beforeEach(() => {
+      installation.gameVersion = "12.1.5";
+    });
+
+    it("updates addons whose release the installation can run", async () => {
+      const addon = createPendingUpdate();
+      addonStorage.getAutoUpdateEnabled.and.resolveTo([addon]);
+
+      const result = await service.processAutoUpdates();
+
+      expect(result.updated).toEqual([addon]);
+      expect(result.skipped).toEqual([]);
+      expect(enqueued.map((item) => item.addon)).toEqual([addon]);
+    });
+
+    it("holds back an update that needs a newer game version than the installation runs", async () => {
+      const addon = createPendingUpdate({ gameVersion: ["12.1.7"] });
+      addonStorage.getAutoUpdateEnabled.and.resolveTo([addon]);
+
+      const result = await service.processAutoUpdates();
+
+      expect(result.updated).toEqual([]);
+      expect(result.skipped).toEqual([addon]);
+      expect(enqueued).toEqual([]);
+    });
+
+    it("still updates the compatible addons in the same pass", async () => {
+      const tooNew = createPendingUpdate({ id: "too-new", externalId: "1", gameVersion: ["12.1.7"] });
+      const fine = createPendingUpdate({ id: "fine", externalId: "2", gameVersion: ["12.1.5"] });
+      addonStorage.getAutoUpdateEnabled.and.resolveTo([tooNew, fine]);
+
+      const result = await service.processAutoUpdates();
+
+      expect(result.updated).toEqual([fine]);
+      expect(result.skipped).toEqual([tooNew]);
+    });
+
+    it("updates once the user ignored the mismatch for the current game version", async () => {
+      installation.ignoredCompatibilityVersion = "12.1.5";
+      const addon = createPendingUpdate({ gameVersion: ["12.1.7"] });
+      addonStorage.getAutoUpdateEnabled.and.resolveTo([addon]);
+
+      const result = await service.processAutoUpdates();
+
+      expect(result.updated).toEqual([addon]);
+      expect(result.skipped).toEqual([]);
+    });
+
+    it("holds back again after the installation is patched to another game version", async () => {
+      installation.ignoredCompatibilityVersion = "12.1.5";
+      installation.gameVersion = "12.1.6";
+      const addon = createPendingUpdate({ gameVersion: ["12.1.7"] });
+      addonStorage.getAutoUpdateEnabled.and.resolveTo([addon]);
+
+      const result = await service.processAutoUpdates();
+
+      expect(result.skipped).toEqual([addon]);
+    });
+
+    it("updates when the game version of the installation is unknown", async () => {
+      installation.gameVersion = undefined;
+      const addon = createPendingUpdate({ gameVersion: ["12.1.7"] });
+      addonStorage.getAutoUpdateEnabled.and.resolveTo([addon]);
+
+      const result = await service.processAutoUpdates();
+
+      expect(result.updated).toEqual([addon]);
+    });
+
+    it("updates when the release does not say which game version it targets", async () => {
+      const addon = createPendingUpdate({ gameVersion: undefined });
+      addonStorage.getAutoUpdateEnabled.and.resolveTo([addon]);
+
+      const result = await service.processAutoUpdates();
+
+      expect(result.updated).toEqual([addon]);
+    });
+
+    it("does not hold back updates on a PTR installation", async () => {
+      installation.clientType = WowClientType.RetailPtr;
+      const addon = createPendingUpdate({ gameVersion: ["12.1.7"] });
+      addonStorage.getAutoUpdateEnabled.and.resolveTo([addon]);
+
+      const result = await service.processAutoUpdates();
+
+      expect(result.updated).toEqual([addon]);
+    });
+
+    it("reads the game versions again before deciding", async () => {
+      await service.processAutoUpdates();
+
+      expect(warcraftInstallationService.refreshGameVersions).toHaveBeenCalledTimes(1);
+    });
+
+    it("decides with the stored game version when it cannot be refreshed", async () => {
+      warcraftInstallationService.refreshGameVersions.and.rejectWith(new Error("no product.db"));
+      const addon = createPendingUpdate({ gameVersion: ["12.1.7"] });
+      addonStorage.getAutoUpdateEnabled.and.resolveTo([addon]);
+
+      const result = await service.processAutoUpdates();
+
+      expect(result.skipped).toEqual([addon]);
+    });
+  });
+
+  describe("syncClient", () => {
+    const required = (externalAddonId: string) => ({ externalAddonId, type: AddonDependencyType.Required });
+
+    function syncWithLatestFile(addon: Addon, file: AddonSearchResultFile): Promise<void> {
+      installed = [addon];
+      provider.getAll.and.resolveTo({ searchResults: [createSearchResult({ files: [file] })], errors: [] });
+      return service.syncClient(installation);
+    }
+
+    it("should take the dependencies of a newer release", async () => {
+      const addon = createAddon({ externalLatestReleaseId: "5000", latestVersion: "1.0.0", dependencies: [] });
+
+      await syncWithLatestFile(addon, createFile({ externalId: "5001", dependencies: [required("2002")] }));
+
+      expect(addon.externalLatestReleaseId).toEqual("5001");
+      expect(addon.dependencies).toEqual([required("2002")]);
+    });
+
+    it("should refresh the dependencies of a record saved from an older file", async () => {
+      const addon = createAddon({ externalLatestReleaseId: "5001", dependencies: [] });
+
+      await syncWithLatestFile(addon, createFile({ externalId: "5001", dependencies: [required("2002")] }));
+
+      expect(addon.dependencies).toEqual([required("2002")]);
+      expect(addonStorage.setAsync).toHaveBeenCalledWith(addon.id, addon);
+    });
+
+    it("should drop dependencies the latest release no longer has", async () => {
+      const addon = createAddon({ externalLatestReleaseId: "5000", dependencies: [required("2002")] });
+
+      await syncWithLatestFile(addon, createFile({ externalId: "5001", dependencies: [] }));
+
+      expect(addon.dependencies).toEqual([]);
+    });
+
+    it("should keep the dependencies when the provider does not report any", async () => {
+      const addon = createAddon({ externalLatestReleaseId: "5000", dependencies: [required("2002")] });
+
+      await syncWithLatestFile(addon, createFile({ externalId: "5001", dependencies: undefined }));
+
+      expect(addon.dependencies).toEqual([required("2002")]);
+    });
+
+    it("should take every game version the latest release targets", async () => {
+      const addon = createAddon({ externalLatestReleaseId: "5000", gameVersion: ["12.1.0"] });
+
+      await syncWithLatestFile(
+        addon,
+        createFile({ externalId: "5001", gameVersion: "12.1.7", gameVersions: ["12.1.7", "Retail", "12.1.5"] }),
+      );
+
+      expect(addon.gameVersion).toEqual(["12.1.7", "12.1.5"]);
+    });
+
+    it("should take the game version of a release that was already known", async () => {
+      const addon = createAddon({ externalLatestReleaseId: "5001", gameVersion: ["12.1.0"] });
+
+      await syncWithLatestFile(addon, createFile({ externalId: "5001", gameVersion: "12.1.7" }));
+
+      expect(addon.gameVersion).toEqual(["12.1.7"]);
+    });
+
+    it("should keep the game version when the release does not name one", async () => {
+      const addon = createAddon({ externalLatestReleaseId: "5000", gameVersion: ["12.1.0"] });
+
+      await syncWithLatestFile(addon, createFile({ externalId: "5001", gameVersion: "" }));
+
+      expect(addon.gameVersion).toEqual(["12.1.0"]);
     });
   });
 
@@ -670,6 +904,98 @@ describe("AddonService", () => {
       expect(enqueued.length).toEqual(0);
     });
 
+    it("should look every dependency up before any lookup has answered", async () => {
+      provider.getById.and.returnValue(new Promise(() => {}));
+
+      void service.installDependencies(createAddon(requiring("2002", "3003")));
+      await new Promise((r) => setTimeout(r));
+
+      expect(provider.getById.calls.allArgs().map((args) => args[0])).toEqual(["2002", "3003"]);
+    });
+
+    describe("progress", () => {
+      function progressOf(events: DependencyInstallEvent[]) {
+        return events.map((e) => [e.addon.externalId, e.state, e.completed, e.total]);
+      }
+
+      it("should report resolving, then each dependency as it finishes, then complete", async () => {
+        const events: DependencyInstallEvent[] = [];
+        service.dependencyInstall$.subscribe((e) => events.push(e));
+
+        await service.installDependencies(createAddon(requiring("2002", "3003")));
+
+        expect(progressOf(events)).toEqual([
+          ["1001", DependencyInstallState.Resolving, 0, 2],
+          ["1001", DependencyInstallState.Installing, 0, 2],
+          ["1001", DependencyInstallState.Installing, 1, 2],
+          ["1001", DependencyInstallState.Installing, 2, 2],
+          ["1001", DependencyInstallState.Complete, 2, 2],
+        ]);
+      });
+
+      it("should count only the dependencies that need installing", async () => {
+        installed.push(createAddon({ id: "dep", externalId: "2002" }));
+        const events: DependencyInstallEvent[] = [];
+        service.dependencyInstall$.subscribe((e) => events.push(e));
+
+        await service.installDependencies(createAddon(requiring("2002", "3003")));
+
+        expect(events.filter((e) => e.state === DependencyInstallState.Installing).map((e) => e.total)).toEqual([1, 1]);
+      });
+
+      it("should report complete when no dependency needs installing", async () => {
+        const events: DependencyInstallEvent[] = [];
+        service.dependencyInstall$.subscribe((e) => events.push(e));
+
+        await service.installDependencies(createAddon({ ...requiring("2002"), providerName: "Nope" }));
+
+        expect(events.map((e) => e.state)).toEqual([DependencyInstallState.Resolving, DependencyInstallState.Complete]);
+        expect(service.getDependencyInstallStatuses()).toEqual([]);
+      });
+
+      it("should report nothing for an addon without dependencies", async () => {
+        const events: DependencyInstallEvent[] = [];
+        service.dependencyInstall$.subscribe((e) => events.push(e));
+
+        await service.installAddon(createAddon({ dependencies: [] }));
+
+        expect(events).toEqual([]);
+      });
+
+      it("should keep an addon installing from the start of its install until its dependencies are done", async () => {
+        autoComplete = false;
+        const installing: boolean[] = [];
+        service.installing$.subscribe((value) => installing.push(value));
+
+        const promise = service.installAddon(createAddon(requiring("2002")));
+        expect(service.isInstalling()).toBeTrue();
+        expect(service.getDependencyInstallStatuses().map((e) => e.state)).toEqual([DependencyInstallState.Resolving]);
+
+        await new Promise((r) => setTimeout(r));
+        enqueued[0].completion.resolve();
+        await new Promise((r) => setTimeout(r));
+        expect(service.isInstalling()).toBeTrue();
+        expect(service.getDependencyInstallStatuses().map((e) => e.state)).toEqual([DependencyInstallState.Installing]);
+
+        enqueued[1].completion.resolve();
+        await promise;
+        expect(service.isInstalling()).toBeFalse();
+        expect(service.getDependencyInstallStatuses()).toEqual([]);
+        expect(installing).toEqual([false, true, false]);
+      });
+
+      it("should drop the addon's dependency progress when the addon itself fails", async () => {
+        addonInstallService.enqueue.and.callFake((item) => {
+          enqueued.push(item);
+          item.completion.reject(new Error("bad zip"));
+        });
+
+        await expectAsync(service.installAddon(createAddon(requiring("2002")))).toBeRejectedWithError("bad zip");
+        expect(service.getDependencyInstallStatuses()).toEqual([]);
+        expect(service.isInstalling()).toBeFalse();
+      });
+    });
+
     describe("wired into installs", () => {
       it("should install required dependencies after installing the addon", async () => {
         await service.installAddon(createAddon(requiring("2002")));
@@ -740,10 +1066,10 @@ describe("AddonService", () => {
         expect(enqueuedIds()).toEqual(["1001"]);
       });
 
-      it("should not install dependencies on update", async () => {
+      it("should install required dependencies after updating the addon", async () => {
         await service.updateAddon(createAddon(requiring("2002")));
 
-        expect(enqueuedIds()).toEqual(["1001"]);
+        expect(enqueuedIds()).toEqual(["1001", "2002"]);
       });
     });
   });
@@ -893,6 +1219,133 @@ describe("AddonService", () => {
       await service.removeAddon(createAddon());
 
       expect(removed).toEqual(["addon-1"]);
+    });
+  });
+
+  describe("rescanInstallation", () => {
+    /** The addon store in the main process, keyed by addon id */
+    let store: Map<string, Addon>;
+    let scanSpy: jasmine.Spy;
+    let scanService: AddonService;
+
+    /** Every IPC call takes a turn of the event loop, like a real round trip to the main process */
+    function createElectronService(): ElectronService {
+      return {
+        invoke: async (channel: string, ...args: any[]) => {
+          await new Promise((r) => setTimeout(r));
+          switch (channel) {
+            case IPC_ADDONS_GET_ALL_FOR_INSTALLATION:
+              return [...store.values()].filter((a) => a.installationId === args[0]);
+            case IPC_ADDONS_REPLACE_ALL_FOR_INSTALLATION:
+              for (const [id, a] of [...store]) {
+                if (a.installationId === args[0]) {
+                  store.delete(id);
+                }
+              }
+              (args[1] as Addon[]).forEach((a) => store.set(a.id, a));
+              return undefined;
+            default:
+              return [];
+          }
+        },
+      } as unknown as ElectronService;
+    }
+
+    function storedNames(): Array<string | undefined> {
+      return [...store.values()].map((a) => a.name).sort();
+    }
+
+    beforeEach(() => {
+      store = new Map();
+      scanService = new AddonService(
+        new AddonStorageService(createElectronService()),
+        addonInstallService,
+        analyticsService,
+        warcraftService,
+        {} as WowUpService,
+        fileService,
+        {} as TocService,
+        warcraftInstallationService,
+        addonProviderFactory,
+        {} as AddonFingerprintService,
+      );
+
+      // Every scan makes new records with new ids, like the real folder scan does
+      let scanCt = 0;
+      scanSpy = spyOn<any>(scanService, "scanAddons").and.callFake(async () => {
+        scanCt += 1;
+        await new Promise((r) => setTimeout(r, 5));
+        return ["Baganator", "Syndicator"].map((name) =>
+          createAddon({ id: `${name}-${scanCt}`, name, externalId: name }),
+        );
+      });
+    });
+
+    it("should save each addon once when several loads find nothing saved at the same time", async () => {
+      await Promise.all([
+        scanService.getAddons(installation),
+        scanService.getAddons(installation),
+        scanService.getAddons(installation),
+      ]);
+
+      expect(storedNames()).toEqual(["Baganator", "Syndicator"]);
+      expect(scanSpy).toHaveBeenCalledTimes(1);
+    });
+
+    it("should give every caller the addons of the shared scan", async () => {
+      const results = await Promise.all([scanService.getAddons(installation), scanService.getAddons(installation)]);
+
+      expect(results.map((r) => r.map((a) => a.id))).toEqual([
+        ["Baganator-1", "Syndicator-1"],
+        ["Baganator-1", "Syndicator-1"],
+      ]);
+    });
+
+    it("should save each addon once when rescans overlap", async () => {
+      await scanService.getAddons(installation, true);
+
+      await Promise.all([scanService.getAddons(installation, true), scanService.getAddons(installation, true)]);
+
+      expect(storedNames()).toEqual(["Baganator", "Syndicator"]);
+    });
+
+    it("should scan again after the running scan when a rescan is asked for mid-scan", async () => {
+      const first = scanService.rescanInstallation(installation);
+      const second = scanService.rescanInstallation(installation);
+      const third = scanService.rescanInstallation(installation);
+
+      const [, secondResult, thirdResult] = await Promise.all([first, second, third]);
+
+      expect(scanSpy).toHaveBeenCalledTimes(2);
+      expect(secondResult.map((a) => a.id)).toEqual(["Baganator-2", "Syndicator-2"]);
+      expect(thirdResult).toBe(secondResult);
+      expect([...store.keys()].sort()).toEqual(["Baganator-2", "Syndicator-2"]);
+    });
+
+    it("should keep the addons' settings across a rescan", async () => {
+      store.set("old", createAddon({ id: "old", name: "Baganator", externalId: "Baganator", isIgnored: true }));
+
+      await scanService.rescanInstallation(installation);
+
+      expect(store.has("old")).toBeFalse();
+      expect(store.get("Baganator-1")?.isIgnored).toBeTrue();
+    });
+
+    it("should run a waiting rescan even when the running one fails", async () => {
+      scanSpy.and.returnValues(Promise.reject(new Error("disk")), Promise.resolve([createAddon({ id: "ok" })]));
+
+      const failed = scanService.rescanInstallation(installation);
+      const next = scanService.rescanInstallation(installation);
+
+      await expectAsync(failed).toBeRejectedWithError("disk");
+      expect((await next).map((a) => a.id)).toEqual(["ok"]);
+    });
+
+    it("should start a new scan once the last one has finished", async () => {
+      await scanService.rescanInstallation(installation);
+      await scanService.rescanInstallation(installation);
+
+      expect(scanSpy).toHaveBeenCalledTimes(2);
     });
   });
 });

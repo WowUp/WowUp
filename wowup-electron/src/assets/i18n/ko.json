@@ -58,7 +58,10 @@
         "SELECT_ALL": "SelectAll",
         "UNDO": "Undo"
       },
+      "HIDE": "가리기",
+      "HIDE_OTHERS": "기타 가리기",
       "QUIT": "Quit",
+      "SHOW_ALL": "모두 보기",
       "VIEW": {
         "FORCE_RELOAD": "Force Reload",
         "LABEL": "View",
@@ -70,8 +73,11 @@
         "ZOOM_RESET": "Reset Zoom"
       },
       "WINDOW": {
+        "BRING_ALL_TO_FRONT": "모두 앞으로 가져오기",
         "CLOSE": "Close",
-        "LABEL": "Window"
+        "LABEL": "Window",
+        "MINIMIZE": "최소화",
+        "ZOOM": "확대/축소"
       }
     },
     "AUTO_UPDATE_FEW_NOTIFICATION_BODY": "다음 애드온들이 자동 업데이트되었습니다.\r\n{addonNames}",
@@ -106,6 +112,8 @@
       "GROUP_LIGHT": "라이트모드",
       "HORDE": "호드"
     },
+    "UPDATES_ON_HOLD_NOTIFICATION_BODY": "일부 애드온 업데이트에는 설치된 버전보다 최신 World of Warcraft가 필요합니다. WowUp을 열어 확인하세요.",
+    "UPDATES_ON_HOLD_NOTIFICATION_TITLE": "업데이트 보류됨",
     "WINDOW_TITLE": "WowUp.io",
     "WINDOW_TITLE_CF": "WowUp.io CF",
     "WINDOW_TITLE_FULLSCREEN": "WowUp.io - 전체 화면",
@@ -169,10 +177,12 @@
     },
     "ADDON_STATUS": {
       "BACKINGUP": "백업 중",
+      "CHECKING_DEPENDENCIES": "종속성 확인 중",
       "COMPLETE": "설치됨",
       "DOWNLOADING": "다운로드 중",
       "ERROR": "에러",
       "INSTALLING": "설치 중",
+      "INSTALLING_DEPENDENCIES": "종속성 {completed}/{total}",
       "PENDING": "일시정지됨",
       "RETRY": "Retrying...",
       "UNINSTALLING": "삭제 중",
@@ -286,6 +296,16 @@
       "RE_SCAN_SUCCESS": "The automatic Re-Scan has finished you're ready to go.",
       "TITLE": "CurseForge Migration"
     },
+    "GAME_VERSION_MISMATCH": {
+      "ADDON_NEEDS": "{name}: WoW {version} 필요",
+      "CANCEL": "취소",
+      "IGNORE": "이 WoW 버전에서는 무시",
+      "INSTALLATION": "{name} (WoW {version})",
+      "MESSAGE": "이 업데이트는 설치된 버전보다 최신 World of Warcraft용으로 만들어졌습니다. 게임이 업데이트될 때까지 오류가 발생할 수 있습니다.",
+      "SKIP": "이 항목 건너뛰기",
+      "TITLE": "업데이트에 더 최신 WoW 버전이 필요합니다",
+      "UPDATE_ANYWAY": "그래도 업데이트"
+    },
     "INSTALL_FROM_PROTOCOL": {
       "ADDON_INSTALLED": "Addon is installed!",
       "ADDON_INSTALLING": "Installing addon",
@@ -328,9 +348,6 @@
       "SUPPORTED_SOURCES": "WowInterface 와 GitHub 주소가 지원됩니다",
       "TITLE": "설치할 애드온 URL 주소"
     },
-    "NEW_VERSION_POPUP": {
-      "TITLE": "Patch Notes {versionNumber}"
-    },
     "PERMISSIONS": {
       "CURSEFORGE": {
         "DESCRIPTION_AD_LINK": "ad vendors",
@@ -366,6 +383,7 @@
     "ABOUT": {
       "ATTRIBUTIONS_TITLE": "Attributions",
       "CHANGE_LOG_SECTION_LABEL": "변경 이력",
+      "SHELL_VERSION": "Shell v{version}",
       "TITLE": "WowUp.io",
       "WEBSITE_LINK_LABEL": "웹사이트로 이동"
     },
@@ -499,6 +517,7 @@
         "UPDATE_ALL_CLIENTS_BUTTON": "모든 클라이언트 업데이트",
         "UPDATE_RETAIL_CLASSIC_BUTTON": "리테일/클래식 업데이트"
       },
+      "VERSION_MISMATCH_TOOLTIP": "이 업데이트에는 WoW {required}이(가) 필요합니다. 현재 WoW {current}입니다.",
       "WTF_BACKUP_BUTTON": "Interface Settings Backup"
     },
     "NEWS": {

@@ -14,9 +14,10 @@ import { AddonInstallState } from "../../models/wowup/addon-install-state";
 import { AddonUpdateEvent } from "../../models/wowup/addon-update-event";
 import { SortOrder } from "../../models/wowup/sort-order";
 import { ElectronService } from "../../services";
-import { AddonService } from "../../services/addons/addon.service";
+import { AddonService, DependencyInstallEvent, DependencyInstallState } from "../../services/addons/addon.service";
 import { SessionService } from "../../services/session/session.service";
 import { WarcraftService } from "../../services/warcraft/warcraft.service";
+import { UpdateCompatibilityService } from "../../services/addons/update-compatibility.service";
 import { WowUpAddonService } from "../../services/wowup/wowup-addon.service";
 import { WowUpService } from "../../services/wowup/wowup.service";
 import { MyAddonsComponent } from "./my-addons.component";
@@ -50,10 +51,12 @@ describe("MyAddonsComponent", () => {
   let addonServiceSpy: any;
   let warcraftServiceSpy: any;
   let warcraftInstallationService: WarcraftInstallationService;
+  let updateCompatibilityServiceSpy: jasmine.SpyObj<UpdateCompatibilityService>;
   let pushService: PushService;
   let addonUiService: AddonUiService;
   let addonProviderService: any;
   let addonInstalledSrc: Subject<AddonUpdateEvent>;
+  let dependencyInstallSrc: Subject<DependencyInstallEvent>;
 
   beforeEach(async () => {
     addonUiService = jasmine.createSpyObj("AddonUiService", [""], {});
@@ -63,6 +66,7 @@ describe("MyAddonsComponent", () => {
       persistUpdateInformationToWowUpAddon: () => {},
     });
     addonInstalledSrc = new Subject<AddonUpdateEvent>();
+    dependencyInstallSrc = new Subject<DependencyInstallEvent>();
     addonServiceSpy = jasmine.createSpyObj(
       "AddonService",
       {
@@ -71,6 +75,7 @@ describe("MyAddonsComponent", () => {
       },
       {
         addonInstalled$: addonInstalledSrc.asObservable(),
+        dependencyInstall$: dependencyInstallSrc.asObservable(),
         addonRemoved$: new Subject<string>().asObservable(),
         syncing$: new BehaviorSubject(false).asObservable(),
         anyUpdatesAvailable$: new BehaviorSubject(false).asObservable(),
@@ -91,7 +96,7 @@ describe("MyAddonsComponent", () => {
     });
     sessionServiceSpy = jasmine.createSpyObj(
       "SessionService",
-      ["getSelectedHomeTab", "setContextText", "getSelectedWowInstallation"],
+      ["getSelectedHomeTab", "setContextText", "getSelectedWowInstallation", "setEnableControls"],
       {
         selectedHomeTab$: new BehaviorSubject(0).asObservable(),
         autoUpdateComplete$: new BehaviorSubject(0).asObservable(),
@@ -101,7 +106,6 @@ describe("MyAddonsComponent", () => {
         selectedWowInstallation$: new BehaviorSubject({}),
         rescanComplete$: new BehaviorSubject(0).asObservable(),
         enableControls$: new BehaviorSubject(true).asObservable(),
-        setEnableControls: () => {},
       },
     );
     warcraftServiceSpy = jasmine.createSpyObj("WarcraftService", [""], {
@@ -112,6 +116,11 @@ describe("MyAddonsComponent", () => {
       isLinux: true,
       isMac: false,
     });
+
+    updateCompatibilityServiceSpy = jasmine.createSpyObj<UpdateCompatibilityService>("UpdateCompatibilityService", [
+      "confirmUpdates",
+    ]);
+    updateCompatibilityServiceSpy.confirmUpdates.and.callFake((addons) => Promise.resolve(addons));
 
     warcraftInstallationService = jasmine.createSpyObj("WarcraftInstallationService", [""], {
       wowInstallations$: new BehaviorSubject<any[]>([]),
@@ -142,6 +151,7 @@ describe("MyAddonsComponent", () => {
       set: {
         providers: [
           { provide: AddonService, useValue: addonServiceSpy },
+          { provide: UpdateCompatibilityService, useValue: updateCompatibilityServiceSpy },
           { provide: WowUpService, useValue: wowUpServiceSpy },
           { provide: WowUpAddonService, useValue: wowUpAddonServiceSpy },
           { provide: ElectronService, useValue: electronServiceSpy },
@@ -245,6 +255,34 @@ describe("MyAddonsComponent", () => {
 
       expect(rows().length).toEqual(1);
       expect(rows()[0].isInstalling).toBeFalse();
+    });
+
+    it("should unlock the controls once the dependencies an install pulled in are done", () => {
+      addonInstalledSrc.next({ addon: createAddon(), installState: AddonInstallState.Pending, progress: 0 });
+      expect(sessionServiceSpy.setEnableControls).toHaveBeenCalledWith(false);
+      sessionServiceSpy.setEnableControls.calls.reset();
+
+      dependencyInstallSrc.next({
+        addon: createAddon(),
+        state: DependencyInstallState.Complete,
+        total: 1,
+        completed: 1,
+      });
+
+      expect(sessionServiceSpy.setEnableControls).toHaveBeenCalledOnceWith(true);
+    });
+
+    it("should keep the controls locked while dependencies are still installing", () => {
+      sessionServiceSpy.setEnableControls.calls.reset();
+
+      dependencyInstallSrc.next({
+        addon: createAddon(),
+        state: DependencyInstallState.Installing,
+        total: 2,
+        completed: 1,
+      });
+
+      expect(sessionServiceSpy.setEnableControls).not.toHaveBeenCalled();
     });
 
     it("should ignore events for another installation", () => {

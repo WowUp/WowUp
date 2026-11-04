@@ -6,6 +6,7 @@ import {
   IPC_WARCRAFT_INSTALLATIONS_REMOVE,
   IPC_WARCRAFT_INSTALLATIONS_REORDER,
   IPC_WARCRAFT_INSTALLATIONS_SET_ALL,
+  IPC_WARCRAFT_INSTALLATIONS_SET_GAME_VERSIONS,
   IPC_WARCRAFT_INSTALLATIONS_SET_SELECTED,
   IPC_WARCRAFT_INSTALLATIONS_UPDATE,
 } from "../../../common/constants";
@@ -45,5 +46,9 @@ export class WarcraftInstallationApiService {
 
   public setSelected(installationId: string): Promise<WowInstallation[]> {
     return this._electronService.invoke(IPC_WARCRAFT_INSTALLATIONS_SET_SELECTED, installationId);
+  }
+
+  public setGameVersions(gameVersions: Record<string, string>): Promise<WowInstallation[]> {
+    return this._electronService.invoke(IPC_WARCRAFT_INSTALLATIONS_SET_GAME_VERSIONS, gameVersions);
   }
 }

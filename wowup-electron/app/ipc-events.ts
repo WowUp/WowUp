@@ -14,7 +14,6 @@ import {
 import * as log from "electron-log/main";
 import globrex = require("globrex");
 import * as _ from "lodash";
-import * as nodeDiskInfo from "node-disk-info";
 import * as path from "path";
 import { Transform } from "stream";
 import * as yauzl from "yauzl";
@@ -31,6 +30,7 @@ import {
   IPC_DOWNLOAD_FILE_CHANNEL,
   IPC_FOCUS_WINDOW,
   IPC_GET_APP_VERSION,
+  IPC_GET_SHELL_VERSION,
   IPC_GET_HOME_DIR,
   IPC_GET_ASSET_FILE_PATH,
   IPC_GET_DIRECTORY_TREE,
@@ -43,7 +43,6 @@ import {
   IPC_IS_DEFAULT_PROTOCOL_CLIENT,
   IPC_LIST_DIR_RECURSIVE,
   IPC_LIST_DIRECTORIES_CHANNEL,
-  IPC_LIST_DISKS_WIN32,
   IPC_LIST_ENTRIES,
   IPC_LIST_FILES_CHANNEL,
   IPC_MAXIMIZE_WINDOW,
@@ -109,11 +108,13 @@ import { GetDirectoryTreeRequest } from "../src/common/models/ipc-request";
 import { restoreWindow } from "./window-state";
 import { firstValueFrom, from, mergeMap, toArray } from "rxjs";
 import { downloadFile } from "./services/download/file-download";
+import { getAssetPath } from "./bundle-paths";
 import {
   isDefaultProtocolClient,
   removeAsDefaultProtocolClient,
   setAsDefaultProtocolClient,
-} from "./utils/protocol-client";
+} from "../../wowup-shell/contract/protocol-client";
+import { getShell } from "../../wowup-shell/contract/shell-api";
 import { FsStats } from "wowup-lib-core";
 
 let PENDING_OPEN_URLS: string[] = [];
@@ -213,7 +214,7 @@ export function initializeIpcHandlers(window: BrowserWindow): void {
   });
 
   handle(IPC_GET_ASSET_FILE_PATH, (evt, fileName: string) => {
-    return path.join(app.getAppPath(), "assets", fileName);
+    return getAssetPath(fileName);
   });
 
   handle(IPC_CREATE_DIRECTORY_CHANNEL, async (evt, directoryPath: string): Promise<boolean> => {
@@ -266,7 +267,12 @@ export function initializeIpcHandlers(window: BrowserWindow): void {
     getPreferenceStore().set(ZOOM_FACTOR_KEY, zoomFactor);
   });
 
+  // The app's version is the loaded bundle's; app.getVersion() is the installed shell's
   handle(IPC_GET_APP_VERSION, () => {
+    return getShell().bundle.version;
+  });
+
+  handle(IPC_GET_SHELL_VERSION, () => {
     return app.getVersion();
   });
 
@@ -514,17 +520,6 @@ export function initializeIpcHandlers(window: BrowserWindow): void {
   handle(IPC_QUIT_APP, () => {
     log.info(`[QuitApp]`);
     app.quit();
-  });
-
-  handle(IPC_LIST_DISKS_WIN32, async () => {
-    const diskInfos = await nodeDiskInfo.getDiskInfo();
-    // Cant pass complex objects over the wire, make them simple
-    return diskInfos.map((di) => {
-      return {
-        mounted: di.mounted,
-        filesystem: di.filesystem,
-      };
-    });
   });
 
   handle(IPC_WINDOW_LEAVE_FULLSCREEN, () => {

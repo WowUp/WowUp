@@ -78,8 +78,8 @@ export class VerticalTabsComponent implements OnInit, OnDestroy {
     isSelected$: this.sessionService.selectedHomeTab$.pipe(map((result) => result === TAB_INDEX_MY_ADDONS)),
     isDisabled$: combineLatest([
       this._warcraftInstallationService.wowInstallations$,
-      this.sessionService.enableControls$,
-    ]).pipe(map(([installations, enableControls]) => !enableControls || installations.length === 0)),
+      this.sessionService.enableAddonTabs$,
+    ]).pipe(map(([installations, enableAddonTabs]) => !enableAddonTabs || installations.length === 0)),
     onClick: (): void => {
       this.sessionService.selectedHomeTab = TAB_INDEX_MY_ADDONS;
     },
@@ -92,8 +92,8 @@ export class VerticalTabsComponent implements OnInit, OnDestroy {
     isSelected$: this.sessionService.selectedHomeTab$.pipe(map((result) => result === TAB_INDEX_GET_ADDONS)),
     isDisabled$: combineLatest([
       this._warcraftInstallationService.wowInstallations$,
-      this.sessionService.enableControls$,
-    ]).pipe(map(([installations, enableControls]) => !enableControls || installations.length === 0)),
+      this.sessionService.enableAddonTabs$,
+    ]).pipe(map(([installations, enableAddonTabs]) => !enableAddonTabs || installations.length === 0)),
     onClick: (): void => {
       this.sessionService.selectedHomeTab = TAB_INDEX_GET_ADDONS;
     },

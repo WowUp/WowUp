@@ -8,7 +8,18 @@
   "generateUpdatesFilesForAllChannels": true,
   "publish": ["github"],
   "nodeGypRebuild": true,
-  "files": ["dist/**/*.*", "assets/**/*.*", "app-build/**/*.js", "src/common/**/*.js", "build/Release/*.node"],
+  "electronFuses": {
+    "runAsNode": false,
+    "enableNodeOptionsEnvironmentVariable": false,
+    "enableNodeCliInspectArguments": false,
+    "enableEmbeddedAsarIntegrityValidation": true,
+    "onlyLoadAppFromAsar": true
+  },
+  "files": ["dist/**/*.js", "build/Release/*.node"],
+  "extraResources": [
+    { "from": "../wowup-electron/app-build/packed/bundle", "to": "bundle" },
+    { "from": "../wowup-electron/app-build/packed/bundle-manifest.json", "to": "bundle-manifest.json" }
+  ],
   "overwolf": {
     "requireSigning": false,
     "disableAdOptimization": true

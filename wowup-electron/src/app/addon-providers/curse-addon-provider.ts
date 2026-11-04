@@ -806,6 +806,7 @@ export class CurseAddonProvider extends AddonProvider {
           downloadUrl: lf.downloadUrl,
           folders: this.getFolderNames(lf),
           gameVersion: getGameVersion(this.getGameVersion(lf)),
+          gameVersions: lf.gameVersions,
           releaseDate: new Date(lf.fileDate),
           dependencies: lf.dependencies.map(this.createAddonSearchResultDependency),
           externalId: lf.id.toString(),
