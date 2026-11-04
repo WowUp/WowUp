@@ -11,14 +11,22 @@
   // border-radius: 4px;
 
   .select-container {
-    flex-grow: 1;
+    flex: 1 1 0;
+    min-width: 0;
   }
 
   .right-container {
     display: flex;
     flex-direction: row;
+    flex-shrink: 0;
 
     .filter-container {
+      width: 150px;
+      min-width: 0;
+
+      mat-form-field {
+        width: 100%;
+      }
     }
 
     .button-container {
@@ -28,6 +36,8 @@
       margin-left: 1em;
 
       button {
+        white-space: nowrap;
+
         &:not(:last-child) {
           margin-right: 0.5em;
         }
