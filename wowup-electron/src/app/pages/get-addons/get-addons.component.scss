@@ -15,7 +15,8 @@
   margin: 1em 1em 0 1em;
 
   .select-container {
-    flex-grow: 1;
+    flex: 1 1 0;
+    min-width: 0;
   }
 
   .center-container {
@@ -32,8 +33,17 @@
   .right-container {
     display: flex;
     flex-direction: row;
-    flex-grow: 1;
+    flex-shrink: 0;
     justify-content: flex-end;
+
+    .search-container {
+      width: 150px;
+      min-width: 0;
+
+      mat-form-field {
+        width: 100%;
+      }
+    }
 
     .button-container {
       display: flex;
@@ -42,6 +52,8 @@
       margin-left: 1em;
 
       button {
+        white-space: nowrap;
+
         &:not(:last-child) {
           margin-right: 0.5em;
         }
