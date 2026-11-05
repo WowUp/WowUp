@@ -20,6 +20,8 @@ const CHANGELOGS: ChangeLog[] = [
     html: `
     <h4>Fixes</h4>
     <ul>
+    <li>Fix invisible expand/collapse icons in the WTF Explorer tree</li>
+    <li>Fix the client selector dropdown being too narrow on My Addons and Get Addons; keep control bar buttons from wrapping</li>
     <li>Fix a false "Failed to get WowUp update" error message that appeared when checking for updates during a temporary network issue</li>
     </ul>
     `,
