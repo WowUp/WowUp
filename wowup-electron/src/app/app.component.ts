@@ -151,7 +151,7 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
 
     this.electronService.appUpdate$.subscribe((evt) => {
       if (evt.state === AppUpdateState.Error) {
-        if (evt.error.indexOf("dev-app-update.yml") === -1) {
+        if (!this.isTransientUpdateError(evt.error)) {
           this._snackbarService.showErrorSnackbar("APP.WOWUP_UPDATE.UPDATE_ERROR");
         }
       } else if (evt.state === AppUpdateState.Downloaded) {
@@ -561,6 +561,14 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
   private onClickNotification = () => {
     this.electronService.focusWindow().catch((e) => console.error(`Failed to focus window on notification click`, e));
   };
+
+  private isTransientUpdateError(error: string): boolean {
+    return (
+      error.indexOf("dev-app-update.yml") !== -1 ||
+      /HttpError: 5\d\d/.test(error) ||
+      /ECONNRESET|ECONNREFUSED|ETIMEDOUT|ENOTFOUND|net::ERR_/.test(error)
+    );
+  }
 
   private getAddonNames(addons: Addon[]) {
     return _.map(addons, (addon) => addon.name);
