@@ -124,6 +124,7 @@ declare global {
     platform: string;
     userDataPath: string;
     logPath: string;
+    installId: string;
     wowup: {
       onRendererEvent: (channel: string, listener: (event: IpcRendererEvent, ...args: any[]) => void) => void;
       onceRendererEvent: (channel: string, listener: (event: IpcRendererEvent, ...args: any[]) => void) => void;
