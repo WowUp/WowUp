@@ -16,6 +16,15 @@ export class PatchNotesService {
 
 const CHANGELOGS: ChangeLog[] = [
   {
+    Version: "2.25.5",
+    html: `
+    <h4>Fixes</h4>
+    <ul>
+    <li>Fix a false "Failed to get WowUp update" error message that appeared when checking for updates during a temporary network issue</li>
+    </ul>
+    `,
+  },
+  {
     Version: "2.25.4",
     html: `
     <h4>Features</h4>
