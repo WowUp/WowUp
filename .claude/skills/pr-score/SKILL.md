@@ -223,3 +223,49 @@ Scored so far:
   (body/base mismatch). Under the updated gate this base would now fail as fixable.
   Recommendation: **Request changes** (retarget to `develop`; optional `loadInstallId` spec) —
   or **Merge with follow-up** if the maintainer retargets it themselves.
+- **PR 1555** (3 bundled fixes on stale `release/2.22.1`; fork, CI not run; scored 2026-11-06):
+  73/100, gate FAILED (base). −15 Correctness: its `browser_download_url` change conflicts with
+  and would undo `develop`'s #1248 fix (`e70bfe45`, private repos). Lint/tests run on `develop` +
+  PR with that hunk dropped. Recommendation: **Request changes** (retarget, drop commit 2).
+  **Re-scored 2026-11-06:** maintainer retargeted to `develop`; commits unchanged. Base gate now
+  passes but Conflicts fails: `github-addon-provider.ts` (commit 2) and a one-line `locales.spec.ts`
+  clash with `develop`'s `6be5cf20` (adds `pl`). Score unchanged at 73. Lint + full `npm test`
+  pass on `develop` + PR (commit 2 dropped, both sides kept in the spec). Recommendation:
+  **Request changes** (rebase, drop commit 2) — or maintainer cherry-picks commits 1 and 3.
+- **PR 1542** (macOS `LSApplicationCategoryType` games → utilities; 4 lines, fork, CI not run;
+  scored 2026-11-06): 97/100, Merge with follow-up. Paths are pre-move `wowup-electron/electron-build/`;
+  GitHub says CONFLICTING (stale merge ref) but `git merge-tree` against `develop` and `master`
+  is clean — rename detection lands it in `wowup-shell/electron-build/`. Lint/tests/build not run
+  (JSON only, read by mac electron-builder alone); JSON parse checked. −1 Conventions (4 web-UI
+  "Update <file>.json" commits, squash), −2 Hygiene (no stated testing, no issue). Maintainer
+  merges locally since GitHub's button is blocked.
+- **PR 1541** (GitHub `getByIdAsync` → `browser_download_url`; 1 line, fork, CI not run; scored
+  2026-11-06): 75/100, gate FAILED (Conflicts vs `develop` and `master`). Hunk is identical to
+  `1f72318f` (#1568), already superseded by `e70bfe45` (Accept header fix, shipped v2.24.0,
+  #1520 closed). −15 Correctness (would re-break private repos), −5 Tests, −2 Conventions,
+  −3 Hygiene. Lint/tests not run: the only valid resolution keeps `develop`'s side, so the PR
+  becomes empty. Recommendation: **Close / redirect** (superseded) — a score in the 70s doesn't
+  mean the PR can be saved; check `git log -- <file>` on the base for an earlier fix.
+- **PR 1443** (`addonStore.clear()` in `IPC_ADDONS_SAVE_ALL`; 2 lines, fork from 2023, base
+  `master`, CI not run; scored 2026-11-06): 67/100, gates FAILED (base, Conflicts vs `develop`
+  and `master`). Handler moved to `app/controllers/addon.controller.ts`; duplicate bug fixed by
+  `672535aa` (#1561, on `master`). −15 Correctness (rescan saves one installation, so `clear()`
+  wipes the others), −8 (`setInstallationAutoUpdate` also calls `saveAll`, contradicting the
+  body), −5 Tests, −5 Scope. Lint/tests not run. **Close / redirect** (superseded).
+- **PR 1433** (Windows ARM64 exe names; 26 lines, fork from 2023, base `develop`, CI not run;
+  scored 2026-11-06): 76/100, gate FAILED (Conflicts: modify/delete of the renderer
+  `warcraft.service.win.ts` vs `develop` and `master`). Windows half superseded by `213fcea2`
+  (#1510, shipped v2.22.0, now in `app/services/warcraft/warcraft-platform.win.ts`); Linux half
+  auto-merges into `warcraft-platform.linux.ts` but is unexplained. −8 Correctness (names added to
+  `isWowApplication` only, `getClientType` returns None), −3 (ARM64 names on Linux/Wine), −5 Arch,
+  −5 Tests, −2 Scope, −1 Hygiene. Lint/tests not run. **Close / redirect** (superseded); residual
+  ideas (case-insensitive match, x64-emulated WowUp) go to a maintainer follow-up.
+- **PR 1548** (package.json-only dependency bump from March, no lockfile; fork, CI not run; scored
+  2026-11-06): 69/100, gates FAILED (Conflicts, Build, Tests). −15 Correctness: `package-lock.json`
+  not updated, so `npm install` hits `ERESOLVE` and `bundle-publish.yml`'s `npm ci` fails. −8 Tests:
+  zone.js 0.14.2 → 0.14.10 makes the `AddonInstallService` cleanup spec fail every run (spec races
+  `completion.resolve()` before the `finally` cleanup; passes with 0.14.2). −5 Scope: a stale base
+  would roll back `adm-zip` 0.6.1 and Electron 43 and re-add `win-ca`. Run on `develop` + PR with
+  `develop`'s newer versions kept and the lockfile regenerated. Recommendation: **Request changes**
+  (rebase, regenerate lockfile, fix spec) — or maintainer redoes the bump on `develop`.
+  Lesson: for dependency PRs, test with the committed lockfile first (`npm ci`), then fresh.
