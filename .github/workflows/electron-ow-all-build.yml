@@ -58,6 +58,10 @@ jobs:
           cd ./wowup-shell
           npm i dmg-license
 
+      - name: Install zsync
+        if: matrix.os == 'ubuntu-latest'
+        run: sudo apt-get update && sudo apt-get install -y zsync
+
       - name: Chceckout-CF
         if: matrix.os == 'ubuntu-latest'
         uses: actions/checkout@v4
