@@ -153,7 +153,6 @@ export const IPC_METRICS_LOG_SNAPSHOT = "metrics-log-snapshot";
 
 // IPC STORAGE
 export const IPC_STORE_GET_OBJECT = "store-get-object";
-export const IPC_STORE_GET_OBJECT_SYNC = "store-get-object-sync";
 export const IPC_STORE_GET_ALL = "store-get-all";
 export const IPC_STORE_SET_OBJECT = "store-set-object";
 export const IPC_STORE_REMOVE_OBJECT = "store-remove-object";

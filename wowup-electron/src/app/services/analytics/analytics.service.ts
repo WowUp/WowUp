@@ -11,16 +11,11 @@ import { WowUpService } from "../wowup/wowup.service";
   providedIn: "root",
 })
 export class AnalyticsService {
-  private readonly _installId: string;
   private readonly _telemetryEnabledSrc = new BehaviorSubject(false);
 
   private _insights?: ApplicationInsights;
 
   public readonly telemetryEnabled$ = this._telemetryEnabledSrc.asObservable();
-
-  public get installId(): string {
-    return this._installId;
-  }
 
   public async shouldPromptTelemetry(): Promise<boolean> {
     return (await this._preferenceStorageService.getAsync(TELEMETRY_ENABLED_KEY)) === undefined;
@@ -47,8 +42,6 @@ export class AnalyticsService {
     private _electronService: ElectronService,
     private _wowUpService: WowUpService,
   ) {
-    this._installId = window.installId;
-
     this.getTelemetryEnabled()
       .then((enabled) => {
         this._telemetryEnabledSrc.next(enabled);

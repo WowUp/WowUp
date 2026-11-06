@@ -55,12 +55,6 @@ function rendererSend(channel: string, ...args: any[]) {
   /* eslint-enable @typescript-eslint/no-unsafe-argument */
 }
 
-function rendererSendSync(channel: string, ...args: any[]): any {
-  /* eslint-disable @typescript-eslint/no-unsafe-argument */
-  return ipcRenderer.sendSync(channel, ...args);
-  /* eslint-enable @typescript-eslint/no-unsafe-argument */
-}
-
 function rendererInvoke(channel: string, ...args: any[]): Promise<any> {
   /* eslint-disable @typescript-eslint/no-unsafe-argument */
   return ipcRenderer.invoke(channel, ...args);
@@ -103,7 +97,6 @@ try {
       onRendererEvent,
       onceRendererEvent,
       rendererSend,
-      rendererSendSync,
       rendererInvoke,
       rendererOff,
       rendererOn,
