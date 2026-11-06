@@ -58,7 +58,10 @@
         "SELECT_ALL": "Alles auswählen",
         "UNDO": "Rückgängig"
       },
+      "HIDE": "Ausblenden",
+      "HIDE_OTHERS": "Andere ausblenden",
       "QUIT": "Beenden",
+      "SHOW_ALL": "Alle einblenden",
       "VIEW": {
         "FORCE_RELOAD": "Neuladen erzwingen",
         "LABEL": "Ansicht",
@@ -70,8 +73,11 @@
         "ZOOM_RESET": "Zoom zurücksetzen"
       },
       "WINDOW": {
+        "BRING_ALL_TO_FRONT": "Alle nach vorne bringen",
         "CLOSE": "Schließen",
-        "LABEL": "Fenster"
+        "LABEL": "Fenster",
+        "MINIMIZE": "Im Dock ablegen",
+        "ZOOM": "Zoomen"
       }
     },
     "AUTO_UPDATE_FEW_NOTIFICATION_BODY": "Automatisch aktualisiert\r\n{addonNames}",
@@ -106,6 +112,8 @@
       "GROUP_LIGHT": "Hell",
       "HORDE": "Horde"
     },
+    "UPDATES_ON_HOLD_NOTIFICATION_BODY": "Einige Addon-Updates benötigen eine neuere Version von World of Warcraft als die installierte. Öffne WowUp, um sie zu prüfen.",
+    "UPDATES_ON_HOLD_NOTIFICATION_TITLE": "Updates zurückgehalten",
     "WINDOW_TITLE": "WowUp.io",
     "WINDOW_TITLE_CF": "WowUp.io CF",
     "WINDOW_TITLE_FULLSCREEN": "WowUp.io - Vollbild",
@@ -169,10 +177,12 @@
     },
     "ADDON_STATUS": {
       "BACKINGUP": "Backup wird erstellt",
+      "CHECKING_DEPENDENCIES": "Abhängigkeiten werden geprüft",
       "COMPLETE": "Installiert",
       "DOWNLOADING": "Herunterladen...",
       "ERROR": "Fehler",
       "INSTALLING": "Installieren...",
+      "INSTALLING_DEPENDENCIES": "Abhängigkeiten {completed}/{total}",
       "PENDING": "Ausstehend",
       "RETRY": "Retrying...",
       "UNINSTALLING": "Deinstallieren...",
@@ -194,10 +204,11 @@
       "ANNIVERSARY": "Burning Crusade Anniversary",
       "BETA": "The War Within Beta",
       "CLASSIC": "Mists of Pandaria Classic",
-      "CLASSICBETA": "MoP Classic Beta",
+      "CLASSICBETA": "World of Warcraft: Forever Beta",
       "CLASSICERA": "World of Warcraft Classic",
       "CLASSICERAPTR": "PTR (Classic Era)",
       "CLASSICPTR": "PTR (MoP Classic)",
+      "FOREVER": "World of Warcraft: Forever",
       "RETAIL": "World of Warcraft",
       "RETAILPTR": "PTR (Midnight)",
       "RETAILXPTR": "PTR (TWW 11.2.7)"
@@ -234,10 +245,10 @@
     },
     "ERRORS": {
       "ACCOUNT_PUSH_TOGGLE_FAILED_ERROR": "Sofortige Updates für deinen Account konnten nicht eingeschaltet werden. Bitte versuche es später erneut oder schreibe uns auf Discord.",
-      "ADDON_INSTALL_ERROR": "Addon '{addonName}' konnte nicht installiert werden. Versuche es später erneut.",
+      "ADDON_INSTALL_ERROR": "Addon „{addonName}“ konnte nicht installiert werden. Versuche es später erneut.",
       "ADDON_INSTALL_NETWORK_ERROR": "Failed to download {addonName} due to a network error. This can be caused by an unstable connection or IPv6 issues on your network — try disabling IPv6 on your network adapter if this keeps happening.",
       "ADDON_SCAN_ERROR": "Beim Abgleichen deiner Addon-Ordner mit {providerName} ist ein Fehler aufgetreten. Versuche es später erneut.",
-      "ADDON_SYNC_ERROR": "Beim Überprüfen auf Aktualisierungen von '{providerName}' ist ein Fehler aufgetreten.",
+      "ADDON_SYNC_ERROR": "Beim Überprüfen auf Aktualisierungen von „{providerName}“ ist ein Fehler aufgetreten.",
       "ADDON_SYNC_FULL_ERROR": "[{installationName}]: Beim Überprüfen auf Aktualisierungen von {addonName} von {providerName} ist ein Fehler aufgetreten. Versuche es später erneut.",
       "CHANGE_PROVIDER_ERROR": "Anbieterwechsel von {addonName} nach {providerName} fehlgeschlagen",
       "GITHUB_LIMIT_ERROR": "Du hast dein GitHub-API-Limit von {max} Anforderungen erreicht.\nBitte warten bis {reset} und versuche es erneut.",
@@ -285,14 +296,24 @@
       "RE_SCAN_SUCCESS": "Der automatische Re-Scan ist beendet, du kannst loslegen.",
       "TITLE": "CurseForge-Migration"
     },
+    "GAME_VERSION_MISMATCH": {
+      "ADDON_NEEDS": "{name} benötigt WoW {version}",
+      "CANCEL": "Abbrechen",
+      "IGNORE": "Für diese WoW-Version ignorieren",
+      "INSTALLATION": "{name} (WoW {version})",
+      "MESSAGE": "Diese Updates wurden für eine neuere Version von World of Warcraft entwickelt als die installierte. Bis zum Spiel-Update kann es zu Fehlern kommen.",
+      "SKIP": "Diese überspringen",
+      "TITLE": "Updates benötigen eine neuere WoW-Version",
+      "UPDATE_ANYWAY": "Trotzdem aktualisieren"
+    },
     "INSTALL_FROM_PROTOCOL": {
       "ADDON_INSTALLED": "Addon installiert!",
       "ADDON_INSTALLING": "Addon wird installiert",
       "CANCEL_BUTTON": "Schließen",
       "ERRORS": {
-        "ADDON_NOT_FOUND": "Für das Protokoll '{protocol}' wurde kein Addon gefunden",
+        "ADDON_NOT_FOUND": "Für das Protokoll „{protocol}“ wurde kein Addon gefunden",
         "GENERIC": "Fehler beim Abrufen der Daten für das Protokoll: {protocol}",
-        "NO_VALID_WOW_INSTALLATIONS": "Kein WoW-Client für Protokoll '{protocol}' installiert"
+        "NO_VALID_WOW_INSTALLATIONS": "Kein WoW-Client für Protokoll „{protocol}“ installiert"
       },
       "INSTALL_BUTTON": "Installieren",
       "TITLE": "Das Addon von {providerName} installieren"
@@ -309,6 +330,7 @@
         "CATACLYSM_ASSET_NOT_FOUND": "No asset was found to download from {message}.\n\nA valid zip file ending with '-cata' is required in order for WowUp to download it.",
         "CLASSIC_ASSET_NOT_FOUND": "Es wurde kein Asset zum Herunterladen von {message} gefunden.\n\nEine gültige Zip-Datei mit der Endung '-classic' muss in dem Release enthalten sein, damit WowUp diese herunterladen kann.",
         "FAILED_TO_CONNECT": "Keine Verbindung mit der API möglich, warte ein wenig und versuche es erneut.",
+        "FOREVER_ASSET_NOT_FOUND": "No asset was found to download from {message}.\n\nA valid zip file ending with '-forever' is required in order for WowUp to download it.",
         "INSTALL_FAILED": "Beim Versuch das Addon zu installieren ist etwas schief gelaufen, bitte versuche es erneut.\n\nWenn diese Nachricht weiterhin erscheint, kannst Du auf unserem Discord im Kanal #help-me nach Hilfe fragen.",
         "INVALID_URL": "Die eingetragene URL ist ungültig. Beispiele für gültige URLs sind:\n\t- https://github.com/WowUp/WowUp.Addon\n\t- https://www.wowinterface.com/downloads/info25610-8.3-014.html\n\t- https://www.curseforge.com/wow/addons/altoholic",
         "MISTS_ASSET_NOT_FOUND": "No asset was found to download from {message}.\n\nA valid zip file ending with '-mists' is required in order for WowUp to download it.",
@@ -325,9 +347,6 @@
       "INSTALL_SUCCESS_LABEL": "Installiert!",
       "SUPPORTED_SOURCES": "Unterstützt WowInterface und GitHub",
       "TITLE": "Installation eines Addons über eine externe URL"
-    },
-    "NEW_VERSION_POPUP": {
-      "TITLE": "Neu in Version {versionNumber}"
     },
     "PERMISSIONS": {
       "CURSEFORGE": {
@@ -364,6 +383,7 @@
     "ABOUT": {
       "ATTRIBUTIONS_TITLE": "Zuschreibungen",
       "CHANGE_LOG_SECTION_LABEL": "Änderungsverlauf",
+      "SHELL_VERSION": "Shell v{version}",
       "TITLE": "WowUp.io",
       "WEBSITE_LINK_LABEL": "Schau dir die Website an!"
     },
@@ -497,6 +517,7 @@
         "UPDATE_ALL_CLIENTS_BUTTON": "Alle Clients aktualisieren",
         "UPDATE_RETAIL_CLASSIC_BUTTON": "Retail/Classic aktualisieren"
       },
+      "VERSION_MISMATCH_TOOLTIP": "Dieses Update benötigt WoW {required}. Installiert ist WoW {current}.",
       "WTF_BACKUP_BUTTON": "Backup der Interface Einstellungen"
     },
     "NEWS": {

@@ -1,6 +1,6 @@
 import { app, BrowserWindow, Rectangle, WebContentsView } from "electron";
 import * as log from "electron-log";
-import { join } from "path";
+import { getAssetPath } from "../../bundle-paths";
 import { AdPageOptions } from "wowup-lib-core";
 
 import { wagoHandler } from "../../wago-handler";
@@ -178,7 +178,7 @@ export class WagoAdViewService {
         // Deliberately not taken from the caller: the consent window has to share this partition or
         // a consent decision would not apply to the ad view.
         partition: AD_PARTITION,
-        preload: options.preloadFilePath ? join(app.getAppPath(), "assets", options.preloadFilePath) : undefined,
+        preload: options.preloadFilePath ? getAssetPath(options.preloadFilePath) : undefined,
         contextIsolation: true,
         nodeIntegration: false,
         plugins: false,

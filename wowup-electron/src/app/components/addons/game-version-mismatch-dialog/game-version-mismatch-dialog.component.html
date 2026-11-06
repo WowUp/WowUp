@@ -1,0 +1,30 @@
+<h1 mat-dialog-title>{{ "DIALOGS.GAME_VERSION_MISMATCH.TITLE" | translate }}</h1>
+<mat-dialog-content class="mat-typography">
+  <p class="message">{{ "DIALOGS.GAME_VERSION_MISMATCH.MESSAGE" | translate }}</p>
+  <section class="group" *ngFor="let group of data.groups">
+    <h3 class="group-title">
+      {{
+        "DIALOGS.GAME_VERSION_MISMATCH.INSTALLATION"
+          | translate: { name: group.installationName, version: group.gameVersion }
+      }}
+    </h3>
+    <ul class="addon-list">
+      <li *ngFor="let addon of group.addons">
+        {{
+          "DIALOGS.GAME_VERSION_MISMATCH.ADDON_NEEDS" | translate: { name: addon.name, version: addon.requiredVersion }
+        }}
+      </li>
+    </ul>
+  </section>
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+  <button class="wu-btn wu-btn-flat mr-2" [mat-dialog-close]="'update'">
+    {{ "DIALOGS.GAME_VERSION_MISMATCH.UPDATE_ANYWAY" | translate }}
+  </button>
+  <button class="wu-btn wu-btn-flat mr-2" [mat-dialog-close]="'ignore'">
+    {{ "DIALOGS.GAME_VERSION_MISMATCH.IGNORE" | translate }}
+  </button>
+  <button class="wu-btn wu-btn-primary" cdkFocusInitial [mat-dialog-close]="'skip'">
+    {{ (data.canSkip ? "DIALOGS.GAME_VERSION_MISMATCH.SKIP" : "DIALOGS.GAME_VERSION_MISMATCH.CANCEL") | translate }}
+  </button>
+</mat-dialog-actions>

@@ -24,6 +24,7 @@ module.exports = {
           "./src/tsconfig.app.json",
           "./src/tsconfig.spec.json",
           "./e2e/tsconfig.e2e.json",
+          "./app/tsconfig.spec.json",
         ],
         sourceType: "module",
         ecmaFeatures: {
@@ -55,6 +56,45 @@ module.exports = {
         "@angular-eslint/use-injectable-provided-in": "error",
         "@angular-eslint/no-attribute-decorator": "error",
         "no-var": "error",
+      },
+    },
+    // Shell/bundle boundary, see SHELL_BUNDLE_PLAN.md. The shell (wowup-shell) ships in the signed binary and
+    // the bundle updates without it, so app code may only use the shell's published contract. The shell's
+    // side of the rule is in wowup-shell/.eslintrc.js.
+    {
+      files: ["app/**/*.ts", "src/**/*.ts"],
+      excludedFiles: ["*.spec.ts"],
+      rules: {
+        "no-restricted-imports": [
+          "error",
+          {
+            patterns: [
+              {
+                group: ["**/wowup-shell/*", "!**/wowup-shell/contract"],
+                message: "Only wowup-shell/contract/ is part of the shell's contract with app code.",
+              },
+            ],
+          },
+        ],
+      },
+    },
+    // App code can't assume it's running from the install directory once bundles are downloaded, so files
+    // are resolved through app/bundle-paths.ts.
+    {
+      files: ["app/**/*.ts"],
+      excludedFiles: ["*.spec.ts"],
+      rules: {
+        "no-restricted-syntax": [
+          "error",
+          {
+            selector: "CallExpression[callee.property.name='getAppPath']",
+            message: "Use app/bundle-paths.ts; the bundle may not live in the install directory.",
+          },
+          {
+            selector: "Identifier[name=/^__(dirname|filename)$/]",
+            message: "Use app/bundle-paths.ts; the bundle may not live in the install directory.",
+          },
+        ],
       },
     },
     {

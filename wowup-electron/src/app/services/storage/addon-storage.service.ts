@@ -9,6 +9,7 @@ import {
   IPC_ADDONS_GET_AVAILABLE_FOR_UPDATE,
   IPC_ADDONS_GET_BY_EXTERNAL_ID,
   IPC_ADDONS_GET_BY_EXTERNAL_IDS,
+  IPC_ADDONS_REPLACE_ALL_FOR_INSTALLATION,
   IPC_ADDONS_SAVE_ALL,
   ADDON_STORE_NAME,
   IPC_STORE_SET_OBJECT,
@@ -26,6 +27,12 @@ export class AddonStorageService {
   public saveAll(addons: Addon[]): Promise<void> {
     console.debug(`[addon-storage] save all: ${addons?.length ?? 0}`);
     return this._electronService.invoke(IPC_ADDONS_SAVE_ALL, addons);
+  }
+
+  /** Remove every addon saved for the installation and save these instead, in one step */
+  public replaceAllForInstallation(installationId: string, addons: Addon[]): Promise<void> {
+    console.debug(`[addon-storage] replace all for ${installationId}: ${addons?.length ?? 0}`);
+    return this._electronService.invoke(IPC_ADDONS_REPLACE_ALL_FOR_INSTALLATION, installationId, addons);
   }
 
   public setAsync(key: string | undefined, value: Addon): Promise<void> {

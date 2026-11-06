@@ -1,6 +1,9 @@
 // eslint-disable-next-line @typescript-eslint/triple-slash-reference
 /// <reference path="../src/common/wowup.d.ts" />
 
+// Must stay first: lets the externals below resolve when the bundle lives outside the install directory
+import "./preload-node-path";
+
 import { ipcRenderer, IpcRendererEvent, shell, OpenExternalOptions } from "electron";
 import * as log from "electron-log/renderer";
 import * as platform from "./platform";
@@ -36,6 +39,7 @@ function getArg(argKey: string): string {
 const LOG_PATH = getArg("log-path");
 const USER_DATA_PATH = getArg("user-data-path");
 const BASE_BG_COLOR = getArg("base-bg-color");
+const INSTALL_ID = getArg("install-id");
 
 function onRendererEvent(channel: string, listener: (event: IpcRendererEvent, ...args: any[]) => void) {
   ipcRenderer.on(channel, listener);
@@ -87,6 +91,7 @@ try {
     };
     window.userDataPath = USER_DATA_PATH;
     window.logPath = LOG_PATH;
+    window.installId = INSTALL_ID;
     window.platform = process.platform;
     window.wowup = {
       onRendererEvent,

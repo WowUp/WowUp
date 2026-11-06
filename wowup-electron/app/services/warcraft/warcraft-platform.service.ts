@@ -11,6 +11,7 @@ import {
   WOW_CLASSIC_ERA_PTR_FOLDER,
   WOW_CLASSIC_FOLDER,
   WOW_CLASSIC_PTR_FOLDER,
+  WOW_FOREVER_FOLDER,
   WOW_RETAIL_FOLDER,
   WOW_RETAIL_PTR_FOLDER,
   WOW_RETAIL_XPTR_FOLDER,
@@ -48,9 +49,21 @@ function getClientTypeForFolderName(folderName: string): WowClientType {
       return WowClientType.ClassicEraPtr;
     case WOW_ANNIVERSARY_FOLDER:
       return WowClientType.Anniversary;
+    case WOW_FOREVER_FOLDER:
+      return WowClientType.Forever;
     default:
       return WowClientType.None;
   }
+}
+
+/** Reduces a full Battle.net version ("12.1.5.70688") to the game version ("12.1.5"), undefined if malformed. */
+export function toGameVersion(fullVersion: string | undefined): string | undefined {
+  const parts = (fullVersion ?? "").trim().split(".");
+  if (parts.length < 4 || parts.slice(0, 3).some((part) => !/^\d+$/.test(part))) {
+    return undefined;
+  }
+
+  return parts.slice(0, 3).join(".");
 }
 
 export async function decodeProducts(productDbPath: string): Promise<InstalledProduct[]> {
@@ -69,6 +82,7 @@ export async function decodeProducts(productDbPath: string): Promise<InstalledPr
         location: p.client.location,
         name: p.client.name,
         clientType: getClientTypeForFolderName(p.client.name),
+        gameVersion: toGameVersion(p.installInfo?.versionInfo?.version),
       }));
 
     return wowProducts.filter((wp) => {

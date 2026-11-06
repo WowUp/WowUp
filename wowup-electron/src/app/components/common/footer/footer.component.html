@@ -11,6 +11,15 @@
   <div class="flex-grow-1"></div>
   <p class="mr-3">{{ sessionService.pageContextText$ | async }}</p>
   <p>v{{ versionNumber | async }} {{ isCurseForge ? "CF" : "" }}</p>
+  <button
+    *ngIf="bundleUpdate$ | async"
+    class="footer-button update-button text-1 ml-3"
+    matTooltip="{{ 'APP.WOWUP_UPDATE.RESTART_TO_UPDATE_TOOLTIP' | translate }}"
+    (click)="onClickRestartForBundleUpdate()"
+  >
+    <mat-icon svgIcon="fas:rotate"></mat-icon>
+    {{ "APP.WOWUP_UPDATE.RESTART_TO_UPDATE" | translate }}
+  </button>
   <div class="h-100 ml-3" [ngSwitch]="appUpdateState$ | async">
     <div *ngSwitchCase="appUpdateState.CheckingForUpdate">
       <p>{{ "APP.WOWUP_UPDATE.CHECKING_FOR_UPDATE" | translate }}</p>

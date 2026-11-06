@@ -55,7 +55,8 @@ import { AddonUpdateEvent } from "../../models/wowup/addon-update-event";
 import { ColumnState } from "../../models/wowup/column-state";
 import { RelativeDurationPipe } from "../../pipes/relative-duration-pipe";
 import { ElectronService } from "../../services";
-import { AddonService } from "../../services/addons/addon.service";
+import { AddonService, DependencyInstallState } from "../../services/addons/addon.service";
+import { UpdateCompatibilityService } from "../../services/addons/update-compatibility.service";
 import { DialogFactory } from "../../services/dialog/dialog.factory";
 import { SessionService } from "../../services/session/session.service";
 import { SnackbarService } from "../../services/snackbar/snackbar.service";
@@ -180,6 +181,8 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
   public contextMenuPosition = { x: "0px", y: "0px" };
   public overlayNoRowsTemplate = "";
   public addonUtils = AddonUtils;
+  public readonly isProviderAvailable: AddonUtils.ProviderAvailability = (providerName) =>
+    this._addonProviderService.isProviderAvailable(providerName);
   public overlayRef: OverlayRef | null = null;
 
   public wowInstallations$: Observable<WowInstallation[]>;
@@ -254,6 +257,7 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
 
   public constructor(
     private _addonService: AddonService,
+    private _updateCompatibilityService: UpdateCompatibilityService,
     private _addonProviderService: AddonProviderFactory,
     private _addonUiService: AddonUiService,
     private _sessionService: SessionService,
@@ -299,6 +303,11 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
       )
       .subscribe();
 
+    // An install isn't done until the dependencies it pulled in are, the controls stay locked until then
+    const dependencyInstallSub = this._addonService.dependencyInstall$
+      .pipe(filter((evt) => evt.state === DependencyInstallState.Complete))
+      .subscribe(() => this._sessionService.setEnableControls(this.calculateControlState()));
+
     const addonRemovedSub = this._addonService.addonRemoved$
       .pipe(
         map((evt) => this.onAddonRemoved(evt)),
@@ -338,6 +347,7 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
       this._sessionService.targetFileInstallComplete$.pipe(switchMap(() => from(this.onRefresh()))).subscribe(),
       pushUpdateSub,
       addonInstalledSub,
+      dependencyInstallSub,
       addonRemovedSub,
     );
 
@@ -627,7 +637,8 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
 
     const addons = await this._addonService.getAddons(selectedWowInstall, false);
     try {
-      const filteredAddons = _.filter(addons, (addon) => AddonUtils.needsUpdate(addon));
+      const addonsWithUpdates = _.filter(addons, (addon) => AddonUtils.needsUpdate(addon));
+      const filteredAddons = await this._updateCompatibilityService.confirmUpdates(addonsWithUpdates);
 
       const promises = _.map(filteredAddons, async (addon) => {
         try {
@@ -1113,6 +1124,11 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
         (addon) => !addon.isIgnored && (AddonUtils.needsUpdate(addon) || AddonUtils.needsInstall(addon)),
       );
 
+      // Only updates can be at odds with the game version, an addon being installed has no version to keep working
+      const addonsWithUpdates = addons.filter((addon) => AddonUtils.needsUpdate(addon));
+      const confirmedUpdates = await this._updateCompatibilityService.confirmUpdates(addonsWithUpdates);
+      addons = addons.filter((addon) => !addonsWithUpdates.includes(addon) || confirmedUpdates.includes(addon));
+
       if (addons.length === 0) {
         await this.loadAddons();
         return;
@@ -1259,14 +1275,23 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
       return;
     }
 
+    const idx = this._baseRowDataSrc.value.findIndex((r) => r.addon?.id === evt.addon.id);
+
     if ([AddonInstallState.Complete, AddonInstallState.Error].includes(evt.installState) === false) {
       this._sessionService.setEnableControls(false);
+
+      // A fresh install (or a dependency it pulled in) gets a row right away, its cells follow the install from there
+      if (idx === -1) {
+        const listItem = new AddonViewModel(evt.addon);
+        listItem.isInstalling = true;
+        this._baseRowDataSrc.next(
+          _.orderBy([..._.cloneDeep(this._baseRowDataSrc.value), listItem], (row) => row.canonicalName),
+        );
+      }
       return;
     }
 
     let rowData = _.cloneDeep(this._baseRowDataSrc.value);
-    const idx = rowData.findIndex((r) => r.addon?.id === evt.addon.id);
-    const change = idx !== -1 || evt.installState === AddonInstallState.Complete;
 
     // If we have a new addon, just put it at the end
     if (idx === -1) {
@@ -1275,16 +1300,34 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
         console.debug("Adding new addon to list");
         rowData.push(new AddonViewModel(evt.addon));
         rowData = _.orderBy(rowData, (row) => row.canonicalName);
+        this._baseRowDataSrc.next(rowData);
       }
+    } else if (evt.installState === AddonInstallState.Error && rowData[idx].isInstalling) {
+      // The row was only there for the install, keep it only if the addon made it into storage
+      this.removeFailedInstallRow(evt.addon.id).catch((e) => console.error(e));
     } else {
       rowData.splice(idx, 1, new AddonViewModel(evt.addon));
-    }
-
-    if (change) {
       this._baseRowDataSrc.next(rowData);
     }
+
     this._sessionService.setEnableControls(this.calculateControlState());
   };
+
+  private async removeFailedInstallRow(addonId: string): Promise<void> {
+    const storedAddon = await this._addonService.getAddonById(addonId);
+    const rowData = _.cloneDeep(this._baseRowDataSrc.value);
+    const idx = rowData.findIndex((r) => r.addon?.id === addonId);
+    if (idx === -1 || !rowData[idx].isInstalling) {
+      return;
+    }
+
+    if (storedAddon) {
+      rowData.splice(idx, 1, new AddonViewModel(storedAddon));
+    } else {
+      rowData.splice(idx, 1);
+    }
+    this._baseRowDataSrc.next(rowData);
+  }
 
   private onAddonRemoved = (addonId: string) => {
     const rowData = _.cloneDeep(this._baseRowDataSrc.value);

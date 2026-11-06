@@ -8,9 +8,8 @@ import * as constants from "../../../common/constants";
 import { SelectItem } from "../../models/wowup/select-item";
 import { getEnumName, getEnumList } from "wowup-lib-core";
 import { FileService } from "../files/file.service";
-import { TocService } from "../toc/toc.service";
 import { WarcraftApiService } from "../api/warcraft-api.service";
-import { AddonFolder, Toc, WowClientType } from "wowup-lib-core";
+import { AddonFolder, WowClientType } from "wowup-lib-core";
 import { InstalledProduct, WowInstallation } from "wowup-lib-core";
 
 @Injectable({
@@ -47,7 +46,6 @@ export class WarcraftService {
   public constructor(
     private readonly _warcraftApiService: WarcraftApiService,
     private readonly _fileService: FileService,
-    private readonly _tocService: TocService,
   ) {}
 
   public getExecutableName(clientType: WowClientType): Promise<string> {
@@ -90,62 +88,16 @@ export class WarcraftService {
   }
 
   public async listAddons(installation: WowInstallation, scanSymlinks = false): Promise<AddonFolder[]> {
-    const addonFolders: AddonFolder[] = [];
     if (!installation) {
-      return addonFolders;
+      return [];
     }
 
     const addonFolderPath = this.getAddonFolderPath(installation);
-
-    const addonFolderExists = await this._fileService.pathExists(addonFolderPath);
-    if (!addonFolderExists) {
-      return addonFolders;
-    }
-
-    const directories = await this._fileService.listDirectories(addonFolderPath, scanSymlinks);
-    const dirPaths = directories.map((dir) => path.join(addonFolderPath, dir));
-    const dirStats = await this._fileService.statFiles(dirPaths);
-
-    for (const dir of directories) {
-      const addonFolder = await this.getAddonFolder(addonFolderPath, dir);
-      if (!addonFolder) {
-        console.warn(`Failed to get addonFolder, no toc found: ${dir}`);
-        continue;
-      }
-
-      addonFolder.fileStats = dirStats[path.join(addonFolderPath, dir)];
-      addonFolders.push(addonFolder);
-    }
-
-    return addonFolders;
+    return this._warcraftApiService.listAddons(addonFolderPath, scanSymlinks);
   }
 
-  public async getAddonFolder(addonFolderPath: string, dir: string): Promise<AddonFolder | undefined> {
-    try {
-      const dirPath = path.join(addonFolderPath, dir);
-      const dirFiles = await this._fileService.readdir(dirPath);
-      const tocFiles = dirFiles.filter((f) => path.extname(f) === ".toc");
-      if (tocFiles.length === 0) {
-        return undefined;
-      }
-
-      const tocs: Toc[] = [];
-      for (const tocFile of tocFiles) {
-        const tocPath = path.join(dirPath, tocFile);
-        const toc = await this._tocService.parse(tocPath);
-        tocs.push(toc);
-      }
-
-      return {
-        name: dir,
-        path: dirPath,
-        status: "Pending",
-        tocs: tocs,
-      };
-    } catch (e) {
-      console.error(e);
-      return undefined;
-    }
+  public getAddonFolder(addonFolderPath: string, dir: string): Promise<AddonFolder | undefined> {
+    return this._warcraftApiService.getAddonFolder(addonFolderPath, dir);
   }
 
   public getBlizzardAgentPath(): Promise<string> {

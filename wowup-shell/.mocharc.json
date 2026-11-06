@@ -1,0 +1,4 @@
+{
+  "spec": "out-tsc/**/*.spec.js",
+  "timeout": 10000
+}

@@ -27,7 +27,7 @@ import {
 import { GitHubAsset, GitHubRelease, GitHubRepository, WowInstallation } from "wowup-lib-core";
 import { SourceRemovedAddonError } from "wowup-lib-core";
 
-type MetadataFlavor = "bcc" | "classic" | "mainline" | "wrath" | "cata" | "mists";
+type MetadataFlavor = "bcc" | "classic" | "mainline" | "wrath" | "cata" | "mists" | "forever";
 
 interface LatestValidAsset {
   matchedAsset: GitHubAsset | undefined;
@@ -378,7 +378,9 @@ export class GitHubAddonProvider extends AddonProvider {
       console.log(`Target metadata release: ${targetMetaRelease.filename}`);
 
       // return any matching valid asset with the metadata file name and content type
-      return release.assets.find((asset) => this.isValidContentType(asset) && asset.name === targetMetaRelease.filename);
+      return release.assets.find(
+        (asset) => this.isValidContentType(asset) && asset.name === targetMetaRelease.filename,
+      );
     } catch (err) {
       console.error("Error in getValidAssetFromMetadata", err);
       console.error("Release:", releaseMeta);
@@ -391,7 +393,6 @@ export class GitHubAddonProvider extends AddonProvider {
     switch (clientType) {
       case WowClientType.Classic:
       case WowClientType.ClassicPtr:
-      case WowClientType.ClassicBeta:
         return "mists";
       case WowClientType.Anniversary:
         return "bcc";
@@ -403,6 +404,9 @@ export class GitHubAddonProvider extends AddonProvider {
       case WowClientType.RetailPtr:
       case WowClientType.RetailXPtr:
         return "mainline";
+      case WowClientType.Forever:
+      case WowClientType.ClassicBeta: // confirmed https://github.com/BigWigsMods/packager/commit/7391c8ded01a14ff084dfa28ef09e52b0470c3cb
+        return "forever";
       default:
         throw new Error("Unknown client type for metadata");
     }
@@ -452,20 +456,23 @@ export class GitHubAddonProvider extends AddonProvider {
     const isWotlk = this.isWotlk(asset);
     const isCataclysm = this.isCataclysm(asset);
     const isMists = this.isMists(asset);
+    const isForever = this.isForever(asset);
 
     switch (clientType) {
       case WowClientType.Retail:
       case WowClientType.RetailPtr:
       case WowClientType.RetailXPtr:
       case WowClientType.Beta:
-        return !isClassic && !isBurningCrusade && !isWotlk && !isCataclysm;
+        return !isClassic && !isBurningCrusade && !isWotlk && !isCataclysm && !isForever;
       case WowClientType.ClassicEra:
       case WowClientType.ClassicEraPtr:
         return isClassic;
       case WowClientType.Classic:
       case WowClientType.ClassicPtr:
-      case WowClientType.ClassicBeta:
         return isMists;
+      case WowClientType.Forever:
+      case WowClientType.ClassicBeta:
+        return isForever;
       case WowClientType.Anniversary:
         return isBurningCrusade;
       default:
@@ -491,6 +498,10 @@ export class GitHubAddonProvider extends AddonProvider {
 
   private isMists(asset: GitHubAsset): boolean {
     return /[-_](mists)\.zip$/i.test(asset.name);
+  }
+
+  private isForever(asset: GitHubAsset): boolean {
+    return /[-_](forever|camelot)\.zip$/i.test(asset.name);
   }
 
   private getAddonName(addonId: string): string {

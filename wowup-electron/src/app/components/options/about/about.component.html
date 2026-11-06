@@ -14,6 +14,9 @@
       <img class="logo mt-3 mat-elevation-z2" loading="lazy" src="assets/wowup_logo_purple.png" />
       <h2>{{ "PAGES.ABOUT.TITLE" | translate }}</h2>
       <div class="version text-2">v{{ versionNumber | async }}</div>
+      <div class="shell-version text-2">
+        {{ "PAGES.ABOUT.SHELL_VERSION" | translate: { version: shellVersionNumber | async } }}
+      </div>
       <div class="link-container">
         <a appExternalLink class="wu-btn wu-btn-flat mr-2" href="https://wowup.io">
           {{ "PAGES.ABOUT.WEBSITE_LINK_LABEL" | translate }}

@@ -58,7 +58,10 @@
         "SELECT_ALL": "全选",
         "UNDO": "撤销"
       },
+      "HIDE": "隐藏",
+      "HIDE_OTHERS": "隐藏其他",
       "QUIT": "退出",
+      "SHOW_ALL": "全部显示",
       "VIEW": {
         "FORCE_RELOAD": "强制刷新",
         "LABEL": "视图",
@@ -70,8 +73,11 @@
         "ZOOM_RESET": "原始大小"
       },
       "WINDOW": {
+        "BRING_ALL_TO_FRONT": "前置全部窗口",
         "CLOSE": "关闭",
-        "LABEL": "窗口"
+        "LABEL": "窗口",
+        "MINIMIZE": "最小化",
+        "ZOOM": "缩放"
       }
     },
     "AUTO_UPDATE_FEW_NOTIFICATION_BODY": "{addonNames}\r\n已自动更新",
@@ -106,6 +112,8 @@
       "GROUP_LIGHT": "亮色",
       "HORDE": "部落"
     },
+    "UPDATES_ON_HOLD_NOTIFICATION_BODY": "部分插件更新需要比当前已安装版本更新的《魔兽世界》。打开 WowUp 查看。",
+    "UPDATES_ON_HOLD_NOTIFICATION_TITLE": "更新已暂缓",
     "WINDOW_TITLE": "WowUp.io",
     "WINDOW_TITLE_CF": "WowUp.io CF",
     "WINDOW_TITLE_FULLSCREEN": "WowUp.io - 全屏模式",
@@ -169,10 +177,12 @@
     },
     "ADDON_STATUS": {
       "BACKINGUP": "正在备份",
+      "CHECKING_DEPENDENCIES": "正在检查依赖项",
       "COMPLETE": "已安装",
       "DOWNLOADING": "正在下载",
       "ERROR": "错误",
       "INSTALLING": "正在安装",
+      "INSTALLING_DEPENDENCIES": "依赖项 {completed}/{total}",
       "PENDING": "等待中",
       "RETRY": "Retrying...",
       "UNINSTALLING": "正在卸载",
@@ -194,10 +204,11 @@
       "ANNIVERSARY": "Burning Crusade Anniversary",
       "BETA": "The War Within Beta",
       "CLASSIC": "Mists of Pandaria Classic",
-      "CLASSICBETA": "MoP Classic Beta",
+      "CLASSICBETA": "World of Warcraft: Forever Beta",
       "CLASSICERA": "World of Warcraft Classic",
       "CLASSICERAPTR": "PTR (Classic Era)",
       "CLASSICPTR": "PTR (MoP Classic)",
+      "FOREVER": "World of Warcraft: Forever",
       "RETAIL": "World of Warcraft",
       "RETAILPTR": "PTR (Midnight)",
       "RETAILXPTR": "PTR (TWW 11.2.7)"
@@ -285,6 +296,16 @@
       "RE_SCAN_SUCCESS": "自动重新扫描完成，可以开始使用了。",
       "TITLE": "CurseForge 迁移"
     },
+    "GAME_VERSION_MISMATCH": {
+      "ADDON_NEEDS": "{name} 需要 WoW {version}",
+      "CANCEL": "取消",
+      "IGNORE": "对此 WoW 版本忽略",
+      "INSTALLATION": "{name} (WoW {version})",
+      "MESSAGE": "这些更新是为比当前已安装版本更新的《魔兽世界》制作的。在游戏更新之前，它们可能会导致错误。",
+      "SKIP": "跳过这些",
+      "TITLE": "更新需要更新的 WoW 版本",
+      "UPDATE_ANYWAY": "仍然更新"
+    },
     "INSTALL_FROM_PROTOCOL": {
       "ADDON_INSTALLED": "插件已安装！",
       "ADDON_INSTALLING": "正在安装插件",
@@ -309,6 +330,7 @@
         "CATACLYSM_ASSET_NOT_FOUND": "No asset was found to download from {message}.\n\nA valid zip file ending with '-cata' is required in order for WowUp to download it.",
         "CLASSIC_ASSET_NOT_FOUND": "未找到可下载的附件 {message}。\n\n要通过 WowUp 下载插件，发布页面（Releases）上需要文件名以 “-classic” 结尾的有效的 zip 文件。",
         "FAILED_TO_CONNECT": "无法连接 API，请稍后重试。",
+        "FOREVER_ASSET_NOT_FOUND": "No asset was found to download from {message}.\n\nA valid zip file ending with '-forever' is required in order for WowUp to download it.",
         "INSTALL_FAILED": "安装插件时出现了一些错误，请重试。\n\n如果一直出现此消息，可以加入 Discord #help-me 频道寻求帮助（英语）。",
         "INVALID_URL": "输入的 URL 无效。有效 URL 示例：\n\t- https://github.com/WowUp/WowUp.Addon\n\t- https://www.wowinterface.com/downloads/info25610-8.3-014.html\n\t- https://www.curseforge.com/wow/addons/altoholic",
         "MISTS_ASSET_NOT_FOUND": "No asset was found to download from {message}.\n\nA valid zip file ending with '-mists' is required in order for WowUp to download it.",
@@ -325,9 +347,6 @@
       "INSTALL_SUCCESS_LABEL": "安装成功！",
       "SUPPORTED_SOURCES": "支持 WowInterface 和 GitHub",
       "TITLE": "从 URL 安装"
-    },
-    "NEW_VERSION_POPUP": {
-      "TITLE": "更新记录 {versionNumber}"
     },
     "PERMISSIONS": {
       "CURSEFORGE": {
@@ -364,6 +383,7 @@
     "ABOUT": {
       "ATTRIBUTIONS_TITLE": "图源",
       "CHANGE_LOG_SECTION_LABEL": "更新记录",
+      "SHELL_VERSION": "Shell v{version}",
       "TITLE": "WowUp.io",
       "WEBSITE_LINK_LABEL": "访问网站！"
     },
@@ -497,6 +517,7 @@
         "UPDATE_ALL_CLIENTS_BUTTON": "更新所有客户端",
         "UPDATE_RETAIL_CLASSIC_BUTTON": "更新正式服/经典怀旧服"
       },
+      "VERSION_MISMATCH_TOOLTIP": "此更新需要 WoW {required}。你当前为 WoW {current}。",
       "WTF_BACKUP_BUTTON": "备份界面设置"
     },
     "NEWS": {

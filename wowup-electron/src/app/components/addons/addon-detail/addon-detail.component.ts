@@ -21,8 +21,9 @@ import { TranslateService } from "@ngx-translate/core";
 
 import { ADDON_PROVIDER_GITHUB, ADDON_PROVIDER_UNKNOWN, TAB_INDEX_MY_ADDONS } from "../../../../common/constants";
 import { AddonViewModel } from "../../../business-objects/addon-view-model";
+import { AddonInstallState } from "../../../models/wowup/addon-install-state";
 import { AddonUpdateEvent } from "../../../models/wowup/addon-update-event";
-import { AddonService } from "../../../services/addons/addon.service";
+import { AddonDependencyDetail, AddonService } from "../../../services/addons/addon.service";
 
 import { SessionService } from "../../../services/session/session.service";
 import { SnackbarService } from "../../../services/snackbar/snackbar.service";
@@ -63,9 +64,11 @@ export class AddonDetailComponent implements OnInit, OnDestroy, AfterViewInit {
   private readonly _changelogSrc = new BehaviorSubject<string>("");
   private readonly _descriptionSrc = new BehaviorSubject<string>("");
   private readonly _destroy$ = new Subject<boolean>();
+  private readonly _dependencyDetailsSrc = new BehaviorSubject<AddonDependencyDetail[]>([]);
 
   public readonly changelog$ = this._changelogSrc.asObservable();
   public readonly description$ = this._descriptionSrc.asObservable();
+  public readonly dependencyDetails$ = this._dependencyDetailsSrc.asObservable();
   public fetchingChangelog = true;
   public fetchingFullDescription = true;
   public selectedTabIndex;
@@ -78,6 +81,7 @@ export class AddonDetailComponent implements OnInit, OnDestroy, AfterViewInit {
   public showUpdateButton = false;
   public showRemoveButton = false;
   public hasRequiredDependencies = false;
+  public dependenciesExpanded = false;
   public title = "";
   public subtitle = "";
   public provider = "";
@@ -114,6 +118,14 @@ export class AddonDetailComponent implements OnInit, OnDestroy, AfterViewInit {
     this._addonService.addonInstalled$
       .pipe(takeUntil(this._destroy$), filter(this.isSameAddon))
       .subscribe(this.onAddonInstalledUpdate);
+
+    // A dependency installed while the dialog is open, by this addon or anything else, flips to installed
+    this._addonService.addonInstalled$
+      .pipe(
+        takeUntil(this._destroy$),
+        filter((evt) => evt.installState === AddonInstallState.Complete),
+      )
+      .subscribe(this.onAnyAddonInstalled);
   }
 
   public ngOnInit(): void {
@@ -148,6 +160,10 @@ export class AddonDetailComponent implements OnInit, OnDestroy, AfterViewInit {
     this.hasRequiredDependencies = this._dependencies.length > 0;
 
     this.requiredDependencyCount = this._dependencies.length;
+
+    if (this.hasRequiredDependencies) {
+      this.loadDependencyDetails().catch((e) => console.error(e));
+    }
 
     this.version =
       (this.model.searchResult
@@ -210,6 +226,10 @@ export class AddonDetailComponent implements OnInit, OnDestroy, AfterViewInit {
     this._destroy$.next(true);
     this._destroy$.complete();
     window.getSelection()?.empty();
+  }
+
+  public toggleDependencies(): void {
+    this.dependenciesExpanded = !this.dependenciesExpanded;
   }
 
   public onInstallUpdated(): void {
@@ -302,6 +322,36 @@ export class AddonDetailComponent implements OnInit, OnDestroy, AfterViewInit {
   private getThumbnailLetter(): string {
     return this.model?.listItem?.thumbnailLetter ?? this.model.searchResult?.name?.charAt(0).toUpperCase() ?? "";
   }
+
+  private async loadDependencyDetails(): Promise<void> {
+    const installation = this._sessionService.getSelectedWowInstallation();
+    if (!installation) {
+      return;
+    }
+
+    const details = await this._addonService.getDependencyDetails(
+      this._dependencies,
+      this.getProviderName(),
+      installation,
+    );
+    this._dependencyDetailsSrc.next(details);
+  }
+
+  private onAnyAddonInstalled = (evt: AddonUpdateEvent): void => {
+    const details = this._dependencyDetailsSrc.value;
+    if (evt.addon.providerName !== this.getProviderName()) {
+      return;
+    }
+
+    const match = details.find((detail) => !detail.installed && detail.externalAddonId === evt.addon.externalId);
+    if (!match) {
+      return;
+    }
+
+    this._dependencyDetailsSrc.next(
+      details.map((detail) => (detail === match ? { ...detail, name: evt.addon.name, installed: true } : detail)),
+    );
+  };
 
   private getProviderName(): string {
     return this.model.listItem?.addon?.providerName ?? this.model.searchResult?.providerName ?? "";

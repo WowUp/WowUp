@@ -233,7 +233,8 @@ export class TukUiAddonProvider extends AddonProvider {
   }
 
   private getPatchForInstall(addon: TukUiAddon, installation: WowInstallation): string {
-    const classicToken = '1.';
+    const classicToken = '1.1';
+    const foreverToken = '1.6';
     const burningCrusadeToken = '2.';
     const wrathToken = '3.';
     const cataToken = '4.';
@@ -242,11 +243,13 @@ export class TukUiAddonProvider extends AddonProvider {
     switch (installation.clientType) {
       case WowClientType.Classic:
       case WowClientType.ClassicPtr:
-      case WowClientType.ClassicBeta:
         return addon.patch.find((p) => p.startsWith(mistsToken)) ?? '';
       case WowClientType.ClassicEra:
       case WowClientType.ClassicEraPtr:
         return addon.patch.find((p) => p.startsWith(classicToken)) ?? '';
+      case WowClientType.Forever:
+      case WowClientType.ClassicBeta:
+        return addon.patch.find((p) => p.startsWith(foreverToken)) ?? '';
       case WowClientType.Anniversary:
         return addon.patch.find((p) => p.startsWith(burningCrusadeToken)) ?? '';
       default:
@@ -256,7 +259,8 @@ export class TukUiAddonProvider extends AddonProvider {
               !p.startsWith(classicToken) &&
               !p.startsWith(wrathToken) &&
               !p.startsWith(cataToken) &&
-              !p.startsWith(mistsToken),
+              !p.startsWith(mistsToken) &&
+              !p.startsWith(foreverToken),
           ) ?? ''
         );
     }

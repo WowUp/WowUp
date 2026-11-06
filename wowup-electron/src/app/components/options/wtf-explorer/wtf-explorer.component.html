@@ -42,15 +42,15 @@
       <mat-tree [dataSource]="treeDataSource" [treeControl]="treeControl">
         <!-- This is the tree node template for leaf nodes -->
         <mat-tree-node *matTreeNodeDef="let node" matTreeNodePadding>
-          <!-- use a disabled button to provide padding for tree leaf -->
-          <button class="wu-btn wu-btn-icon" disabled></button>
+          <!-- keeps leaf names aligned with the expandable nodes' toggle buttons -->
+          <span class="tree-toggle-spacer"></span>
           <span [ngClass]="{ 'text-warning': node.warn, 'text-4': node.ignore }">
             {{ node.name }}
           </span>
         </mat-tree-node>
         <!-- This is the tree node template for expandable nodes -->
         <mat-tree-node *matTreeNodeDef="let node; when: hasChild" matTreeNodePadding>
-          <button class="wu-btn wu-btn-icon" matTreeNodeToggle [attr.aria-label]="'Toggle ' + node.name">
+          <button class="wu-btn wu-btn-icon tree-toggle" matTreeNodeToggle [attr.aria-label]="'Toggle ' + node.name">
             <mat-icon
               class="mat-icon-rtl-mirror"
               [svgIcon]="treeControl.isExpanded(node) ? 'fas:chevron-down' : 'fas:chevron-right'"

@@ -1,0 +1,4 @@
+{
+  "spec": "out-tsc/app-spec/wowup-electron/app/**/*.spec.js",
+  "timeout": 10000
+}

@@ -2,14 +2,13 @@ import { dialog } from "electron";
 import { app, BrowserWindow, BrowserWindowConstructorOptions, powerMonitor } from "electron";
 import * as log from "electron-log/main";
 import { find } from "lodash";
-import * as minimist from "minimist";
+import minimist = require("minimist");
 import { arch as osArch, release as osRelease, type as osType } from "os";
 import { join } from "path";
 import { pathToFileURL } from "url";
 import { inspect } from "util";
 
 import {
-  APP_PROTOCOL_NAME,
   APP_USER_MODEL_ID,
   APP_USER_MODEL_ID_CF,
   COLLAPSE_TO_TRAY_PREFERENCE_KEY,
@@ -44,23 +43,21 @@ import { appUpdater } from "./app-updater";
 import { wagoHandler } from "./wago-handler";
 import { initializeIpcHandlers, setPendingOpenUrl } from "./ipc-events";
 import * as platform from "./platform";
-import { initializeDefaultPreferences } from "./preferences";
+import { initializeDefaultPreferences, getInstallId } from "./preferences";
 import { PUSH_NOTIFICATION_EVENT, pushEvents } from "./push";
 import { getAddonStore, getPreferenceStore, initializeStoreIpcHandlers } from "./stores";
 import { registerControllers } from "./controllers";
 import * as windowState from "./window-state";
+import { getShell } from "../../wowup-shell/contract/shell-api";
+import { getAssetPath, getBundleDir, getPreloadPath, getRendererIndexPath } from "./bundle-paths";
 
 import { validateGpuCache } from "./utils/gpu-cache-buster";
 import { AppEnv } from "./env/environment";
 
-// LOGGING SETUP
-// Override the default log path so they aren't a pain to find on Mac
-const LOG_PATH = join(app.getPath("userData"), "logs");
-app.setAppLogsPath(LOG_PATH);
-log.initialize();
-log.transports.file.resolvePathFn = (variables) => {
-  return join(LOG_PATH, variables.fileName ?? "log-file.txt");
-};
+// Started by the wowup-shell bootstrap, which has already set up logging, taken the single instance lock and
+// registered the protocol handler.
+const shell = getShell();
+const LOG_PATH = shell.logPath;
 log.info("Main starting");
 log.info(`Electron: ${process.versions.electron}`);
 log.info(`BinaryPath: ${app.getPath("exe")}`);
@@ -68,6 +65,25 @@ log.info("ExecPath", process.execPath);
 log.info("Args", process.argv);
 log.info(`Log path: ${LOG_PATH}`);
 log.info(`App flavor: ${AppEnv.buildFlavor}`);
+
+// Overwolf's own logger (enabled via "overwolf.logger" in package.json) mirrors each line to the main
+// process console prefixed with "|ow-electron|", and its own log file is truncated on every launch.
+// Route those lines into main.log so a single log covers both. Lines from before this point only
+// exist in <appData>/ow-electron/<uid>/logs/ow-electron.log.
+if (AppEnv.buildFlavor === "ow") {
+  const owLog = log.scope("ow");
+  const levels = { log: "info", info: "info", warn: "warn", error: "error" } as const;
+  for (const level of Object.keys(levels) as Array<keyof typeof levels>) {
+    const original = console[level].bind(console);
+    console[level] = (...args: unknown[]) => {
+      if (typeof args[0] === "string" && args[0].includes("|ow-electron")) {
+        owLog[levels[level]](...args.slice(1));
+        return;
+      }
+      original(...args);
+    };
+  }
+}
 
 // ERROR HANDLING SETUP
 process.on("uncaughtException", (error) => {
@@ -101,41 +117,32 @@ let loadFailCount = 0;
 
 initializeDefaultPreferences();
 
-// Only allow one instance of the app to run at a time, focus running window if user opens a 2nd time
-// Adapted from https://github.com/electron/electron/blob/master/docs/api/app.md#apprequestsingleinstancelock
-const singleInstanceLock = app.requestSingleInstanceLock();
-if (!singleInstanceLock) {
-  app.quit();
-} else {
-  app.on("second-instance", (evt, args) => {
-    log.info(`Second instance detected`, args);
-    // Someone tried to run a second instance, we should focus our window.
-    if (!win) {
-      log.warn("Second instance launched, but no window found");
-      return;
-    }
+// The shell holds the single instance lock; focus the running window if the user opens a 2nd time
+app.on("second-instance", (evt, args) => {
+  log.info(`Second instance detected`, args);
+  // Someone tried to run a second instance, we should focus our window.
+  if (!win) {
+    log.warn("Second instance launched, but no window found");
+    return;
+  }
 
-    windowState.restoreWindow(win);
+  windowState.restoreWindow(win);
 
-    win.focus();
+  win.focus();
 
-    // Find the first protocol arg if any exist
-    const customProtocol = find(args, (arg) => isProtocol(arg));
-    if (customProtocol) {
-      log.info(`Custom protocol detected: ${customProtocol}`);
-      // If we did get a custom protocol notify the app
-      win.webContents.send(IPC_CUSTOM_PROTOCOL_RECEIVED, customProtocol);
-    } else {
-      log.info(`No custom protocol detected`);
-    }
-  });
-}
+  // Find the first protocol arg if any exist
+  const customProtocol = find(args, (arg) => isProtocol(arg));
+  if (customProtocol) {
+    log.info(`Custom protocol detected: ${customProtocol}`);
+    // If we did get a custom protocol notify the app
+    win.webContents.send(IPC_CUSTOM_PROTOCOL_RECEIVED, customProtocol);
+  } else {
+    log.info(`No custom protocol detected`);
+  }
+});
 
 // APP MENU SETUP
 createAppMenu(win);
-
-// WowUp Protocol Handler
-app.setAsDefaultProtocolClient(APP_PROTOCOL_NAME);
 
 // Set the app ID so that our notifications work correctly on Windows
 app.setAppUserModelId(AppEnv.buildFlavor === "ow" ? APP_USER_MODEL_ID_CF : APP_USER_MODEL_ID);
@@ -196,6 +203,11 @@ app
     });
 
     log.info(`App ready: ${Date.now() - startedAt}ms`);
+    if (AppEnv.buildFlavor === "ow") {
+      log.info(
+        `Overwolf log: ${join(app.getPath("userData"), "..", "ow-electron", process.env.OVERWOLF_APP_UID ?? "", "logs")}`,
+      );
+    }
     createWindow();
   })
   .catch((e) => {
@@ -291,7 +303,7 @@ function createWindow(): BrowserWindow {
     title: "WowUp" + (AppEnv.buildFlavor === "ow" ? " CF" : ""),
     titleBarStyle: "hidden",
     webPreferences: {
-      preload: join(__dirname, "preload.js"),
+      preload: getPreloadPath(),
       nodeIntegration: true,
       contextIsolation: false,
       allowRunningInsecureContent: argv.serve,
@@ -300,6 +312,7 @@ function createWindow(): BrowserWindow {
         `--log-path=${LOG_PATH}`,
         `--user-data-path=${app.getPath("userData")}`,
         `--base-bg-color=${getBackgroundColor()}`,
+        `--install-id=${getInstallId()}`,
       ],
       webviewTag: true,
     },
@@ -312,17 +325,14 @@ function createWindow(): BrowserWindow {
 
   // Attempt to fix the missing icon issue on Ubuntu
   if (platform.isLinux) {
-    windowOptions.icon = join(
-      app.getAppPath(),
-      "assets",
-      AppEnv.buildFlavor === "ow" ? WOWUP_LOGO_FILENAME_CF : WOWUP_LOGO_FILENAME,
-    );
+    windowOptions.icon = getAssetPath(AppEnv.buildFlavor === "ow" ? WOWUP_LOGO_FILENAME_CF : WOWUP_LOGO_FILENAME);
   }
 
   windowState.applyWindowBoundsToConfig(windowOptions);
 
   // Create the browser window.
   win = new BrowserWindow(windowOptions);
+  windowState.trackWindowPlacement(win);
 
   windowState.restoreMainWindowBounds(win);
 
@@ -436,6 +446,8 @@ function createWindow(): BrowserWindow {
   });
 
   win.once("ready-to-show", () => {
+    shell.markHealthy();
+
     if (canStartHidden()) {
       return;
     }
@@ -513,9 +525,16 @@ function createWindow(): BrowserWindow {
 
   win.webContents.on("did-fail-load", () => {
     log.info("did-fail-load");
-    if (loadFailCount < 5) {
+    // When serving, the dev server is usually still compiling on the first load. Keep retrying it rather
+    // than falling back to dist/, which is a stale build that may not match the main process.
+    const maxLoadFails = argv.serve ? 60 : 5;
+    if (loadFailCount < maxLoadFails) {
       loadFailCount += 1;
-      loadMainUrl(win).catch((e) => log.error(e));
+      if (argv.serve) {
+        setTimeout(() => loadServeUrl(win), 2000);
+      } else {
+        loadMainUrl(win).catch((e) => log.error(e));
+      }
     } else {
       log.error(`Failed to load too many times, exiting`);
       app.quit();
@@ -524,10 +543,13 @@ function createWindow(): BrowserWindow {
 
   log.info(`Loading app URL: ${Date.now() - startedAt}ms`);
   if (argv.serve) {
-    require("electron-reload")(__dirname, {
-      electron: require(join(app.getAppPath(), "node_modules", "electron")),
+    // A main.js change relaunches the app with the same executable (electron or ow-electron) and switches
+    // (--serve, the shell's --bundle-dir); electron-reload would otherwise pass only the app path
+    require("electron-reload")(getBundleDir(), {
+      electron: process.execPath,
+      appArgv: process.argv.slice(1).filter((arg) => arg.startsWith("--")),
     });
-    win.loadURL("http://localhost:4200").catch((e) => log.error(e));
+    loadServeUrl(win);
   } else {
     loadMainUrl(win).catch((e) => log.error(e));
   }
@@ -535,12 +557,20 @@ function createWindow(): BrowserWindow {
   return win;
 }
 
+function loadServeUrl(window: BrowserWindow | null): void {
+  if (window === null || window.isDestroyed()) {
+    return;
+  }
+
+  window.loadURL("http://localhost:4200").catch((e) => log.error(e));
+}
+
 async function loadMainUrl(window: BrowserWindow | null): Promise<void> {
   if (window === null) {
     return;
   }
 
-  const url = pathToFileURL(join(app.getAppPath(), "dist", "index.html"));
+  const url = pathToFileURL(getRendererIndexPath());
   return await window?.loadURL(url.toString());
 }
 
@@ -581,5 +611,5 @@ function canStartHidden() {
 
 function getUserAgent() {
   const portableStr = isPortable ? " portable;" : "";
-  return `WowUp-Client/${app.getVersion()} (${osType()}; ${osRelease()}; ${osArch()}; ${AppEnv.buildFlavor === "ow" ? "CF;" : ""} ${portableStr} +https://wowup.io)`;
+  return `WowUp-Client/${shell.bundle.version} (${osType()}; ${osRelease()}; ${osArch()}; ${AppEnv.buildFlavor === "ow" ? "CF;" : ""} ${portableStr} +https://wowup.io)`;
 }

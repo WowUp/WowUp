@@ -32,7 +32,7 @@ import {
 import { WowInstallation } from "wowup-lib-core";
 import { SourceRemovedAddonError } from "wowup-lib-core";
 
-declare type WagoGameVersion = "retail" | "classic" | "bc" | "wotlk" | "cata" | "mop";
+declare type WagoGameVersion = "retail" | "classic" | "bc" | "wotlk" | "cata" | "mop" | "forever";
 declare type WagoStability = "stable" | "beta" | "alpha";
 
 interface WagoFingerprintAddon {
@@ -288,11 +288,10 @@ export class WagoAddonProvider extends AddonProvider {
       request.addons.push(waddon);
     });
 
-    console.debug(`[wago] scan`, request);
-    console.debug(JSON.stringify(request));
+    console.debug(`[wago] scan: ${request.addons.length} addons`);
 
     const matchResult = await this.sendMatchesRequest(request);
-    console.debug(`[wago] matchResult`, matchResult);
+    console.debug(`[wago] matchResult: ${matchResult.addons?.length ?? 0} matched`);
 
     const scanResultMap: { [folder: string]: WagoScanAddon } = {};
 
@@ -339,7 +338,7 @@ export class WagoAddonProvider extends AddonProvider {
       }
     }
 
-    console.debug(`[wago] delta`, addonFolders);
+    console.debug(`[wago] delta: ${addonFolders.length} folders`);
   }
 
   public async getFeaturedAddons(installation: WowInstallation): Promise<AddonSearchResult[]> {
@@ -629,10 +628,25 @@ export class WagoAddonProvider extends AddonProvider {
       downloadUrl: (release as any).download_link || (release as any).link,
       folders: [],
       gameVersion: "",
+      gameVersions: this.getSupportedPatches(release),
       releaseDate: new Date(release.created_at),
       version: release.label,
       dependencies: [],
     };
+  }
+
+  private getSupportedPatches(release: WagoSearchResponseRelease | WagoRelease | WagoScanRelease): string[] {
+    if ("supported_patches" in release) {
+      return release.supported_patches ?? [];
+    }
+
+    if ("supported_retail_patch" in release) {
+      return [release.supported_retail_patch, release.supported_classic_patch, release.supported_bc_patch].filter(
+        (patch) => !!patch,
+      );
+    }
+
+    return [];
   }
 
   private toAddon(
@@ -761,6 +775,8 @@ export class WagoAddonProvider extends AddonProvider {
         return "cata";
       case WowClientGroup.Mists:
         return "mop";
+      case WowClientGroup.Forever:
+        return "forever";
       default:
         throw new Error(`[wago] Un-handled client type: ${clientType}`);
     }

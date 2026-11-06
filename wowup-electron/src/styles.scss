@@ -32,7 +32,7 @@ a[href^="ftp://"]
 }
 
 .cata-bg {
-  background-image: url("~assets/images/wow-war-within-background.jpg");
+  background-image: url("~assets/images/wow-forever-background.jpg");
   position: absolute;
   top: 0;
   left: 0;
@@ -41,7 +41,7 @@ a[href^="ftp://"]
   background-size: cover;
   background-position: center;
   z-index: -10;
-  opacity: .3;
+  opacity: 0.3;
 }
 
 .selectable {
@@ -409,6 +409,16 @@ mat-icon.success-icon {
 }
 
 .addon-context-menu {
+  // Material lines a submenu up with its trigger using the first mat-menu-item's offsetTop as the
+  // parent's inner padding. The header and checkbox rows aren't menu items, so without this the
+  // offset is ~250px and submenus open near the top of the menu. Measure from here instead, with
+  // the same 8px the menu content normally has, without changing the layout.
+  .addon-context-menu-items {
+    position: relative;
+    padding-top: 8px;
+    margin-top: -8px;
+  }
+
   .addon-context-menu-header {
     padding: 0 16px 8px 16px;
     display: flex;
