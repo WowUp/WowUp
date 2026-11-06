@@ -448,10 +448,6 @@ function createWindow(): BrowserWindow {
   win.once("ready-to-show", () => {
     shell.markHealthy();
 
-    if (canStartHidden()) {
-      return;
-    }
-
     win?.webContents.session.setPermissionRequestHandler((contents, permission, callback) => {
       return callback(false);
     });
@@ -459,6 +455,10 @@ function createWindow(): BrowserWindow {
     win?.webContents.session.setPermissionCheckHandler(() => {
       return false;
     });
+
+    if (canStartHidden()) {
+      return;
+    }
 
     win?.show();
   });
