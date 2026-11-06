@@ -22,14 +22,14 @@
     "IMPORT_TAB_LABEL": "İçe Aktar",
     "IMPORT_TEXT_INSTRUCTIONS": "Başlamak için aşağıdaki alana WowUp eklenti dışa aktarma verisini yapıştırın",
     "IMPORT_TEXT_LABEL": "İçe aktarma verisi",
-    "IMPORT_TOTAL_COUNT": "{count} {count, plural, =1{eklenti} other{eklentiler}} içe aktarılıyor",
+    "IMPORT_TOTAL_COUNT": "{count} {count, plural, =1{eklenti} other{eklenti}} içe aktarılıyor",
     "INSTALL_BUTTON": "Yükle",
     "INVALID_CLIENT_TYPE": "İçe aktarma dizesi seçili kurulum türüyle eşleşmedi",
     "MISSING_ADDON_PROVIDERS": "Bir veya daha fazla eklenti sağlayıcısı kullanılamıyor veya etkin değil ({missingProviders})",
-    "MISSING_CURSEFORGE_PROVIDER": "Eklenti listesinde bir CurseForge eklentisi var, wowup.io adresinden \"WowUp with CurseForge\" uygulamasını yüklemeniz gerekecek",
+    "MISSING_CURSEFORGE_PROVIDER": "Eklenti listesinde bir CurseForge eklentisi var, wowup.io adresinden<br>\"WowUp with CurseForge\" uygulamasını yüklemeniz gerekecek",
     "MISSING_PROVIDER_MODAL_DOWNLOAD_BTN": "İndir",
     "MISSING_PROVIDER_MODAL_TITLE": "Eksik Eklenti Sağlayıcısı",
-    "MISSING_WAGO_PROVIDER": "Eklenti listesinde bir Wago eklentisi var, wowup.io adresinden \"WowUp with Wago\" uygulamasını yüklemeniz gerekecek",
+    "MISSING_WAGO_PROVIDER": "Eklenti listesinde bir Wago eklentisi var, wowup.io adresinden<br>\"WowUp with Wago\" uygulamasını yüklemeniz gerekecek",
     "NO_CHANGE_BADGE_TOOLTIP": "Bu eklentiyi zaten yüklediniz",
     "PASTE_BUTTON": "Yapıştır",
     "PROVIDER_MISMATCH": "Bu eklenti zaten yüklü, ancak sağlayıcı eşleşmiyor",
@@ -58,7 +58,10 @@
         "SELECT_ALL": "Tümünü Seç",
         "UNDO": "Geri Al"
       },
+      "HIDE": "Gizle",
+      "HIDE_OTHERS": "Diğerlerini Gizle",
       "QUIT": "Çıkış Yap",
+      "SHOW_ALL": "Tümünü Göster",
       "VIEW": {
         "FORCE_RELOAD": "Zorla Yenile",
         "LABEL": "Görünüm",
@@ -70,12 +73,15 @@
         "ZOOM_RESET": "Yakınlaştırmayı Sıfırla"
       },
       "WINDOW": {
+        "BRING_ALL_TO_FRONT": "Tümünü Öne Getir",
         "CLOSE": "Kapat",
-        "LABEL": "Pencere"
+        "LABEL": "Pencere",
+        "MINIMIZE": "Küçült",
+        "ZOOM": "Büyüt"
       }
     },
     "AUTO_UPDATE_FEW_NOTIFICATION_BODY": "Otomatik olarak güncellendi\r\n{addonNames}",
-    "AUTO_UPDATE_NOTIFICATION_BODY": "{count} {count, plural, =1{eklenti} other{eklentiler}} otomatik olarak güncellendi.",
+    "AUTO_UPDATE_NOTIFICATION_BODY": "{count} {count, plural, =1{eklenti} other{eklenti}} otomatik olarak güncellendi.",
     "AUTO_UPDATE_NOTIFICATION_TITLE": "Otomatik Güncellemeler",
     "CLOSE_FULLSCREEN_BUTTON_TOOLTIP": "Tam ekran modundan çık",
     "FULLSCREEN_SNACKBAR": {
@@ -106,18 +112,27 @@
       "GROUP_LIGHT": "Açık",
       "HORDE": "Horde"
     },
+    "UPDATES_ON_HOLD_NOTIFICATION_BODY": "Bazı eklenti güncellemeleri, yüklü olandan daha yeni bir World of Warcraft sürümü gerektiriyor. İncelemek için WowUp'ı açın.",
+    "UPDATES_ON_HOLD_NOTIFICATION_TITLE": "Güncellemeler beklemede",
     "WINDOW_TITLE": "WowUp.io",
     "WINDOW_TITLE_CF": "WowUp.io CF",
     "WINDOW_TITLE_FULLSCREEN": "WowUp.io - Tam Ekran",
     "WOWUP_UPDATE": {
+      "BUNDLE_OVERDUE_TEXT": "Bir WowUp güncellemesi bir süredir bekliyor. Güncellemeyi tamamlamak için WowUp'ı yeniden başlatın.",
+      "BUNDLE_READY_TEXT": "Bir WowUp güncellemesi indirildi. Kullanmak için şimdi yeniden başlatın, yoksa WowUp 6 saat içinde yeniden başlatmanızı isteyecek.",
+      "BUNDLE_REQUIRED_TEXT": "WowUp'ın bu sürümünde bir sorun var ve yenisiyle değiştirildi. Güncellemeyi tamamlamak için WowUp'ı yeniden başlatın.",
       "CHECKING_FOR_UPDATE": "Güncelleme denetleniyor",
       "DOWNLOADED_TOOLTIP": "WowUp güncellemesini yükle",
       "DOWNLOADING_UPDATE": "Güncelleme indiriliyor",
       "INSTALL_MESSAGE": "WowUp'ı yeniden başlatıp güncellemeyi yüklemek istiyor musunuz?",
       "INSTALL_TITLE": "WowUp Güncellemesi Hazır",
+      "LATER": "Daha sonra",
       "NOT_AVAILABLE": "WowUp'ın en son sürümü zaten yüklü",
       "PORTABLE_DOWNLOAD_MESSAGE": "En son taşınabilir sürümü manuel olarak indirmek istiyor musunuz?\n\nUygulamayı manuel olarak kapatıp yeni sürümü kopyalamanız gerekecek.",
       "PORTABLE_DOWNLOAD_TITLE": "Manuel İndirme Gerekli",
+      "RESTART_NOW": "Şimdi yeniden başlat",
+      "RESTART_TO_UPDATE": "Güncellemek için yeniden başlat",
+      "RESTART_TO_UPDATE_TOOLTIP": "İndirilen güncellemeyi kullanmak için WowUp'ı yeniden başlatın",
       "SNACKBAR_ACTION": "Güncelle ve Yeniden Başlat",
       "SNACKBAR_TEXT": "WowUp'ın yeni bir sürümü mevcut",
       "TOOLTIP": "WowUp güncellemesi mevcut",
@@ -169,10 +184,12 @@
     },
     "ADDON_STATUS": {
       "BACKINGUP": "Yedekleniyor",
+      "CHECKING_DEPENDENCIES": "Destek dosyaları denetleniyor",
       "COMPLETE": "Yüklendi",
       "DOWNLOADING": "İndiriliyor",
       "ERROR": "Hata",
       "INSTALLING": "Yükleniyor",
+      "INSTALLING_DEPENDENCIES": "Destek dosyaları {completed}/{total}",
       "PENDING": "Beklemede",
       "RETRY": "Tekrar deneniyor...",
       "UNINSTALLING": "Kaldırılıyor",
@@ -191,15 +208,17 @@
       "TOC_NAME_MISMATCH_TOOLTIP": "Bu eklentinin klasörü toc ile eşleşmiyor"
     },
     "CLIENT_TYPES": {
-      "BETA": "TWW Beta",
-      "CLASSIC": "Cataclysm Klasik",
-      "CLASSICBETA": "Cataclysm Klasik Beta",
+      "ANNIVERSARY": "Burning Crusade Anniversary",
+      "BETA": "The War Within Beta",
+      "CLASSIC": "Mists of Pandaria Klasik",
+      "CLASSICBETA": "World of Warcraft: Forever Beta",
       "CLASSICERA": "World of Warcraft Klasik",
       "CLASSICERAPTR": "PTR (Klasik Era)",
-      "CLASSICPTR": "PTR (Cataclysm Klasik)",
+      "CLASSICPTR": "PTR (MoP Klasik)",
+      "FOREVER": "World of Warcraft: Forever",
       "RETAIL": "World of Warcraft",
-      "RETAILPTR": "PTR (TWW 11.0.2)",
-      "RETAILXPTR": "PTR (TWW 11.0)"
+      "RETAILPTR": "PTR (Midnight)",
+      "RETAILXPTR": "PTR (TWW 11.2.7)"
     },
     "DATES": {
       "DAYS_AGO": "{count} {count, plural, =1{gün} other{gün}} önce",
@@ -210,7 +229,7 @@
       "YESTERDAY": "Dün"
     },
     "DEPENDENCY": {
-      "TOOLTIP": "{dependencyCount} gerekli {dependencyCount, plural, =1{destek dosyaları} other{destek dosyaları}}"
+      "TOOLTIP": "{dependencyCount} gerekli {dependencyCount, plural, =1{destek dosyası} other{destek dosyası}}"
     },
     "DOWNLOAD_COUNT": {
       "e+0": "birkaç",
@@ -234,6 +253,7 @@
     "ERRORS": {
       "ACCOUNT_PUSH_TOGGLE_FAILED_ERROR": "Hesabınız için anlık güncellemeleri açıp kapatma işlemi başarısız oldu. Lütfen daha sonra tekrar deneyin veya Discord üzerinden iletişime geçin.",
       "ADDON_INSTALL_ERROR": "{addonName} eklentisi yüklenemedi. Lütfen daha sonra tekrar deneyin.",
+      "ADDON_INSTALL_NETWORK_ERROR": "{addonName} bir ağ hatası nedeniyle indirilemedi. Bunun nedeni dengesiz bir bağlantı ya da ağınızdaki IPv6 sorunları olabilir — bu sorun devam ederse ağ bağdaştırıcınızda IPv6'yı devre dışı bırakmayı deneyin.",
       "ADDON_SCAN_ERROR": "Eklenti klasörleriniz {providerName} ile eşleştirilirken bir hata oluştu, lütfen daha sonra tekrar deneyin.",
       "ADDON_SYNC_ERROR": "{providerName} kaynağından güncellemeler denetlenirken bir hata oluştu, lütfen daha sonra tekrar deneyin.",
       "ADDON_SYNC_FULL_ERROR": "[{installationName}]: {providerName} kaynağından {addonName} güncellemeleri denetlenirken bir hata oluştu, lütfen daha sonra tekrar deneyin.",
@@ -257,7 +277,7 @@
       "CHANGELOG_TAB": "Değişiklik Günlüğü",
       "COPY_ADDON_ID_SNACKBAR": "Eklenti Kimliği panoya kopyalandı",
       "COPY_ADDON_ID_TOOLTIP": "Eklenti kimliğini panoya kopyala",
-      "DEPENDENCY_TEXT": "Bu eklenti {dependencyCount} gerekli {dependencyCount, plural, =1{destek dosyaları} other{destek dosyaları}} içeriyor",
+      "DEPENDENCY_TEXT": "Bu eklenti {dependencyCount} gerekli {dependencyCount, plural, =1{destek dosyası} other{destek dosyası}} içeriyor",
       "DESCRIPTION_NOT_FOUND": "Açıklama bulunamadı",
       "DESCRIPTION_TAB": "Açıklama",
       "FUNDING_LINK_TITLE": "Bu yazarı destekle",
@@ -283,6 +303,16 @@
       "RE_SCAN_SUCCESS": "Otomatik tekrar tarama tamamlandı, hazırsınız.",
       "TITLE": "CurseForge Taşınması"
     },
+    "GAME_VERSION_MISMATCH": {
+      "ADDON_NEEDS": "{name} için WoW {version} gerekiyor",
+      "CANCEL": "İptal",
+      "IGNORE": "Bu WoW sürümü için yoksay",
+      "INSTALLATION": "{name} (WoW {version})",
+      "MESSAGE": "Bu güncellemeler, yüklü olandan daha yeni bir World of Warcraft sürümü için hazırlandı. Oyun güncellenene kadar hatalara neden olabilirler.",
+      "SKIP": "Bunları atla",
+      "TITLE": "Güncellemeler daha yeni bir WoW sürümü gerektiriyor",
+      "UPDATE_ANYWAY": "Yine de güncelle"
+    },
     "INSTALL_FROM_PROTOCOL": {
       "ADDON_INSTALLED": "Eklenti yüklendi!",
       "ADDON_INSTALLING": "Eklenti yükleniyor",
@@ -300,15 +330,17 @@
       "ADDON_URL_INPUT_PLACEHOLDER": "Örn. GitHub veya WowInterface URL'si",
       "CLOSE_BUTTON": "Kapat",
       "DESCRIPTION": "Doğrudan bir URL'den eklenti yüklemek istiyorsanız başlamak için aşağıya yapıştırın.",
-      "DOWNLOAD_COUNT": "{provider} kaynağında {textCount} {count, plural, =1{indirme} other{indirmeler}}",
+      "DOWNLOAD_COUNT": "{provider} kaynağında {textCount} {count, plural, =1{indirme} other{indirme}}",
       "ERROR": {
         "ASSET_NOT_FOUND": "{message} kaynağından indirilecek dosya bulunamadı.\n\nWowUp'ın indirebilmesi için sürümde geçerli bir zip dosyası bulunması gereklidir.",
         "BURNING_CRUSADE_ASSET_NOT_FOUND": "{message} kaynağından indirilecek dosya bulunamadı.\n\nWowUp'ın indirebilmesi için '-bc' ile biten geçerli bir zip dosyası gereklidir.",
         "CATACLYSM_ASSET_NOT_FOUND": "{message} kaynağından indirilecek dosya bulunamadı.\n\nWowUp'ın indirebilmesi için '-cata' ile biten geçerli bir zip dosyası gereklidir.",
         "CLASSIC_ASSET_NOT_FOUND": "{message} kaynağından indirilecek dosya bulunamadı.\n\nWowUp'ın indirebilmesi için '-classic' ile biten geçerli bir zip dosyası gereklidir.",
         "FAILED_TO_CONNECT": "API'ye bağlanılamıyor, lütfen biraz bekleyip tekrar deneyin.",
+        "FOREVER_ASSET_NOT_FOUND": "{message} kaynağından indirilecek dosya bulunamadı.\n\nWowUp'ın indirebilmesi için '-forever' ile biten geçerli bir zip dosyası gereklidir.",
         "INSTALL_FAILED": "Eklenti yüklenmeye çalışılırken bir hata oluştu, lütfen tekrar deneyin.\n\nBu mesaj devam ederse #help-me kanalında Discord'tan yardım alabilirsiniz.",
         "INVALID_URL": "Verilen değer geçerli bir URL değil. Geçerli eklenti URL örnekleri:\n\t- https://github.com/WowUp/WowUp.Addon\n\t- https://www.wowinterface.com/downloads/info25610-8.3-014.html\n\t- https://www.curseforge.com/wow/addons/altoholic",
+        "MISTS_ASSET_NOT_FOUND": "{message} kaynağından indirilecek dosya bulunamadı.\n\nWowUp'ın indirebilmesi için '-mists' ile biten geçerli bir zip dosyası gereklidir.",
         "NO_ADDON_FOUND": "Eklenti bulunamadı, URL'nizin doğru sayfaya yönlendirdiğinden emin olun.\n\nGitHub'dan yüklerken, depoda eklentiyi içeren bir zip arşivine sahip bir sürüm etiketi olduğundan emin olun.",
         "NO_RELEASE_FOUND": "{message} için hiçbir sürüm bulunamadı.\n\nWowUp'ın indirebilmesi için zip dosyaları içeren geçerli bir sürüm gereklidir.",
         "NO_SEARCH_RESULTS": "Arama sonucu bulunamadı.",
@@ -322,9 +354,6 @@
       "INSTALL_SUCCESS_LABEL": "Yüklendi!",
       "SUPPORTED_SOURCES": "WowInterface ve GitHub destekleniyor",
       "TITLE": "URL'den Eklenti Yükle"
-    },
-    "NEW_VERSION_POPUP": {
-      "TITLE": "Yama Notları {versionNumber}"
     },
     "PERMISSIONS": {
       "CURSEFORGE": {
@@ -342,7 +371,7 @@
       },
       "TITLE": "WowUp İzinleri Kurulumu",
       "WAGO": {
-        "DESCRIPTION": "Favori eklentilerinizin yazarlarını desteklemeye yardımcı olmak için Wago.io eklenti sağlayıcısını etkinleştirin! Bu, hizmetlerini kullanmak için gereken tanıtım panelini gösterecektir.\nKatılırsanız <a appExternalLink href=\"{termsUrl}\" >Kullanım Koşullarını</a> ve <a appExternalLink href=\"{dataUrl}\" >Veri Onayını</a> kabul etmiş olursunuz.",
+        "DESCRIPTION": "Favori eklentilerinizin yazarlarını desteklemeye yardımcı olmak için Wago.io eklenti sağlayıcısını etkinleştirin! Bu, hizmetlerini kullanmak için gereken tanıtım panelini gösterecektir.\nKatılırsanız <a appExternalLink href=\"{termsUrl}\" >Kullanım Koşullarını</a> kabul etmiş olursunuz.",
         "TOGGLE_LABEL": "Wago.io Sağlayıcısını Etkinleştir"
       }
     },
@@ -361,6 +390,7 @@
     "ABOUT": {
       "ATTRIBUTIONS_TITLE": "Atıflar",
       "CHANGE_LOG_SECTION_LABEL": "Değişiklik Günlüğü",
+      "SHELL_VERSION": "Kabuk v{version}",
       "TITLE": "WowUp.io",
       "WEBSITE_LINK_LABEL": "Web sitesine göz atın!"
     },
@@ -494,6 +524,7 @@
         "UPDATE_ALL_CLIENTS_BUTTON": "Tüm Versiyonları Güncelle",
         "UPDATE_RETAIL_CLASSIC_BUTTON": "Retail/Klasik'i Güncelle"
       },
+      "VERSION_MISMATCH_TOOLTIP": "Bu güncelleme için WoW {required} gerekiyor. Sizdeki sürüm WoW {current}.",
       "WTF_BACKUP_BUTTON": "Arayüz Ayarları Yedeği"
     },
     "NEWS": {
@@ -538,6 +569,11 @@
         "CURRENT_LANGUAGE_LABEL": "Mevcut Dil",
         "CURSE_PROTOCOL_DESCRIPTION": "CurseForge web sitesinden eklenti indirirken WowUp kurulumu halledecektir",
         "CURSE_PROTOCOL_LABEL": "CurseForge indirme bağlantılarını işle",
+        "DISABLE_IPV6_CONFIRMATION_LABEL": "Yeniden başlatmak istiyor musunuz?",
+        "DISABLE_IPV6_DESCRIPTION": "Eklenti indirmeleri sürekli bir ağ hatasıyla başarısız oluyorsa, ağınızın IPv6 bağlantısı bozuk olabilir. Bunu etkinleştirmek WowUp'ı yalnızca IPv4 kullanmaya zorlar.<br>Bu ayarı değiştirmek yeniden başlatma gerektirir.",
+        "DISABLE_IPV6_DISABLE_CONFIRMATION_DESCRIPTION": "IPv6'yı yeniden etkinleştirmek uygulamanın yeniden başlatılmasını gerektirir.",
+        "DISABLE_IPV6_ENABLE_CONFIRMATION_DESCRIPTION": "Yalnızca IPv4 ağ kullanımına geçmek uygulamanın yeniden başlatılmasını gerektirir.",
+        "DISABLE_IPV6_LABEL": "IPv4'ü zorla (IPv6'yı devre dışı bırak)",
         "ENABLE_APP_BADGE_DESCRIPTION": "Uygulama simgesinde, güncellemesi olan eklentilerin sayısını gösteren bir rozet görüntüle.",
         "ENABLE_APP_BADGE_LABEL": "Uygulama Rozeti Bildirimini Etkinleştir",
         "ENABLE_SYSTEM_NOTIFICATIONS_DESCRIPTION": "Otomatik güncellenen eklentiler gibi çeşitli sistem bildirimi açılır pencerelerini etkinleştir.",
@@ -602,6 +638,11 @@
         "CURSEFORGE": "CurseForge",
         "DEBUG": "Hata Ayıklama",
         "WTF_EXPLORER": "WTF Gezgini"
+      },
+      "WAGO": {
+        "AD_CONSENT_DESCRIPTION": "Wago reklam ortaklarının verilerinizi reklam kişiselleştirmesi için nasıl kullanabileceğini görüntüleyin ve yönetin",
+        "AD_CONSENT_LABEL": "Wago Reklam Kişiselleştirme ve Veriler",
+        "AD_CONSENT_MANAGE": "Yönet"
       },
       "WOW": {
         "ADD_CLIENT_BUTTON": "Yeni Ekle",
