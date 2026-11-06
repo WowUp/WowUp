@@ -25,7 +25,6 @@ const WOW_RETAIL_PTR_NAME_ARM64 = "WowT-arm64.exe";
 const WOW_RETAIL_BETA_NAME_ARM64 = "WowB-arm64.exe";
 const WOW_CLASSIC_NAME_ARM64 = "WowClassic-arm64.exe";
 const WOW_CLASSIC_PTR_NAME_ARM64 = "WowClassicT-arm64.exe";
-const WOW_CLASSIC_BETA_NAME_ARM64 = "WowClassicB-arm64.exe";
 
 const WOW_APP_NAMES = [
   WOW_RETAIL_NAME,
@@ -36,14 +35,25 @@ const WOW_APP_NAMES = [
   WOW_CLASSIC_BETA_NAME,
 ];
 
-const WOW_APP_NAMES_ARM64 = [
-  WOW_RETAIL_NAME_ARM64,
-  WOW_RETAIL_PTR_NAME_ARM64,
-  WOW_RETAIL_BETA_NAME_ARM64,
-  WOW_CLASSIC_NAME_ARM64,
-  WOW_CLASSIC_PTR_NAME_ARM64,
-  WOW_CLASSIC_BETA_NAME_ARM64,
-];
+const ARM64_SUFFIX = "-arm64.exe";
+
+// Lower-cased x64 binary name => the name used in the switch below
+const WOW_APP_NAMES_BY_LOWER = new Map(WOW_APP_NAMES.map((name) => [name.toLowerCase(), name]));
+
+/**
+ * Map a WoW binary name to its x64 name, or undefined if it isn't one. Windows file names are
+ * case-insensitive and Blizzard's ARM64 builds have shipped as both Wow-arm64.exe and Wow-ARM64.exe.
+ * Both architectures are accepted whatever WowUp itself runs as, since an x64 WowUp under emulation
+ * on an ARM64 machine reports process.arch "x64" but sees the ARM64 binaries.
+ */
+function getX64BinaryName(binaryName: string): string | undefined {
+  let lowerName = binaryName.toLowerCase();
+  if (lowerName.endsWith(ARM64_SUFFIX)) {
+    lowerName = lowerName.slice(0, -ARM64_SUFFIX.length) + ".exe";
+  }
+
+  return WOW_APP_NAMES_BY_LOWER.get(lowerName);
+}
 
 const BLIZZARD_PRODUCT_DB_NAME = "product.db";
 const DRIVE_LETTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");
@@ -90,8 +100,7 @@ export class WarcraftPlatformWin implements WarcraftPlatform {
   }
 
   public isWowApplication(appName: string): boolean {
-    const nameList = this.isArm64 ? WOW_APP_NAMES_ARM64 : WOW_APP_NAMES;
-    return nameList.includes(appName);
+    return getX64BinaryName(appName) !== undefined;
   }
 
   public async getBlizzardAgentPath(): Promise<string> {
@@ -133,17 +142,15 @@ export class WarcraftPlatformWin implements WarcraftPlatform {
   }
 
   public getClientType(binaryPath: string): WowClientType {
-    const binaryName = path.basename(binaryPath);
+    const binaryName = getX64BinaryName(path.win32.basename(binaryPath));
     let clientType: WowClientType = WowClientType.None;
     switch (binaryName) {
       case WOW_RETAIL_NAME:
-      case WOW_RETAIL_NAME_ARM64:
         clientType = binaryPath.toLowerCase().includes(WOW_FOREVER_FOLDER)
           ? WowClientType.Forever
           : WowClientType.Retail;
         break;
       case WOW_CLASSIC_NAME:
-      case WOW_CLASSIC_NAME_ARM64:
         if (binaryPath.toLowerCase().includes(WOW_CLASSIC_ERA_FOLDER)) {
           clientType = WowClientType.ClassicEra;
         } else if (binaryPath.toLowerCase().includes(WOW_ANNIVERSARY_FOLDER)) {
@@ -153,25 +160,21 @@ export class WarcraftPlatformWin implements WarcraftPlatform {
         }
         break;
       case WOW_RETAIL_PTR_NAME:
-      case WOW_RETAIL_PTR_NAME_ARM64:
         clientType = binaryPath.toLowerCase().includes(WOW_RETAIL_XPTR_FOLDER)
           ? WowClientType.RetailXPtr
           : WowClientType.RetailPtr;
         break;
       case WOW_CLASSIC_PTR_NAME:
-      case WOW_CLASSIC_PTR_NAME_ARM64:
         clientType = binaryPath.toLowerCase().includes(WOW_CLASSIC_ERA_PTR_FOLDER)
           ? WowClientType.ClassicEraPtr
           : WowClientType.ClassicPtr;
         break;
       case WOW_RETAIL_BETA_NAME:
-      case WOW_RETAIL_BETA_NAME_ARM64:
         clientType = binaryPath.toLowerCase().includes(WOW_CLASSIC_BETA_FOLDER)
           ? WowClientType.ClassicBeta
           : WowClientType.Beta;
         break;
       case WOW_CLASSIC_BETA_NAME:
-      case WOW_CLASSIC_BETA_NAME_ARM64:
         clientType = WowClientType.ClassicBeta;
         break;
       default:
