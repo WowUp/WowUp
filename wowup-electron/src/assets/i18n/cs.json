@@ -58,7 +58,10 @@
         "SELECT_ALL": "SelectAll",
         "UNDO": "Undo"
       },
+      "HIDE": "Skrýt",
+      "HIDE_OTHERS": "Skrýt ostatní",
       "QUIT": "Quit",
+      "SHOW_ALL": "Zobrazit vše",
       "VIEW": {
         "FORCE_RELOAD": "Force Reload",
         "LABEL": "Zobrazit",
@@ -70,8 +73,11 @@
         "ZOOM_RESET": "Resetovat přiblížení"
       },
       "WINDOW": {
+        "BRING_ALL_TO_FRONT": "Přenést vše do popředí",
         "CLOSE": "Close",
-        "LABEL": "Window"
+        "LABEL": "Window",
+        "MINIMIZE": "Minimalizovat",
+        "ZOOM": "Zvětšit"
       }
     },
     "AUTO_UPDATE_FEW_NOTIFICATION_BODY": "Automaticky aktualizovány\r\n{addonNames}",
@@ -106,18 +112,27 @@
       "GROUP_LIGHT": "Světlý",
       "HORDE": "Horda"
     },
+    "UPDATES_ON_HOLD_NOTIFICATION_BODY": "Některé aktualizace addonů vyžadují novější verzi World of Warcraft, než je nainstalovaná. Otevřete WowUp a zkontrolujte je.",
+    "UPDATES_ON_HOLD_NOTIFICATION_TITLE": "Aktualizace pozastaveny",
     "WINDOW_TITLE": "WowUp.io",
     "WINDOW_TITLE_CF": "WowUp.io CF",
     "WINDOW_TITLE_FULLSCREEN": "WowUp.io - Full Screen",
     "WOWUP_UPDATE": {
+      "BUNDLE_OVERDUE_TEXT": "Aktualizace WowUp čeká už nějakou dobu. Restartujte WowUp a dokončete aktualizaci.",
+      "BUNDLE_READY_TEXT": "Aktualizace WowUp byla stažena. Restartujte nyní, abyste ji začali používat, jinak vás WowUp do 6 hodin požádá o restart.",
+      "BUNDLE_REQUIRED_TEXT": "Tato verze WowUp obsahuje chybu a byla nahrazena. Restartujte WowUp a dokončete aktualizaci.",
       "CHECKING_FOR_UPDATE": "Checking for update",
       "DOWNLOADED_TOOLTIP": "Nainstalovat aktualizaci WowUp",
       "DOWNLOADING_UPDATE": "Downloading update",
       "INSTALL_MESSAGE": "Chcete restartovat WowUp and nainstalovat aktualizaci?",
       "INSTALL_TITLE": "Aktualizace WowUp je připravena",
+      "LATER": "Později",
       "NOT_AVAILABLE": "Nejnovější verze WowUp je již nainstalována",
       "PORTABLE_DOWNLOAD_MESSAGE": "Chcete ručně stáhnout nejnovější přenosnou (portable) verzi?\n\nMusíte vypnout aplikaci a ručně nakopírovat novou verzi.",
       "PORTABLE_DOWNLOAD_TITLE": "Vyžadováno ruční stažení",
+      "RESTART_NOW": "Restartovat nyní",
+      "RESTART_TO_UPDATE": "Restartovat a aktualizovat",
+      "RESTART_TO_UPDATE_TOOLTIP": "Restartujte WowUp a použijte staženou aktualizaci",
       "SNACKBAR_ACTION": "Aktualizovat & Restart",
       "SNACKBAR_TEXT": "Nová verze WowUp je k dispozici",
       "TOOLTIP": "Aktualizace WowUp je k dospozici",
@@ -169,10 +184,12 @@
     },
     "ADDON_STATUS": {
       "BACKINGUP": "Zálohuji",
+      "CHECKING_DEPENDENCIES": "Kontrola závislostí",
       "COMPLETE": "Nainstalován",
       "DOWNLOADING": "Stahuji",
       "ERROR": "Chyba",
       "INSTALLING": "Instaluji",
+      "INSTALLING_DEPENDENCIES": "Závislosti {completed}/{total}",
       "PENDING": "Čekající",
       "RETRY": "Retrying...",
       "UNINSTALLING": "Odinstalovávaný",
@@ -191,15 +208,17 @@
       "TOC_NAME_MISMATCH_TOOLTIP": "This addon's folder does not match the toc"
     },
     "CLIENT_TYPES": {
-      "BETA": "TWW Beta",
-      "CLASSIC": "Cataclysm Classic",
-      "CLASSICBETA": "Cataclysm Classic Beta",
+      "ANNIVERSARY": "Burning Crusade Anniversary",
+      "BETA": "The War Within Beta",
+      "CLASSIC": "Mists of Pandaria Classic",
+      "CLASSICBETA": "World of Warcraft: Forever Beta",
       "CLASSICERA": "World of Warcraft Classic",
       "CLASSICERAPTR": "PTR (Classic Era)",
-      "CLASSICPTR": "PTR (Cataclysm Classic)",
+      "CLASSICPTR": "PTR (MoP Classic)",
+      "FOREVER": "World of Warcraft: Forever",
       "RETAIL": "World of Warcraft",
-      "RETAILPTR": "PTR (TWW 11.0.2)",
-      "RETAILXPTR": "PTR (TWW 11.0)"
+      "RETAILPTR": "PTR (Midnight)",
+      "RETAILXPTR": "PTR (TWW 11.2.7)"
     },
     "DATES": {
       "DAYS_AGO": "Před {count} {count, plural, =1{dnem} other{dny}}",
@@ -234,6 +253,7 @@
     "ERRORS": {
       "ACCOUNT_PUSH_TOGGLE_FAILED_ERROR": "Failed to toggle instant updates for your account. Please try again later, or reach out on Discord.",
       "ADDON_INSTALL_ERROR": "Failed to install addon, {addonName}. Please try again later.",
+      "ADDON_INSTALL_NETWORK_ERROR": "Failed to download {addonName} due to a network error. This can be caused by an unstable connection or IPv6 issues on your network — try disabling IPv6 on your network adapter if this keeps happening.",
       "ADDON_SCAN_ERROR": "Vyskytla se chyba při párování vaší složky addonů s poskytovatelem {providerName}, zkuste to prosím později.",
       "ADDON_SYNC_ERROR": "Vyskytla se chyba při zjišťování aktualizací od poskytovatele {providerName}, zkuste to prosím později.",
       "ADDON_SYNC_FULL_ERROR": "[{installationName}]: An error occurred checking for updates to {addonName} from {providerName}, please try again later.",
@@ -283,6 +303,16 @@
       "RE_SCAN_SUCCESS": "The automatic Re-Scan has finished you're ready to go.",
       "TITLE": "CurseForge Migration"
     },
+    "GAME_VERSION_MISMATCH": {
+      "ADDON_NEEDS": "{name} vyžaduje WoW {version}",
+      "CANCEL": "Zrušit",
+      "IGNORE": "Ignorovat pro tuto verzi WoW",
+      "INSTALLATION": "{name} (WoW {version})",
+      "MESSAGE": "Tyto aktualizace byly vytvořeny pro novější verzi World of Warcraft, než je nainstalovaná. Dokud se hra neaktualizuje, mohou způsobovat chyby.",
+      "SKIP": "Přeskočit tyto",
+      "TITLE": "Aktualizace vyžadují novější verzi WoW",
+      "UPDATE_ANYWAY": "Přesto aktualizovat"
+    },
     "INSTALL_FROM_PROTOCOL": {
       "ADDON_INSTALLED": "Addon is installed!",
       "ADDON_INSTALLING": "Installing addon",
@@ -307,8 +337,10 @@
         "CATACLYSM_ASSET_NOT_FOUND": "No asset was found to download from {message}.\n\nA valid zip file ending with '-cata' is required in order for WowUp to download it.",
         "CLASSIC_ASSET_NOT_FOUND": "Nebyl nalezen žádný soubor ke stažení {message}.\n\nPlatný zip soubor s názvem končícím s '-classic' musí být k dispozici, aby ho WowUp mohl stáhnout.",
         "FAILED_TO_CONNECT": "Nemohu se připojit k API. Chvíli počkejte a pak to zkuste znovu.",
+        "FOREVER_ASSET_NOT_FOUND": "No asset was found to download from {message}.\n\nA valid zip file ending with '-forever' is required in order for WowUp to download it.",
         "INSTALL_FAILED": "Něco se nepovedlo při instalaci addonu, zkuste to prosím znovu.\n\nPokud se tato zpráva opakuje, kontaktujte nás na Discordu na kanále #help-me.",
         "INVALID_URL": "Zadaná hodnota není platná URL adresa. Příklady platných URL adres jsou:\n\t- https://github.com/WowUp/WowUp.Addon\n\t- https://www.wowinterface.com/downloads/info25610-8.3-014.html\n\t- https://www.curseforge.com/wow/addons/altoholic",
+        "MISTS_ASSET_NOT_FOUND": "No asset was found to download from {message}.\n\nA valid zip file ending with '-mists' is required in order for WowUp to download it.",
         "NO_ADDON_FOUND": "Žádný addon na zadané URL adrese nebyl nalezen. Ujistěte se, že URL adresa odkazuje na správnou stránku.\n\nPři instalaci z GitHubu se ujistěte, že repozitář obsahuje release tag s zipem obsahujícím addon.",
         "NO_RELEASE_FOUND": "Nebyl nalezen žádný soubor ke stažení {message}.\n\nPlatný zip soubor musí být k dispozici, aby ho WowUp mohl stáhnout.",
         "NO_SEARCH_RESULTS": "Hledání neodpovídá žádný addon.",
@@ -322,9 +354,6 @@
       "INSTALL_SUCCESS_LABEL": "Úspěšně nainstalováno!",
       "SUPPORTED_SOURCES": "Podporuje WowInterface a GitHub",
       "TITLE": "URL adresa pro instalaci addonu"
-    },
-    "NEW_VERSION_POPUP": {
-      "TITLE": "Patch Notes {versionNumber}"
     },
     "PERMISSIONS": {
       "CURSEFORGE": {
@@ -361,6 +390,7 @@
     "ABOUT": {
       "ATTRIBUTIONS_TITLE": "Atributy",
       "CHANGE_LOG_SECTION_LABEL": "Změny",
+      "SHELL_VERSION": "Shell v{version}",
       "TITLE": "WowUp.io",
       "WEBSITE_LINK_LABEL": "Navštivte naše webové stránky!"
     },
@@ -494,6 +524,7 @@
         "UPDATE_ALL_CLIENTS_BUTTON": "Aktualizovat všechny clienty",
         "UPDATE_RETAIL_CLASSIC_BUTTON": "Aktualizovat Retail/Classic"
       },
+      "VERSION_MISMATCH_TOOLTIP": "Tato aktualizace vyžaduje WoW {required}. Máte WoW {current}.",
       "WTF_BACKUP_BUTTON": "Interface Settings Backup"
     },
     "NEWS": {
@@ -538,6 +569,11 @@
         "CURRENT_LANGUAGE_LABEL": "Jazyk",
         "CURSE_PROTOCOL_DESCRIPTION": "When downloading addons from the CurseForge website, WowUp will handle the install",
         "CURSE_PROTOCOL_LABEL": "Handle CurseForge download links",
+        "DISABLE_IPV6_CONFIRMATION_LABEL": "Do you want to restart?",
+        "DISABLE_IPV6_DESCRIPTION": "If addon downloads keep failing with a network error, your network's IPv6 connectivity may be broken. Enabling this forces WowUp to use IPv4 only.<br>Changing this setting requires a restart.",
+        "DISABLE_IPV6_DISABLE_CONFIRMATION_DESCRIPTION": "Re-enabling IPv6 requires the application to restart.",
+        "DISABLE_IPV6_ENABLE_CONFIRMATION_DESCRIPTION": "Forcing IPv4-only networking requires the application to restart.",
+        "DISABLE_IPV6_LABEL": "Force IPv4 (disable IPv6)",
         "ENABLE_APP_BADGE_DESCRIPTION": "Show a badge on the app icon with the number of addons with available updates.",
         "ENABLE_APP_BADGE_LABEL": "Enable app badge notification",
         "ENABLE_SYSTEM_NOTIFICATIONS_DESCRIPTION": "Povolí různé systémové notifikace, např. po automatické aktualizaci addonů.",
@@ -602,6 +638,11 @@
         "CURSEFORGE": "CurseForge",
         "DEBUG": "Debug aplikace",
         "WTF_EXPLORER": "WTF Explorer"
+      },
+      "WAGO": {
+        "AD_CONSENT_DESCRIPTION": "View and manage how Wago ad partners may use your data for ad personalization",
+        "AD_CONSENT_LABEL": "Wago Ads Personalization & Data",
+        "AD_CONSENT_MANAGE": "Manage"
       },
       "WOW": {
         "ADD_CLIENT_BUTTON": "Add New",

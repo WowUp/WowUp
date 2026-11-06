@@ -58,7 +58,10 @@
         "SELECT_ALL": "Selecionar tudo",
         "UNDO": "Desfazer"
       },
+      "HIDE": "Ocultar",
+      "HIDE_OTHERS": "Ocultar Outros",
       "QUIT": "Sair",
+      "SHOW_ALL": "Mostrar Tudo",
       "VIEW": {
         "FORCE_RELOAD": "Forçar recarregamento",
         "LABEL": "Visualizar",
@@ -70,8 +73,11 @@
         "ZOOM_RESET": "Redefinir Zoom"
       },
       "WINDOW": {
+        "BRING_ALL_TO_FRONT": "Trazer Tudo para a Frente",
         "CLOSE": "Fechar",
-        "LABEL": "Janela"
+        "LABEL": "Janela",
+        "MINIMIZE": "Minimizar",
+        "ZOOM": "Zoom"
       }
     },
     "AUTO_UPDATE_FEW_NOTIFICATION_BODY": "Automaticamente atualizou\r\n{addonNames}",
@@ -106,18 +112,27 @@
       "GROUP_LIGHT": "Claro",
       "HORDE": "Horda"
     },
+    "UPDATES_ON_HOLD_NOTIFICATION_BODY": "Algumas atualizações de addons exigem uma versão do World of Warcraft mais recente do que a instalada. Abra o WowUp para revisá-las.",
+    "UPDATES_ON_HOLD_NOTIFICATION_TITLE": "Atualizações em espera",
     "WINDOW_TITLE": "WowUp.io",
     "WINDOW_TITLE_CF": "WowUp.io CF",
     "WINDOW_TITLE_FULLSCREEN": "WowUp.io - Tela Cheia",
     "WOWUP_UPDATE": {
+      "BUNDLE_OVERDUE_TEXT": "Uma atualização do WowUp está aguardando há algum tempo. Reinicie o WowUp para concluir a atualização.",
+      "BUNDLE_READY_TEXT": "Uma atualização do WowUp foi baixada. Reinicie agora para usá-la, ou o WowUp pedirá que você reinicie em até 6 horas.",
+      "BUNDLE_REQUIRED_TEXT": "Esta versão do WowUp tem um problema e foi substituída. Reinicie o WowUp para concluir a atualização.",
       "CHECKING_FOR_UPDATE": "Verificando por atualizações",
       "DOWNLOADED_TOOLTIP": "Instalar atualização do WowUp",
       "DOWNLOADING_UPDATE": "Fazendo download da atualização",
       "INSTALL_MESSAGE": "Você gostaria de reiniciar o WowUp para instalar a atualização?",
       "INSTALL_TITLE": "Atualização do WowUp Pronta",
+      "LATER": "Mais tarde",
       "NOT_AVAILABLE": "A última atualização do WowUp já está instalada",
       "PORTABLE_DOWNLOAD_MESSAGE": "Deseja baixar manualmente a versão portátil mais recente?\n\nVocê precisará fechar o aplicativo manualmente e copiar a nova versão.",
       "PORTABLE_DOWNLOAD_TITLE": "Download manual é necessário",
+      "RESTART_NOW": "Reiniciar agora",
+      "RESTART_TO_UPDATE": "Reiniciar para atualizar",
+      "RESTART_TO_UPDATE_TOOLTIP": "Reinicie o WowUp para usar a atualização baixada",
       "SNACKBAR_ACTION": "Atualizar & Reiniciar",
       "SNACKBAR_TEXT": "Uma nova versão do WowUp está disponível",
       "TOOLTIP": "Atualização do WowUp disponível",
@@ -169,10 +184,12 @@
     },
     "ADDON_STATUS": {
       "BACKINGUP": "Fazendo Backup",
+      "CHECKING_DEPENDENCIES": "Verificando dependências",
       "COMPLETE": "Instalado",
       "DOWNLOADING": "Baixando",
       "ERROR": "Erro",
       "INSTALLING": "Instalando",
+      "INSTALLING_DEPENDENCIES": "Dependências {completed}/{total}",
       "PENDING": "Pendente",
       "RETRY": "Retrying...",
       "UNINSTALLING": "Desinstalando",
@@ -191,15 +208,17 @@
       "TOC_NAME_MISMATCH_TOOLTIP": "This addon's folder does not match the toc"
     },
     "CLIENT_TYPES": {
-      "BETA": "TWW Beta",
-      "CLASSIC": "Cataclysm Classic",
-      "CLASSICBETA": "Cataclysm Classic Beta",
+      "ANNIVERSARY": "Burning Crusade Anniversary",
+      "BETA": "The War Within Beta",
+      "CLASSIC": "Mists of Pandaria Classic",
+      "CLASSICBETA": "World of Warcraft: Forever Beta",
       "CLASSICERA": "World of Warcraft Classic",
       "CLASSICERAPTR": "PTR (Classic Era)",
-      "CLASSICPTR": "PTR (Cataclysm Classic)",
+      "CLASSICPTR": "PTR (MoP Classic)",
+      "FOREVER": "World of Warcraft: Forever",
       "RETAIL": "World of Warcraft",
-      "RETAILPTR": "PTR (TWW 11.0.2)",
-      "RETAILXPTR": "PTR (TWW 11.0)"
+      "RETAILPTR": "PTR (Midnight)",
+      "RETAILXPTR": "PTR (TWW 11.2.7)"
     },
     "DATES": {
       "DAYS_AGO": "{count} {count, plural, one{dia} other{dias}} atrás",
@@ -234,6 +253,7 @@
     "ERRORS": {
       "ACCOUNT_PUSH_TOGGLE_FAILED_ERROR": "Falha ao alternar atualizações instantâneas para sua conta. Por favor tente mais tarde ou entre em contato no Discord.",
       "ADDON_INSTALL_ERROR": "Falha ao instalar o addon, {addonName}. Por favor tente mais tarde.",
+      "ADDON_INSTALL_NETWORK_ERROR": "Failed to download {addonName} due to a network error. This can be caused by an unstable connection or IPv6 issues on your network — try disabling IPv6 on your network adapter if this keeps happening.",
       "ADDON_SCAN_ERROR": "Ocorreu um erro ao corresponder suas pastas de addon com {providerName}, por favor tente mais tarde.",
       "ADDON_SYNC_ERROR": "Ocorreu um erro ao procurar por atualizações em: {providerName}",
       "ADDON_SYNC_FULL_ERROR": "[{installationName}]: Ocorreu um erro ao procurar por atualizações para {addonName} de {providerName}, por favor tente mais tarde.",
@@ -283,6 +303,16 @@
       "RE_SCAN_SUCCESS": "The automatic Re-Scan has finished you're ready to go.",
       "TITLE": "CurseForge Migration"
     },
+    "GAME_VERSION_MISMATCH": {
+      "ADDON_NEEDS": "{name} exige WoW {version}",
+      "CANCEL": "Cancelar",
+      "IGNORE": "Ignorar para esta versão do WoW",
+      "INSTALLATION": "{name} (WoW {version})",
+      "MESSAGE": "Estas atualizações foram feitas para uma versão do World of Warcraft mais recente do que a instalada. Podem causar erros até o jogo ser atualizado.",
+      "SKIP": "Ignorar estes",
+      "TITLE": "As atualizações exigem uma versão mais recente do WoW",
+      "UPDATE_ANYWAY": "Atualizar mesmo assim"
+    },
     "INSTALL_FROM_PROTOCOL": {
       "ADDON_INSTALLED": "Addon instalado!",
       "ADDON_INSTALLING": "Instalando addon",
@@ -307,8 +337,10 @@
         "CATACLYSM_ASSET_NOT_FOUND": "No asset was found to download from {message}.\n\nA valid zip file ending with '-cata' is required in order for WowUp to download it.",
         "CLASSIC_ASSET_NOT_FOUND": "Nenhum recurso encontrado para download de {message}.\n\nUm arquivo zip válido terminando com '-classic' é necessário para que o WowUp possa fazer o download.",
         "FAILED_TO_CONNECT": "Não foi possível conectar à API, por favor espere um pouco e tente novamente.",
+        "FOREVER_ASSET_NOT_FOUND": "No asset was found to download from {message}.\n\nA valid zip file ending with '-forever' is required in order for WowUp to download it.",
         "INSTALL_FAILED": "Algo deu errado ao tentar instalar o Addon, por favor tente novamente.\n\nSe esta mensagem continuar aparecendo, você pode conseguir ajuda no Discord no canal #help-me.",
         "INVALID_URL": "O valor fornecido não é uma URL válida. Exemplos de URLs de Addon válidos são:\n\t- https://github.com/WowUp/WowUp.Addon\n\t- https://www.wowinterface.com/downloads/info25610-8.3-014.html\n\t- https://www.curseforge.com/wow/addons/altoholic",
+        "MISTS_ASSET_NOT_FOUND": "No asset was found to download from {message}.\n\nA valid zip file ending with '-mists' is required in order for WowUp to download it.",
         "NO_ADDON_FOUND": "O Addon não foi encontrado, tenha certeza de que a URL está apontando para a página correta.\n\nQuanto estiver instalando do github, certifique-se de que o repositório possui uma tag release com um arquivo zip contendo o Addon.",
         "NO_RELEASE_FOUND": "Nenhum release foi encontrado para {message}.\n\nRelease válido com recursos em arquivo zip são necessários para que o WowUp possa fazer o download.",
         "NO_SEARCH_RESULTS": "Nenhum resultado de busca encontrado.",
@@ -322,9 +354,6 @@
       "INSTALL_SUCCESS_LABEL": "Instalado!",
       "SUPPORTED_SOURCES": "Suporta WowInterface e GitHub",
       "TITLE": "Instalar Addon pela URL"
-    },
-    "NEW_VERSION_POPUP": {
-      "TITLE": "Notas do Patch {versionNumber}"
     },
     "PERMISSIONS": {
       "CURSEFORGE": {
@@ -361,6 +390,7 @@
     "ABOUT": {
       "ATTRIBUTIONS_TITLE": "Atribuições",
       "CHANGE_LOG_SECTION_LABEL": "Registro de Alterações",
+      "SHELL_VERSION": "Shell v{version}",
       "TITLE": "WowUp.io",
       "WEBSITE_LINK_LABEL": "Conheça o nosso site!"
     },
@@ -494,6 +524,7 @@
         "UPDATE_ALL_CLIENTS_BUTTON": "Atualizar todos os clientes",
         "UPDATE_RETAIL_CLASSIC_BUTTON": "Atualizar Retail/Clássico"
       },
+      "VERSION_MISMATCH_TOOLTIP": "Esta atualização exige WoW {required}. Você tem WoW {current}.",
       "WTF_BACKUP_BUTTON": "Backup de configurações de Interface"
     },
     "NEWS": {
@@ -538,6 +569,11 @@
         "CURRENT_LANGUAGE_LABEL": "Idioma Atual",
         "CURSE_PROTOCOL_DESCRIPTION": "Quando baixando addons do site CurseForge, WowUp ira cuidar da instalação",
         "CURSE_PROTOCOL_LABEL": "Gerenciar links de download CurseForge",
+        "DISABLE_IPV6_CONFIRMATION_LABEL": "Do you want to restart?",
+        "DISABLE_IPV6_DESCRIPTION": "If addon downloads keep failing with a network error, your network's IPv6 connectivity may be broken. Enabling this forces WowUp to use IPv4 only.<br>Changing this setting requires a restart.",
+        "DISABLE_IPV6_DISABLE_CONFIRMATION_DESCRIPTION": "Re-enabling IPv6 requires the application to restart.",
+        "DISABLE_IPV6_ENABLE_CONFIRMATION_DESCRIPTION": "Forcing IPv4-only networking requires the application to restart.",
+        "DISABLE_IPV6_LABEL": "Force IPv4 (disable IPv6)",
         "ENABLE_APP_BADGE_DESCRIPTION": "Mostrar um selo no icone da aplicação com o número de atualizações de addon disponíveis.",
         "ENABLE_APP_BADGE_LABEL": "Habilitar selo de notificação do app",
         "ENABLE_SYSTEM_NOTIFICATIONS_DESCRIPTION": "Habilitar várias notificações e popups do sistema, como os de aviso de Addons atualizados automaticamente.",
@@ -602,6 +638,11 @@
         "CURSEFORGE": "CurseForge",
         "DEBUG": "Debug",
         "WTF_EXPLORER": "WTF Explorer"
+      },
+      "WAGO": {
+        "AD_CONSENT_DESCRIPTION": "View and manage how Wago ad partners may use your data for ad personalization",
+        "AD_CONSENT_LABEL": "Wago Ads Personalization & Data",
+        "AD_CONSENT_MANAGE": "Manage"
       },
       "WOW": {
         "ADD_CLIENT_BUTTON": "Adicionar Novo",

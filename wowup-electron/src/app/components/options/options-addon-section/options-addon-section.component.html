@@ -44,6 +44,7 @@
         <input matInput formControlName="ghPersonalAccessToken" type="password" />
       </mat-form-field>
     </div>
+    <div class="divider"></div>
     <div *ngIf="isWago" class="setting row align-items-center">
       <div class="flex-grow-1">
         <div>
@@ -55,6 +56,20 @@
         <mat-label>{{ "PAGES.OPTIONS.ADDON.WAGO_ACCESS_KEY.PLACEHOLDER" | translate }}</mat-label>
         <input matInput formControlName="wagoAccessToken" type="password" />
       </mat-form-field>
+    </div>
+    <div *ngIf="isWago && (sessionService.adSpace$ | async)" class="setting">
+      <div class="row align-items-center">
+        <div class="flex-grow-1">
+          <div>
+            {{ "PAGES.OPTIONS.WAGO.AD_CONSENT_LABEL" | translate }}
+          </div>
+          <small class="text-2">{{ "PAGES.OPTIONS.WAGO.AD_CONSENT_DESCRIPTION" | translate }}</small>
+        </div>
+        <button mat-raised-button color="primary" type="button" (click)="onClickManageWagoAdConsent($event)">
+          {{ "PAGES.OPTIONS.WAGO.AD_CONSENT_MANAGE" | translate }}
+        </button>
+      </div>
+      <div class="divider"></div>
     </div>
   </form>
 </div>

@@ -26,7 +26,6 @@ export const WOWUP_DATA_ADDON_FOLDER_NAME = "wowup_data_addon";
 export const WOWUP_ASSET_FOLDER_NAME = "WowUpAddon";
 
 // IPC CHANNELS
-export const IPC_CURSE_GET_SCAN_RESULTS = "curse-get-scan-results";
 export const IPC_DOWNLOAD_FILE_CHANNEL = "download-file";
 export const IPC_COPY_DIRECTORY_CHANNEL = "copy-directory";
 export const IPC_CREATE_DIRECTORY_CHANNEL = "create-directory";
@@ -42,14 +41,20 @@ export const IPC_WRITE_FILE_CHANNEL = "write-file";
 export const IPC_UNZIP_FILE_CHANNEL = "unzip-file";
 export const IPC_COPY_FILE_CHANNEL = "copy-file";
 export const IPC_SHOW_DIRECTORY = "show-directory";
-export const IPC_WOWUP_GET_SCAN_RESULTS = "wowup-get-scan-results";
 export const IPC_GET_HOME_DIR = "get-home-dir";
 export const IPC_GET_ASSET_FILE_PATH = "get-asset-file-path";
 export const IPC_CREATE_TRAY_MENU_CHANNEL = "create-tray-menu";
-export const IPC_LIST_DISKS_WIN32 = "list-disks-win32";
 export const IPC_CREATE_APP_MENU_CHANNEL = "create-app-menu";
 export const IPC_OW_IS_CMP_REQUIRED = "ow-is-cmp-required";
 export const IPC_OW_OPEN_CMP = "ow-open-cmp";
+export const IPC_WAGO_ADS_LOAD = "wago-ads-load";
+export const IPC_WAGO_ADS_DISABLE = "wago-ads-disable";
+export const IPC_WAGO_ADS_SET_BOUNDS = "wago-ads-set-bounds";
+export const IPC_WAGO_ADS_RELOAD = "wago-ads-reload";
+export const IPC_WAGO_ADS_OPEN_DEV_TOOLS = "wago-ads-open-dev-tools";
+export const IPC_WAGO_ADS_SHOW_CMP = "wago-ads-show-cmp";
+export const IPC_WAGO_ADS_RESURFACE_CMP = "wago-ads-resurface-cmp";
+export const IPC_WAGO_ADS_CMP_CLOSE = "wago-ads-cmp-close";
 export const IPC_MENU_ZOOM_OUT_CHANNEL = "menu-zoom-out";
 export const IPC_MENU_ZOOM_IN_CHANNEL = "menu-zoom-in";
 export const IPC_MENU_ZOOM_RESET_CHANNEL = "menu-zoom-reset";
@@ -74,6 +79,7 @@ export const IPC_GET_ZOOM_FACTOR = "get-zoom-factor";
 export const IPC_SET_ZOOM_LIMITS = "set-zoom-limits";
 export const IPC_SET_ZOOM_FACTOR = "set-zoom-factor";
 export const IPC_GET_APP_VERSION = "get-app-version";
+export const IPC_GET_SHELL_VERSION = "get-shell-version";
 export const IPC_GET_LOCALE = "get-locale";
 export const IPC_GET_LAUNCH_ARGS = "get-launch-args";
 export const IPC_GET_LOGIN_ITEM_SETTINGS = "get-login-item-settings";
@@ -86,6 +92,14 @@ export const IPC_REMOVE_AS_DEFAULT_PROTOCOL_CLIENT = "remove-as-default-protocol
 export const IPC_REQUEST_INSTALL_FROM_URL = "request-install-from-url";
 export const IPC_CUSTOM_PROTOCOL_RECEIVED = "custom-protocol-received";
 export const IPC_ADDONS_SAVE_ALL = "addons-save-all";
+export const IPC_ADDONS_REPLACE_ALL_FOR_INSTALLATION = "addons-replace-all-for-installation";
+export const IPC_ADDONS_GET_ALL_FOR_INSTALLATION = "addons-get-all-for-installation";
+export const IPC_ADDONS_GET_ALL_FOR_PROVIDER = "addons-get-all-for-provider";
+export const IPC_ADDONS_GET_ALL = "addons-get-all";
+export const IPC_ADDONS_GET_BY_EXTERNAL_ID = "addons-get-by-external-id";
+export const IPC_ADDONS_GET_BY_EXTERNAL_IDS = "addons-get-by-external-ids";
+export const IPC_ADDONS_GET_AVAILABLE_FOR_UPDATE = "addons-get-available-for-update";
+export const IPC_ADDONS_GET_AUTO_UPDATE_ENABLED = "addons-get-auto-update-enabled";
 export const IPC_GET_PENDING_OPEN_URLS = "get-pending-open-urls";
 export const IPC_GET_LATEST_DIR_UPDATE_TIME = "get-latest-dir-update-time";
 export const IPC_LIST_DIR_RECURSIVE = "list-dir-recursive";
@@ -95,6 +109,9 @@ export const IPC_SHOW_OPEN_DIALOG = "show-open-dialog";
 export const IPC_APP_UPDATE_STATE = "app-update-state";
 export const IPC_APP_INSTALL_UPDATE = "app-install-update";
 export const IPC_APP_CHECK_UPDATE = "app-check-update";
+export const IPC_BUNDLE_UPDATE_READY = "bundle-update-ready";
+export const IPC_BUNDLE_UPDATE_GET = "bundle-update-get";
+export const IPC_BUNDLE_UPDATE_RESTART = "bundle-update-restart";
 export const IPC_UPDATE_APP_BADGE = "update-app-badge";
 export const IPC_WINDOW_RESUME = "window-resume";
 export const IPC_PUSH_INIT = "push-init";
@@ -103,9 +120,39 @@ export const IPC_PUSH_UNREGISTER = "push-unregister";
 export const IPC_PUSH_SUBSCRIBE = "push-subscribe";
 export const IPC_PUSH_NOTIFICATION = "push-notification";
 
+// WARCRAFT CONTROLLER
+export const IPC_WARCRAFT_GET_BLIZZARD_AGENT_PATH = "warcraft-get-blizzard-agent-path";
+export const IPC_WARCRAFT_GET_INSTALLED_PRODUCTS = "warcraft-get-installed-products";
+export const IPC_WARCRAFT_GET_EXECUTABLE_NAME = "warcraft-get-executable-name";
+export const IPC_WARCRAFT_GET_CLIENT_TYPE_FOR_BINARY = "warcraft-get-client-type-for-binary";
+export const IPC_WARCRAFT_IS_WOW_APPLICATION = "warcraft-is-wow-application";
+export const IPC_WARCRAFT_GET_EXECUTABLE_EXTENSION = "warcraft-get-executable-extension";
+
+// WARCRAFT INSTALLATION CONTROLLER
+export const IPC_WARCRAFT_INSTALLATIONS_GET_ALL = "warcraft-installations-get-all";
+export const IPC_WARCRAFT_INSTALLATIONS_SET_ALL = "warcraft-installations-set-all";
+export const IPC_WARCRAFT_INSTALLATIONS_ADD = "warcraft-installations-add";
+export const IPC_WARCRAFT_INSTALLATIONS_REMOVE = "warcraft-installations-remove";
+export const IPC_WARCRAFT_INSTALLATIONS_UPDATE = "warcraft-installations-update";
+export const IPC_WARCRAFT_INSTALLATIONS_REORDER = "warcraft-installations-reorder";
+export const IPC_WARCRAFT_INSTALLATIONS_SET_SELECTED = "warcraft-installations-set-selected";
+export const IPC_WARCRAFT_INSTALLATIONS_SET_GAME_VERSIONS = "warcraft-installations-set-game-versions";
+export const IPC_WARCRAFT_LIST_ADDONS = "warcraft-list-addons";
+export const IPC_WARCRAFT_GET_ADDON_FOLDER = "warcraft-get-addon-folder";
+
+// TOC CONTROLLER
+export const IPC_TOC_PARSE = "toc-parse";
+export const IPC_TOC_GET_ALL_TOCS = "toc-get-all-tocs";
+
+// ADDON SCAN CONTROLLER
+export const IPC_ADDON_GET_SCAN_RESULTS = "addons-get-scan-results";
+
+// METRICS CONTROLLER
+export const IPC_METRICS_GET_SNAPSHOT = "metrics-get-snapshot";
+export const IPC_METRICS_LOG_SNAPSHOT = "metrics-log-snapshot";
+
 // IPC STORAGE
 export const IPC_STORE_GET_OBJECT = "store-get-object";
-export const IPC_STORE_GET_OBJECT_SYNC = "store-get-object-sync";
 export const IPC_STORE_GET_ALL = "store-get-all";
 export const IPC_STORE_SET_OBJECT = "store-set-object";
 export const IPC_STORE_REMOVE_OBJECT = "store-remove-object";
@@ -125,6 +172,7 @@ export const DEFAULT_AUTO_UPDATE_PREFERENCE_KEY_SUFFIX = "_default_auto_update";
 export const LAST_SELECTED_WOW_CLIENT_TYPE_PREFERENCE_KEY = "last_selected_client_type";
 export const USE_HARDWARE_ACCELERATION_PREFERENCE_KEY = "use_hardware_acceleration";
 export const USE_SYMLINK_MODE_PREFERENCE_KEY = "use_symlink_mode";
+export const DISABLE_IPV6_PREFERENCE_KEY = "disable_ipv6";
 export const START_WITH_SYSTEM_PREFERENCE_KEY = "start_with_system";
 export const START_MINIMIZED_PREFERENCE_KEY = "start_minimized";
 export const SELECTED_LANGUAGE_PREFERENCE_KEY = "selected_language";
@@ -137,11 +185,11 @@ export const ADDON_PROVIDERS_KEY = "addon_providers";
 export const WOW_INSTALLATIONS_KEY = "wow_installations";
 export const CURRENT_THEME_KEY = "current_theme";
 export const TELEMETRY_ENABLED_KEY = "telemetry_enabled";
+export const INSTALL_ID_KEY = "install_id";
 export const BLIZZARD_AGENT_PATH_KEY = "blizzard_agent_path";
 export const ZOOM_FACTOR_KEY = "zoom_factor";
 export const SELECTED_DETAILS_TAB_KEY = "selected_details_tab";
 export const ADDON_MIGRATION_VERSION_KEY = "addon_migration_version";
-export const UPDATE_NOTES_POPUP_VERSION_KEY = "update_notes_popup_version";
 export const ENABLE_APP_BADGE_KEY = "enable_app_badge";
 export const TRUSTED_DOMAINS_KEY = "trusted_domains";
 export const RETAIL_LOCATION_KEY = "wow_retail_location"; // TODO remove, deprecated
@@ -201,6 +249,8 @@ export const WOW_CLASSIC_PTR_FOLDER = "_classic_ptr_";
 export const WOW_RETAIL_PTR_FOLDER = "_ptr_";
 export const WOW_RETAIL_XPTR_FOLDER = "_xptr_";
 export const WOW_RETAIL_FOLDER = "_retail_";
+export const WOW_ANNIVERSARY_FOLDER = "_anniversary_";
+export const WOW_FOREVER_FOLDER = "_forever_";
 export const WOW_ADDON_FOLDER_NAME = "AddOns";
 export const WOW_INTERFACE_FOLDER_NAME = "Interface";
 

@@ -27,7 +27,7 @@ import {
 import { GitHubAsset, GitHubRelease, GitHubRepository, WowInstallation } from "wowup-lib-core";
 import { SourceRemovedAddonError } from "wowup-lib-core";
 
-type MetadataFlavor = "bcc" | "classic" | "mainline" | "wrath" | "cata";
+type MetadataFlavor = "bcc" | "classic" | "mainline" | "wrath" | "cata" | "mists" | "forever";
 
 interface LatestValidAsset {
   matchedAsset: GitHubAsset | undefined;
@@ -83,17 +83,17 @@ export class GitHubAddonProvider extends AddonProvider {
   }
 
   public async getDownloadAuth(): Promise<DownloadAuth | undefined> {
-    const hasPat = await this.hasPersonalAccessKey();
-    if (hasPat) {
-      const headers = await this.getAuthorizationHeader();
-      headers.Accept = "application/octet-stream";
+    // The GitHub REST API asset endpoint (asset.url) only streams the binary when the
+    // request carries Accept: application/octet-stream; without it, it returns 200 with a
+    // small JSON metadata payload that then gets saved as the addon zip and fails to unzip.
+    // Send the header unconditionally so anonymous/public-repo downloads work, and add the
+    // PAT Authorization header on top when one is configured (required for private repos).
+    const headers = await this.getAuthorizationHeader();
+    headers.Accept = "application/octet-stream";
 
-      return {
-        headers,
-      };
-    } else {
-      return undefined;
-    }
+    return {
+      headers,
+    };
   }
 
   public async getAll(installation: WowInstallation, addonIds: string[]): Promise<GetAllResult> {
@@ -170,7 +170,6 @@ export class GitHubAddonProvider extends AddonProvider {
         throw new AssetMissingError(addonUri.toString(), clientGroup);
       }
 
-      const hasPat = await this.hasPersonalAccessKey();
       const repository = await this.getRepository(repoPath);
       const author = repository.owner.login;
       const authorImageUrl = repository.owner.avatar_url;
@@ -187,7 +186,9 @@ export class GitHubAddonProvider extends AddonProvider {
         files: [
           {
             channelType: result.release?.prerelease ? AddonChannelType.Beta : AddonChannelType.Stable,
-            downloadUrl: (hasPat ? asset?.url : asset?.browser_download_url) ?? "",
+            // See getByIdAsync: asset.url + Accept: application/octet-stream works both
+            // anonymously and with a PAT; keep it consistent so updates don't rewrite the URL.
+            downloadUrl: asset?.url ?? "",
             folders: [],
             gameVersion: "",
             releaseDate: new Date(result.release?.published_at ?? ""),
@@ -248,11 +249,12 @@ export class GitHubAddonProvider extends AddonProvider {
     const asset = assetResult.matchedAsset || assetResult.latestAsset;
     console.debug("asset", asset);
 
-    const hasPat = await this.hasPersonalAccessKey();
-
     const searchResultFile: AddonSearchResultFile = {
       channelType: AddonChannelType.Stable,
-      downloadUrl: (hasPat ? asset?.url : asset?.browser_download_url) ?? "",
+      // Use the REST API asset endpoint rather than browser_download_url: combined with the
+      // Accept: application/octet-stream header from getDownloadAuth() it works both
+      // anonymously and with a PAT, whereas browser_download_url 404s on private repos.
+      downloadUrl: asset?.url ?? "",
       folders: [addonName],
       gameVersion: "",
       version: asset?.name ?? "",
@@ -295,8 +297,12 @@ export class GitHubAddonProvider extends AddonProvider {
       let iAsset: GitHubAsset | undefined = undefined;
       if (this.hasReleaseMetadata(release)) {
         console.log(`Checking release metadata: ${release.name}`);
-        const metadata = await this.getReleaseMetadata(release);
-        iAsset = this.getValidAssetFromMetadata(release, clientType, metadata);
+        try {
+          const metadata = await this.getReleaseMetadata(release);
+          iAsset = this.getValidAssetFromMetadata(release, clientType, metadata);
+        } catch (err) {
+          console.error(`Failed to get release metadata for ${release.name}`, err);
+        }
       }
 
       // If we didn't find an asset with metadata, try the old way
@@ -332,13 +338,14 @@ export class GitHubAddonProvider extends AddonProvider {
 
   /** Fetch the json object for the BigWigs metadata json file */
   private async getReleaseMetadata(release: GitHubRelease): Promise<ReleaseMeta> {
+    console.log(`Fetching release metadata for ${release.name}`, release);
     const metadataAsset = release.assets.find((asset) => asset.name === "release.json");
     if (!metadataAsset) {
       throw new Error("No metadata asset found");
     }
 
     const hasPat = await this.hasPersonalAccessKey();
-    const url = hasPat ? metadataAsset.url : metadataAsset.browser_download_url;
+    const url = metadataAsset.browser_download_url || metadataAsset.url;
 
     return await this.getWithRateLimit<ReleaseMeta>(url, hasPat);
   }
@@ -354,32 +361,41 @@ export class GitHubAddonProvider extends AddonProvider {
     clientType: WowClientType,
     releaseMeta: ReleaseMeta,
   ): GitHubAsset | undefined {
-    // map the client type to the flavor we want
-    const targetFlavor = this.getMetadataTargetFlavor(clientType);
-    console.log(`Target metadata flavor: ${targetFlavor}`);
+    try {
+      // map the client type to the flavor we want
+      const targetFlavor = this.getMetadataTargetFlavor(clientType);
+      console.log(`Target metadata flavor: ${targetFlavor}`);
 
-    // see if we can find that flavor in the metadata
-    const targetMetaRelease = releaseMeta.releases.find(
-      (release) => release.nolib === false && release.metadata.findIndex((m) => m.flavor === targetFlavor) !== -1,
-    );
-    if (!targetMetaRelease) {
-      console.log(`No matching metadata file found for target`);
-      return undefined;
+      // see if we can find that flavor in the metadata
+      const targetMetaRelease = releaseMeta.releases.find(
+        (release) => release.nolib === false && release.metadata.findIndex((m) => m.flavor === targetFlavor) !== -1,
+      );
+      if (!targetMetaRelease) {
+        console.log(`No matching metadata file found for target`);
+        return undefined;
+      }
+
+      console.log(`Target metadata release: ${targetMetaRelease.filename}`);
+
+      // return any matching valid asset with the metadata file name and content type
+      return release.assets.find(
+        (asset) => this.isValidContentType(asset) && asset.name === targetMetaRelease.filename,
+      );
+    } catch (err) {
+      console.error("Error in getValidAssetFromMetadata", err);
+      console.error("Release:", releaseMeta);
+      throw err;
     }
-
-    console.log(`Target metadata release: ${targetMetaRelease.filename}`);
-
-    // return any matching valid asset with the metadata file name and content type
-    return release.assets.find((asset) => this.isValidContentType(asset) && asset.name === targetMetaRelease.filename);
   }
 
   /** Return the BigWigs metadata flavor for a given client type */
   private getMetadataTargetFlavor(clientType: WowClientType): MetadataFlavor {
     switch (clientType) {
-      case WowClientType.ClassicBeta:
       case WowClientType.Classic:
       case WowClientType.ClassicPtr:
-        return "cata";
+        return "mists";
+      case WowClientType.Anniversary:
+        return "bcc";
       case WowClientType.ClassicEra:
       case WowClientType.ClassicEraPtr:
         return "classic";
@@ -388,6 +404,9 @@ export class GitHubAddonProvider extends AddonProvider {
       case WowClientType.RetailPtr:
       case WowClientType.RetailXPtr:
         return "mainline";
+      case WowClientType.Forever:
+      case WowClientType.ClassicBeta: // confirmed https://github.com/BigWigsMods/packager/commit/7391c8ded01a14ff084dfa28ef09e52b0470c3cb
+        return "forever";
       default:
         throw new Error("Unknown client type for metadata");
     }
@@ -436,20 +455,26 @@ export class GitHubAddonProvider extends AddonProvider {
     const isBurningCrusade = this.isBurningCrusadeAsset(asset);
     const isWotlk = this.isWotlk(asset);
     const isCataclysm = this.isCataclysm(asset);
+    const isMists = this.isMists(asset);
+    const isForever = this.isForever(asset);
 
     switch (clientType) {
       case WowClientType.Retail:
       case WowClientType.RetailPtr:
       case WowClientType.RetailXPtr:
       case WowClientType.Beta:
-        return !isClassic && !isBurningCrusade && !isWotlk && !isCataclysm;
+        return !isClassic && !isBurningCrusade && !isWotlk && !isCataclysm && !isForever;
       case WowClientType.ClassicEra:
       case WowClientType.ClassicEraPtr:
         return isClassic;
       case WowClientType.Classic:
       case WowClientType.ClassicPtr:
+        return isMists;
+      case WowClientType.Forever:
       case WowClientType.ClassicBeta:
-        return isCataclysm;
+        return isForever;
+      case WowClientType.Anniversary:
+        return isBurningCrusade;
       default:
         return false;
     }
@@ -469,6 +494,14 @@ export class GitHubAddonProvider extends AddonProvider {
 
   private isCataclysm(asset: GitHubAsset): boolean {
     return /[-_](cata)\.zip$/i.test(asset.name);
+  }
+
+  private isMists(asset: GitHubAsset): boolean {
+    return /[-_](mists)\.zip$/i.test(asset.name);
+  }
+
+  private isForever(asset: GitHubAsset): boolean {
+    return /[-_](forever|camelot)\.zip$/i.test(asset.name);
   }
 
   private getAddonName(addonId: string): string {
@@ -547,7 +580,7 @@ export class GitHubAddonProvider extends AddonProvider {
     const personalAccessToken = await this._sensitiveStorageService.getAsync(PREF_GITHUB_PERSONAL_ACCESS_TOKEN);
     const headers: { [param: string]: string } = {};
     if (typeof personalAccessToken === "string" && personalAccessToken.length > 0) {
-      headers.Authorization = `token ${personalAccessToken}`;
+      headers.Authorization = `Bearer ${personalAccessToken}`;
     }
 
     return headers;

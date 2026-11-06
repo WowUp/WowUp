@@ -58,6 +58,7 @@ export class AddonProviderFactory {
         AppConfig.defaultHttpResetTimeoutMs,
         AppConfig.wowUpHubHttpTimeoutMs,
       ),
+      { "X-WowUp-Install-Id": window.installId, "X-WowUp-Platform": window.platform },
     );
 
     this._wowInterfaceNetworkInterface = new GenericNetworkInterface(
@@ -204,6 +205,11 @@ export class AddonProviderFactory {
     }
 
     return undefined;
+  }
+
+  /** Registered in this build and not turned off by the user */
+  public isProviderAvailable(providerName: string): boolean {
+    return this.getProvider(providerName)?.enabled === true;
   }
 
   public getEnabledAddonProviders(): AddonProvider[] {

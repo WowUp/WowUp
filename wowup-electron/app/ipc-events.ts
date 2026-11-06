@@ -12,10 +12,8 @@ import {
   systemPreferences,
 } from "electron";
 import * as log from "electron-log/main";
-import * as globrex from "globrex";
+import globrex = require("globrex");
 import * as _ from "lodash";
-import { nanoid } from "nanoid";
-import * as nodeDiskInfo from "node-disk-info";
 import * as path from "path";
 import { Transform } from "stream";
 import * as yauzl from "yauzl";
@@ -23,7 +21,6 @@ import * as fs from "fs";
 import * as os from "os";
 
 import {
-  IPC_ADDONS_SAVE_ALL,
   IPC_CLOSE_WINDOW,
   IPC_COPY_FILE_CHANNEL,
   IPC_CREATE_APP_MENU_CHANNEL,
@@ -33,6 +30,7 @@ import {
   IPC_DOWNLOAD_FILE_CHANNEL,
   IPC_FOCUS_WINDOW,
   IPC_GET_APP_VERSION,
+  IPC_GET_SHELL_VERSION,
   IPC_GET_HOME_DIR,
   IPC_GET_ASSET_FILE_PATH,
   IPC_GET_DIRECTORY_TREE,
@@ -45,7 +43,6 @@ import {
   IPC_IS_DEFAULT_PROTOCOL_CLIENT,
   IPC_LIST_DIR_RECURSIVE,
   IPC_LIST_DIRECTORIES_CHANNEL,
-  IPC_LIST_DISKS_WIN32,
   IPC_LIST_ENTRIES,
   IPC_LIST_FILES_CHANNEL,
   IPC_MAXIMIZE_WINDOW,
@@ -68,7 +65,6 @@ import {
   IPC_UNZIP_FILE_CHANNEL,
   IPC_UPDATE_APP_BADGE,
   IPC_WINDOW_LEAVE_FULLSCREEN,
-  IPC_WOWUP_GET_SCAN_RESULTS,
   IPC_WRITE_FILE_CHANNEL,
   DEFAULT_FILE_MODE,
   IPC_PUSH_INIT,
@@ -77,7 +73,6 @@ import {
   IPC_PUSH_SUBSCRIBE,
   IPC_WINDOW_IS_FULLSCREEN,
   IPC_WINDOW_IS_MAXIMIZED,
-  IPC_CURSE_GET_SCAN_RESULTS,
   IPC_OW_IS_CMP_REQUIRED,
   IPC_OW_OPEN_CMP,
   ZOOM_FACTOR_KEY,
@@ -106,16 +101,21 @@ import {
   remove,
   zipFile,
 } from "./file.utils";
-import { getAddonStore, getPreferenceStore } from "./stores";
+import { getPreferenceStore } from "./stores";
 import { createTray } from "./system-tray";
-import { WowUpFolderScanner } from "./wowup-folder-scanner";
 import * as push from "./push";
 import { GetDirectoryTreeRequest } from "../src/common/models/ipc-request";
-import { ProductDb } from "../src/common/wowup/product-db";
 import { restoreWindow } from "./window-state";
 import { firstValueFrom, from, mergeMap, toArray } from "rxjs";
-import { CurseFolderScanner } from "./curse-folder-scanner";
-import { Addon, AddonScanResult, FsStats } from "wowup-lib-core";
+import { downloadFile } from "./services/download/file-download";
+import { getAssetPath } from "./bundle-paths";
+import {
+  isDefaultProtocolClient,
+  removeAsDefaultProtocolClient,
+  setAsDefaultProtocolClient,
+} from "../../wowup-shell/contract/protocol-client";
+import { getShell } from "../../wowup-shell/contract/shell-api";
+import { FsStats } from "wowup-lib-core";
 
 let PENDING_OPEN_URLS: string[] = [];
 
@@ -154,7 +154,7 @@ async function getSymlinkDirs(basePath: string, files: fs.Dirent[]): Promise<Sym
 /* eslint-disable @typescript-eslint/no-redundant-type-constituents */
 function handle(
   channel: RendererChannels,
-  listener: (event: IpcMainInvokeEvent, ...args: any[]) => Promise<void> | any
+  listener: (event: IpcMainInvokeEvent, ...args: any[]) => Promise<void> | any,
 ) {
   ipcMain.handle(channel, listener);
 }
@@ -199,10 +199,10 @@ export function initializeIpcHandlers(window: BrowserWindow): void {
     (
       _evt,
       key: string,
-      type: "string" | "boolean" | "integer" | "float" | "double" | "url" | "array" | "dictionary"
+      type: "string" | "boolean" | "integer" | "float" | "double" | "url" | "array" | "dictionary",
     ) => {
       return systemPreferences.getUserDefault(key, type);
-    }
+    },
   );
 
   handle("clipboard-read-text", () => {
@@ -214,7 +214,7 @@ export function initializeIpcHandlers(window: BrowserWindow): void {
   });
 
   handle(IPC_GET_ASSET_FILE_PATH, (evt, fileName: string) => {
-    return path.join(__dirname, "..", "assets", fileName);
+    return getAssetPath(fileName);
   });
 
   handle(IPC_CREATE_DIRECTORY_CHANNEL, async (evt, directoryPath: string): Promise<boolean> => {
@@ -267,28 +267,12 @@ export function initializeIpcHandlers(window: BrowserWindow): void {
     getPreferenceStore().set(ZOOM_FACTOR_KEY, zoomFactor);
   });
 
-  handle(IPC_ADDONS_SAVE_ALL, (evt, addons: Addon[]) => {
-    if (!Array.isArray(addons)) {
-      return;
-    }
-
-    const addonStore = getAddonStore();
-    if (addonStore === undefined) {
-      log.warn("IPC_ADDONS_SAVE_ALL failed, addon store undefined");
-      return;
-    }
-
-    for (const addon of addons) {
-      if (typeof addon.id !== "string") {
-        log.warn("malformed addon not saved", addon);
-        continue;
-      }
-
-      addonStore?.set(addon.id, addon);
-    }
+  // The app's version is the loaded bundle's; app.getVersion() is the installed shell's
+  handle(IPC_GET_APP_VERSION, () => {
+    return getShell().bundle.version;
   });
 
-  handle(IPC_GET_APP_VERSION, () => {
+  handle(IPC_GET_SHELL_VERSION, () => {
     return app.getVersion();
   });
 
@@ -314,15 +298,15 @@ export function initializeIpcHandlers(window: BrowserWindow): void {
   });
 
   handle(IPC_IS_DEFAULT_PROTOCOL_CLIENT, (evt, protocol: string) => {
-    return app.isDefaultProtocolClient(protocol);
+    return isDefaultProtocolClient(protocol);
   });
 
   handle(IPC_SET_AS_DEFAULT_PROTOCOL_CLIENT, (evt, protocol: string) => {
-    return app.setAsDefaultProtocolClient(protocol);
+    return setAsDefaultProtocolClient(protocol);
   });
 
   handle(IPC_REMOVE_AS_DEFAULT_PROTOCOL_CLIENT, (evt, protocol: string) => {
-    return app.removeAsDefaultProtocolClient(protocol);
+    return removeAsDefaultProtocolClient(protocol);
   });
 
   handle(IPC_LIST_DIRECTORIES_CHANNEL, async (evt, filePath: string, scanSymlinks: boolean) => {
@@ -344,8 +328,8 @@ export function initializeIpcHandlers(window: BrowserWindow): void {
     const taskResults = await firstValueFrom(
       from(filePaths).pipe(
         mergeMap((filePath) => from(statFile(filePath)), 3),
-        toArray()
-      )
+        toArray(),
+      ),
     );
 
     taskResults.forEach((r) => (results[r.path] = r.fsStats));
@@ -392,41 +376,13 @@ export function initializeIpcHandlers(window: BrowserWindow): void {
     try {
       await fsp.access(filePath);
     } catch (e) {
-      if (e.code !== "ENOENT") {
+      if ((e as NodeJS.ErrnoException).code !== "ENOENT") {
         log.error(e);
       }
       return false;
     }
 
     return true;
-  });
-
-  handle(IPC_CURSE_GET_SCAN_RESULTS, async (evt, filePaths: string[]): Promise<AddonScanResult[]> => {
-    // Scan addon folders in parallel for speed!?
-    try {
-      const taskResults = await firstValueFrom(
-        from(filePaths).pipe(
-          mergeMap((folder) => from(new CurseFolderScanner().scanFolder(folder)), 2),
-          toArray()
-        )
-      );
-
-      return taskResults;
-    } catch (e) {
-      log.error("Failed during curse scan", e);
-      throw e;
-    }
-  });
-
-  handle(IPC_WOWUP_GET_SCAN_RESULTS, async (evt, filePaths: string[]): Promise<AddonScanResult[]> => {
-    const taskResults = await firstValueFrom(
-      from(filePaths).pipe(
-        mergeMap((folder) => from(new WowUpFolderScanner(folder).scanFolder()), 3),
-        toArray()
-      )
-    );
-
-    return taskResults;
   });
 
   handle(IPC_UNZIP_FILE_CHANNEL, async (evt, arg: UnzipRequest) => {
@@ -497,16 +453,6 @@ export function initializeIpcHandlers(window: BrowserWindow): void {
     return await fsp.readFile(filePath);
   });
 
-  handle("decode-product-db", async (evt, filePath: string) => {
-    const productDbData = await fsp.readFile(filePath);
-    const productDb = ProductDb.decode(productDbData);
-    setTimeout(() => {
-      console.log("productDb", JSON.stringify(productDb));
-    },1);
-
-    return productDb;
-  });
-
   handle(IPC_WRITE_FILE_CHANNEL, async (evt, filePath: string, contents: string) => {
     return await fsp.writeFile(filePath, contents, { encoding: "utf-8", mode: DEFAULT_FILE_MODE });
   });
@@ -574,17 +520,6 @@ export function initializeIpcHandlers(window: BrowserWindow): void {
   handle(IPC_QUIT_APP, () => {
     log.info(`[QuitApp]`);
     app.quit();
-  });
-
-  handle(IPC_LIST_DISKS_WIN32, async () => {
-    const diskInfos = await nodeDiskInfo.getDiskInfo();
-    // Cant pass complex objects over the wire, make them simple
-    return diskInfos.map((di) => {
-      return {
-        mounted: di.mounted,
-        filesystem: di.filesystem,
-      };
-    });
   });
 
   handle(IPC_WINDOW_LEAVE_FULLSCREEN, () => {
@@ -685,85 +620,15 @@ export function initializeIpcHandlers(window: BrowserWindow): void {
     };
 
     try {
-      await fsp.mkdir(arg.outputFolder, { recursive: true });
-
-      const downloadUrl = new URL(arg.url);
-      if (typeof arg.auth?.queryParams === "object") {
-        for (const [key, value] of Object.entries(arg.auth.queryParams)) {
-          downloadUrl.searchParams.set(key, value);
-        }
-      }
-
-      const savePath = path.join(arg.outputFolder, `${nanoid()}-${arg.fileName}`);
-      log.info(`[DownloadFile] '${downloadUrl.toString()}' -> '${savePath}'`);
-
-      const url = downloadUrl.toString();
-      const writer = fs.createWriteStream(savePath);
-
-      try {
-        await new Promise((resolve, reject) => {
-          let size = 0;
-          let percentMod = -1;
-
-          const req = net.request({
-            url,
-            redirect: "manual",
-          });
-
-          if (typeof arg.auth?.headers === "object") {
-            for (const [key, value] of Object.entries(arg.auth.headers)) {
-              log.info(`Setting header: ${key}=${value.substring(0, 3)}***`);
-              req.setHeader(key, value);
-            }
-          }
-
-          req.on("redirect", (status, method, redirectUrl) => {
-            log.info(`[download] caught redirect`, status, redirectUrl);
-            req.followRedirect();
-          });
-
-          req.on("response", (response) => {
-            const fileLength = parseInt((response.headers["content-length"] as string) ?? "0", 10);
-
-            response.on("data", (data) => {
-              writer.write(data, () => {
-                size += data.length;
-                const percent = fileLength <= 0 ? 0 : Math.floor((size / fileLength) * 100);
-                if (percent % 5 === 0 && percentMod !== percent) {
-                  percentMod = percent;
-                  log.debug(`Write: [${percent}] ${size}`);
-                }
-              });
-            });
-
-            response.on("end", () => {
-              if (response.statusCode < 200 || response.statusCode >= 300) {
-                return reject(new Error(`Invalid response (${response.statusCode}): ${url}`));
-              }
-
-              return resolve(undefined);
-            });
-            response.on("error", (err) => {
-              return reject(err);
-            });
-          });
-          req.end();
-        });
-      } finally {
-        // always close stream
-        writer.end();
-      }
-
+      status.savePath = await downloadFile(arg, { net, log });
       status.type = DownloadStatusType.Complete;
-      status.savePath = savePath;
-
-      window.webContents.send(arg.responseKey, status);
     } catch (err) {
       log.error(err);
       status.type = DownloadStatusType.Error;
-      status.error = err;
-      window.webContents.send(arg.responseKey, status);
+      status.error = err instanceof Error ? err : undefined;
     }
+
+    window.webContents.send(arg.responseKey, status);
   }
 }
 
@@ -787,18 +652,19 @@ function handleZipFile(err: Error | null, zipfile: yauzl.ZipFile, targetDir: str
       if (/\/$/.test(entry.fileName)) {
         // directory file names end with '/'
         const dirPath = path.join(targetDir, entry.fileName);
-        fs.mkdir(dirPath, { recursive: true }, function () {
-          if (err) throw err;
+        fs.mkdir(dirPath, { recursive: true }, function (mkdirErr) {
+          if (mkdirErr) return reject(mkdirErr);
           zipfile.readEntry();
         });
       } else {
         // ensure parent directory exists
         const filePath = path.join(targetDir, entry.fileName);
         const parentPath = path.join(targetDir, path.dirname(entry.fileName));
-        fs.mkdir(parentPath, { recursive: true }, function () {
+        fs.mkdir(parentPath, { recursive: true }, function (mkdirErr) {
+          if (mkdirErr) return reject(mkdirErr);
           zipfile.openReadStream(entry, (err, readStream) => {
             if (err) {
-              throw err;
+              return reject(err);
             }
 
             const filter = new Transform();

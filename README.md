@@ -33,7 +33,21 @@ If you feel like helping us test the latest and greatest changes beta builds are
 
 ### Community Support Alternatives
 
-[Chocolatey](https://chocolatey.org)
+#### [WinGet](https://learn.microsoft.com/en-us/windows/package-manager/winget/)
+
+Ships with Windows 10 and 11.  You can install WowUp With Wago using:
+
+```cmd
+winget install wowup.wowup
+```
+
+Or Wowup with CurseForge with:
+
+```cmd
+winget install wowup.cf
+```
+
+#### [Chocolatey](https://chocolatey.org)
 
 You can also install the latest version via Chocolatey package manager:
 
@@ -63,7 +77,7 @@ We have a couple companion projects that are related to WowUp
 
 ## Code of Conduct
 
-Please read and understand our [Code of Coduct](https://github.com/WowUp/WowUp/blob/master/CODE_OF_CONDUCT.md) when submitting a bug or feature request here or on Discord.
+Please read and understand our [Code of Conduct](https://github.com/WowUp/WowUp/blob/master/CODE_OF_CONDUCT.md) when submitting a bug or feature request here or on Discord.
 
 ## License
 

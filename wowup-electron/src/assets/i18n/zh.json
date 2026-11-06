@@ -58,7 +58,10 @@
         "SELECT_ALL": "全选",
         "UNDO": "撤销"
       },
+      "HIDE": "隐藏",
+      "HIDE_OTHERS": "隐藏其他",
       "QUIT": "退出",
+      "SHOW_ALL": "全部显示",
       "VIEW": {
         "FORCE_RELOAD": "强制刷新",
         "LABEL": "视图",
@@ -70,8 +73,11 @@
         "ZOOM_RESET": "原始大小"
       },
       "WINDOW": {
+        "BRING_ALL_TO_FRONT": "前置全部窗口",
         "CLOSE": "关闭",
-        "LABEL": "窗口"
+        "LABEL": "窗口",
+        "MINIMIZE": "最小化",
+        "ZOOM": "缩放"
       }
     },
     "AUTO_UPDATE_FEW_NOTIFICATION_BODY": "{addonNames}\r\n已自动更新",
@@ -106,18 +112,27 @@
       "GROUP_LIGHT": "亮色",
       "HORDE": "部落"
     },
+    "UPDATES_ON_HOLD_NOTIFICATION_BODY": "部分插件更新需要比当前已安装版本更新的《魔兽世界》。打开 WowUp 查看。",
+    "UPDATES_ON_HOLD_NOTIFICATION_TITLE": "更新已暂缓",
     "WINDOW_TITLE": "WowUp.io",
     "WINDOW_TITLE_CF": "WowUp.io CF",
     "WINDOW_TITLE_FULLSCREEN": "WowUp.io - 全屏模式",
     "WOWUP_UPDATE": {
+      "BUNDLE_OVERDUE_TEXT": "WowUp 更新已等待一段时间。请重新启动 WowUp 以完成更新。",
+      "BUNDLE_READY_TEXT": "WowUp 更新已下载。立即重新启动以使用新版本，否则 WowUp 将在 6 小时内提示你重新启动。",
+      "BUNDLE_REQUIRED_TEXT": "此版本的 WowUp 存在问题，已被替换。请重新启动 WowUp 以完成更新。",
       "CHECKING_FOR_UPDATE": "检查更新",
       "DOWNLOADED_TOOLTIP": "安装 WowUp 更新",
       "DOWNLOADING_UPDATE": "正在下载更新",
       "INSTALL_MESSAGE": "是否重新启动 WowUp 以完成更新？",
       "INSTALL_TITLE": "WowUp 更新已准备就绪",
+      "LATER": "稍后",
       "NOT_AVAILABLE": "已安装最新版 WowUp",
       "PORTABLE_DOWNLOAD_MESSAGE": "是否手动下载最新绿色版？\n\n下载完成后请关闭本应用程序，然后用新版本覆盖。",
       "PORTABLE_DOWNLOAD_TITLE": "需要手动下载",
+      "RESTART_NOW": "立即重启",
+      "RESTART_TO_UPDATE": "重启以更新",
+      "RESTART_TO_UPDATE_TOOLTIP": "重新启动 WowUp 以使用已下载的更新",
       "SNACKBAR_ACTION": "更新并重启",
       "SNACKBAR_TEXT": "新版本 WowUp 可用",
       "TOOLTIP": "WowUp 更新可用",
@@ -169,10 +184,12 @@
     },
     "ADDON_STATUS": {
       "BACKINGUP": "正在备份",
+      "CHECKING_DEPENDENCIES": "正在检查依赖项",
       "COMPLETE": "已安装",
       "DOWNLOADING": "正在下载",
       "ERROR": "错误",
       "INSTALLING": "正在安装",
+      "INSTALLING_DEPENDENCIES": "依赖项 {completed}/{total}",
       "PENDING": "等待中",
       "RETRY": "Retrying...",
       "UNINSTALLING": "正在卸载",
@@ -191,15 +208,17 @@
       "TOC_NAME_MISMATCH_TOOLTIP": "插件文件夹和 TOC 不匹配"
     },
     "CLIENT_TYPES": {
-      "BETA": "TWW Beta",
-      "CLASSIC": "Cataclysm Classic",
-      "CLASSICBETA": "Cataclysm Classic Beta",
+      "ANNIVERSARY": "Burning Crusade Anniversary",
+      "BETA": "The War Within Beta",
+      "CLASSIC": "Mists of Pandaria Classic",
+      "CLASSICBETA": "World of Warcraft: Forever Beta",
       "CLASSICERA": "World of Warcraft Classic",
       "CLASSICERAPTR": "PTR (Classic Era)",
-      "CLASSICPTR": "PTR (Cataclysm Classic)",
+      "CLASSICPTR": "PTR (MoP Classic)",
+      "FOREVER": "World of Warcraft: Forever",
       "RETAIL": "World of Warcraft",
-      "RETAILPTR": "PTR (TWW 11.0.2)",
-      "RETAILXPTR": "PTR (TWW 11.0)"
+      "RETAILPTR": "PTR (Midnight)",
+      "RETAILXPTR": "PTR (TWW 11.2.7)"
     },
     "DATES": {
       "DAYS_AGO": "{count} 天前",
@@ -234,6 +253,7 @@
     "ERRORS": {
       "ACCOUNT_PUSH_TOGGLE_FAILED_ERROR": "无法为战网账户启用实时更新。请稍后再试，或者到 Discord 上寻求帮助。",
       "ADDON_INSTALL_ERROR": "安装插件 {addonName} 失败。请稍后再试。",
+      "ADDON_INSTALL_NETWORK_ERROR": "Failed to download {addonName} due to a network error. This can be caused by an unstable connection or IPv6 issues on your network — try disabling IPv6 on your network adapter if this keeps happening.",
       "ADDON_SCAN_ERROR": "在与 {providerName} 匹配插件文件夹时出现错误，请稍后再试。",
       "ADDON_SYNC_ERROR": "从 {providerName} 上检查更新时出现错误。",
       "ADDON_SYNC_FULL_ERROR": "[{installationName}]: 从 {providerName} 上检查 {addonName} 的更新时出现错误，请稍后再试。",
@@ -283,6 +303,16 @@
       "RE_SCAN_SUCCESS": "自动重新扫描完成，可以开始使用了。",
       "TITLE": "CurseForge 迁移"
     },
+    "GAME_VERSION_MISMATCH": {
+      "ADDON_NEEDS": "{name} 需要 WoW {version}",
+      "CANCEL": "取消",
+      "IGNORE": "对此 WoW 版本忽略",
+      "INSTALLATION": "{name} (WoW {version})",
+      "MESSAGE": "这些更新是为比当前已安装版本更新的《魔兽世界》制作的。在游戏更新之前，它们可能会导致错误。",
+      "SKIP": "跳过这些",
+      "TITLE": "更新需要更新的 WoW 版本",
+      "UPDATE_ANYWAY": "仍然更新"
+    },
     "INSTALL_FROM_PROTOCOL": {
       "ADDON_INSTALLED": "插件已安装！",
       "ADDON_INSTALLING": "正在安装插件",
@@ -307,8 +337,10 @@
         "CATACLYSM_ASSET_NOT_FOUND": "No asset was found to download from {message}.\n\nA valid zip file ending with '-cata' is required in order for WowUp to download it.",
         "CLASSIC_ASSET_NOT_FOUND": "未找到可下载的附件 {message}。\n\n要通过 WowUp 下载插件，发布页面（Releases）上需要文件名以 “-classic” 结尾的有效的 zip 文件。",
         "FAILED_TO_CONNECT": "无法连接 API，请稍后重试。",
+        "FOREVER_ASSET_NOT_FOUND": "No asset was found to download from {message}.\n\nA valid zip file ending with '-forever' is required in order for WowUp to download it.",
         "INSTALL_FAILED": "安装插件时出现了一些错误，请重试。\n\n如果一直出现此消息，可以加入 Discord #help-me 频道寻求帮助（英语）。",
         "INVALID_URL": "输入的 URL 无效。有效 URL 示例：\n\t- https://github.com/WowUp/WowUp.Addon\n\t- https://www.wowinterface.com/downloads/info25610-8.3-014.html\n\t- https://www.curseforge.com/wow/addons/altoholic",
+        "MISTS_ASSET_NOT_FOUND": "No asset was found to download from {message}.\n\nA valid zip file ending with '-mists' is required in order for WowUp to download it.",
         "NO_ADDON_FOUND": "未找到插件，请检查 URL 是否指向正确的页面。\n\n从 GitHub 安装时，请检查是否存在带有 zip 包的 release tag。",
         "NO_RELEASE_FOUND": "未找到发布版本 {message}.\n\n要通过 WowUp 下载插件，需要带有 zip 附件的发布版本。",
         "NO_SEARCH_RESULTS": "无搜索结果。",
@@ -322,9 +354,6 @@
       "INSTALL_SUCCESS_LABEL": "安装成功！",
       "SUPPORTED_SOURCES": "支持 WowInterface 和 GitHub",
       "TITLE": "从 URL 安装"
-    },
-    "NEW_VERSION_POPUP": {
-      "TITLE": "更新记录 {versionNumber}"
     },
     "PERMISSIONS": {
       "CURSEFORGE": {
@@ -361,6 +390,7 @@
     "ABOUT": {
       "ATTRIBUTIONS_TITLE": "图源",
       "CHANGE_LOG_SECTION_LABEL": "更新记录",
+      "SHELL_VERSION": "Shell v{version}",
       "TITLE": "WowUp.io",
       "WEBSITE_LINK_LABEL": "访问网站！"
     },
@@ -494,6 +524,7 @@
         "UPDATE_ALL_CLIENTS_BUTTON": "更新所有客户端",
         "UPDATE_RETAIL_CLASSIC_BUTTON": "更新正式服/经典怀旧服"
       },
+      "VERSION_MISMATCH_TOOLTIP": "此更新需要 WoW {required}。你当前为 WoW {current}。",
       "WTF_BACKUP_BUTTON": "备份界面设置"
     },
     "NEWS": {
@@ -538,6 +569,11 @@
         "CURRENT_LANGUAGE_LABEL": "当前语言",
         "CURSE_PROTOCOL_DESCRIPTION": "从 CurseForge 网站下载插件时，WowUp 将会接管安装过程",
         "CURSE_PROTOCOL_LABEL": "接管 CurseForge 下载链接",
+        "DISABLE_IPV6_CONFIRMATION_LABEL": "Do you want to restart?",
+        "DISABLE_IPV6_DESCRIPTION": "If addon downloads keep failing with a network error, your network's IPv6 connectivity may be broken. Enabling this forces WowUp to use IPv4 only.<br>Changing this setting requires a restart.",
+        "DISABLE_IPV6_DISABLE_CONFIRMATION_DESCRIPTION": "Re-enabling IPv6 requires the application to restart.",
+        "DISABLE_IPV6_ENABLE_CONFIRMATION_DESCRIPTION": "Forcing IPv4-only networking requires the application to restart.",
+        "DISABLE_IPV6_LABEL": "Force IPv4 (disable IPv6)",
         "ENABLE_APP_BADGE_DESCRIPTION": "在应用程序图标上用角标显示可更新的插件数量。",
         "ENABLE_APP_BADGE_LABEL": "启用数字角标通知",
         "ENABLE_SYSTEM_NOTIFICATIONS_DESCRIPTION": "启用各种系统通知弹窗，如自动更新插件通知。",
@@ -602,6 +638,11 @@
         "CURSEFORGE": "CurseForge",
         "DEBUG": "调试",
         "WTF_EXPLORER": "WTF Explorer"
+      },
+      "WAGO": {
+        "AD_CONSENT_DESCRIPTION": "View and manage how Wago ad partners may use your data for ad personalization",
+        "AD_CONSENT_LABEL": "Wago Ads Personalization & Data",
+        "AD_CONSENT_MANAGE": "Manage"
       },
       "WOW": {
         "ADD_CLIENT_BUTTON": "新增",

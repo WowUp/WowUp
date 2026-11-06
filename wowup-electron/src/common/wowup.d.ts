@@ -8,6 +8,7 @@ declare type MainChannels =
   | "app-update-not-available"
   | "app-update-start-download"
   | "app-update-state"
+  | "bundle-update-ready"
   | "blur"
   | "custom-protocol-received"
   | "focus"
@@ -25,6 +26,13 @@ declare type MainChannels =
 
 // Events that can be sent from renderer to main
 declare type RendererChannels =
+  | "addons-get-all"
+  | "addons-get-all-for-installation"
+  | "addons-get-all-for-provider"
+  | "addons-get-auto-update-enabled"
+  | "addons-get-available-for-update"
+  | "addons-get-by-external-id"
+  | "addons-get-by-external-ids"
   | "addons-save-all"
   | "app-install-update"
   | "app-update-check-for-update"
@@ -38,7 +46,7 @@ declare type RendererChannels =
   | "create-app-menu"
   | "create-directory"
   | "create-tray-menu"
-  | "curse-get-scan-results"
+  | "addons-get-scan-results"
   | "decode-product-db"
   | "delete-directory"
   | "focus-window"
@@ -52,12 +60,12 @@ declare type RendererChannels =
   | "get-locale"
   | "get-login-item-settings"
   | "get-pending-open-urls"
+  | "get-shell-version"
   | "get-zoom-factor"
   | "is-default-protocol-client"
   | "leave-full-screen"
   | "list-dir-recursive"
   | "list-directories"
-  | "list-disks-win32"
   | "list-entries"
   | "list-files"
   | "maximize-window"
@@ -92,8 +100,14 @@ declare type RendererChannels =
   | "system-preferences-get-user-default"
   | "unzip-file"
   | "update-app-badge"
+  | "wago-ads-disable"
+  | "wago-ads-load"
+  | "wago-ads-open-dev-tools"
+  | "wago-ads-reload"
+  | "wago-ads-resurface-cmp"
+  | "wago-ads-set-bounds"
+  | "wago-ads-show-cmp"
   | "wago-token-received"
-  | "wowup-get-scan-results"
   | "write-file"
   | "zip-file"
   | "zip-read-file"
@@ -110,11 +124,11 @@ declare global {
     platform: string;
     userDataPath: string;
     logPath: string;
+    installId: string;
     wowup: {
       onRendererEvent: (channel: string, listener: (event: IpcRendererEvent, ...args: any[]) => void) => void;
       onceRendererEvent: (channel: string, listener: (event: IpcRendererEvent, ...args: any[]) => void) => void;
       rendererSend: (channel: string, ...args: any[]) => void;
-      rendererSendSync: (channel: string, ...args: any[]) => any;
       rendererInvoke: (channel: string, ...args: any[]) => Promise<any>;
       rendererOff: (channel: string, listener: (...args: any[]) => void) => void;
       rendererOn: (channel: string, listener: (event: IpcRendererEvent, ...args: any[]) => void) => void;

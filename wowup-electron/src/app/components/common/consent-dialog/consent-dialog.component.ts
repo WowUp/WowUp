@@ -25,7 +25,6 @@ export class ConsentDialogComponent implements AfterViewChecked, OnInit {
   public isCurseForge = AppConfig.curseforge.enabled;
 
   public readonly wagoTermsUrl = AppConfig.wago.termsUrl;
-  public readonly wagoDataUrl = AppConfig.wago.dataConsentUrl;
 
   public constructor(
     public dialogRef: MatDialogRef<ConsentDialogComponent>,

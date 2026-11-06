@@ -30,6 +30,8 @@ export class FooterComponent implements OnInit {
   public versionNumber = from(this.wowUpService.getApplicationVersion());
   public appUpdateState = AppUpdateState;
 
+  /** Set once the shell has downloaded a newer bundle and the user chose to restart later */
+  public bundleUpdate$ = this.electronService.bundleUpdate$;
   public appUpdateState$: Observable<AppUpdateState> = this.electronService.appUpdate$.pipe(map((evt) => evt.state));
   public accountDisplayName$: Observable<string> = this.sessionService.wowUpAccount$.pipe(
     map((account) => account?.displayName ?? ""),
@@ -104,6 +106,10 @@ export class FooterComponent implements OnInit {
 
   public onClickInstallUpdate(): void {
     this._wowupService.installUpdate();
+  }
+
+  public onClickRestartForBundleUpdate(): void {
+    this._wowupService.restartForBundleUpdate();
   }
 
   // public async onClickUpdateWowup(): Promise<void> {

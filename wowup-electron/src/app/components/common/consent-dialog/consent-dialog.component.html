@@ -18,9 +18,7 @@
       </div>
       <mat-hint
         class="pre-wrap changelog"
-        [innerHTML]="
-          'DIALOGS.PERMISSIONS.WAGO.DESCRIPTION' | translate: { termsUrl: wagoTermsUrl, dataUrl: wagoDataUrl }
-        "
+        [innerHTML]="'DIALOGS.PERMISSIONS.WAGO.DESCRIPTION' | translate: { termsUrl: wagoTermsUrl }"
       ></mat-hint>
     </div>
     <div *ngIf="isCurseForge && requiresCmp" class="mb-3">

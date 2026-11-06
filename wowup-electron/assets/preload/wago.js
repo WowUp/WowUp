@@ -44,6 +44,21 @@ console.error = function (...data) {
 window.addEventListener(
   "error",
   function (e) {
+    // A failed subresource (script, image, tracking beacon) reports as a plain event whose target is
+    // the element, carrying no error and no message. Ad pages produce these routinely as individual
+    // bidders time out, so name what failed and do not treat the page as broken: reloading over a
+    // dead beacon would throw away a good page, and a page that genuinely never yields a key is
+    // already covered by keyExpectedTimeout below.
+    const target = e.target;
+    if (target != null && target !== window && target.tagName) {
+      const url = target.src || target.href || "unknown";
+      // debug, not warn: this is an expected part of every ad load, and only console.log/warn/error
+      // are forwarded to the main process, so a warn here is an ipc hop and a disk write per bidder
+      // that times out. Still visible in the ad frame's own devtools.
+      console.debug(`[wago-preload] failed to load ${target.tagName.toLowerCase()}: ${url}`);
+      return;
+    }
+
     const errMsg = e.error?.toString() || "unknown error on " + window.location;
     console.error(`[wago-preload] error listener:`, e.message, errMsg);
     ipcRenderer.send("webview-error", e.error, e.message);

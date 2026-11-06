@@ -1,10 +1,5 @@
 import { Subject } from "rxjs";
-import {
-  IPC_STORE_GET_OBJECT,
-  IPC_STORE_GET_OBJECT_SYNC,
-  IPC_STORE_SET_OBJECT,
-  TRUE_STR,
-} from "../../../common/constants";
+import { IPC_STORE_GET_OBJECT, IPC_STORE_SET_OBJECT, TRUE_STR } from "../../../common/constants";
 import { ElectronService } from "../electron/electron.service";
 
 export interface StorageChangeEvent<T = any> {
@@ -29,15 +24,10 @@ export abstract class StorageService {
     return this._electronService.invoke(IPC_STORE_GET_OBJECT, this.storageName, key);
   }
 
-  public getSync<T = string>(key: string): T {
-    return this._electronService.sendSync<T>(IPC_STORE_GET_OBJECT_SYNC, this.storageName, key);
-  }
-
   public async setAsync(key: string, value: unknown): Promise<void> {
     try {
-      const result = await this._electronService.invoke(IPC_STORE_SET_OBJECT, this.storageName, key, value);
-      this._changeSrc.next({ key, value: result });
-      return result;
+      await this._electronService.invoke(IPC_STORE_SET_OBJECT, this.storageName, key, value);
+      this._changeSrc.next({ key, value });
     } catch (e) {
       console.error(`setAsync failed: ${key}`);
       throw e;

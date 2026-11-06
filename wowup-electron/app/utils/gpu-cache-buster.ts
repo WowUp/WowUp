@@ -30,8 +30,8 @@ export function validateGpuCache(app: Electron.App) {
       if (verFile === undefined) {
         removeDir(cacheDir);
       } else {
-        const verFile = readVersionFile(cacheDir);
-        if (verFile.version !== app.getVersion()) {
+        const verFileData = readVersionFile(cacheDir);
+        if (verFileData.version !== app.getVersion()) {
           removeDir(cacheDir);
         } else {
           return;
@@ -39,7 +39,7 @@ export function validateGpuCache(app: Electron.App) {
       }
     }
 
-    fs.mkdirSync(cacheDir);
+    fs.mkdirSync(cacheDir, { recursive: true });
     createVersionFile(app.getVersion(), cacheDir);
   } catch (e) {
     log.error("failed to validate GPU Cache", e);
@@ -57,7 +57,7 @@ function fileExists(path: string) {
     return true;
   } catch (e) {
     log.warn(`File does not exist: ${path}`);
-    log.warn(e.message);
+    log.warn((e as Error).message);
     return false;
   }
 }

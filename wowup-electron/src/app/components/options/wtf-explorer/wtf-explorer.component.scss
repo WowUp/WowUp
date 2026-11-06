@@ -6,4 +6,22 @@
     height: 1px;
     border-top: thin solid var(--divider-color);
   }
+
+  .tree-toggle,
+  .tree-toggle-spacer {
+    flex-shrink: 0;
+    width: 36px;
+  }
+
+  .tree-toggle {
+    background-color: transparent;
+
+    &:hover {
+      background-color: rgba(255, 255, 255, 0.1);
+    }
+  }
+
+  .tree-toggle-spacer {
+    display: inline-block;
+  }
 }

@@ -8,6 +8,7 @@ import { TranslateCompiler, TranslateLoader, TranslateModule } from "@ngx-transl
 import { httpLoaderFactory } from "../../../app.module";
 import { AddonViewModel } from "../../../business-objects/addon-view-model";
 import { MatModule } from "../../../modules/mat-module";
+import { AddonProviderFactory } from "../../../services/addons/addon.provider.factory";
 import { SessionService } from "../../../services/session/session.service";
 import { MyAddonsAddonCellComponent } from "./my-addons-addon-cell.component";
 import { BehaviorSubject } from "rxjs";
@@ -17,11 +18,14 @@ describe("MyAddonsAddonCellComponent", () => {
   let component: MyAddonsAddonCellComponent;
   let fixture: ComponentFixture<MyAddonsAddonCellComponent>;
   let sessionService: SessionService;
+  let addonProviderService: jasmine.SpyObj<AddonProviderFactory>;
 
   beforeEach(async () => {
     sessionService = jasmine.createSpyObj("SessionService", [""], {
       myAddonsCompactVersion$: new BehaviorSubject(false),
     });
+    addonProviderService = jasmine.createSpyObj<AddonProviderFactory>("AddonProviderFactory", ["isProviderAvailable"]);
+    addonProviderService.isProviderAvailable.and.returnValue(true);
 
     await TestBed.configureTestingModule({
       declarations: [MyAddonsAddonCellComponent],
@@ -44,7 +48,10 @@ describe("MyAddonsAddonCellComponent", () => {
     })
       .overrideComponent(MyAddonsAddonCellComponent, {
         set: {
-          providers: [{ provide: SessionService, useValue: sessionService }],
+          providers: [
+            { provide: SessionService, useValue: sessionService },
+            { provide: AddonProviderFactory, useValue: addonProviderService },
+          ],
         },
       })
       .compileComponents();

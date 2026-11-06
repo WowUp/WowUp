@@ -18,7 +18,6 @@ export const AppConfig = {
   wago: {
     enabled: false,
     termsUrl: "",
-    dataConsentUrl: "",
   },
   curseforge: {
     enabled: true,
