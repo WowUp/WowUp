@@ -112,18 +112,27 @@
       "GROUP_LIGHT": "Jasny",
       "HORDE": "Horda"
     },
+    "UPDATES_ON_HOLD_NOTIFICATION_BODY": "Some addon updates need a newer version of World of Warcraft than the one you have installed. Open WowUp to review them.",
+    "UPDATES_ON_HOLD_NOTIFICATION_TITLE": "Updates on hold",
     "WINDOW_TITLE": "WowUp.io",
     "WINDOW_TITLE_CF": "WowUp.io CF",
     "WINDOW_TITLE_FULLSCREEN": "WowUp.io - Pełny ekran",
     "WOWUP_UPDATE": {
+      "BUNDLE_OVERDUE_TEXT": "A WowUp update has been waiting for a while. Restart WowUp to finish updating.",
+      "BUNDLE_READY_TEXT": "A WowUp update has been downloaded. Restart now to use it, or WowUp will ask you to restart within 6 hours.",
+      "BUNDLE_REQUIRED_TEXT": "This version of WowUp has a problem and has been replaced. Restart WowUp to finish updating.",
       "CHECKING_FOR_UPDATE": "Sprawdzanie aktualizacji",
       "DOWNLOADED_TOOLTIP": "Zainstaluj aktualizacje WowUp",
       "DOWNLOADING_UPDATE": "Pobieranie aktualizacji",
       "INSTALL_MESSAGE": "Chcesz zrestartować WowUp i zainstalować aktualizacje?",
       "INSTALL_TITLE": "Aktualizacja WowUp gotowa",
+      "LATER": "Later",
       "NOT_AVAILABLE": "Najnowsza wersja WowUp jest już zainstalowana",
       "PORTABLE_DOWNLOAD_MESSAGE": "Chcesz ręcznie zainstalować najnowszą przenośną wersje?\n\nPotrzebujesz ręcznie zamknąć aplikacje i skopiować na nową wersje.",
       "PORTABLE_DOWNLOAD_TITLE": "Wymagane ręczne pobieranie",
+      "RESTART_NOW": "Restart now",
+      "RESTART_TO_UPDATE": "Restart to update",
+      "RESTART_TO_UPDATE_TOOLTIP": "Restart WowUp to use the downloaded update",
       "SNACKBAR_ACTION": "Aktualizacja & Resetowanie",
       "SNACKBAR_TEXT": "Najnowsza wersja WowUp jest dostępna",
       "TOOLTIP": "Aktualizacja WowUp jest dostępna",
@@ -293,6 +302,16 @@
       "RE_SCAN_ERROR": "Ponowne skanowanie automatyczne nie powiodło się, spróbuj ponownie ręcznie.",
       "RE_SCAN_SUCCESS": "Skończone ponowne skanowanie automatyczne, można przystąpić do pracy.",
       "TITLE": "Migracja CurseForge"
+    },
+    "GAME_VERSION_MISMATCH": {
+      "ADDON_NEEDS": "{name} needs WoW {version}",
+      "CANCEL": "Cancel",
+      "IGNORE": "Ignore for this WoW version",
+      "INSTALLATION": "{name} (WoW {version})",
+      "MESSAGE": "These updates were made for a newer version of World of Warcraft than the one you have installed. They may cause errors until the game updates.",
+      "SKIP": "Skip these",
+      "TITLE": "Updates need a newer WoW version",
+      "UPDATE_ANYWAY": "Update anyway"
     },
     "INSTALL_FROM_PROTOCOL": {
       "ADDON_INSTALLED": "Addon zainstalowany!",
@@ -505,6 +524,7 @@
         "UPDATE_ALL_CLIENTS_BUTTON": "Aktualizuj wszystkie klienty",
         "UPDATE_RETAIL_CLASSIC_BUTTON": "Aktualizuj Retail/Classic"
       },
+      "VERSION_MISMATCH_TOOLTIP": "This update needs WoW {required}. You have WoW {current}.",
       "WTF_BACKUP_BUTTON": "Ustawienia kopii zapasowej interfejsu"
     },
     "NEWS": {
