@@ -6,6 +6,7 @@ import { TranslateMessageFormatCompiler } from "ngx-translate-messageformat-comp
 import { MatModule } from "../modules/mat-module";
 
 export function mockPreload(): void {
+  window.installId = "test-install-id";
   window.wowup = {
     onRendererEvent: () => {},
     onceRendererEvent: () => {},
