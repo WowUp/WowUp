@@ -1,4 +1,4 @@
 {
-  "spec": "out-tsc/**/*.spec.js",
+  "spec": ["out-tsc/**/*.spec.js", "electron-build/**/*.spec.js"],
   "timeout": 10000
 }
