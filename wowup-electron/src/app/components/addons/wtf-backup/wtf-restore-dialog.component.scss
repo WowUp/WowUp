@@ -1,0 +1,30 @@
+.message {
+  font-family: Roboto, "Helvetica Neue", sans-serif;
+  white-space: pre-wrap;
+  max-width: 40vw;
+}
+
+p {
+  margin: 0 0 12px;
+}
+
+.warning {
+  color: #f44336;
+}
+
+.hint {
+  font-size: 12px;
+  margin-top: 4px;
+  opacity: 0.7;
+}
+
+mat-checkbox {
+  margin-top: 8px;
+}
+
+.dialog-buttons {
+  display: flex;
+  .btn-wrapper {
+    margin-left: auto;
+  }
+}
