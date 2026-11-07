@@ -19,7 +19,6 @@ import { AddonUpdateButtonComponent } from "./addon-update-button.component";
 
 describe("AddonUpdateButtonComponent", () => {
   let addonServiceSpy: AddonService;
-  let analyticsServiceSpy: AnalyticsService;
 
   beforeEach(async () => {
     addonServiceSpy = jasmine.createSpyObj("AddonService", [""], {
@@ -55,7 +54,7 @@ describe("AddonUpdateButtonComponent", () => {
               provide: UpdateCompatibilityService,
               useValue: jasmine.createSpyObj("UpdateCompatibilityService", ["confirmUpdates"]),
             },
-            { provide: AnalyticsService, useValue: analyticsServiceSpy },
+            { provide: AnalyticsService, useValue: undefined },
           ],
         },
       })

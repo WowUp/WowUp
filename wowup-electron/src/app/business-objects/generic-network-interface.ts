@@ -13,7 +13,7 @@ export class GenericNetworkInterface implements NetworkInterface {
     return { ...this._defaultHeaders, ...headers };
   }
 
-  public async getJson<T>(url: string | URL, config?: GetConfig | undefined): Promise<T> {
+  public async getJson<T>(url: string | URL, config?: GetConfig): Promise<T> {
     return await memcache.transaction(
       url.toString(),
       () => this._circuitBreaker.getJson<T>(url, this.mergeHeaders(config?.headers), config?.timeoutMs),
@@ -21,7 +21,7 @@ export class GenericNetworkInterface implements NetworkInterface {
     );
   }
 
-  public async getText(url: string | URL, config?: GetConfig | undefined): Promise<string> {
+  public async getText(url: string | URL, config?: GetConfig): Promise<string> {
     return await memcache.transaction(url.toString(), () => this._circuitBreaker.getText(url, config?.timeoutMs), 30);
   }
 

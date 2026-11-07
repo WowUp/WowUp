@@ -3,7 +3,7 @@ import { join } from "path";
 import { getShell } from "../../wowup-shell/contract/shell-api";
 
 // Where the bundle's files live. App code resolves files through here instead of app.getAppPath() or
-// __dirname (enforced in .eslintrc.js), so the bundle can be loaded from somewhere other than the install
+// __dirname (enforced in eslint.config.js), so the bundle can be loaded from somewhere other than the install
 // directory. The bundle is one self-contained folder: main.js, preload.js, renderer/ and assets/. See
 // SHELL_BUNDLE_PLAN.md.
 

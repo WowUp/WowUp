@@ -23,7 +23,6 @@ describe("OptionsAppSectionComponent", () => {
   let electronServiceSpy: any;
   let wowUpServiceSpy: any;
   let sessionServiceSpy: any;
-  let fileServiceSpy: any;
   let analyticsServiceSpy: any;
   let addonService: any;
   let zoomService: ZoomService;
@@ -88,7 +87,7 @@ describe("OptionsAppSectionComponent", () => {
             { provide: ElectronService, useValue: electronServiceSpy },
             { provide: WowUpService, useValue: wowUpServiceSpy },
             { provide: SessionService, useValue: sessionServiceSpy },
-            { provide: FileService, useValue: fileServiceSpy },
+            { provide: FileService, useValue: undefined },
             { provide: AnalyticsService, useValue: analyticsServiceSpy },
             { provide: ZoomService, useValue: zoomService },
             { provide: AddonService, useValue: addonService },

@@ -227,7 +227,7 @@ export class InstallFromUrlDialogComponent implements OnDestroy {
   private getUrlFromQuery(): URL | undefined {
     try {
       return new URL(this.query);
-    } catch (err) {
+    } catch {
       console.error(`Invalid url: ${this.query}`);
       this.showErrorMessage(this._translateService.instant("DIALOGS.INSTALL_FROM_URL.ERROR.INVALID_URL") as string);
       return undefined;

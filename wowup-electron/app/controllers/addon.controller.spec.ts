@@ -59,8 +59,8 @@ describe("AddonController", () => {
       const store = createStore([createAddon("old", "retail")]);
       const controller = new AddonController(store as unknown as Store);
 
-      controller.replaceAllForInstallation(undefined as unknown as string, []);
-      controller.replaceAllForInstallation("retail", undefined as unknown as Addon[]);
+      controller.replaceAllForInstallation(undefined, []);
+      controller.replaceAllForInstallation("retail", undefined);
 
       expect([...store.keys()]).to.deep.equal(["old"]);
     });

@@ -75,9 +75,7 @@ describe("bundle-manifest", () => {
     const signed = signManifest(unsigned, "current", current.privateKeyPem);
 
     expect(verifyManifest({ ...signed, signature: "not base64 !!" }, publicKeys)).to.equal(false);
-    expect(verifyManifest({ ...signed, signature: undefined } as unknown as BundleManifest, publicKeys)).to.equal(
-      false,
-    );
+    expect(verifyManifest({ ...signed, signature: undefined }, publicKeys)).to.equal(false);
   });
 
   it("signs the same bytes whatever order the fields are in", () => {

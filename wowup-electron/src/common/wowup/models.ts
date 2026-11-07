@@ -76,7 +76,7 @@ export interface PushNotification<T extends PushNotificationData | string> {
   message: string | T;
 }
 
-// eslint-disable-next-line @typescript-eslint/no-empty-interface
+// eslint-disable-next-line @typescript-eslint/no-empty-object-type -- marker base type for push payloads
 export interface PushNotificationData {}
 
 export interface AddonUpdatePushNotification extends PushNotificationData {

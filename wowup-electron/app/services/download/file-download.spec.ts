@@ -4,6 +4,7 @@ import * as fs from "fs";
 import * as fsp from "fs/promises";
 import * as os from "os";
 import * as path from "path";
+import { inspect } from "util";
 
 import type { Net } from "electron";
 
@@ -92,7 +93,10 @@ function createFakeLog(): { log: DownloadLogger; lines: LogLine[] } {
   const lines: LogLine[] = [];
   function record(level: string) {
     return (...args: unknown[]) => {
-      lines.push({ level, text: args.map((a) => String(a)).join(" ") });
+      lines.push({
+        level,
+        text: args.map((a) => (typeof a === "string" ? a : inspect(a))).join(" "),
+      });
     };
   }
 

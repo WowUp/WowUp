@@ -164,31 +164,6 @@
               "path": "./angular.webpack.js"
             }
           }
-        },
-        "lint": {
-          "builder": "@angular-eslint/builder:lint",
-          "options": {
-            "eslintConfig": ".eslintrc.js",
-            "lintFilePatterns": [
-              "src/**/*.ts",
-              "app/**/*.ts"
-            ]
-          }
-        }
-      }
-    },
-    "angular-electron-e2e": {
-      "root": "e2e",
-      "projectType": "application",
-      "architect": {
-        "lint": {
-          "builder": "@angular-eslint/builder:lint",
-          "options": {
-            "eslintConfig": ".eslintrc.js",
-            "lintFilePatterns": [
-              "e2e/**/*.ts"
-            ]
-          }
         }
       }
     }
@@ -200,12 +175,6 @@
     },
     "@schematics/angular:directive": {
       "prefix": "app"
-    },
-    "@angular-eslint/schematics:application": {
-      "setParserOptionsProject": true
-    },
-    "@angular-eslint/schematics:library": {
-      "setParserOptionsProject": true
     }
   },
   "cli": {

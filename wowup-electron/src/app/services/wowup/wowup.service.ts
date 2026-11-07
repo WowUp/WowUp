@@ -105,7 +105,7 @@ export class WowUpService {
       await this._translateService.use(langCode).toPromise();
       console.log(`using locale ${langCode}`);
       await this.setCurrentLanguage(langCode);
-    } catch (e) {
+    } catch {
       console.warn(`Language ${langCode} not found defaulting to english`);
       await this.setCurrentLanguage("en");
       await this._translateService.use("en").toPromise();
@@ -213,7 +213,7 @@ export class WowUpService {
 
   public async getWowUpReleaseChannel(): Promise<WowUpReleaseChannelType> {
     const preference = await this._preferenceStorageService.getAsync(WOWUP_RELEASE_CHANNEL_PREFERENCE_KEY);
-    return parseInt(preference, 10) as WowUpReleaseChannelType;
+    return parseInt(preference, 10);
   }
 
   public async setWowUpReleaseChannel(releaseChannel: WowUpReleaseChannelType): Promise<void> {
@@ -261,7 +261,7 @@ export class WowUpService {
     }
 
     await this._preferenceStorageService.setAsync(key, preference);
-    this._preferenceChangeSrc.next({ key, value: preference.toString() });
+    this._preferenceChangeSrc.next({ key, value: JSON.stringify(preference) });
   }
 
   public async getEnableSystemNotifications(): Promise<boolean> {

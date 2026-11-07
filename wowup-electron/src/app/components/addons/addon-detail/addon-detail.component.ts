@@ -247,7 +247,7 @@ export class AddonDetailComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   public async onClickRemoveAddon(): Promise<void> {
-    let addon: Addon | null = null;
+    let addon: Addon | null;
 
     // Addon is expected to be available through the model when browsing My Addons tab
     if (this._sessionService.getSelectedHomeTab() === TAB_INDEX_MY_ADDONS) {
@@ -408,7 +408,7 @@ export class AddonDetailComponent implements OnInit, OnDestroy, AfterViewInit {
       );
 
       return description || this._translateService.instant("DIALOGS.ADDON_DETAILS.DESCRIPTION_NOT_FOUND");
-    } catch (e) {
+    } catch {
       return "";
     }
   };

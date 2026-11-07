@@ -57,7 +57,7 @@ const SHELL_GLOBAL_KEY = "__wowupShell";
 // Handed over on globalThis rather than module state: once the bundle is built on its own it gets its own
 // copy of this module, and module state set by the shell would not be visible to it.
 function shellGlobal(): Record<string, unknown> {
-  return globalThis as unknown as Record<string, unknown>;
+  return globalThis;
 }
 
 export function setShell(shell: WowUpShell): void {

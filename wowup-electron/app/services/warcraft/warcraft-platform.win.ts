@@ -143,7 +143,7 @@ export class WarcraftPlatformWin implements WarcraftPlatform {
 
   public getClientType(binaryPath: string): WowClientType {
     const binaryName = getX64BinaryName(path.win32.basename(binaryPath));
-    let clientType: WowClientType = WowClientType.None;
+    let clientType: WowClientType;
     switch (binaryName) {
       case WOW_RETAIL_NAME:
         clientType = binaryPath.toLowerCase().includes(WOW_FOREVER_FOLDER)

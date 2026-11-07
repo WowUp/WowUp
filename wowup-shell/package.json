@@ -26,7 +26,7 @@
   "scripts": {
     "build": "node scripts/build-shell.js",
     "test": "tsc -p tsconfig.spec.json && mocha",
-    "lint": "eslint \"src/**/*.ts\" \"contract/**/*.ts\"",
+    "lint": "eslint .",
     "electron:publish": "node scripts/prepare-package.js wago && npm run lint && npm run build && electron-builder -c electron-build/electron-builder.json build --publish always",
     "electron:publish:never": "node scripts/prepare-package.js wago && npm run lint && npm run build && electron-builder -c electron-build/electron-builder.json build --publish never",
     "electron:publish:local": "node scripts/prepare-package.js wago && npm run build && electron-builder -c electron-build/electron-builder-local.json build --publish never",
@@ -44,28 +44,29 @@
   },
   "devDependencies": {
     "@electron/notarize": "3.1.1",
+    "@eslint/js": "10.0.1",
     "@overwolf/ow-electron": "42.7.1",
     "@overwolf/ow-electron-builder": "26.9.3",
     "@types/adm-zip": "0.5.1",
     "@types/mocha": "10.0.1",
     "@types/node": "22.15.34",
-    "@typescript-eslint/eslint-plugin": "^7.2.0",
-    "@typescript-eslint/parser": "^7.2.0",
     "adm-zip": "0.5.12",
     "chai": "4.3.8",
     "dotenv": "16.4.5",
     "electron": "43.1.1",
     "electron-builder": "26.16.1",
     "esbuild": "0.20.1",
-    "eslint": "^8.57.0",
-    "eslint-config-prettier": "9.1.0",
+    "eslint": "10.14.0",
+    "eslint-config-prettier": "10.1.8",
+    "globals": "17.14.0",
     "mocha": "10.2.0",
     "node-addon-api": "8.3.1",
     "prettier": "3.2.5",
-    "typescript": "5.2.2"
+    "typescript": "5.2.2",
+    "typescript-eslint": "8.72.1"
   },
   "engines": {
-    "node": ">=16.0.0"
+    "node": ">=20.19.0"
   },
   "gypfile": true
 }

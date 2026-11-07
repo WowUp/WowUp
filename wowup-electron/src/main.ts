@@ -8,7 +8,6 @@ if (AppConfig.production) {
   enableProdMode();
 }
 
-/* eslint-disable @typescript-eslint/no-unsafe-argument */
 console.log = function (message?: any, ...optionalParams: any[]) {
   window.log.info(message, ...optionalParams);
 };
@@ -18,7 +17,6 @@ console.warn = function (message?: any, ...optionalParams: any[]) {
 console.error = function (message?: any, ...optionalParams: any[]) {
   window.log.error(message, ...optionalParams);
 };
-/* eslint-enable @typescript-eslint/no-unsafe-argument */
 
 platformBrowserDynamic()
   .bootstrapModule(AppModule, {

@@ -1,4 +1,5 @@
 import { expect } from "chai";
+import { inspect } from "util";
 
 import type { ProcessMetric } from "electron";
 
@@ -31,7 +32,7 @@ function metric(fake: FakeProcess): ProcessMetric {
       workingSetSize: fake.workingSetKb ?? 0,
       peakWorkingSetSize: fake.workingSetKb ?? 0,
     },
-  } as ProcessMetric;
+  };
 }
 
 class FakeLogger implements MetricsLogger {
@@ -39,7 +40,7 @@ class FakeLogger implements MetricsLogger {
   public readonly errors: unknown[][] = [];
 
   public info(...args: unknown[]): void {
-    this.lines.push(args.map((a) => String(a)).join(" "));
+    this.lines.push(args.map((a) => (typeof a === "string" ? a : inspect(a))).join(" "));
   }
 
   public error(...args: unknown[]): void {

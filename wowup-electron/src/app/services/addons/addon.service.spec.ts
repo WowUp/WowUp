@@ -79,7 +79,7 @@ describe("AddonService", () => {
       downloadCount: 100,
       files: [createFile()],
       ...overrides,
-    } as AddonSearchResult;
+    };
   }
 
   function createAddon(overrides: Partial<Addon> = {}): Addon {

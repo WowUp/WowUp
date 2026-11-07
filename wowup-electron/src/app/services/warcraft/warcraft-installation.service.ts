@@ -279,7 +279,7 @@ export class WarcraftInstallationService {
 
       try {
         await this.addInstallation(wowInstallation, false);
-      } catch (e) {
+      } catch {
         // Ignore duplicate error
       }
     }

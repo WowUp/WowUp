@@ -41,7 +41,7 @@ npm run ow:start   # Overwolf flavor
 
 Installers: `npm run build:prod` (or `ow:build:prod`) in `wowup-electron`, then e.g. `npm run electron:publish:local` (or `ow:electron:publish:local`) in `wowup-shell`.
 
-- Lint: `npm run lint` / Test: `npm test` (both in `wowup-electron/` and `wowup-shell/`)
+- Lint: `npm run lint` (ESLint 10 flat config in `eslint.config.js`: type-aware rules, Angular template rules, the architecture rules) / Test: `npm test` (both in `wowup-electron/` and `wowup-shell/`)
 - Format: `npm run pretty` (`wowup-electron/`), Prettier throughout; strict TypeScript.
 
 ## Branching & Commits
