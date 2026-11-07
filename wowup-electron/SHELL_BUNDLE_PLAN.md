@@ -173,7 +173,10 @@ next launch, or when the user accepts the app's restart prompt (required after 6
 ## What still requires a signed shell release
 
 - Electron / ow-electron upgrades (Angular targets a specific Chromium; bump
-  `SHELL_API_VERSION` so older shells don't pick up incompatible bundles).
+  `SHELL_API_VERSION` so older shells don't pick up incompatible bundles). If the new
+  Electron drops a macOS version (Electron 44 needs macOS 13), raise `mac.minimumSystemVersion`
+  in every `wowup-shell/electron-build/electron-builder*.json`. A build hook copies it into
+  `latest-mac.yml`, so older Macs stop being offered the update (#1562).
 - Native addon changes or new native dependencies.
 - Protocol, installer, or Info.plist changes.
 - Bootstrap changes or any other `SHELL_API_VERSION` bump.

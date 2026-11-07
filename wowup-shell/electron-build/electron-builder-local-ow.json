@@ -4,6 +4,7 @@
   "directories": {
     "output": "release-ow/"
   },
+  "artifactBuildCompleted": "./electron-build/macos-update-info.js",
   "afterSign": "./electron-build/after-sign-ow.js",
   "generateUpdatesFilesForAllChannels": true,
   "publish": ["github"],
@@ -39,6 +40,7 @@
   "mac": {
     "icon": "electron-build/icon.icns",
     "category": "public.app-category.utilities",
+    "minimumSystemVersion": "12.0",
     "target": [
       {
         "target": "default",

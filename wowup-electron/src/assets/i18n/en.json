@@ -136,6 +136,8 @@
       "SNACKBAR_ACTION": "Update & Restart",
       "SNACKBAR_TEXT": "A new version of WowUp is available",
       "TOOLTIP": "WowUp update available",
+      "UNSUPPORTED_OS_TEXT": "WowUp {{version}} needs macOS {{osVersion}} or later. Update macOS to keep getting WowUp updates.",
+      "UNSUPPORTED_OS_UNKNOWN_TEXT": "WowUp {{version}} needs a newer version of macOS. Update macOS to keep getting WowUp updates.",
       "UPDATE_AVAILABLE": "Starting download",
       "UPDATE_ERROR": "Failed to get WowUp update"
     }

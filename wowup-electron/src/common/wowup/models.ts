@@ -5,12 +5,18 @@ export enum AppUpdateState {
   Downloading,
   Downloaded,
   Error,
+  /** A newer version exists but needs a newer OS, so it isn't downloaded */
+  UnsupportedOs,
 }
 
 export interface AppUpdateEvent {
   state: AppUpdateState;
   progress?: AppUpdateDownloadProgress;
   error?: string;
+  /** With UnsupportedOs: the version that can't be installed */
+  version?: string;
+  /** With UnsupportedOs: the macOS version it needs ("12"), when known */
+  requiredOsVersion?: string;
 }
 
 /** A newer app bundle the shell has downloaded; restarting loads it. See wowup-shell's BundleUpdateReady. */
