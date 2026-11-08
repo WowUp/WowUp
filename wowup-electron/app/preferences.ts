@@ -48,7 +48,7 @@ export function getInstallId(): string {
 
 export function getWowUpReleaseChannelPreference(): WowUpReleaseChannelType {
   const val = getPreferenceStore().get(WOWUP_RELEASE_CHANNEL_PREFERENCE_KEY) as string;
-  return parseInt(val, 10) as WowUpReleaseChannelType;
+  return parseInt(val, 10);
 }
 
 function setDefaultPreference(key: string, defaultValue: any) {

@@ -47,7 +47,7 @@ function describeContents(contents: Electron.WebContents): string {
   try {
     url = contents.getURL();
   } catch {
-    url = "";
+    // destroyed web contents have no URL
   }
 
   // Devtools is itself a renderer, and an app with a few panels open can easily be running more

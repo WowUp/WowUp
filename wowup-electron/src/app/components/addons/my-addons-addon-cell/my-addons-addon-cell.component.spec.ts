@@ -12,7 +12,7 @@ import { AddonProviderFactory } from "../../../services/addons/addon.provider.fa
 import { SessionService } from "../../../services/session/session.service";
 import { MyAddonsAddonCellComponent } from "./my-addons-addon-cell.component";
 import { BehaviorSubject } from "rxjs";
-import { Addon, AddonChannelType, WowClientType } from "wowup-lib-core";
+import { AddonChannelType, WowClientType } from "wowup-lib-core";
 
 describe("MyAddonsAddonCellComponent", () => {
   let component: MyAddonsAddonCellComponent;
@@ -68,7 +68,7 @@ describe("MyAddonsAddonCellComponent", () => {
       autoUpdateNotificationsEnabled: false,
       clientType: WowClientType.Retail,
       channelType: AddonChannelType.Stable,
-    } as Addon);
+    });
 
     fixture.detectChanges();
   });

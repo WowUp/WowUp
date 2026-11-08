@@ -27,7 +27,7 @@ export function readFileInZip(zipPath: string, filePath: string): Promise<string
   return new Promise((resolve, reject) => {
     const zip = new AdmZip(zipPath);
     zip.readAsTextAsync(filePath, (data, err) => {
-      return err ? reject(err) : resolve(data);
+      return err ? reject(new Error(err)) : resolve(data);
     });
   });
 }

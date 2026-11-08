@@ -18,8 +18,6 @@ describe("InstallFromUrlDialogComponent", () => {
   console.log("InstallFromUrlDialogComponent");
   let component: InstallFromUrlDialogComponent;
   let fixture: ComponentFixture<InstallFromUrlDialogComponent>;
-  let sessionServiceSpy: any;
-  let addonServiceSpy: any;
 
   beforeEach(async () => {
     const testBed = TestBed.configureTestingModule({
@@ -45,8 +43,8 @@ describe("InstallFromUrlDialogComponent", () => {
         providers: [
           DownloadCountPipe,
           { provide: MatDialogRef, useValue: {} },
-          { provide: AddonService, useValue: addonServiceSpy },
-          { provide: SessionService, useValue: sessionServiceSpy },
+          { provide: AddonService, useValue: undefined },
+          { provide: SessionService, useValue: undefined },
           { provide: IconService },
         ],
       },

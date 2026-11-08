@@ -142,10 +142,10 @@ export class CurseFolderScanner {
   }
 
   private async processIncludeFile(matchingFileList: string[], fileInfo: string) {
-    let nativePath = "";
+    let nativePath: string;
     try {
       nativePath = this.getRealPath(fileInfo);
-    } catch (e) {
+    } catch {
       return;
     }
 

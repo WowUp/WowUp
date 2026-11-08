@@ -12,7 +12,7 @@ import { BundleUpdater } from "./bundle-updater";
 
 // The signed shell's entry point. Only what has to happen before, or independently of, the app bundle
 // belongs here; everything else lives in the bundle's main.ts. See wowup-electron/SHELL_BUNDLE_PLAN.md.
-// The shell never imports app code (enforced in .eslintrc.js): the bundle can update without the shell, so
+// The shell never imports app code (enforced in eslint.config.js): the bundle can update without the shell, so
 // the shell must not compile in a copy of code that may since have changed. The bundle is built in
 // wowup-electron and loaded by runtime path.
 

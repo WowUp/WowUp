@@ -64,7 +64,7 @@ describe("AddonDetailComponent", () => {
       externalId: "52001",
     } as Addon);
 
-    dialogModel = { listItem: viewModel } as AddonDetailModel;
+    dialogModel = { listItem: viewModel };
 
     const testBed = TestBed.configureTestingModule({
       declarations: [AddonDetailComponent],

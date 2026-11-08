@@ -752,7 +752,6 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
     }
   }
 
-  // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
   public getRowNodeId = (data: any) => {
     return data.data.addon.id;
   };

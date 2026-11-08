@@ -61,7 +61,7 @@ export function getRelativeDateFormat(value: string): [string, object | undefine
   let then: Date;
   try {
     then = new Date(value);
-  } catch (error) {
+  } catch {
     return ["", undefined];
   }
 
@@ -92,7 +92,7 @@ export function getRelativeDateFormat(value: string): [string, object | undefine
     return ["COMMON.DATES.YESTERDAY", undefined];
   }
 
-  const hours = Math.floor((tempSec %= DAY_SECONDS) / HOUR_SECONDS);
+  const hours = Math.floor((tempSec % DAY_SECONDS) / HOUR_SECONDS);
   if (hours) {
     return ["COMMON.DATES.HOURS_AGO", { count: hours }];
   }

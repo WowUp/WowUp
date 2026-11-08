@@ -58,7 +58,7 @@ jobs:
     - name: Lint
       run: |
         cd ./wowup-electron
-        ng lint
+        npm run lint
 
     - name: Test Locales
       run: |

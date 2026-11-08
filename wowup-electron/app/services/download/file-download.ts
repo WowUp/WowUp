@@ -1,6 +1,7 @@
 import * as fs from "fs";
 import * as fsp from "fs/promises";
 import * as path from "path";
+import { inspect } from "util";
 
 import { nanoid } from "nanoid";
 import type { Net } from "electron";
@@ -45,7 +46,7 @@ export interface DownloadFileDeps {
 // a download failure can actually be told apart from the next one.
 export function describeError(err: unknown): string {
   if (!(err instanceof Error)) {
-    return String(err);
+    return typeof err === "string" ? err : inspect(err);
   }
 
   const details = err as Error & { code?: string | number; errno?: number; syscall?: string };

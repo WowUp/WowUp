@@ -14,9 +14,8 @@ let nativeAddon: NativeHashAddon | undefined;
  * flavor never pulls the native module in at all.
  */
 function getNativeAddon(): NativeHashAddon {
-  /* eslint-disable @typescript-eslint/no-var-requires, @typescript-eslint/no-unsafe-assignment */
   nativeAddon ??= require(getNativeAddonPath()) as NativeHashAddon;
-  /* eslint-enable @typescript-eslint/no-var-requires, @typescript-eslint/no-unsafe-assignment */
+
   return nativeAddon;
 }
 
