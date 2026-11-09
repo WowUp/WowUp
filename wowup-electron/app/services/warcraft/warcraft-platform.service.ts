@@ -21,7 +21,8 @@ import { ProductDb } from "../../../src/common/wowup/product-db";
 export interface WarcraftPlatform {
   getExecutableExtension(): string;
   isWowApplication(appName: string): boolean;
-  getBlizzardAgentPath(): Promise<string>;
+  /** Every product.db Battle.net keeps WoW installations in; more than one when there are several wine prefixes */
+  getBlizzardAgentPaths(): Promise<string[]>;
   getExecutableName(clientType: WowClientType): string;
   getClientType(binaryPath: string): WowClientType;
   resolveProducts(decodedProducts: InstalledProduct[], agentPath: string): InstalledProduct[];

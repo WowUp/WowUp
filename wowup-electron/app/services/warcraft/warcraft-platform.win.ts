@@ -103,6 +103,11 @@ export class WarcraftPlatformWin implements WarcraftPlatform {
     return getX64BinaryName(appName) !== undefined;
   }
 
+  public async getBlizzardAgentPaths(): Promise<string[]> {
+    const agentPath = await this.getBlizzardAgentPath();
+    return agentPath ? [agentPath] : [];
+  }
+
   public async getBlizzardAgentPath(): Promise<string> {
     const candidates = getBlizzardAgentCandidates(this.deps.programData);
 
