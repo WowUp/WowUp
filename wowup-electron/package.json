@@ -105,7 +105,7 @@
     "@angular/compiler": "17.3.4",
     "@angular/compiler-cli": "17.3.4",
     "@angular/core": "17.3.4",
-    "@angular/forms": "17.3.4",
+    "@angular/forms": "22.2.5",
     "@angular/material": "17.3.4",
     "@angular/platform-browser": "17.3.4",
     "@angular/platform-browser-dynamic": "17.3.4",
