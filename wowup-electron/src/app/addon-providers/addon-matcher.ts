@@ -1,4 +1,3 @@
-import * as _ from "lodash";
 import { Addon, AddonFolder, Toc } from "wowup-lib-core";
 
 /** Searches per scan and provider for folders nothing else matched, it bounds the cost of many local addons */
@@ -211,7 +210,9 @@ export class AddonMatcher {
       (folder) =>
         !folder.matchingAddon && (declaringFolders.includes(folder) || shippedFolders.has(folder.name.toLowerCase())),
     );
-    addon.installedFolderList = _.uniq([...ownedFolders.map((folder) => folder.name), ...addon.installedFolderList]);
+    // Only the folders this addon owns: a folder the release ships that is missing or belongs to another addon is not
+    // this addon's, removing the addon must not remove it
+    addon.installedFolderList = ownedFolders.map((folder) => folder.name);
     addon.installedFolders = addon.installedFolderList.join(",");
 
     for (const folder of ownedFolders) {

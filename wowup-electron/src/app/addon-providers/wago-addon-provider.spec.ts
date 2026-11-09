@@ -11,8 +11,29 @@ import { UiMessageService } from "../services/ui-message/ui-message.service";
 import { WarcraftService } from "../services/warcraft/warcraft.service";
 import { WagoAddonProvider } from "./wago-addon-provider";
 
+/** Every client Wago serves, the scan must behave the same for each of them */
+const CLIENT_TYPES = Object.values(WowClientType).filter((value): value is WowClientType => {
+  if (typeof value !== "number") {
+    return false;
+  }
+  try {
+    (WagoAddonProvider.prototype as any).getGameVersion(value);
+    return true;
+  } catch {
+    return false;
+  }
+});
+
 describe("WagoAddonProvider", () => {
-  const installation = { id: "inst", clientType: WowClientType.Forever } as WowInstallation;
+  for (const clientType of CLIENT_TYPES) {
+    describe(`scan (${WowClientType[clientType]})`, () => {
+      const installation = { id: "inst", clientType } as WowInstallation;
+      defineScanSpecs(installation);
+    });
+  }
+});
+
+function defineScanSpecs(installation: WowInstallation): void {
   const tocs = new Map<string, Toc>();
 
   let provider: WagoAddonProvider;
@@ -56,17 +77,17 @@ describe("WagoAddonProvider", () => {
   });
 
   it("matches a folder without a fingerprint match through its X-Wago-ID", async () => {
-    const addonFolder = folder("Questie", { wagoAddonId: "abcdefgh", version: "12.6.4" });
+    const addonFolder = folder("AddonA", { wagoAddonId: "abcdefgh", version: "3.1.0" });
     getRecents.and.resolveTo({
       addons: {
         abcdefgh: {
           id: "abcdefgh",
-          name: "Questie",
+          name: "AddonA",
           thumbnail: "",
-          website_url: "https://addons.wago.io/addons/questie",
-          authors: ["Aero"],
+          website_url: "https://addons.wago.io/addons/addon-a",
+          authors: ["author-a"],
           recent_releases: {
-            stable: { id: "r2", label: "v12.6.5", created_at: "2026-11-02", patch: "", supported_patches: [] },
+            stable: { id: "r2", label: "v3.2.0", created_at: "2026-01-02", patch: "", supported_patches: [] },
           },
         },
       },
@@ -80,12 +101,39 @@ describe("WagoAddonProvider", () => {
       jasmine.objectContaining({
         externalId: "abcdefgh",
         providerName: provider.name,
-        installedVersion: "12.6.4",
+        installedVersion: "3.1.0",
         installedExternalReleaseId: undefined,
-        latestVersion: "v12.6.5",
-        installedFolderList: ["Questie"],
+        latestVersion: "v3.2.0",
+        installedFolderList: ["AddonA"],
       }),
     );
+  });
+
+  it("leaves a shipped folder with other files to its own match", async () => {
+    const addonA = folder("AddonA", {});
+    const addonData = folder("AddonA_Data", { version: "1.0.1" });
+    sendMatchesRequest.and.resolveTo({
+      addons: [
+        {
+          id: "aBcD1234",
+          name: "AddonA",
+          thumbnail: "",
+          website_url: "",
+          matched_release: { id: "r1", label: "v3.1.0", created_at: "2026-01-01", patch: "", supported_patches: [] },
+          // The release bundles another AddonA_Data than the installed one
+          modules: { AddonA: { hash: "hash-AddonA" }, AddonA_Data: { hash: "hash-older" } },
+          recent_releases: {
+            stable: { id: "r1", label: "v3.1.0", created_at: "2026-01-01", patch: "", supported_patches: [] },
+          },
+        },
+      ],
+    });
+
+    await provider.scan(installation, AddonChannelType.Stable, [addonA, addonData]);
+
+    expect(addonA.matchingAddon?.installedFolderList).toEqual(["AddonA"]);
+    expect(addonA.matchingAddon?.installedFolders).toBe("AddonA");
+    expect(addonData.matchingAddon).toBeUndefined();
   });
 
   it("does not look up folders without a valid X-Wago-ID", async () => {
@@ -96,4 +144,4 @@ describe("WagoAddonProvider", () => {
     expect(getRecents).not.toHaveBeenCalled();
     expect(addonFolder.matchingAddon).toBeUndefined();
   });
-});
+}

@@ -296,6 +296,7 @@ export class WagoAddonProvider extends AddonProvider {
     console.debug(`[wago] matchResult: ${matchResult.addons?.length ?? 0} matched`);
 
     const scanResultMap: { [folder: string]: WagoScanAddon } = {};
+    const localFingerprints = new Map(scanResults.map((sr) => [sr.folderName, sr.fingerprint]));
 
     for (const scanResult of scanResults) {
       try {
@@ -331,7 +332,7 @@ export class WagoAddonProvider extends AddonProvider {
 
       try {
         const match = scanResultMap[scanResult.folderName];
-        const newAddon = this.toAddon(installation, addonChannelType, match);
+        const newAddon = this.toAddon(installation, addonChannelType, match, undefined, localFingerprints);
 
         addonFolder.matchingAddon = newAddon;
       } catch (e) {
@@ -709,6 +710,7 @@ export class WagoAddonProvider extends AddonProvider {
     addonChannelType: AddonChannelType,
     wagoScanAddon: WagoScanAddon,
     installed?: InstalledOverride,
+    localFingerprints?: Map<string, string>,
   ): Addon {
     // Grab a ref to the recent release matching the id of the matched release, the objects do not appear to match.
     // const recentRelease = Object.values(wagoScanAddon.recent_releases).find(
@@ -732,6 +734,12 @@ export class WagoAddonProvider extends AddonProvider {
 
     for (const [key, val] of Object.entries(wagoScanAddon.modules ?? {})) {
       if (typeof val.hash !== "string") {
+        continue;
+      }
+
+      // Only the folders whose files are this release's. A folder the release ships but that holds something
+      // else, e.g. a newer QuestieDB installed on its own, is not this addon's and is matched separately.
+      if (localFingerprints && localFingerprints.get(key) !== val.hash) {
         continue;
       }
 
