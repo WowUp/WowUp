@@ -1312,7 +1312,7 @@ describe("AddonService", () => {
     it("does not scan when every addon is identified", async () => {
       installed = [createAddon()];
 
-      expect(await service.rematchUnknownAddons(installation)).toBeFalse();
+      expect(await service.rematchUnknownAddons(installation)).toBe(0);
       expect(scanSpy).not.toHaveBeenCalled();
     });
 
@@ -1336,16 +1336,6 @@ describe("AddonService", () => {
       expect(quiet).toBeTrue();
     });
 
-    it("retries once per app start, not with every sync", async () => {
-      installed = [unknown("u1", "AddonA")];
-
-      await service.syncAllClients();
-      await service.syncAllClients();
-      await service.syncClient(installation);
-
-      expect(scanSpy).toHaveBeenCalledTimes(1);
-    });
-
     it("replaces the unknown addons it identifies and keeps everything else", async () => {
       const known = createAddon();
       const stillUnknown = unknown("u3", "LocalAddon");
@@ -1358,7 +1348,7 @@ describe("AddonService", () => {
       });
       scanSpy.and.resolveTo([addonA, unknown("u3-new", "LocalAddon")]);
 
-      expect(await service.rematchUnknownAddons(installation)).toBeTrue();
+      expect(await service.rematchUnknownAddons(installation)).toBe(1);
 
       expect(installed.map((a) => a.id).sort()).toEqual(["addon-1", "addon-a", "u3"]);
     });
@@ -1376,25 +1366,17 @@ describe("AddonService", () => {
       installed = [unknown("u1", "LocalAddon")];
       scanSpy.and.resolveTo([unknown("u1-new", "LocalAddon")]);
 
-      expect(await service.rematchUnknownAddons(installation)).toBeFalse();
+      expect(await service.rematchUnknownAddons(installation)).toBe(0);
       expect(addonStorage.replaceAllForInstallation).not.toHaveBeenCalled();
     });
 
-    it("runs before the update check of a sync", async () => {
+    it("is not run by a sync, only on request", async () => {
       installed = [unknown("u1", "AddonA")];
-      const order: string[] = [];
-      scanSpy.and.callFake(() => {
-        order.push("rematch");
-        return Promise.resolve([]);
-      });
-      addonProviderFactory.getBatchAddonProviders.and.callFake(() => {
-        order.push("sync");
-        return [];
-      });
 
       await service.syncAllClients();
+      await service.syncClient(installation);
 
-      expect(order).toEqual(["rematch", "sync"]);
+      expect(scanSpy).not.toHaveBeenCalled();
     });
   });
 

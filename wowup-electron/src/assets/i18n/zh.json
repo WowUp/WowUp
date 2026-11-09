@@ -490,6 +490,9 @@
         "PAYPAL": "通过 PayPal 支持作者"
       },
       "IMPORT_EXPORT_ADDONS_BUTTON": "导入/导出插件",
+      "MATCH_UNKNOWN_BUTTON": "匹配未知插件",
+      "MATCH_UNKNOWN_NONE": "没有可匹配的未知插件。只有 TOC 中注明提供商 ID 或仓库的插件才能这样匹配，其他插件可通过其右键菜单关联。",
+      "MATCH_UNKNOWN_SUCCESS": "已匹配的未知插件：{count} 个",
       "MULTIPLE_PROVIDERS_TOOLTIP": "此插件有多个安装源",
       "PAGE_CONTEXT_FOOTER": {
         "ADDONS_INSTALLED": "共 {count} 个插件",

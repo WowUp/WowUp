@@ -490,6 +490,9 @@
         "PAYPAL": "Støtt denne forfatteren på PayPal"
       },
       "IMPORT_EXPORT_ADDONS_BUTTON": "Importer/eksporter utvidelser",
+      "MATCH_UNKNOWN_BUTTON": "Koble ukjente tillegg",
+      "MATCH_UNKNOWN_NONE": "Ingen ukjente tillegg kunne kobles. Slik kan bare tillegg der TOC-filen oppgir en leverandør-ID eller et repository kobles, andre kan kobles fra hurtigmenyen sin.",
+      "MATCH_UNKNOWN_SUCCESS": "Ukjente tillegg koblet: {count}",
       "MULTIPLE_PROVIDERS_TOOLTIP": "Denne utvidelsen har flere leverandører",
       "PAGE_CONTEXT_FOOTER": {
         "ADDONS_INSTALLED": "{count} {count, plural, =1{utvidelse} other{utvidelser}}",
