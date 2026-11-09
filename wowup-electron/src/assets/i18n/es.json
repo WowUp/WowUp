@@ -287,6 +287,18 @@
       "VIEW_IN_BROWSER_BUTTON": "Ver en el navegador",
       "VIEW_ON_PROVIDER_PREFIX": "Ver en"
     },
+    "ADDON_LINK": {
+      "CLOSE_BUTTON": "Cerrar",
+      "DESCRIPTION": "WowUp no pudo identificar este addon. Búscalo o pega la URL de su página y elige el addon correspondiente. Los archivos instalados se conservan, WowUp solo usa el proveedor para buscar actualizaciones.",
+      "LINK_BUTTON": "Vincular",
+      "LINK_FAILED": "No se pudo vincular el addon, el proveedor no tiene ninguna versión para este cliente.",
+      "NO_RESULTS": "No se encontró ningún addon coincidente.",
+      "SEARCH_BUTTON": "Buscar",
+      "SEARCH_FAILED": "La búsqueda falló, inténtalo de nuevo.",
+      "SEARCH_LABEL": "Nombre del addon o URL",
+      "SEARCH_PLACEHOLDER": "Ej. Questie o https://www.curseforge.com/wow/addons/questie",
+      "TITLE": "Vincular {addonName} a un proveedor"
+    },
     "ALERT": {
       "ERROR_TITLE": "Error",
       "POSITIVE_BUTTON": "Aceptar"
@@ -446,11 +458,13 @@
         "BETA_ADDON_CHANNEL": "Beta",
         "CHANNEL_SUBMENU_TITLE": "Canal",
         "IGNORE_ADDON_BUTTON": "Ignorar",
+        "LINK_ADDON_BUTTON": "Vincular a un proveedor…",
         "PROVIDER_SUBMENU_TITLE": "Proveedor",
         "REINSTALL_ADDON_BUTTON": "Reinstalar",
         "REMOVE_ADDON_BUTTON": "Eliminar",
         "SHOW_FOLDER": "Mostrar Carpeta",
-        "STABLE_ADDON_CHANNEL": "Estable"
+        "STABLE_ADDON_CHANNEL": "Estable",
+        "UNLINK_ADDON_BUTTON": "Quitar vínculo con el proveedor"
       },
       "ADDON_IS_CODE_REPOSITORY": "El addon parece ser un repositorio de código",
       "ADDON_REMOVED_SNACKBAR": "Eliminación satisfactoria: {addonName} ",

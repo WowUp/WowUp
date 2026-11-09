@@ -1,0 +1,64 @@
+.addon-link-content {
+  min-width: 480px;
+  max-width: 640px;
+}
+
+.description {
+  margin-top: 0;
+}
+
+.search-input {
+  width: 100%;
+}
+
+.busy-container {
+  display: flex;
+  justify-content: center;
+  padding: 0.5em 0;
+}
+
+.error-message {
+  color: var(--warn-color, #e57373);
+}
+
+.candidate-list {
+  max-height: 50vh;
+  overflow-y: auto;
+}
+
+.candidate {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  padding: 0.5em 0;
+  border-bottom: 1px solid var(--background-secondary-3);
+
+  .candidate-thumb {
+    flex-shrink: 0;
+    width: 40px;
+    height: 40px;
+    margin-right: 1em;
+    background-color: var(--background-secondary-2);
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 1.4em;
+  }
+
+  .candidate-info {
+    flex-grow: 1;
+    min-width: 0;
+
+    .candidate-name {
+      font-weight: 500;
+    }
+  }
+
+  .link-button {
+    flex-shrink: 0;
+    margin-left: 1em;
+  }
+}

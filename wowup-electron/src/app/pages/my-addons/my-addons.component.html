@@ -188,6 +188,13 @@
           {{ "DIALOGS.ADDON_DETAILS.VIEW_ON_PROVIDER_PREFIX" | translate }} {{ listItem.addon.providerName }}
         </span>
       </a>
+      <!-- LINK TO PROVIDER -->
+      <button *ngIf="canLinkAddon(listItem)" mat-menu-item (click)="onLinkAddon(listItem)">
+        {{ "PAGES.MY_ADDONS.ADDON_CONTEXT_MENU.LINK_ADDON_BUTTON" | translate }}
+      </button>
+      <button *ngIf="listItem.addon.isManuallyLinked === true" mat-menu-item (click)="onUnlinkAddon(listItem)">
+        {{ "PAGES.MY_ADDONS.ADDON_CONTEXT_MENU.UNLINK_ADDON_BUTTON" | translate }}
+      </button>
       <!-- REINSTALL -->
       <button *ngIf="canReInstall(listItem)" mat-menu-item (click)="onReInstallAddon(listItem)">
         {{ "PAGES.MY_ADDONS.ADDON_CONTEXT_MENU.REINSTALL_ADDON_BUTTON" | translate }}

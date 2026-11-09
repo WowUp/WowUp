@@ -11,7 +11,13 @@ import {
   PreparedAddonScan,
 } from "../../../src/common/models/addon-scan";
 import { AddonRepository } from "./addon-repository";
-import { assembleScannedAddons, mergeAddonSettings, removeNonRescanFolders, ScanAssemblyLog } from "./scan-assembly";
+import {
+  assembleScannedAddons,
+  keepLinkedAddons,
+  mergeAddonSettings,
+  removeNonRescanFolders,
+  ScanAssemblyLog,
+} from "./scan-assembly";
 import { applyAddonSync } from "./sync-results";
 
 export interface AddonSyncDeps {
@@ -43,7 +49,9 @@ export class AddonSyncService {
   public async prepareScan(request: PrepareAddonScanRequest): Promise<PreparedAddonScan> {
     const installation = this.getInstallation(request.installationId);
     const addonFolderPath = this.deps.getAddonFolderPath(installation);
-    const addonFolders = await this.deps.listAddons(addonFolderPath, this.deps.getScanSymlinks());
+    const listedFolders = await this.deps.listAddons(addonFolderPath, this.deps.getScanSymlinks());
+    const folderNames = request.folderNames ? new Set(request.folderNames) : undefined;
+    const addonFolders = folderNames ? listedFolders.filter((af) => folderNames.has(af.name)) : listedFolders;
     if (addonFolders.length === 0) {
       return { addonFolders: [] };
     }
@@ -51,12 +59,10 @@ export class AddonSyncService {
     await this.markGitFolders(addonFolders);
 
     if (Array.isArray(request.nonRescanProviders)) {
-      removeNonRescanFolders(
-        addonFolders,
-        this.deps.repository.getAllForInstallation(installation.id),
-        new Set(request.nonRescanProviders),
-        this.deps.log,
-      );
+      const savedAddons = this.deps.repository.getAllForInstallation(installation.id);
+      const nonRescanProviders = new Set(request.nonRescanProviders);
+      removeNonRescanFolders(addonFolders, savedAddons, nonRescanProviders, this.deps.log);
+      keepLinkedAddons(addonFolders, savedAddons, nonRescanProviders);
     }
 
     await this.setFingerprints(addonFolders);
