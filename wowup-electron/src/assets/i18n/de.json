@@ -287,6 +287,18 @@
       "VIEW_IN_BROWSER_BUTTON": "Im Browser anzeigen",
       "VIEW_ON_PROVIDER_PREFIX": "Anzeigen auf"
     },
+    "ADDON_LINK": {
+      "CLOSE_BUTTON": "Schließen",
+      "DESCRIPTION": "WowUp konnte dieses Addon nicht erkennen. Suche danach oder füge die URL der Addon-Seite ein und wähle das passende Addon aus. Die installierten Dateien bleiben erhalten, WowUp nutzt den Anbieter nur für die Suche nach Updates.",
+      "LINK_BUTTON": "Zuordnen",
+      "LINK_FAILED": "Das Addon konnte nicht zugeordnet werden, der Anbieter hat keine Version davon für diesen Client.",
+      "NO_RESULTS": "Es wurde kein passendes Addon gefunden.",
+      "SEARCH_BUTTON": "Suchen",
+      "SEARCH_FAILED": "Die Suche ist fehlgeschlagen, bitte versuche es erneut.",
+      "SEARCH_LABEL": "Addon-Name oder URL",
+      "SEARCH_PLACEHOLDER": "z. B. Questie oder https://www.curseforge.com/wow/addons/questie",
+      "TITLE": "{addonName} einem Anbieter zuordnen"
+    },
     "ALERT": {
       "ERROR_TITLE": "Fehler",
       "POSITIVE_BUTTON": "Okay"
@@ -446,11 +458,13 @@
         "BETA_ADDON_CHANNEL": "Beta",
         "CHANNEL_SUBMENU_TITLE": "Kanal",
         "IGNORE_ADDON_BUTTON": "Ignorieren",
+        "LINK_ADDON_BUTTON": "Anbieter zuordnen…",
         "PROVIDER_SUBMENU_TITLE": "Anbieter",
         "REINSTALL_ADDON_BUTTON": "Neu installieren",
         "REMOVE_ADDON_BUTTON": "Entfernen",
         "SHOW_FOLDER": "Dateiordner anzeigen",
-        "STABLE_ADDON_CHANNEL": "Stabil"
+        "STABLE_ADDON_CHANNEL": "Stabil",
+        "UNLINK_ADDON_BUTTON": "Anbieter-Zuordnung aufheben"
       },
       "ADDON_IS_CODE_REPOSITORY": "Addon scheint ein Code-Repository zu sein",
       "ADDON_REMOVED_SNACKBAR": "{addonName} erfolgreich entfernt",

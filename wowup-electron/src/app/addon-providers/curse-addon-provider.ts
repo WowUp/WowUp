@@ -40,6 +40,7 @@ import { CircuitBreakerWrapper, NetworkService } from "../services/network/netwo
 import { TocService } from "../services/toc/toc.service";
 import { strictFilter } from "../utils/array.utils";
 import { TocNotFoundError } from "../errors";
+import { AddonMatcher, InstalledOverride, MatchProject, MatchSource, preferCompatible } from "./addon-matcher";
 
 interface ProtocolData {
   addonId: number;
@@ -363,6 +364,10 @@ export class CurseAddonProvider extends AddonProvider {
     return protocol.toLowerCase().startsWith("curseforge://");
   }
 
+  /**
+   * Matches addon folders to CurseForge projects: first by the folder fingerprint, the exact files of a CurseForge
+   * release, then the folders left through the shared TOC ID and search steps (AddonMatcher)
+   */
   public override async scan(
     installation: WowInstallation,
     addonChannelType: AddonChannelType,
@@ -372,27 +377,52 @@ export class CurseAddonProvider extends AddonProvider {
       return;
     }
 
+    await this.matchByFingerprint(installation, addonFolders);
+
+    const matcher = new AddonMatcher((addonFolder) =>
+      this._tocService.getTocForGameType2(addonFolder.name, addonFolder.tocs, installation.clientType),
+    );
+    await matcher.matchUnmatched(addonFolders, this.getMatchSource(installation));
+  }
+
+  private async matchByFingerprint(installation: WowInstallation, addonFolders: AddonFolder[]): Promise<void> {
     const scanResults = addonFolders
       .map((af) => af.cfScanResults)
       .filter((sr): sr is AddonScanResult => sr !== undefined);
 
     const fingerprints = scanResults.map((sr) => sr.fingerprintNum);
+    if (!fingerprints.length) {
+      return;
+    }
 
     const result = await this._cf2Client.getFingerprintMatches({ fingerprints });
     const fingerprintData = result.data?.data;
+    if (result.statusCode !== 200 || fingerprintData === undefined) {
+      // Failing quietly left every addon unmatched without a hint why, e.g. on an invalid API key
+      throw new Error(`CurseForge fingerprint request failed: ${result.statusCode} ${result.message ?? ""}`.trim());
+    }
+
     try {
       const matchPairs: ScanMatchPair[] = [];
       for (const af of addonFolders) {
-        let exactMatch = fingerprintData?.exactMatches.find(
-          (em) =>
-            this.isCfFileCompatible(installation.clientType, em.file) &&
-            em.file.modules.some((m) => m.fingerprint == af.cfScanResults?.fingerprintNum),
+        const fingerprint = af.cfScanResults?.fingerprintNum;
+        if (fingerprint === undefined) {
+          continue;
+        }
+
+        // A release for this client is preferred, but the files on disk are what they are: a release that is not
+        // tagged for this client (common for newer clients like WoW Forever) still identifies the project
+        const candidates = (fingerprintData.exactMatches ?? []).filter((em) =>
+          em.file?.modules?.some((m) => m.fingerprint == fingerprint),
+        );
+        let exactMatch = preferCompatible(candidates, (em) =>
+          this.isCfFileCompatible(installation.clientType, em.file),
         );
 
         // If the addon does not have an exact match, check the partial matches.
-        if (!exactMatch && Array.isArray(fingerprintData?.partialMatches) && fingerprintData !== undefined) {
+        if (!exactMatch && Array.isArray(fingerprintData.partialMatches)) {
           exactMatch = fingerprintData.partialMatches.find((partialMatch) =>
-            partialMatch.file?.modules?.some((module) => module.fingerprint === af.cfScanResults?.fingerprintNum),
+            partialMatch.file?.modules?.some((module) => module.fingerprint === fingerprint),
           );
         }
 
@@ -402,6 +432,10 @@ export class CurseAddonProvider extends AddonProvider {
             match: exactMatch,
           });
         }
+      }
+
+      if (!matchPairs.length) {
+        return;
       }
 
       const addonIds = matchPairs.map((mp) => mp.match.id);
@@ -438,6 +472,59 @@ export class CurseAddonProvider extends AddonProvider {
       console.log(result);
       throw e;
     }
+  }
+
+  /** CurseForge for the shared match steps */
+  private getMatchSource(installation: WowInstallation): MatchSource<cfv2.CF2Addon, cfv2.CF2File> {
+    return {
+      logName: "curseforge",
+      getTocProjectId: (toc) => {
+        const projectId = parseInt(toc.curseProjectId ?? "", 10);
+        return isNaN(projectId) || projectId <= 0 ? undefined : projectId.toString();
+      },
+      getProjectsById: async (ids) => {
+        const cfAddons = await this.getAllIds(ids.map((id) => parseInt(id, 10)));
+        return cfAddons.map((cfAddon) => this.toMatchProject(installation, cfAddon));
+      },
+      searchProjects: async (query) => {
+        // slug is a valid search parameter of the API, the client's type just doesn't list it
+        const request = {
+          gameId: 1,
+          pageSize: 20,
+          ...(query.slug ? { slug: query.slug } : { searchFilter: query.title }),
+        } as cfv2.CF2SearchModsParams;
+        const response = await this._circuitBreaker.fire(() => this._cf2Client.searchMods(request));
+        return (response.data?.data ?? []).map((cfAddon) => this.toMatchProject(installation, cfAddon));
+      },
+      getSlugFromWebsite: getCurseForgeSlug,
+      createAddon: (mainFolder, project, reference, installed) =>
+        this.createAddon(installation, mainFolder, reference.source, project.source, installed),
+    };
+  }
+
+  private toMatchProject(
+    installation: WowInstallation,
+    cfAddon: cfv2.CF2Addon,
+  ): MatchProject<cfv2.CF2Addon, cfv2.CF2File> {
+    const files = _.sortBy(
+      (cfAddon.latestFiles ?? []).filter((file) => file.exposeAsAlternative !== true),
+      (file) => file.id,
+    ).reverse();
+
+    return {
+      id: cfAddon.id.toString(),
+      slug: cfAddon.slug,
+      name: cfAddon.name ?? "",
+      authors: (cfAddon.authors ?? []).map((author) => author.name ?? ""),
+      releases: files.map((file) => ({
+        id: file.id.toString(),
+        names: [file.displayName, file.fileName],
+        folders: (file.modules ?? []).map((module) => module.name),
+        compatible: this.isCfFileCompatible(installation.clientType, file),
+        source: file,
+      })),
+      source: cfAddon,
+    };
   }
 
   private isChildAddon(cfAddon: cfv2.CF2File, addonName: string) {
@@ -536,11 +623,16 @@ export class CurseAddonProvider extends AddonProvider {
     return result.screenshots.map((f) => f.url).filter(Boolean);
   }
 
+  /**
+   * installed overrides the installed release when it isn't cfFile, e.g. for an addon matched through its TOC rather
+   * than the files of a release
+   */
   private createAddon(
     installation: WowInstallation,
     addonFolder: AddonFolder,
     cfFile: cfv2.CF2File,
     cfAddon: cfv2.CF2Addon,
+    installed?: InstalledOverride,
   ): Addon {
     const authors = cfAddon.authors.map((author) => author.name).join(", ");
     const folders = cfFile.modules.map((module) => module.name);
@@ -573,8 +665,8 @@ export class CurseAddonProvider extends AddonProvider {
       installedAt: new Date(addonFolder?.fileStats?.birthtimeMs ?? 0),
       installedFolders: folderList,
       installedFolderList: folders,
-      installedVersion: cfFile.displayName,
-      installedExternalReleaseId: cfFile.id.toString(),
+      installedVersion: installed ? installed.version : cfFile.displayName,
+      installedExternalReleaseId: installed ? installed.releaseId : cfFile.id.toString(),
       isIgnored: false,
       latestVersion: latestVersion?.displayName ?? cfFile.displayName ?? "",
       providerName: this.name,
@@ -953,4 +1045,10 @@ export class CurseAddonProvider extends AddonProvider {
 
     return result?.data?.data ?? [];
   }
+}
+
+/** The project slug of a CurseForge addon page link, e.g. https://www.curseforge.com/wow/addons/auctionator */
+export function getCurseForgeSlug(website: string | undefined): string | undefined {
+  const match = /curseforge\.com\/wow\/addons\/([a-z0-9-_]+)/i.exec(website ?? "");
+  return match ? match[1].toLowerCase() : undefined;
 }

@@ -5,6 +5,7 @@ import {
   Addon,
   AddonChannelType,
   AddonDependencyType,
+  AddonFolder,
   AddonProvider,
   AddonSearchResult,
   AddonSearchResultFile,
@@ -126,6 +127,7 @@ describe("AddonService", () => {
       "getAvailableForUpdate",
       "getAllForInstallationIdAsync",
       "getAutoUpdateEnabled",
+      "replaceAllForInstallation",
     ]);
     addonStorage.getAutoUpdateEnabled.and.resolveTo([]);
     installed = [];
@@ -136,6 +138,10 @@ describe("AddonService", () => {
     addonStorage.getAllForInstallationIdAsync.and.callFake((id) =>
       Promise.resolve(installed.filter((a) => a.installationId === id)),
     );
+    addonStorage.replaceAllForInstallation.and.callFake((id, addons) => {
+      installed = [...installed.filter((a) => a.installationId !== id), ...addons];
+      return Promise.resolve();
+    });
     addonStorage.removeAsync.and.resolveTo();
     addonStorage.getByExternalIdAsync.and.resolveTo(undefined);
     addonStorage.getAvailableForUpdate.and.resolveTo([]);
@@ -1219,6 +1225,168 @@ describe("AddonService", () => {
       await service.removeAddon(createAddon());
 
       expect(removed).toEqual(["addon-1"]);
+    });
+  });
+
+  describe("rematchUnknownAddons", () => {
+    let scanSpy: jasmine.Spy;
+
+    function unknown(id: string, folder: string): Addon {
+      return createAddon({
+        id,
+        name: folder,
+        providerName: "Unknown",
+        externalId: "",
+        isIgnored: true,
+        installedFolderList: [folder],
+      });
+    }
+
+    beforeEach(() => {
+      scanSpy = spyOn<any>(service, "scanAddons").and.resolveTo([]);
+    });
+
+    it("does not scan when every addon is identified", async () => {
+      installed = [createAddon()];
+
+      expect(await service.rematchUnknownAddons(installation)).toBeFalse();
+      expect(scanSpy).not.toHaveBeenCalled();
+    });
+
+    it("scans only the folders of the unknown addons, without scan progress", async () => {
+      installed = [createAddon(), unknown("u1", "Questie"), unknown("u2", "QuestieDB")];
+
+      await service.rematchUnknownAddons(installation);
+
+      const [, , folders, quiet] = scanSpy.calls.mostRecent().args;
+      expect([...(folders as Set<string>)].sort()).toEqual(["Questie", "QuestieDB"]);
+      expect(quiet).toBeTrue();
+    });
+
+    it("replaces the unknown addons it identifies and keeps everything else", async () => {
+      const known = createAddon();
+      const stillUnknown = unknown("u3", "LocalAddon");
+      installed = [known, unknown("u1", "Questie"), unknown("u2", "QuestieDB"), stillUnknown];
+      const questie = createAddon({
+        id: "questie",
+        name: "Questie",
+        externalId: "334372",
+        installedFolderList: ["Questie", "QuestieDB"],
+      });
+      scanSpy.and.resolveTo([questie, unknown("u3-new", "LocalAddon")]);
+
+      expect(await service.rematchUnknownAddons(installation)).toBeTrue();
+
+      expect(installed.map((a) => a.id).sort()).toEqual(["addon-1", "questie", "u3"]);
+    });
+
+    it("does not add an identified addon that is installed already", async () => {
+      installed = [createAddon({ installedFolderList: ["Baganator"] }), unknown("u1", "Baganator_Sub")];
+      scanSpy.and.resolveTo([createAddon({ id: "dupe", installedFolderList: ["Baganator_Sub"] })]);
+
+      await service.rematchUnknownAddons(installation);
+
+      expect(installed.map((a) => a.id)).toEqual(["addon-1"]);
+    });
+
+    it("leaves the addons alone when nothing new is identified", async () => {
+      installed = [unknown("u1", "LocalAddon")];
+      scanSpy.and.resolveTo([unknown("u1-new", "LocalAddon")]);
+
+      expect(await service.rematchUnknownAddons(installation)).toBeFalse();
+      expect(addonStorage.replaceAllForInstallation).not.toHaveBeenCalled();
+    });
+
+    it("runs before the update check of a sync", async () => {
+      installed = [unknown("u1", "Questie")];
+      const order: string[] = [];
+      scanSpy.and.callFake(() => {
+        order.push("rematch");
+        return Promise.resolve([]);
+      });
+      addonProviderFactory.getBatchAddonProviders.and.callFake(() => {
+        order.push("sync");
+        return [];
+      });
+
+      await service.syncAllClients();
+
+      expect(order).toEqual(["rematch", "sync"]);
+    });
+  });
+
+  describe("linkAddon", () => {
+    function createUnknownAddon(overrides: Partial<Addon> = {}): Addon {
+      return createAddon({
+        id: "unknown-1",
+        name: "ForeverThreat",
+        providerName: "Unknown",
+        externalId: "",
+        installedVersion: "1.7.2",
+        installedFolderList: ["ForeverThreat"],
+        installedFolders: "ForeverThreat",
+        isIgnored: true,
+        ...overrides,
+      });
+    }
+
+    it("links the installed addon to the provider's addon without reinstalling it", async () => {
+      const unknown = createUnknownAddon();
+
+      const linked = await service.linkAddon(unknown, createSearchResult({ name: "Forever Threat" }), installation);
+
+      expect(linked.id).toEqual("unknown-1");
+      expect(linked.providerName).toEqual("Curse");
+      expect(linked.externalId).toEqual("1001");
+      expect(linked.name).toEqual("Forever Threat");
+      expect(linked.isIgnored).toBeFalse();
+      expect(linked.isManuallyLinked).toBeTrue();
+      expect(linked.installedVersion).toEqual("1.7.2");
+      expect(linked.installedFolderList).toEqual(["ForeverThreat"]);
+      expect(linked.latestVersion).toEqual("1.2.0");
+      expect(installed).toEqual([linked]);
+      expect(enqueued.length).toEqual(0);
+    });
+
+    it("leaves the installed release unknown unless the latest release is the installed version", async () => {
+      const outdated = await service.linkAddon(createUnknownAddon(), createSearchResult(), installation);
+      const current = await service.linkAddon(
+        createUnknownAddon({ installedVersion: "v1.2.0" }),
+        createSearchResult(),
+        installation,
+      );
+
+      expect(outdated.installedExternalReleaseId).toBeUndefined();
+      expect(current.installedExternalReleaseId).toEqual("5001");
+    });
+
+    it("fails when the provider has no release for the client", async () => {
+      await expectAsync(
+        service.linkAddon(createUnknownAddon(), createSearchResult({ files: [] }), installation),
+      ).toBeRejectedWithError(/No release/);
+      expect(installed.length).toEqual(0);
+    });
+
+    it("keeps a linked addon and its folders out of a rescan", () => {
+      const linked = createAddon({
+        id: "linked",
+        providerName: "SomeProvider",
+        installedFolderList: ["ForeverThreat"],
+        isManuallyLinked: true,
+      });
+      const stale = createAddon({
+        id: "stale",
+        providerName: "SomeProvider",
+        installedFolderList: ["Gone"],
+        isManuallyLinked: true,
+      });
+      const scanned = createAddon({ id: "scanned", providerName: "SomeProvider", installedFolderList: ["Questie"] });
+      const folders = [{ name: "ForeverThreat" }, { name: "Questie" }] as AddonFolder[];
+
+      const kept: Addon[] = (service as any).removeNonRescanFolders(folders, [linked, stale, scanned]);
+
+      expect(kept.map((a) => a.id)).toEqual(["linked"]);
+      expect(folders.map((f) => f.name)).toEqual(["Questie"]);
     });
   });
 

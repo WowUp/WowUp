@@ -287,6 +287,18 @@
       "VIEW_IN_BROWSER_BUTTON": "View in browser",
       "VIEW_ON_PROVIDER_PREFIX": "View on"
     },
+    "ADDON_LINK": {
+      "CLOSE_BUTTON": "Close",
+      "DESCRIPTION": "WowUp could not identify this addon. Search for it, or paste the URL of its addon page, and pick the matching addon. The installed files are kept, WowUp only uses the provider to check for updates.",
+      "LINK_BUTTON": "Link",
+      "LINK_FAILED": "The addon could not be linked, the provider has no release of it for this client.",
+      "NO_RESULTS": "No matching addon was found.",
+      "SEARCH_BUTTON": "Search",
+      "SEARCH_FAILED": "The search failed, please try again.",
+      "SEARCH_LABEL": "Addon name or URL",
+      "SEARCH_PLACEHOLDER": "Ex. Questie or https://www.curseforge.com/wow/addons/questie",
+      "TITLE": "Link {addonName} to a provider"
+    },
     "ALERT": {
       "ERROR_TITLE": "Error",
       "POSITIVE_BUTTON": "Okay"
@@ -446,11 +458,13 @@
         "BETA_ADDON_CHANNEL": "Beta",
         "CHANNEL_SUBMENU_TITLE": "Channel",
         "IGNORE_ADDON_BUTTON": "Ignore",
+        "LINK_ADDON_BUTTON": "Link to provider…",
         "PROVIDER_SUBMENU_TITLE": "Providers",
         "REINSTALL_ADDON_BUTTON": "Re-Install",
         "REMOVE_ADDON_BUTTON": "Remove",
         "SHOW_FOLDER": "Show Folder",
-        "STABLE_ADDON_CHANNEL": "Stable"
+        "STABLE_ADDON_CHANNEL": "Stable",
+        "UNLINK_ADDON_BUTTON": "Remove provider link"
       },
       "ADDON_IS_CODE_REPOSITORY": "Addon appears to be a code repository",
       "ADDON_REMOVED_SNACKBAR": "Successfully removed: {addonName} ",

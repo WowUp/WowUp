@@ -102,6 +102,8 @@ export interface Addon {
   missingDependencies?: string[];
   ignoreReason?: AddonIgnoreReason;
   installationId?: string;
+  /** Linked to its provider by the user rather than found by a scan, a rescan keeps the link */
+  isManuallyLinked?: boolean;
 }
 
 export interface ProtocolSearchResult extends AddonSearchResult {

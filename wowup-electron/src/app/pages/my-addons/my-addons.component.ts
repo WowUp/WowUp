@@ -70,6 +70,10 @@ import { SortOrder } from "../../models/wowup/sort-order";
 import { PushService } from "../../services/push/push.service";
 import { AddonUiService } from "../../services/addons/addon-ui.service";
 import { AddonManageDialogComponent } from "../../components/addons/addon-manage-dialog/addon-manage-dialog.component";
+import {
+  AddonLinkDialogComponent,
+  AddonLinkDialogData,
+} from "../../components/addons/addon-link-dialog/addon-link-dialog.component";
 import { WtfBackupComponent } from "../../components/addons/wtf-backup/wtf-backup.component";
 import { HasEventTargetAddRemove } from "rxjs/internal/observable/fromEvent";
 import { AddonProviderFactory } from "../../services/addons/addon.provider.factory";
@@ -600,6 +604,53 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
 
   public isForceIgnore(addon: Addon) {
     return this._addonProviderService.isForceIgnore(addon.providerName ?? "");
+  }
+
+  /** Unidentified addons, and ones the user linked before, can be linked to a provider's addon by hand */
+  public canLinkAddon(listItem: AddonViewModel): boolean {
+    return !!listItem.addon && (listItem.isUnMatched() || listItem.addon.isManuallyLinked === true);
+  }
+
+  public onLinkAddon(listItem: AddonViewModel): void {
+    const installation = this._sessionService.getSelectedWowInstallation();
+    if (!listItem.addon || !installation) {
+      return;
+    }
+
+    const dialogRef = this._dialog.open<AddonLinkDialogComponent, AddonLinkDialogData, Addon>(
+      AddonLinkDialogComponent,
+      { data: { addon: listItem.addon, installation } },
+    );
+
+    dialogRef
+      .afterClosed()
+      .pipe(
+        first(),
+        filter((linked) => linked !== undefined),
+        switchMap(() => from(this.loadAddons()).pipe(switchMap(() => from(this.onRefresh())))),
+        catchError((e) => {
+          console.error("Failed to link addon", e);
+          return of(undefined);
+        }),
+      )
+      .subscribe();
+  }
+
+  public onUnlinkAddon(listItem: AddonViewModel): void {
+    const installation = this._sessionService.getSelectedWowInstallation();
+    if (!listItem.addon || !installation) {
+      return;
+    }
+
+    from(this._addonService.unlinkAddon(listItem.addon, installation))
+      .pipe(
+        switchMap(() => from(this.loadAddons())),
+        catchError((e) => {
+          console.error("Failed to unlink addon", e);
+          return of(undefined);
+        }),
+      )
+      .subscribe();
   }
 
   public canReInstall(listItem: AddonViewModel): boolean {

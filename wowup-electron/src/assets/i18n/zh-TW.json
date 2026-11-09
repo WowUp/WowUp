@@ -287,6 +287,18 @@
       "VIEW_IN_BROWSER_BUTTON": "在瀏覽器中檢視",
       "VIEW_ON_PROVIDER_PREFIX": "在該網站上檢視："
     },
+    "ADDON_LINK": {
+      "CLOSE_BUTTON": "關閉",
+      "DESCRIPTION": "WowUp 無法識別此插件。請搜尋該插件或貼上其插件頁面的 URL，然後選擇相符的插件。已安裝的檔案會保留，WowUp 只會使用提供者檢查更新。",
+      "LINK_BUTTON": "關聯",
+      "LINK_FAILED": "無法關聯該插件，提供者沒有適用於此用戶端的版本。",
+      "NO_RESULTS": "找不到相符的插件。",
+      "SEARCH_BUTTON": "搜尋",
+      "SEARCH_FAILED": "搜尋失敗，請再試一次。",
+      "SEARCH_LABEL": "插件名稱或 URL",
+      "SEARCH_PLACEHOLDER": "例如 Questie 或 https://www.curseforge.com/wow/addons/questie",
+      "TITLE": "將 {addonName} 關聯到提供者"
+    },
     "ALERT": {
       "ERROR_TITLE": "錯誤",
       "POSITIVE_BUTTON": "確定"
@@ -446,11 +458,13 @@
         "BETA_ADDON_CHANNEL": "Beta",
         "CHANNEL_SUBMENU_TITLE": "更新通道",
         "IGNORE_ADDON_BUTTON": "忽略",
+        "LINK_ADDON_BUTTON": "關聯到提供者…",
         "PROVIDER_SUBMENU_TITLE": "安裝源",
         "REINSTALL_ADDON_BUTTON": "重新安裝",
         "REMOVE_ADDON_BUTTON": "刪除",
         "SHOW_FOLDER": "開啟資料夾",
-        "STABLE_ADDON_CHANNEL": "穩定版"
+        "STABLE_ADDON_CHANNEL": "穩定版",
+        "UNLINK_ADDON_BUTTON": "取消提供者關聯"
       },
       "ADDON_IS_CODE_REPOSITORY": "插件似乎是程式碼倉庫",
       "ADDON_REMOVED_SNACKBAR": "{addonName} 已成功移除",

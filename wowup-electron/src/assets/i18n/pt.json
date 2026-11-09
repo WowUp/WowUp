@@ -287,6 +287,18 @@
       "VIEW_IN_BROWSER_BUTTON": "Visualizar no navegador",
       "VIEW_ON_PROVIDER_PREFIX": "Ver em"
     },
+    "ADDON_LINK": {
+      "CLOSE_BUTTON": "Fechar",
+      "DESCRIPTION": "O WowUp não conseguiu identificar este addon. Pesquise-o ou cole a URL da página dele e escolha o addon correspondente. Os arquivos instalados são mantidos, o WowUp usa o provedor apenas para verificar atualizações.",
+      "LINK_BUTTON": "Associar",
+      "LINK_FAILED": "Não foi possível associar o addon, o provedor não tem nenhuma versão dele para este cliente.",
+      "NO_RESULTS": "Nenhum addon correspondente foi encontrado.",
+      "SEARCH_BUTTON": "Pesquisar",
+      "SEARCH_FAILED": "A pesquisa falhou, tente novamente.",
+      "SEARCH_LABEL": "Nome do addon ou URL",
+      "SEARCH_PLACEHOLDER": "Ex. Questie ou https://www.curseforge.com/wow/addons/questie",
+      "TITLE": "Associar {addonName} a um provedor"
+    },
     "ALERT": {
       "ERROR_TITLE": "Erro",
       "POSITIVE_BUTTON": "OK"
@@ -446,11 +458,13 @@
         "BETA_ADDON_CHANNEL": "Beta",
         "CHANNEL_SUBMENU_TITLE": "Canal",
         "IGNORE_ADDON_BUTTON": "Ignorar",
+        "LINK_ADDON_BUTTON": "Associar a um provedor…",
         "PROVIDER_SUBMENU_TITLE": "Provedores",
         "REINSTALL_ADDON_BUTTON": "Reinstalar",
         "REMOVE_ADDON_BUTTON": "Remover",
         "SHOW_FOLDER": "Mostrar Pasta",
-        "STABLE_ADDON_CHANNEL": "Estável"
+        "STABLE_ADDON_CHANNEL": "Estável",
+        "UNLINK_ADDON_BUTTON": "Remover associação ao provedor"
       },
       "ADDON_IS_CODE_REPOSITORY": "Addon parece ser repositório de código",
       "ADDON_REMOVED_SNACKBAR": "Removido com sucesso: {addonName} ",
