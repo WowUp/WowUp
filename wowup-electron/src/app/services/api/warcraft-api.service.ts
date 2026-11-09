@@ -2,7 +2,7 @@ import { Injectable } from "@angular/core";
 
 import {
   IPC_WARCRAFT_GET_ADDON_FOLDER,
-  IPC_WARCRAFT_GET_BLIZZARD_AGENT_PATH,
+  IPC_WARCRAFT_GET_BLIZZARD_AGENT_PATHS,
   IPC_WARCRAFT_GET_CLIENT_TYPE_FOR_BINARY,
   IPC_WARCRAFT_GET_EXECUTABLE_EXTENSION,
   IPC_WARCRAFT_GET_EXECUTABLE_NAME,
@@ -20,12 +20,12 @@ import { ElectronService } from "../electron/electron.service";
 export class WarcraftApiService {
   public constructor(private readonly _electronService: ElectronService) {}
 
-  public getBlizzardAgentPath(): Promise<string> {
-    return this._electronService.invoke(IPC_WARCRAFT_GET_BLIZZARD_AGENT_PATH);
+  public getBlizzardAgentPaths(rescan = false): Promise<string[]> {
+    return this._electronService.invoke(IPC_WARCRAFT_GET_BLIZZARD_AGENT_PATHS, rescan);
   }
 
-  public getInstalledProducts(agentPath: string): Promise<Map<WowClientType, InstalledProduct>> {
-    return this._electronService.invoke(IPC_WARCRAFT_GET_INSTALLED_PRODUCTS, agentPath);
+  public getInstalledProducts(agentPaths: string[]): Promise<InstalledProduct[]> {
+    return this._electronService.invoke(IPC_WARCRAFT_GET_INSTALLED_PRODUCTS, agentPaths);
   }
 
   public getExecutableName(clientType: WowClientType): Promise<string> {

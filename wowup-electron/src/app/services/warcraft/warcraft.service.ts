@@ -70,16 +70,8 @@ export class WarcraftService {
     return [...this._allClientTypes];
   }
 
-  public getProductLocation(
-    clientType: WowClientType,
-    installedProducts: Map<WowClientType, InstalledProduct>,
-  ): string {
-    const clientLocation = installedProducts.get(clientType);
-    return clientLocation?.location ?? "";
-  }
-
-  public getInstalledProducts(blizzardAgentPath: string): Promise<Map<WowClientType, InstalledProduct>> {
-    return this._warcraftApiService.getInstalledProducts(blizzardAgentPath);
+  public getInstalledProducts(blizzardAgentPaths: string[]): Promise<InstalledProduct[]> {
+    return this._warcraftApiService.getInstalledProducts(blizzardAgentPaths);
   }
 
   public getAddonFolderPath(installation: WowInstallation): string {
@@ -100,8 +92,9 @@ export class WarcraftService {
     return this._warcraftApiService.getAddonFolder(addonFolderPath, dir);
   }
 
-  public getBlizzardAgentPath(): Promise<string> {
-    return this._warcraftApiService.getBlizzardAgentPath();
+  /** rescan searches again for product.db files, e.g. in a newly added wine prefix */
+  public getBlizzardAgentPaths(rescan = false): Promise<string[]> {
+    return this._warcraftApiService.getBlizzardAgentPaths(rescan);
   }
 
   public getClientTypeForBinary(binaryPath: string): Promise<WowClientType> {

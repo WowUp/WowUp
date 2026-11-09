@@ -121,7 +121,7 @@ export const IPC_PUSH_SUBSCRIBE = "push-subscribe";
 export const IPC_PUSH_NOTIFICATION = "push-notification";
 
 // WARCRAFT CONTROLLER
-export const IPC_WARCRAFT_GET_BLIZZARD_AGENT_PATH = "warcraft-get-blizzard-agent-path";
+export const IPC_WARCRAFT_GET_BLIZZARD_AGENT_PATHS = "warcraft-get-blizzard-agent-paths";
 export const IPC_WARCRAFT_GET_INSTALLED_PRODUCTS = "warcraft-get-installed-products";
 export const IPC_WARCRAFT_GET_EXECUTABLE_NAME = "warcraft-get-executable-name";
 export const IPC_WARCRAFT_GET_CLIENT_TYPE_FOR_BINARY = "warcraft-get-client-type-for-binary";

@@ -1,3 +1,4 @@
+import * as fs from "fs";
 import * as fsp from "fs/promises";
 import * as os from "os";
 import * as path from "path";
@@ -30,13 +31,29 @@ const WOW_APP_NAMES = [
   WOW_CLASSIC_BETA_NAME,
 ];
 
-const LUTRIS_CONFIG_PATH = "/.config/lutris/system.yml";
-const LUTRIS_WOW_DIRS = ["battlenet/drive_c", "world-of-warcraft/drive_c", "world-of-warcraft-classic/drive_c"];
+const BLIZZARD_AGENT_PATH = path.join("drive_c", "ProgramData", "Battle.net", "Agent", "product.db");
 
-const WINDOWS_BLIZZARD_AGENT_PATH = "ProgramData/Battle.net/Agent";
-const BLIZZARD_PRODUCT_DB_NAME = "product.db";
+/** Lutris' system config, native and Flatpak; its game_path is where Lutris creates one prefix per game */
+const LUTRIS_CONFIG_PATHS = [".config/lutris/system.yml", ".var/app/net.lutris.Lutris/config/lutris/system.yml"];
+
+/** Folders that hold one wine prefix per entry */
+const PREFIX_PARENT_DIRS = [
+  "Games",
+  "Games/Heroic/Prefixes",
+  ".local/share/bottles/bottles",
+  ".var/app/com.usebottles.bottles/data/bottles/bottles",
+];
+
+/** Steam roots, native and Flatpak; ~/.steam/steam is usually a symlink to the first one */
+const STEAM_ROOTS = [".local/share/Steam", ".steam/steam", ".var/app/com.valvesoftware.Steam/.local/share/Steam"];
+
+export interface WarcraftPlatformLinuxDeps {
+  homeDir: string;
+}
 
 export class WarcraftPlatformLinux implements WarcraftPlatform {
+  public constructor(private readonly deps: WarcraftPlatformLinuxDeps = { homeDir: os.homedir() }) {}
+
   public getExecutableExtension(): string {
     return "exe";
   }
@@ -45,23 +62,30 @@ export class WarcraftPlatformLinux implements WarcraftPlatform {
     return WOW_APP_NAMES.includes(appName);
   }
 
-  public async getBlizzardAgentPath(): Promise<string> {
-    try {
-      const lutrisLibraryPath = await this.getLutrisWowPath();
-      if (lutrisLibraryPath.length === 0) {
-        throw new Error("Lutris library not found");
+  /**
+   * Battle.net runs in a wine prefix on Linux, so its product.db lives in that prefix's drive_c.
+   * Searches the prefixes of Lutris, plain wine, ~/Games (Lutris' default, Heroic), Bottles and Steam
+   * (Proton) and returns every product.db found, since WoW clients can be spread over several prefixes
+   * (e.g. Retail in Lutris, Forever in Steam). The paths have every symlink resolved.
+   */
+  public async getBlizzardAgentPaths(): Promise<string[]> {
+    // A Set, since prefixes can share their drive_c (or parts of it) through symlinks
+    const agentPaths = new Set<string>();
+    for (const prefix of await this.getWinePrefixes()) {
+      const agentPath = await realpath(path.join(prefix, BLIZZARD_AGENT_PATH));
+      if (agentPath !== undefined) {
+        agentPaths.add(agentPath);
       }
-
-      const agentPath = path.join(lutrisLibraryPath, WINDOWS_BLIZZARD_AGENT_PATH, BLIZZARD_PRODUCT_DB_NAME);
-      if (await pathExists(agentPath)) {
-        console.log(`Found WoW products at ${agentPath}`);
-        return agentPath;
-      }
-    } catch (e) {
-      console.error("Failed to search for blizzard products", e);
     }
 
-    return "";
+    if (agentPaths.size === 0) {
+      console.log("No blizzard products found");
+    }
+    for (const agentPath of agentPaths) {
+      console.log(`Found blizzard products at ${agentPath}`);
+    }
+
+    return [...agentPaths];
   }
 
   public getExecutableName(clientType: WowClientType): string {
@@ -131,51 +155,132 @@ export class WarcraftPlatformLinux implements WarcraftPlatform {
       }
 
       const agentPathPrefix = match[0].trim();
-      resolvedProducts.push({
-        ...product,
-        location: path.join(agentPathPrefix, product.location.substring(3)),
-      });
+      // Battle.net stores Windows paths ("C:/Program Files (x86)/World of Warcraft"), sometimes with backslashes
+      const location = path.join(agentPathPrefix, product.location.substring(3).replace(/\\/g, "/"));
+      resolvedProducts.push({ ...product, location: realpathSync(location) ?? location });
     }
 
     return resolvedProducts;
   }
 
-  private async getLutrisWowPath(): Promise<string> {
-    const resolvedPath = path.join(os.homedir(), LUTRIS_CONFIG_PATH);
-    try {
-      if (!(await pathExists(resolvedPath))) {
-        throw new Error("Lutris config not found");
-      }
+  /** Every wine prefix that might hold Battle.net, as real paths (symlinks resolved) without duplicates */
+  public async getWinePrefixes(): Promise<string[]> {
+    const home = this.deps.homeDir;
+    const candidates: string[] = [];
 
-      const lutrisConfig = await fsp.readFile(resolvedPath, "utf-8");
-      const match = /game_path: (.*)/.exec(lutrisConfig);
-      if (match === null) {
-        throw new Error("No matching game_path found");
-      }
-
-      const libraryPath = match[1].trim();
-      if (!(await pathExists(libraryPath))) {
-        throw new Error("Lutris library path does not exist");
-      }
-
-      for (const wowDir of LUTRIS_WOW_DIRS) {
-        const productPath = path.join(libraryPath, wowDir);
-        if (await pathExists(productPath)) {
-          console.log(`Found WoW product in Lutris library at ${productPath}`);
-          return productPath;
-        }
-      }
-    } catch (e) {
-      console.error("Failed to search for Lutris library location", e);
+    for (const gamePath of await this.getLutrisGamePaths()) {
+      candidates.push(...(await listSubdirs(gamePath)));
     }
 
-    return "";
+    candidates.push(path.join(home, ".wine"));
+
+    for (const parentDir of PREFIX_PARENT_DIRS) {
+      candidates.push(...(await listSubdirs(path.join(home, parentDir))));
+    }
+
+    for (const library of await this.getSteamLibraries()) {
+      const compatDirs = await listSubdirs(path.join(library, "steamapps", "compatdata"));
+      candidates.push(...compatDirs.map((dir) => path.join(dir, "pfx")));
+    }
+
+    const prefixes = new Set<string>();
+    for (const candidate of candidates) {
+      const prefix = await realpath(candidate);
+      if (prefix !== undefined) {
+        prefixes.add(prefix);
+      }
+    }
+
+    return [...prefixes];
+  }
+
+  private async getLutrisGamePaths(): Promise<string[]> {
+    const gamePaths: string[] = [];
+    for (const configPath of LUTRIS_CONFIG_PATHS) {
+      try {
+        const lutrisConfig = await fsp.readFile(path.join(this.deps.homeDir, configPath), "utf-8");
+        const match = /^\s*game_path:\s*(.+)$/m.exec(lutrisConfig);
+        if (match !== null) {
+          const gamePath = unquoteYaml(match[1].trim());
+          gamePaths.push(gamePath.startsWith("~/") ? path.join(this.deps.homeDir, gamePath.slice(2)) : gamePath);
+        }
+      } catch {
+        // Lutris isn't installed this way
+      }
+    }
+
+    return gamePaths;
+  }
+
+  /** Steam roots plus the extra library folders listed in their libraryfolders.vdf, e.g. on other drives */
+  private async getSteamLibraries(): Promise<string[]> {
+    const libraries: string[] = [];
+    for (const root of STEAM_ROOTS.map((steamRoot) => path.join(this.deps.homeDir, steamRoot))) {
+      libraries.push(root);
+      try {
+        const vdf = await fsp.readFile(path.join(root, "steamapps", "libraryfolders.vdf"), "utf-8");
+        for (const match of vdf.matchAll(/^\s*"path"\s+"(.+)"\s*$/gm)) {
+          libraries.push(match[1].replace(/\\\\/g, "\\"));
+        }
+      } catch {
+        // No Steam at this root
+      }
+    }
+
+    return libraries;
   }
 }
 
-async function pathExists(filePath: string): Promise<boolean> {
-  return fsp
-    .access(filePath)
-    .then(() => true)
-    .catch(() => false);
+function unquoteYaml(value: string): string {
+  const quoted = /^(["'])(.*)\1$/.exec(value);
+  return quoted === null ? value : quoted[2];
+}
+
+/** Real paths of the directories in dirPath, including the ones reached through a symlink */
+async function listSubdirs(dirPath: string): Promise<string[]> {
+  let entries: fs.Dirent[];
+  try {
+    entries = await fsp.readdir(dirPath, { withFileTypes: true });
+  } catch {
+    return [];
+  }
+
+  const subdirs: string[] = [];
+  for (const entry of entries) {
+    if (!entry.isDirectory() && !entry.isSymbolicLink()) {
+      continue;
+    }
+
+    const subdir = await realpath(path.join(dirPath, entry.name));
+    if (subdir !== undefined && (await isDirectory(subdir))) {
+      subdirs.push(subdir);
+    }
+  }
+
+  return subdirs;
+}
+
+async function isDirectory(dirPath: string): Promise<boolean> {
+  try {
+    return (await fsp.stat(dirPath)).isDirectory();
+  } catch {
+    return false;
+  }
+}
+
+/** The path with every symlink resolved, undefined if it doesn't exist */
+async function realpath(filePath: string): Promise<string | undefined> {
+  try {
+    return await fsp.realpath(filePath);
+  } catch {
+    return undefined;
+  }
+}
+
+function realpathSync(filePath: string): string | undefined {
+  try {
+    return fs.realpathSync(filePath);
+  } catch {
+    return undefined;
+  }
 }
