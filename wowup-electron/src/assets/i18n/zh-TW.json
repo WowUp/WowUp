@@ -490,6 +490,9 @@
         "PAYPAL": "通过 PayPal 支援作者"
       },
       "IMPORT_EXPORT_ADDONS_BUTTON": "匯入/匯出插件",
+      "MATCH_UNKNOWN_BUTTON": "比對未知插件",
+      "MATCH_UNKNOWN_NONE": "沒有可比對的未知插件。只有 TOC 中註明提供者 ID 或儲存庫的插件才能這樣比對，其他插件可透過其右鍵選單連結。",
+      "MATCH_UNKNOWN_SUCCESS": "已比對的未知插件：{count} 個",
       "MULTIPLE_PROVIDERS_TOOLTIP": "此插件有多個安裝源",
       "PAGE_CONTEXT_FOOTER": {
         "ADDONS_INSTALLED": "共 {count} 個插件",

@@ -490,6 +490,9 @@
         "PAYPAL": "Wesprzyj tego autora na PayPal"
       },
       "IMPORT_EXPORT_ADDONS_BUTTON": "Import/Eksport addonów",
+      "MATCH_UNKNOWN_BUTTON": "Dopasuj nieznane dodatki",
+      "MATCH_UNKNOWN_NONE": "Nie udało się dopasować żadnego nieznanego dodatku. W ten sposób można dopasować tylko dodatki, których TOC podaje identyfikator dostawcy lub repozytorium, pozostałe można połączyć z ich menu kontekstowego.",
+      "MATCH_UNKNOWN_SUCCESS": "Dopasowane nieznane dodatki: {count}",
       "MULTIPLE_PROVIDERS_TOOLTIP": "Ten addon ma wielu dostawców",
       "PAGE_CONTEXT_FOOTER": {
         "ADDONS_INSTALLED": "{count} {count, plural, =1{addon} other{addonów}}",

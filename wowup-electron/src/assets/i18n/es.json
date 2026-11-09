@@ -490,6 +490,9 @@
         "PAYPAL": "Apoyar a este autor en PayPal"
       },
       "IMPORT_EXPORT_ADDONS_BUTTON": "Importar/Exportar addons",
+      "MATCH_UNKNOWN_BUTTON": "Asociar addons desconocidos",
+      "MATCH_UNKNOWN_NONE": "No se pudo asociar ningún addon desconocido. Así solo se pueden asociar los addons cuyo TOC indica un ID de proveedor o un repositorio; los demás se pueden vincular desde su menú contextual.",
+      "MATCH_UNKNOWN_SUCCESS": "Addons desconocidos asociados: {count}",
       "MULTIPLE_PROVIDERS_TOOLTIP": "Este addon está disponible en varios proveedores",
       "PAGE_CONTEXT_FOOTER": {
         "ADDONS_INSTALLED": "{count} {count, plural, =1{addon} other{addons}}",

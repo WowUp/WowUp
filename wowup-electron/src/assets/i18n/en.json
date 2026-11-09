@@ -490,6 +490,9 @@
         "PAYPAL": "Support this author on PayPal"
       },
       "IMPORT_EXPORT_ADDONS_BUTTON": "Import/Export Addons",
+      "MATCH_UNKNOWN_BUTTON": "Match Unknown Addons",
+      "MATCH_UNKNOWN_NONE": "No unknown addon could be matched. Only addons whose TOC names a provider ID or repository can be matched this way, others can be linked from their context menu.",
+      "MATCH_UNKNOWN_SUCCESS": "Unknown addons matched: {count}",
       "MULTIPLE_PROVIDERS_TOOLTIP": "This addon has multiple providers",
       "PAGE_CONTEXT_FOOTER": {
         "ADDONS_INSTALLED": "{count} {count, plural, =1{addon} other{addons}}",

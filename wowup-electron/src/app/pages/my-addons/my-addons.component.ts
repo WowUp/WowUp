@@ -847,6 +847,35 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
       .subscribe();
   }
 
+  /** Runs the automatic matching of unknown addons now, instead of waiting for the next app start */
+  public onMatchUnknownAddons(): void {
+    const installation = this._sessionService.getSelectedWowInstallation();
+    if (!installation) {
+      return;
+    }
+
+    from(this._addonService.rematchUnknownAddons(installation))
+      .pipe(
+        switchMap((count) => {
+          if (count === 0) {
+            this._snackbarService.showSnackbar("PAGES.MY_ADDONS.MATCH_UNKNOWN_NONE");
+            return of(undefined);
+          }
+
+          this._snackbarService.showSuccessSnackbar("PAGES.MY_ADDONS.MATCH_UNKNOWN_SUCCESS", {
+            localeArgs: { count },
+          });
+          return from(this.loadAddons()).pipe(switchMap(() => from(this.onRefresh())));
+        }),
+        catchError((e) => {
+          console.error("Failed to match unknown addons", e);
+          this._snackbarService.showErrorSnackbar("PAGES.MY_ADDONS.ERROR_SNACKBAR");
+          return of(undefined);
+        }),
+      )
+      .subscribe();
+  }
+
   public async onClientChange(evt: any): Promise<void> {
     const val: string = evt.value.toString();
     await this._sessionService.setSelectedWowInstallation(val);

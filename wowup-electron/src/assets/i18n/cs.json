@@ -490,6 +490,9 @@
         "PAYPAL": "Podpořte autora pomocí PayPalu"
       },
       "IMPORT_EXPORT_ADDONS_BUTTON": "Import/Export Addons",
+      "MATCH_UNKNOWN_BUTTON": "Přiřadit neznámé doplňky",
+      "MATCH_UNKNOWN_NONE": "Žádný neznámý doplněk nebylo možné přiřadit. Takto lze přiřadit jen doplňky, jejichž TOC uvádí ID poskytovatele nebo repozitář, ostatní lze propojit z jejich kontextové nabídky.",
+      "MATCH_UNKNOWN_SUCCESS": "Přiřazeno neznámých doplňků: {count}",
       "MULTIPLE_PROVIDERS_TOOLTIP": "Tento addon má více poskytovatelů",
       "PAGE_CONTEXT_FOOTER": {
         "ADDONS_INSTALLED": "{count} {count, plural, =1{addon} =2{addony} =3{addony} =4{addony} other{addonů}}",

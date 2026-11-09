@@ -188,6 +188,55 @@ describe("MyAddonsComponent", () => {
     expect(component).toBeTruthy();
   });
 
+  describe("match unknown addons", () => {
+    let snackbar: any;
+    let loadAddons: jasmine.Spy;
+
+    beforeEach(() => {
+      sessionServiceSpy.getSelectedWowInstallation.and.returnValue({ id: "install-1" });
+      addonServiceSpy.rematchUnknownAddons = jasmine.createSpy("rematchUnknownAddons");
+      snackbar = (component as any)._snackbarService;
+      spyOn(snackbar, "showSnackbar");
+      spyOn(snackbar, "showSuccessSnackbar");
+      spyOn(snackbar, "showErrorSnackbar");
+      loadAddons = spyOn<any>(component, "loadAddons").and.resolveTo(undefined);
+      spyOn(component, "onRefresh").and.resolveTo(undefined);
+    });
+
+    it("reports the matched addons and reloads the list", async () => {
+      addonServiceSpy.rematchUnknownAddons.and.resolveTo(2);
+
+      component.onMatchUnknownAddons();
+      await fixture.whenStable();
+
+      expect(addonServiceSpy.rematchUnknownAddons).toHaveBeenCalledOnceWith({ id: "install-1" });
+      expect(snackbar.showSuccessSnackbar).toHaveBeenCalledWith("PAGES.MY_ADDONS.MATCH_UNKNOWN_SUCCESS", {
+        localeArgs: { count: 2 },
+      });
+      expect(loadAddons).toHaveBeenCalled();
+    });
+
+    it("says so when nothing could be matched and leaves the list alone", async () => {
+      addonServiceSpy.rematchUnknownAddons.and.resolveTo(0);
+
+      component.onMatchUnknownAddons();
+      await fixture.whenStable();
+
+      expect(snackbar.showSnackbar).toHaveBeenCalledWith("PAGES.MY_ADDONS.MATCH_UNKNOWN_NONE");
+      expect(loadAddons).not.toHaveBeenCalled();
+    });
+
+    it("shows an error when matching fails", async () => {
+      addonServiceSpy.rematchUnknownAddons.and.rejectWith(new Error("offline"));
+      spyOn(console, "error");
+
+      component.onMatchUnknownAddons();
+      await fixture.whenStable();
+
+      expect(snackbar.showErrorSnackbar).toHaveBeenCalledWith("PAGES.MY_ADDONS.ERROR_SNACKBAR");
+    });
+  });
+
   describe("install events", () => {
     function createAddon(overrides: Partial<Addon> = {}): Addon {
       return {

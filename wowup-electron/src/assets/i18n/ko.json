@@ -490,6 +490,9 @@
         "PAYPAL": "PayPal에서 제작자 지원하기"
       },
       "IMPORT_EXPORT_ADDONS_BUTTON": "Import/Export Addons",
+      "MATCH_UNKNOWN_BUTTON": "알 수 없는 애드온 연결",
+      "MATCH_UNKNOWN_NONE": "연결할 수 있는 알 수 없는 애드온이 없습니다. 이 방법으로는 TOC에 제공자 ID나 저장소가 있는 애드온만 연결할 수 있으며, 나머지는 컨텍스트 메뉴에서 연결할 수 있습니다.",
+      "MATCH_UNKNOWN_SUCCESS": "연결된 알 수 없는 애드온: {count}개",
       "MULTIPLE_PROVIDERS_TOOLTIP": "복수의 제공자가 존재합니다",
       "PAGE_CONTEXT_FOOTER": {
         "ADDONS_INSTALLED": "{count}개의 애드온",

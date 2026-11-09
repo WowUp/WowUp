@@ -141,7 +141,6 @@ export class AddonService {
   private readonly _installingSrc = new BehaviorSubject<boolean>(false);
   /** Rescan running right now for each installation, by installation id */
   private readonly _activeRescans = new Map<string, Promise<Addon[]>>();
-  private readonly _rematchedInstallations = new Set<string>();
   /** Rescan waiting for the running one to finish, by installation id */
   private readonly _queuedRescans = new Map<string, Promise<Addon[]>>();
 
@@ -1094,18 +1093,17 @@ export class AddonService {
    * Tries again to identify the installation's unidentified addons, like a rescan but without the scan progress and
    * only for the folders whose TOC references a provider (a provider ID or X-Repository). Folders without one would
    * only be identified by their files, which a rescan already tried. Addons it identifies replace the unknown ones;
-   * everything else stays as it is. Returns whether anything was identified.
+   * everything else stays as it is. Returns how many addons were identified. Only runs when the user asks for it from
+   * the page menu, never on its own.
    */
-  public async rematchUnknownAddons(installation: WowInstallation): Promise<boolean> {
+  public async rematchUnknownAddons(installation: WowInstallation): Promise<number> {
     if (!installation || this._activeRescans.has(installation.id) || this._queuedRescans.has(installation.id)) {
-      return false;
+      return 0;
     }
 
     const rematch = this.rematchAndReplaceUnknown(installation);
     // Registered like a rescan, so a rescan asked for meanwhile waits for it instead of racing it
-    const active = rematch
-      .catch(() => false)
-      .then(() => this._addonStorage.getAllForInstallationIdAsync(installation.id));
+    const active = rematch.catch(() => 0).then(() => this._addonStorage.getAllForInstallationIdAsync(installation.id));
     this._activeRescans.set(
       installation.id,
       active.finally(() => this._activeRescans.delete(installation.id)),
@@ -1114,14 +1112,14 @@ export class AddonService {
     return await rematch;
   }
 
-  private async rematchAndReplaceUnknown(installation: WowInstallation): Promise<boolean> {
+  private async rematchAndReplaceUnknown(installation: WowInstallation): Promise<number> {
     const addons = await this._addonStorage.getAllForInstallationIdAsync(installation.id);
     const unknownAddons = addons.filter(
       (addon) => addon.providerName === ADDON_PROVIDER_UNKNOWN && addon.isManuallyLinked !== true,
     );
     const folders = new Set(unknownAddons.flatMap((addon) => addon.installedFolderList ?? []));
     if (folders.size === 0) {
-      return false;
+      return 0;
     }
 
     const scanned = await this.scanAddons(installation, {
@@ -1131,7 +1129,7 @@ export class AddonService {
     });
     const identified = scanned.filter((addon) => addon.providerName !== ADDON_PROVIDER_UNKNOWN);
     if (identified.length === 0) {
-      return false;
+      return 0;
     }
 
     const identifiedFolders = new Set(identified.flatMap((addon) => addon.installedFolderList ?? []));
@@ -1156,23 +1154,7 @@ export class AddonService {
 
     await this._addonStorage.replaceAllForInstallation(installation.id, [...remaining, ...added]);
     this._addonActionSrc.next({ type: "scan" });
-    return true;
-  }
-
-  /** Once per installation and app start, a sync every hour would mostly repeat lookups that found nothing */
-  private async rematchUnknownAddonsOnce(installations: WowInstallation[]): Promise<void> {
-    for (const installation of installations) {
-      if (this._rematchedInstallations.has(installation.id)) {
-        continue;
-      }
-      this._rematchedInstallations.add(installation.id);
-
-      try {
-        await this.rematchUnknownAddons(installation);
-      } catch (e) {
-        console.error(`[addon-service] retrying unknown addons failed: ${installation.displayName}`, e);
-      }
-    }
+    return identified.length;
   }
 
   private startRescan(installation: WowInstallation): Promise<Addon[]> {
@@ -1242,8 +1224,6 @@ export class AddonService {
     const installations = await this._warcraftInstallationService.getWowInstallationsAsync();
 
     try {
-      // First, so the addons it identifies are checked for updates right away. Only the first sync of the app start.
-      await this.rematchUnknownAddonsOnce(installations);
       await this.syncBatchProviders(installations);
       await this.syncStandardProviders(installations);
     } catch (e) {
@@ -1257,7 +1237,6 @@ export class AddonService {
   /** Check for updates for all addons installed for the give WoW client */
   public async syncClient(installation: WowInstallation): Promise<void> {
     console.debug("syncClient", installation.displayName);
-    await this.rematchUnknownAddonsOnce([installation]);
     await this.syncBatchProviders([installation]);
 
     try {
