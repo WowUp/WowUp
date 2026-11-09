@@ -103,10 +103,15 @@ export interface AddonActionEvent {
 
 const IGNORED_FOLDER_NAMES = ["__MACOSX"];
 
+/** What an addon keeps of the installed files when it is linked to a provider without reinstalling it */
+type InstalledFileField = "installedVersion" | "installedAt" | "installedFolders" | "installedFolderList";
+type InstalledFiles = Pick<Addon, InstalledFileField | "isLoadOnDemand">;
+
 /** How a scan is limited and whether it saves, see scanAddons */
 interface ScanOptions {
   save?: boolean;
   folderNames?: string[];
+  folderFilter?: (addonFolder: AddonFolder) => boolean;
   quiet?: boolean;
 }
 
@@ -136,6 +141,7 @@ export class AddonService {
   private readonly _installingSrc = new BehaviorSubject<boolean>(false);
   /** Rescan running right now for each installation, by installation id */
   private readonly _activeRescans = new Map<string, Promise<Addon[]>>();
+  private readonly _rematchedInstallations = new Set<string>();
   /** Rescan waiting for the running one to finish, by installation id */
   private readonly _queuedRescans = new Map<string, Promise<Addon[]>>();
 
@@ -396,32 +402,48 @@ export class AddonService {
    */
   public async linkAddon(addon: Addon, searchResult: AddonSearchResult, installation: WowInstallation): Promise<Addon> {
     const channelType = addon.channelType ?? installation.defaultAddonChannelType;
-    const latestFile = SearchResults.getLatestFile(searchResult, channelType);
-    const linked = this.createAddon(searchResult, latestFile, installation);
-    if (!linked || !latestFile) {
+    const linked = this.createInstalledAddon(searchResult, installation, channelType, addon);
+    if (!linked) {
       throw new Error(`No release of ${searchResult.name} found for ${installation.displayName}`);
     }
 
-    const isLatestInstalled =
-      !!addon.installedVersion &&
-      addon.installedVersion.replace(/^v/i, "") === (latestFile.version ?? "").replace(/^v/i, "");
-
-    const result: Addon = {
-      ...linked,
-      id: addon.id,
-      installedVersion: addon.installedVersion,
-      installedExternalReleaseId: isLatestInstalled ? latestFile.externalId : undefined,
-      installedAt: addon.installedAt,
-      installedFolders: addon.installedFolders,
-      installedFolderList: addon.installedFolderList,
-      isLoadOnDemand: addon.isLoadOnDemand,
-      autoUpdateEnabled: false,
-      autoUpdateNotificationsEnabled: false,
-      isManuallyLinked: true,
-    };
-
+    const result: Addon = { ...linked, id: addon.id, isManuallyLinked: true };
     await this._addonStorage.setAsync(result.id, result);
     return result;
+  }
+
+  /**
+   * An addon for files that are installed already but did not come from the provider's release: the installed
+   * version stays the installed one, the release is only known when its version is that one. Undefined when the
+   * provider has no release for the client.
+   */
+  private createInstalledAddon(
+    searchResult: AddonSearchResult,
+    installation: WowInstallation,
+    channelType: AddonChannelType,
+    installed: InstalledFiles,
+  ): Addon | undefined {
+    const latestFile = SearchResults.getLatestFile(searchResult, channelType);
+    const addon = this.createAddon(searchResult, latestFile, installation);
+    if (!addon || !latestFile) {
+      return undefined;
+    }
+
+    const isLatestInstalled =
+      !!installed.installedVersion &&
+      installed.installedVersion.replace(/^v/i, "") === (latestFile.version ?? "").replace(/^v/i, "");
+
+    return {
+      ...addon,
+      installedVersion: installed.installedVersion,
+      installedExternalReleaseId: isLatestInstalled ? latestFile.externalId : undefined,
+      installedAt: installed.installedAt,
+      installedFolders: installed.installedFolders,
+      installedFolderList: installed.installedFolderList,
+      isLoadOnDemand: installed.isLoadOnDemand,
+      autoUpdateEnabled: false,
+      autoUpdateNotificationsEnabled: false,
+    };
   }
 
   /** Drops a link made with linkAddon, the next scan identifies the addon again */
@@ -1069,10 +1091,10 @@ export class AddonService {
   }
 
   /**
-   * Tries again to identify the installation's unidentified addons, like a rescan but only for their folders and
-   * without the scan progress. Runs with every sync, so an addon a provider didn't know yet, or one a fixed matcher
-   * now recognizes, gets its provider without the user having to rescan. Addons it identifies replace the unknown
-   * ones; everything else stays as it is. Returns whether anything was identified.
+   * Tries again to identify the installation's unidentified addons, like a rescan but without the scan progress and
+   * only for the folders whose TOC references a provider (a provider ID or X-Repository). Folders without one would
+   * only be identified by their files, which a rescan already tried. Addons it identifies replace the unknown ones;
+   * everything else stays as it is. Returns whether anything was identified.
    */
   public async rematchUnknownAddons(installation: WowInstallation): Promise<boolean> {
     if (!installation || this._activeRescans.has(installation.id) || this._queuedRescans.has(installation.id)) {
@@ -1102,7 +1124,11 @@ export class AddonService {
       return false;
     }
 
-    const scanned = await this.scanAddons(installation, { folderNames: [...folders], quiet: true });
+    const scanned = await this.scanAddons(installation, {
+      folderNames: [...folders],
+      folderFilter: (addonFolder) => this.hasProviderReference(addonFolder, installation),
+      quiet: true,
+    });
     const identified = scanned.filter((addon) => addon.providerName !== ADDON_PROVIDER_UNKNOWN);
     if (identified.length === 0) {
       return false;
@@ -1133,8 +1159,14 @@ export class AddonService {
     return true;
   }
 
-  private async rematchUnknownAddonsSafe(installations: WowInstallation[]): Promise<void> {
+  /** Once per installation and app start, a sync every hour would mostly repeat lookups that found nothing */
+  private async rematchUnknownAddonsOnce(installations: WowInstallation[]): Promise<void> {
     for (const installation of installations) {
+      if (this._rematchedInstallations.has(installation.id)) {
+        continue;
+      }
+      this._rematchedInstallations.add(installation.id);
+
       try {
         await this.rematchUnknownAddons(installation);
       } catch (e) {
@@ -1210,8 +1242,8 @@ export class AddonService {
     const installations = await this._warcraftInstallationService.getWowInstallationsAsync();
 
     try {
-      // First, so the addons it identifies are checked for updates right away
-      await this.rematchUnknownAddonsSafe(installations);
+      // First, so the addons it identifies are checked for updates right away. Only the first sync of the app start.
+      await this.rematchUnknownAddonsOnce(installations);
       await this.syncBatchProviders(installations);
       await this.syncStandardProviders(installations);
     } catch (e) {
@@ -1225,7 +1257,7 @@ export class AddonService {
   /** Check for updates for all addons installed for the give WoW client */
   public async syncClient(installation: WowInstallation): Promise<void> {
     console.debug("syncClient", installation.displayName);
-    await this.rematchUnknownAddonsSafe([installation]);
+    await this.rematchUnknownAddonsOnce([installation]);
     await this.syncBatchProviders([installation]);
 
     try {
@@ -1523,8 +1555,8 @@ export class AddonService {
    * providers' matching runs here, between the two calls, until the providers move to main too.
    * @param options.save replace the installation's saved addons with the result, keeping the saved addons of
    * providers a scan can't find again (e.g. GitHub) and the ones the user linked. Without it the scan only reads.
-   * @param options.folderNames limits the scan to these addon folders
-   * @param options.quiet keeps the scan out of the scan progress shown to the user (like the folder limit, for the
+   * @param options.folderNames limits the scan to these addon folders, options.folderFilter to the ones it accepts
+   * @param options.quiet keeps the scan out of the scan progress shown to the user (like the folder limits, for the
    * retry of unidentified addons)
    */
   private async scanAddons(installation: WowInstallation, options: ScanOptions = {}): Promise<Addon[]> {
@@ -1532,7 +1564,7 @@ export class AddonService {
       return [];
     }
 
-    const { save = false, folderNames, quiet = false } = options;
+    const { save = false, folderNames, folderFilter, quiet = false } = options;
 
     const emitScanUpdate = (update: ScanUpdate) => {
       if (!quiet) {
@@ -1546,11 +1578,12 @@ export class AddonService {
 
     try {
       const nonRescanProviders = save ? this._addonProviderService.getNonRescanProviderNames() : undefined;
-      const { addonFolders } = await this._addonSyncApiService.prepareScan({
+      const prepared = await this._addonSyncApiService.prepareScan({
         installationId: installation.id,
         nonRescanProviders,
         ...(folderNames ? { folderNames } : {}),
       });
+      const addonFolders = folderFilter ? prepared.addonFolders.filter(folderFilter) : prepared.addonFolders;
 
       if (addonFolders.length > 0) {
         emitScanUpdate({
@@ -1560,6 +1593,12 @@ export class AddonService {
         });
 
         await this.matchAddonFolders(installation, addonFolders);
+
+        await this.matchByRepository(
+          installation,
+          installation.defaultAddonChannelType,
+          addonFolders.filter((af) => !af.ignoreReason && !af.matchingAddon && af.tocs.length > 0),
+        );
       }
 
       const addons = await this._addonSyncApiService.completeScan({
@@ -1580,6 +1619,62 @@ export class AddonService {
       emitScanUpdate({
         type: ScanUpdateType.Complete,
       });
+    }
+  }
+
+  /** Whether the folder's TOC names the addon's page or ID at a provider, see matchByRepository and the provider scans */
+  private hasProviderReference(addonFolder: AddonFolder, installation: WowInstallation): boolean {
+    const toc = this._tocService.getTocForGameType2(addonFolder.name, addonFolder.tocs, installation.clientType);
+    return [toc?.curseProjectId, toc?.wagoAddonId, toc?.wowInterfaceId, toc?.tukUiProjectId, toc?.repository].some(
+      (value) => !!value?.trim(),
+    );
+  }
+
+  /**
+   * Matches the folders whose TOC names their repository (X-Repository) through the provider that knows the URL,
+   * e.g. a GitHub repository. Only a provider release for the client is accepted.
+   */
+  private async matchByRepository(
+    installation: WowInstallation,
+    channelType: AddonChannelType,
+    addonFolders: AddonFolder[],
+  ): Promise<void> {
+    for (const addonFolder of addonFolders) {
+      const toc = this._tocService.getTocForGameType2(addonFolder.name, addonFolder.tocs, installation.clientType);
+      let url: URL;
+      try {
+        url = new URL(toc?.repository?.trim() ?? "");
+      } catch {
+        continue;
+      }
+
+      const provider = this._addonProviderService
+        .getEnabledAddonProviders()
+        .find((addonProvider) => addonProvider.isValidAddonUri(url));
+      if (!provider || !toc) {
+        continue;
+      }
+
+      try {
+        const result = await provider.searchByUrl(url, installation);
+        if (!result?.searchResult) {
+          continue;
+        }
+
+        const installed: InstalledFiles = {
+          installedVersion: toc.version ?? "",
+          installedAt: addonFolder.fileStats?.birthtime ?? new Date(),
+          installedFolders: addonFolder.name,
+          installedFolderList: [addonFolder.name],
+          isLoadOnDemand: toc.loadOnDemand === "1",
+        };
+        const addon = this.createInstalledAddon(result.searchResult, installation, channelType, installed);
+        if (addon) {
+          addonFolder.matchingAddon = addon;
+        }
+      } catch (e) {
+        console.warn(`[addon-service] repository of ${addonFolder.name} not found at ${provider.name}`, e);
+      }
     }
   }
 

@@ -297,7 +297,8 @@
       "SEARCH_FAILED": "La recherche a échoué, veuillez réessayer.",
       "SEARCH_LABEL": "Nom de l'addon ou URL",
       "SEARCH_PLACEHOLDER": "Ex. Questie ou https://www.curseforge.com/wow/addons/questie",
-      "TITLE": "Associer {addonName} à un fournisseur"
+      "TITLE": "Associer {addonName} à un fournisseur",
+      "WARNING": "Ne liez que l'addon auquel ces fichiers appartiennent réellement. Sa mise à jour installe la version du fournisseur et remplace les fichiers installés, y compris les modifications qui y ont été apportées. Les problèmes causés par des fichiers que le fournisseur n'a pas distribués ne relèvent pas de l'auteur de l'addon."
     },
     "ALERT": {
       "ERROR_TITLE": "Erreur",

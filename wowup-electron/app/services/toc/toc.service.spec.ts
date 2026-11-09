@@ -45,6 +45,22 @@ describe("TocService", () => {
     expect(toc.dependencyList.map((dep) => dep.trim())).to.deep.equal(["Core", "Data"]);
   });
 
+  it("reads the provider references", async () => {
+    const text = [
+      "## Title: AddonA",
+      "## X-Curse-Project-ID: 1001",
+      "## X-Wago-ID: aBcD1234",
+      "## X-Repository: https://github.com/someone/addon-a",
+    ].join("\r\n");
+    await writeToc("AddonA", "AddonA.toc", text);
+
+    const toc = await new TocService().parse(path.join(tempDir, "AddonA", "AddonA.toc"));
+
+    expect(toc.curseProjectId).to.equal("1001");
+    expect(toc.wagoAddonId).to.equal("aBcD1234");
+    expect(toc.repository).to.equal("https://github.com/someone/addon-a");
+  });
+
   it("resolves a title for each game type", async () => {
     await writeToc("GW2_UI", "GW2_UI.toc", GW2_TOC);
 

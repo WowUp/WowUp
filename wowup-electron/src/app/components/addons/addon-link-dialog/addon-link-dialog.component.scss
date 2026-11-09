@@ -7,6 +7,11 @@
   margin-top: 0;
 }
 
+.link-warning {
+  padding: 0.5em 0.75em;
+  border-left: 3px solid var(--warning-color);
+}
+
 .search-input {
   width: 100%;
 }

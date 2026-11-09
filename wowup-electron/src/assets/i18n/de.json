@@ -297,7 +297,8 @@
       "SEARCH_FAILED": "Die Suche ist fehlgeschlagen, bitte versuche es erneut.",
       "SEARCH_LABEL": "Addon-Name oder URL",
       "SEARCH_PLACEHOLDER": "z. B. Questie oder https://www.curseforge.com/wow/addons/questie",
-      "TITLE": "{addonName} einem Anbieter zuordnen"
+      "TITLE": "{addonName} einem Anbieter zuordnen",
+      "WARNING": "Verknüpfe nur das Addon, zu dem diese Dateien wirklich gehören. Ein Update installiert die Version des Anbieters und ersetzt die installierten Dateien, auch daran vorgenommene Änderungen. Probleme durch Dateien, die der Anbieter nicht ausgeliefert hat, muss der Autor des Addons nicht beheben."
     },
     "ALERT": {
       "ERROR_TITLE": "Fehler",

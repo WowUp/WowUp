@@ -297,7 +297,8 @@
       "SEARCH_FAILED": "Vyhledávání selhalo, zkuste to prosím znovu.",
       "SEARCH_LABEL": "Název doplňku nebo URL",
       "SEARCH_PLACEHOLDER": "Např. Questie nebo https://www.curseforge.com/wow/addons/questie",
-      "TITLE": "Přiřadit {addonName} k poskytovateli"
+      "TITLE": "Přiřadit {addonName} k poskytovateli",
+      "WARNING": "Propojte pouze doplněk, ke kterému tyto soubory skutečně patří. Aktualizace nainstaluje vydání poskytovatele a nahradí nainstalované soubory včetně všech jejich úprav. Problémy způsobené soubory, které poskytovatel nedodal, nemusí autor doplňku řešit."
     },
     "ALERT": {
       "ERROR_TITLE": "Chyba",
