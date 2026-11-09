@@ -297,7 +297,8 @@
       "SEARCH_FAILED": "La ricerca non è riuscita, riprova.",
       "SEARCH_LABEL": "Nome dell'addon o URL",
       "SEARCH_PLACEHOLDER": "Es. Questie o https://www.curseforge.com/wow/addons/questie",
-      "TITLE": "Collega {addonName} a un fornitore"
+      "TITLE": "Collega {addonName} a un fornitore",
+      "WARNING": "Collega solo l'addon a cui questi file appartengono davvero. L'aggiornamento installa la versione del provider e sostituisce i file installati, comprese eventuali modifiche. I problemi causati da file non distribuiti dal provider non spetta all'autore dell'addon risolverli."
     },
     "ALERT": {
       "ERROR_TITLE": "Errore",

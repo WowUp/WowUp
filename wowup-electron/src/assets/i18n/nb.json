@@ -297,7 +297,8 @@
       "SEARCH_FAILED": "Søket mislyktes, prøv igjen.",
       "SEARCH_LABEL": "Addon-navn eller URL",
       "SEARCH_PLACEHOLDER": "F.eks. Questie eller https://www.curseforge.com/wow/addons/questie",
-      "TITLE": "Koble {addonName} til en leverandør"
+      "TITLE": "Koble {addonName} til en leverandør",
+      "WARNING": "Koble bare til tillegget disse filene faktisk hører til. En oppdatering installerer leverandørens utgivelse og erstatter de installerte filene, også endringer som er gjort i dem. Problemer forårsaket av filer leverandøren ikke har levert, er ikke tilleggets forfatter sitt ansvar."
     },
     "ALERT": {
       "ERROR_TITLE": "Feil",

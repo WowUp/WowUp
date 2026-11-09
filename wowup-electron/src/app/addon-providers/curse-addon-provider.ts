@@ -40,7 +40,7 @@ import { CircuitBreakerWrapper, NetworkService } from "../services/network/netwo
 import { TocService } from "../services/toc/toc.service";
 import { strictFilter } from "../utils/array.utils";
 import { TocNotFoundError } from "../errors";
-import { AddonMatcher, InstalledOverride, MatchProject, MatchSource, preferCompatible } from "./addon-matcher";
+import { AddonMatcher, InstalledOverride, MatchProject, MatchSource } from "./addon-matcher";
 
 interface ProtocolData {
   addonId: number;
@@ -366,7 +366,7 @@ export class CurseAddonProvider extends AddonProvider {
 
   /**
    * Matches addon folders to CurseForge projects: first by the folder fingerprint, the exact files of a CurseForge
-   * release, then the folders left through the shared TOC ID and search steps (AddonMatcher)
+   * release for the client, then the folders left through the shared TOC project ID step (AddonMatcher)
    */
   public override async scan(
     installation: WowInstallation,
@@ -410,13 +410,11 @@ export class CurseAddonProvider extends AddonProvider {
           continue;
         }
 
-        // A release for this client is preferred, but the files on disk are what they are: a release that is not
-        // tagged for this client (common for newer clients like WoW Forever) still identifies the project
-        const candidates = (fingerprintData.exactMatches ?? []).filter((em) =>
-          em.file?.modules?.some((m) => m.fingerprint == fingerprint),
-        );
-        let exactMatch = preferCompatible(candidates, (em) =>
-          this.isCfFileCompatible(installation.clientType, em.file),
+        // Only a release for this client: an addon its author does not publish for the client is not supported there
+        let exactMatch = (fingerprintData.exactMatches ?? []).find(
+          (em) =>
+            this.isCfFileCompatible(installation.clientType, em.file) &&
+            em.file?.modules?.some((m) => m.fingerprint == fingerprint),
         );
 
         // If the addon does not have an exact match, check the partial matches.
@@ -450,7 +448,19 @@ export class CurseAddonProvider extends AddonProvider {
         }
 
         try {
-          mp.addonFolder.matchingAddon = this.createAddon(installation, mp.addonFolder, mp.match.file, cfAddon);
+          const addon = this.createAddon(installation, mp.addonFolder, mp.match.file, cfAddon);
+          // Only the folders whose files are this release's. A folder the release ships but that holds something else,
+          // e.g. a sub addon from another source, is not this addon's and is matched separately.
+          const ownedFolders = (mp.match.file.modules ?? [])
+            .filter((module) =>
+              addonFolders.some(
+                (folder) => folder.name === module.name && folder.cfScanResults?.fingerprintNum === module.fingerprint,
+              ),
+            )
+            .map((module) => module.name);
+          addon.installedFolderList = ownedFolders.length ? ownedFolders : [mp.addonFolder.name];
+          addon.installedFolders = addon.installedFolderList.join(",");
+          mp.addonFolder.matchingAddon = addon;
         } catch (e) {
           if (e instanceof TocNotFoundError) {
             potentialChildren.push(mp);
@@ -486,17 +496,6 @@ export class CurseAddonProvider extends AddonProvider {
         const cfAddons = await this.getAllIds(ids.map((id) => parseInt(id, 10)));
         return cfAddons.map((cfAddon) => this.toMatchProject(installation, cfAddon));
       },
-      searchProjects: async (query) => {
-        // slug is a valid search parameter of the API, the client's type just doesn't list it
-        const request = {
-          gameId: 1,
-          pageSize: 20,
-          ...(query.slug ? { slug: query.slug } : { searchFilter: query.title }),
-        } as cfv2.CF2SearchModsParams;
-        const response = await this._circuitBreaker.fire(() => this._cf2Client.searchMods(request));
-        return (response.data?.data ?? []).map((cfAddon) => this.toMatchProject(installation, cfAddon));
-      },
-      getSlugFromWebsite: getCurseForgeSlug,
       createAddon: (mainFolder, project, reference, installed) =>
         this.createAddon(installation, mainFolder, reference.source, project.source, installed),
     };
@@ -513,9 +512,6 @@ export class CurseAddonProvider extends AddonProvider {
 
     return {
       id: cfAddon.id.toString(),
-      slug: cfAddon.slug,
-      name: cfAddon.name ?? "",
-      authors: (cfAddon.authors ?? []).map((author) => author.name ?? ""),
       releases: files.map((file) => ({
         id: file.id.toString(),
         names: [file.displayName, file.fileName],
@@ -1045,10 +1041,4 @@ export class CurseAddonProvider extends AddonProvider {
 
     return result?.data?.data ?? [];
   }
-}
-
-/** The project slug of a CurseForge addon page link, e.g. https://www.curseforge.com/wow/addons/auctionator */
-export function getCurseForgeSlug(website: string | undefined): string | undefined {
-  const match = /curseforge\.com\/wow\/addons\/([a-z0-9-_]+)/i.exec(website ?? "");
-  return match ? match[1].toLowerCase() : undefined;
 }

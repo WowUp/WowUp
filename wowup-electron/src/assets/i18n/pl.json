@@ -297,7 +297,8 @@
       "SEARCH_FAILED": "Wyszukiwanie nie powiodło się, spróbuj ponownie.",
       "SEARCH_LABEL": "Nazwa dodatku lub URL",
       "SEARCH_PLACEHOLDER": "Np. Questie lub https://www.curseforge.com/wow/addons/questie",
-      "TITLE": "Przypisz {addonName} do dostawcy"
+      "TITLE": "Przypisz {addonName} do dostawcy",
+      "WARNING": "Połącz tylko z dodatkiem, do którego te pliki naprawdę należą. Aktualizacja instaluje wydanie dostawcy i zastępuje zainstalowane pliki, łącznie z wprowadzonymi w nich zmianami. Problemy spowodowane plikami, których dostawca nie dostarczył, nie są sprawą autora dodatku."
     },
     "ALERT": {
       "ERROR_TITLE": "Błąd",

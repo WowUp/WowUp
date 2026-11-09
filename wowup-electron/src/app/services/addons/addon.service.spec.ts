@@ -9,6 +9,7 @@ import {
   AddonProvider,
   AddonSearchResult,
   AddonSearchResultFile,
+  Toc,
   WowClientType,
   WowInstallation,
 } from "wowup-lib-core";
@@ -1228,6 +1229,68 @@ describe("AddonService", () => {
     });
   });
 
+  describe("matchByRepository", () => {
+    let repoProvider: jasmine.SpyObj<AddonProvider>;
+
+    function repoFolder(name: string, toc: Partial<Toc>): AddonFolder {
+      return { name, path: `/AddOns/${name}`, tocs: [{ fileName: `${name}.toc`, ...toc }] } as unknown as AddonFolder;
+    }
+
+    function matchByRepository(folders: AddonFolder[]): Promise<void> {
+      return (service as any).matchByRepository(installation, AddonChannelType.Stable, folders);
+    }
+
+    beforeEach(() => {
+      repoProvider = jasmine.createSpyObj<AddonProvider>("RepoProvider", ["isValidAddonUri", "searchByUrl"]);
+      repoProvider.isValidAddonUri.and.callFake((url: URL) => url.hostname === "github.com");
+      repoProvider.searchByUrl.and.resolveTo({ searchResult: createSearchResult({ name: "AddonA" }) });
+      (addonProviderFactory as any).getEnabledAddonProviders = () => [repoProvider];
+      (service as any)._tocService = { getTocForGameType2: (_name: string, tocs: Toc[]) => tocs[0] };
+    });
+
+    it("matches a folder through the provider that knows its X-Repository", async () => {
+      const addonFolder = repoFolder("AddonA", { repository: "https://github.com/someone/addon-a", version: "1.0.1" });
+
+      await matchByRepository([addonFolder]);
+
+      expect(repoProvider.searchByUrl).toHaveBeenCalledOnceWith(
+        new URL("https://github.com/someone/addon-a"),
+        installation,
+      );
+      expect(addonFolder.matchingAddon).toEqual(
+        jasmine.objectContaining({
+          providerName: "Curse",
+          externalId: "1001",
+          installedVersion: "1.0.1",
+          installedFolderList: ["AddonA"],
+        }),
+      );
+      expect(addonFolder.matchingAddon?.isManuallyLinked).toBeUndefined();
+    });
+
+    it("leaves the folder unknown when the provider has no release for the client", async () => {
+      repoProvider.searchByUrl.and.resolveTo({ searchResult: createSearchResult({ files: [] }) });
+      const addonFolder = repoFolder("AddonA", { repository: "https://github.com/someone/addon-a" });
+
+      await matchByRepository([addonFolder]);
+
+      expect(addonFolder.matchingAddon).toBeUndefined();
+    });
+
+    it("skips folders without a repository a provider knows", async () => {
+      const folders = [
+        repoFolder("NoRepo", {}),
+        repoFolder("NotAUrl", { repository: "someone/addon-a" }),
+        repoFolder("Unknown", { repository: "https://example.test/addon-a" }),
+      ];
+
+      await matchByRepository(folders);
+
+      expect(repoProvider.searchByUrl).not.toHaveBeenCalled();
+      expect(folders.every((folder) => folder.matchingAddon === undefined)).toBeTrue();
+    });
+  });
+
   describe("rematchUnknownAddons", () => {
     let scanSpy: jasmine.Spy;
 
@@ -1253,36 +1316,56 @@ describe("AddonService", () => {
       expect(scanSpy).not.toHaveBeenCalled();
     });
 
-    it("scans only the folders of the unknown addons, without scan progress", async () => {
-      installed = [createAddon(), unknown("u1", "Questie"), unknown("u2", "QuestieDB")];
+    it("scans only the unknown folders whose TOC references a provider, without scan progress", async () => {
+      installed = [createAddon(), unknown("u1", "AddonA"), unknown("u2", "AddonA_Data"), unknown("u3", "Local")];
+      const tocs: { [folder: string]: Partial<Toc> } = {
+        AddonA: { curseProjectId: "2002" },
+        AddonA_Data: { repository: "https://github.com/someone/addon-a" },
+        Local: { title: "Local" },
+        Baganator: { curseProjectId: "1001" },
+      };
+      (service as any)._tocService = { getTocForGameType2: (name: string) => tocs[name] };
 
       await service.rematchUnknownAddons(installation);
 
-      const [, , folders, quiet] = scanSpy.calls.mostRecent().args;
-      expect([...(folders as Set<string>)].sort()).toEqual(["Questie", "QuestieDB"]);
+      const [, , folderFilter, quiet] = scanSpy.calls.mostRecent().args;
+      const accepted = ["AddonA", "AddonA_Data", "Local", "Baganator"].filter((name) =>
+        (folderFilter as (folder: AddonFolder) => boolean)({ name, tocs: [] } as unknown as AddonFolder),
+      );
+      expect(accepted).toEqual(["AddonA", "AddonA_Data"]);
       expect(quiet).toBeTrue();
+    });
+
+    it("retries once per app start, not with every sync", async () => {
+      installed = [unknown("u1", "AddonA")];
+
+      await service.syncAllClients();
+      await service.syncAllClients();
+      await service.syncClient(installation);
+
+      expect(scanSpy).toHaveBeenCalledTimes(1);
     });
 
     it("replaces the unknown addons it identifies and keeps everything else", async () => {
       const known = createAddon();
       const stillUnknown = unknown("u3", "LocalAddon");
-      installed = [known, unknown("u1", "Questie"), unknown("u2", "QuestieDB"), stillUnknown];
-      const questie = createAddon({
-        id: "questie",
-        name: "Questie",
-        externalId: "334372",
-        installedFolderList: ["Questie", "QuestieDB"],
+      installed = [known, unknown("u1", "AddonA"), unknown("u2", "AddonA_Data"), stillUnknown];
+      const addonA = createAddon({
+        id: "addon-a",
+        name: "AddonA",
+        externalId: "2002",
+        installedFolderList: ["AddonA", "AddonA_Data"],
       });
-      scanSpy.and.resolveTo([questie, unknown("u3-new", "LocalAddon")]);
+      scanSpy.and.resolveTo([addonA, unknown("u3-new", "LocalAddon")]);
 
       expect(await service.rematchUnknownAddons(installation)).toBeTrue();
 
-      expect(installed.map((a) => a.id).sort()).toEqual(["addon-1", "questie", "u3"]);
+      expect(installed.map((a) => a.id).sort()).toEqual(["addon-1", "addon-a", "u3"]);
     });
 
     it("does not add an identified addon that is installed already", async () => {
-      installed = [createAddon({ installedFolderList: ["Baganator"] }), unknown("u1", "Baganator_Sub")];
-      scanSpy.and.resolveTo([createAddon({ id: "dupe", installedFolderList: ["Baganator_Sub"] })]);
+      installed = [createAddon({ installedFolderList: ["Baganator"] }), unknown("u1", "Baganator_Options")];
+      scanSpy.and.resolveTo([createAddon({ id: "dupe", installedFolderList: ["Baganator_Options"] })]);
 
       await service.rematchUnknownAddons(installation);
 
@@ -1298,7 +1381,7 @@ describe("AddonService", () => {
     });
 
     it("runs before the update check of a sync", async () => {
-      installed = [unknown("u1", "Questie")];
+      installed = [unknown("u1", "AddonA")];
       const order: string[] = [];
       scanSpy.and.callFake(() => {
         order.push("rematch");
@@ -1319,12 +1402,12 @@ describe("AddonService", () => {
     function createUnknownAddon(overrides: Partial<Addon> = {}): Addon {
       return createAddon({
         id: "unknown-1",
-        name: "ForeverThreat",
+        name: "AddonC",
         providerName: "Unknown",
         externalId: "",
-        installedVersion: "1.7.2",
-        installedFolderList: ["ForeverThreat"],
-        installedFolders: "ForeverThreat",
+        installedVersion: "1.0.1",
+        installedFolderList: ["AddonC"],
+        installedFolders: "AddonC",
         isIgnored: true,
         ...overrides,
       });
@@ -1333,16 +1416,16 @@ describe("AddonService", () => {
     it("links the installed addon to the provider's addon without reinstalling it", async () => {
       const unknown = createUnknownAddon();
 
-      const linked = await service.linkAddon(unknown, createSearchResult({ name: "Forever Threat" }), installation);
+      const linked = await service.linkAddon(unknown, createSearchResult({ name: "Addon C" }), installation);
 
       expect(linked.id).toEqual("unknown-1");
       expect(linked.providerName).toEqual("Curse");
       expect(linked.externalId).toEqual("1001");
-      expect(linked.name).toEqual("Forever Threat");
+      expect(linked.name).toEqual("Addon C");
       expect(linked.isIgnored).toBeFalse();
       expect(linked.isManuallyLinked).toBeTrue();
-      expect(linked.installedVersion).toEqual("1.7.2");
-      expect(linked.installedFolderList).toEqual(["ForeverThreat"]);
+      expect(linked.installedVersion).toEqual("1.0.1");
+      expect(linked.installedFolderList).toEqual(["AddonC"]);
       expect(linked.latestVersion).toEqual("1.2.0");
       expect(installed).toEqual([linked]);
       expect(enqueued.length).toEqual(0);
@@ -1371,7 +1454,7 @@ describe("AddonService", () => {
       const linked = createAddon({
         id: "linked",
         providerName: "SomeProvider",
-        installedFolderList: ["ForeverThreat"],
+        installedFolderList: ["AddonC"],
         isManuallyLinked: true,
       });
       const stale = createAddon({
@@ -1380,13 +1463,13 @@ describe("AddonService", () => {
         installedFolderList: ["Gone"],
         isManuallyLinked: true,
       });
-      const scanned = createAddon({ id: "scanned", providerName: "SomeProvider", installedFolderList: ["Questie"] });
-      const folders = [{ name: "ForeverThreat" }, { name: "Questie" }] as AddonFolder[];
+      const scanned = createAddon({ id: "scanned", providerName: "SomeProvider", installedFolderList: ["AddonA"] });
+      const folders = [{ name: "AddonC" }, { name: "AddonA" }] as AddonFolder[];
 
       const kept: Addon[] = (service as any).removeNonRescanFolders(folders, [linked, stale, scanned]);
 
       expect(kept.map((a) => a.id)).toEqual(["linked"]);
-      expect(folders.map((f) => f.name)).toEqual(["Questie"]);
+      expect(folders.map((f) => f.name)).toEqual(["AddonA"]);
     });
   });
 

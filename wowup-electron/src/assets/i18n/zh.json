@@ -297,7 +297,8 @@
       "SEARCH_FAILED": "搜索失败，请重试。",
       "SEARCH_LABEL": "插件名称或 URL",
       "SEARCH_PLACEHOLDER": "例如 Questie 或 https://www.curseforge.com/wow/addons/questie",
-      "TITLE": "将 {addonName} 关联到提供方"
+      "TITLE": "将 {addonName} 关联到提供方",
+      "WARNING": "请只关联这些文件真正所属的插件。更新会安装提供商的版本并替换已安装的文件，包括对其所做的任何修改。由提供商未发布的文件引起的问题不应由插件作者负责解决。"
     },
     "ALERT": {
       "ERROR_TITLE": "错误",

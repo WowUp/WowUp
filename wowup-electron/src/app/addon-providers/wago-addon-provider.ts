@@ -349,8 +349,7 @@ export class WagoAddonProvider extends AddonProvider {
   }
 
   /**
-   * Wago for the shared match steps. Only the TOC ID step: Wago's search results do not name the folders a release
-   * ships, so a search result could not be told apart from another addon of the same name.
+   * Wago for the shared match steps (X-Wago-ID)
    */
   private getMatchSource(
     installation: WowInstallation,
@@ -378,8 +377,6 @@ export class WagoAddonProvider extends AddonProvider {
   private toMatchProject(wagoScanAddon: WagoScanAddon): MatchProject<WagoScanAddon, WagoScanRelease> {
     return {
       id: wagoScanAddon.id,
-      name: wagoScanAddon.name ?? "",
-      authors: wagoScanAddon.authors ?? [],
       // The releases are requested for the installation's game version
       releases: this.getSortedReleaseList(wagoScanAddon).map((release) => ({
         id: release.id,

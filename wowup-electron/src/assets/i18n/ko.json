@@ -297,7 +297,8 @@
       "SEARCH_FAILED": "검색에 실패했습니다. 다시 시도해 주세요.",
       "SEARCH_LABEL": "애드온 이름 또는 URL",
       "SEARCH_PLACEHOLDER": "예: Questie 또는 https://www.curseforge.com/wow/addons/questie",
-      "TITLE": "{addonName}을(를) 제공자에 연결"
+      "TITLE": "{addonName}을(를) 제공자에 연결",
+      "WARNING": "이 파일이 실제로 속한 애드온만 연결하세요. 업데이트하면 제공자의 릴리스가 설치되어 설치된 파일과 그에 대한 변경 사항이 모두 대체됩니다. 제공자가 배포하지 않은 파일로 인한 문제는 애드온 제작자가 해결할 문제가 아닙니다."
     },
     "ALERT": {
       "ERROR_TITLE": "오류",

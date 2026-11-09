@@ -33,6 +33,7 @@ export class TocService {
       title: this.getValue(tocModels.TOC_TITLE, tocText),
       titles: this.getTitlesByGameType(tocText),
       website: this.getWebsite(tocText),
+      repository: this.getValue(tocModels.TOC_X_REPOSITORY, tocText),
       version: this.getValue(tocModels.TOC_VERSION, tocText),
       partOf: this.getValue(tocModels.TOC_X_PART_OF, tocText),
       category: this.getValue(tocModels.TOC_X_CATEGORY, tocText),

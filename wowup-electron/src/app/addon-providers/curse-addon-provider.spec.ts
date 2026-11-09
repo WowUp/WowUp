@@ -13,7 +13,7 @@ import {
 import { CachingService } from "../services/caching/caching-service";
 import { NetworkService } from "../services/network/network.service";
 import { TocService } from "../services/toc/toc.service";
-import { CurseAddonProvider, getCurseForgeSlug } from "./curse-addon-provider";
+import { CurseAddonProvider } from "./curse-addon-provider";
 
 describe("CurseAddonProvider", () => {
   let provider: CurseAddonProvider;
@@ -198,8 +198,8 @@ describe("CurseAddonProvider", () => {
         ).toBeRejectedWithError(/401/);
       });
 
-      it("matches a fingerprint whose release is not tagged for the client", async () => {
-        const file = cfFile(500, "AddonA 2.0", [OTHER_CLIENT_TYPE_ID], [["AddonA", 11]]);
+      it("matches a fingerprint of a release for the client", async () => {
+        const file = cfFile(500, "AddonA 2.0", [clientTypeId], [["AddonA", 11]]);
         client.getFingerprintMatches.and.returnValue(
           ok({ exactMatches: [{ id: 1, file, latestFiles: [] }], partialMatches: [] }),
         );
@@ -210,6 +210,45 @@ describe("CurseAddonProvider", () => {
 
         expect(addonA.matchingAddon?.externalId).toBe("1");
         expect(addonA.matchingAddon?.installedVersion).toBe("AddonA 2.0");
+      });
+
+      it("leaves a shipped folder with other files to its own match", async () => {
+        const file = cfFile(
+          500,
+          "AddonA 2.0",
+          [clientTypeId],
+          [
+            ["AddonA", 11],
+            ["AddonA_Data", 12],
+            ["AddonA_Extra", 13],
+          ],
+        );
+        client.getFingerprintMatches.and.returnValue(
+          ok({ exactMatches: [{ id: 1, file, latestFiles: [] }], partialMatches: [] }),
+        );
+        client.getMods.and.returnValue(ok([cfAddon(1, "addon-a", "AddonA", [file])]));
+        const addonA = folder("AddonA", {}, 11);
+        // Installed from another source, its files are not the release's
+        const addonData = folder("AddonA_Data", {}, 99);
+
+        await provider.scan(installation, AddonChannelType.Stable, [addonA, addonData]);
+
+        expect(addonA.matchingAddon?.installedFolderList).toEqual(["AddonA"]);
+        expect(addonA.matchingAddon?.installedFolders).toBe("AddonA");
+        expect(addonData.matchingAddon).toBeUndefined();
+      });
+
+      it("does not match a fingerprint whose release is not for the client", async () => {
+        const file = cfFile(500, "AddonA 2.0", [OTHER_CLIENT_TYPE_ID], [["AddonA", 11]]);
+        client.getFingerprintMatches.and.returnValue(
+          ok({ exactMatches: [{ id: 1, file, latestFiles: [] }], partialMatches: [] }),
+        );
+        client.getMods.and.returnValue(ok([cfAddon(1, "addon-a", "AddonA", [file])]));
+        const addonA = folder("AddonA", {}, 11);
+
+        await provider.scan(installation, AddonChannelType.Stable, [addonA]);
+
+        expect(addonA.matchingAddon).toBeUndefined();
       });
 
       it("matches a folder by the project ID in its TOC and owns the other folders the release ships", async () => {
@@ -249,62 +288,26 @@ describe("CurseAddonProvider", () => {
         expect(addonA.matchingAddon?.externalLatestReleaseId).toBe("701");
       });
 
-      it("looks a folder up by the CurseForge link in its TOC", async () => {
+      it("does not match a TOC project ID whose project has no release for the client", async () => {
         noFingerprintMatches();
-        const release = cfFile(800, "120", [clientTypeId], [["AddonB", 1]]);
-        client.searchMods.and.returnValue(ok([cfAddon(42, "addon-b", "AddonB", [release])]));
-        const addonB = folder(
-          "AddonB",
-          { title: "AddonB", website: "https://www.curseforge.com/wow/addons/addon-b", version: "120" },
-          31,
-        );
+        const release = cfFile(702, "v3.1.0", [OTHER_CLIENT_TYPE_ID], [["AddonA", 1]]);
+        client.getMods.and.returnValue(ok([cfAddon(1001, "addon-a", "AddonA", [release])]));
+        const addonA = folder("AddonA", { curseProjectId: "1001", version: "3.1.0" }, 21);
 
-        await provider.scan(installation, AddonChannelType.Stable, [addonB]);
+        await provider.scan(installation, AddonChannelType.Stable, [addonA]);
 
-        expect(client.searchMods).toHaveBeenCalledWith(jasmine.objectContaining({ slug: "addon-b" }));
-        expect(addonB.matchingAddon?.externalId).toBe("42");
+        expect(addonA.matchingAddon).toBeUndefined();
       });
 
-      it("accepts a title search result only when it ships the folder and an author agrees", async () => {
+      it("does not search for folders without a fingerprint or TOC ID match", async () => {
         noFingerprintMatches();
-        const otherFolder = cfAddon(1, "addon-c", "AddonC", [cfFile(1, "1.0", [clientTypeId], [["SomethingElse", 1]])]);
-        const otherAuthor = cfAddon(2, "addon-c-x", "AddonC X", [cfFile(2, "1.0", [clientTypeId], [["AddonC", 1]])]);
-        const match = cfAddon(
-          3,
-          "addon-c-classic",
-          "Another Name",
-          [cfFile(3, "1.0", [clientTypeId], [["AddonC", 1]])],
-          ["author-a"],
-        );
-        client.searchMods.and.returnValue(ok([otherFolder, otherAuthor, match]));
-        const addonC = folder("AddonC", { title: "AddonC", author: "author-a", version: "1.0" }, 41);
-
-        await provider.scan(installation, AddonChannelType.Stable, [addonC]);
-
-        expect(client.searchMods).toHaveBeenCalledWith(jasmine.objectContaining({ searchFilter: "AddonC" }));
-        expect(addonC.matchingAddon?.externalId).toBe("3");
-      });
-
-      it("leaves a folder unmatched when no search result ships it", async () => {
-        noFingerprintMatches();
-        client.searchMods.and.returnValue(
-          ok([cfAddon(1, "local", "Local", [cfFile(1, "1.0", [clientTypeId], [["Other", 1]])], ["me"])]),
-        );
-        const local = folder("Local", { title: "Local", author: "me" }, 51);
+        const local = folder("Local", { title: "Local", website: "https://www.curseforge.com/wow/addons/local" }, 51);
 
         await provider.scan(installation, AddonChannelType.Stable, [local]);
 
+        expect(client.searchMods).not.toHaveBeenCalled();
         expect(local.matchingAddon).toBeUndefined();
       });
     });
   }
-
-  describe("getCurseForgeSlug", () => {
-    it("reads the slug of a CurseForge addon link", () => {
-      expect(getCurseForgeSlug("https://www.curseforge.com/wow/addons/addon-b")).toBe("addon-b");
-      expect(getCurseForgeSlug("https://www.curseforge.com/wow/addons/addon-c-classic/files")).toBe("addon-c-classic");
-      expect(getCurseForgeSlug("https://github.com/someone/addon-b")).toBeUndefined();
-      expect(getCurseForgeSlug(undefined)).toBeUndefined();
-    });
-  });
 });

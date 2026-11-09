@@ -1,16 +1,6 @@
 import { Addon, AddonFolder, Toc } from "wowup-lib-core";
 
-import {
-  AddonMatcher,
-  cleanTocTitle,
-  isReleaseOfVersion,
-  MatchProject,
-  MatchRelease,
-  MatchSource,
-  MAX_SCAN_SEARCHES,
-  preferCompatible,
-  splitAuthors,
-} from "./addon-matcher";
+import { AddonMatcher, isReleaseOfVersion, MatchProject, MatchRelease, MatchSource } from "./addon-matcher";
 
 type Project = MatchProject<string, string>;
 
@@ -28,19 +18,17 @@ describe("AddonMatcher", () => {
     return { id: names[0], names, folders, compatible, source: names[0] };
   }
 
-  function project(id: string, releases: MatchRelease<string>[], extra: Partial<Project> = {}): Project {
-    return { id, name: id, authors: [], releases, source: id, ...extra };
+  function project(id: string, releases: MatchRelease<string>[]): Project {
+    return { id, releases, source: id };
   }
 
-  function createSource(projects: Project[], withSearch = true) {
+  function createSource(projects: Project[]) {
     const source = {
       logName: "test",
       getTocProjectId: (toc: Toc) => toc.curseProjectId,
       getProjectsById: jasmine
         .createSpy("getProjectsById")
         .and.callFake((ids: string[]) => Promise.resolve(projects.filter((p) => ids.includes(p.id)))),
-      searchProjects: withSearch ? jasmine.createSpy("searchProjects").and.resolveTo(projects) : undefined,
-      getSlugFromWebsite: (website: string | undefined) => /example\.test\/([a-z]+)/.exec(website ?? "")?.[1],
       createAddon: jasmine.createSpy("createAddon").and.callFake(
         (mainFolder: AddonFolder, p: Project, reference: MatchRelease<string>, installed?: { version: string }) =>
           ({
@@ -94,15 +82,27 @@ describe("AddonMatcher", () => {
       expect(main.matchingAddon?.installedVersion).toBe("3.0.0");
     });
 
-    it("prefers the release for the client", async () => {
-      const main = folder("AddonA", { curseProjectId: "1", version: "1.0" });
+    it("only takes releases for the client", async () => {
+      const main = folder("AddonA", { curseProjectId: "1", version: "2.0" });
       const source = createSource([
         project("1", [release(["other 2.0"], ["AddonA"], false), release(["client 1.5"], ["AddonA"], true)]),
       ]);
 
       await matcher.matchByTocProjectId([main], source);
 
+      // The other client's release is the TOC version, but not for this client: the installed release stays unknown
       expect(source.createAddon.calls.mostRecent().args[2].names).toEqual(["client 1.5"]);
+      expect(main.matchingAddon?.installedVersion).toBe("2.0");
+    });
+
+    it("does not match a project without a release for the client", async () => {
+      const main = folder("AddonA", { curseProjectId: "1", version: "2.0" });
+      const source = createSource([project("1", [release(["other 2.0"], ["AddonA"], false)])]);
+
+      await matcher.matchByTocProjectId([main], source);
+
+      expect(source.createAddon).not.toHaveBeenCalled();
+      expect(main.matchingAddon).toBeUndefined();
     });
 
     it("leaves folders that are already matched alone", async () => {
@@ -117,71 +117,6 @@ describe("AddonMatcher", () => {
     });
   });
 
-  describe("search", () => {
-    it("accepts a project found by the TOC website slug", async () => {
-      const addonFolder = folder("AddonB", { website: "https://example.test/addonb", title: "x" });
-      const source = createSource([
-        project("2", [release(["120"], ["AddonB"])], { slug: "other" }),
-        project("1", [release(["120"], ["AddonB"])], { slug: "addonb" }),
-      ]);
-
-      await matcher.matchBySearch([addonFolder], source);
-
-      expect(source.searchProjects).toHaveBeenCalledOnceWith({ slug: "addonb" });
-      expect(addonFolder.matchingAddon?.externalId).toBe("1");
-    });
-
-    it("accepts a title search result by its author", async () => {
-      const addonFolder = folder("AddonC", { title: "|cff00ff00AddonC|r", author: "author-a, someone" });
-      const source = createSource([
-        project("1", [release(["1"], ["AddonC"])], { name: "Bags", authors: ["Author-A"] }),
-      ]);
-
-      await matcher.matchBySearch([addonFolder], source);
-
-      expect(source.searchProjects).toHaveBeenCalledOnceWith({ title: "AddonC" });
-      expect(addonFolder.matchingAddon?.externalId).toBe("1");
-    });
-
-    it("rejects a project that does not ship the folder", async () => {
-      const addonFolder = folder("AddonC", { title: "AddonC" });
-      const source = createSource([project("1", [release(["1"], ["Other"])], { name: "AddonC" })]);
-
-      await matcher.matchBySearch([addonFolder], source);
-
-      expect(addonFolder.matchingAddon).toBeUndefined();
-    });
-
-    it("rejects a title search result that only shares the folder name", async () => {
-      const addonFolder = folder("Utils", { title: "My Utils", author: "me" });
-      const source = createSource([project("1", [release(["1"], ["Utils"])], { name: "Other", authors: ["you"] })]);
-
-      await matcher.matchBySearch([addonFolder], source);
-
-      expect(addonFolder.matchingAddon).toBeUndefined();
-    });
-
-    it("skips load on demand folders and providers without a search", async () => {
-      const lod = folder("Lib", { title: "Lib", loadOnDemand: "1" });
-      const source = createSource([project("1", [release(["1"], ["Lib"])], { name: "Lib" })]);
-      await matcher.matchBySearch([lod], source);
-      expect(source.searchProjects).not.toHaveBeenCalled();
-
-      const addonFolder = folder("Lib2", { title: "Lib2" });
-      await matcher.matchBySearch([addonFolder], createSource([project("1", [release(["1"], ["Lib2"])])], false));
-      expect(addonFolder.matchingAddon).toBeUndefined();
-    });
-
-    it("searches at most MAX_SCAN_SEARCHES folders", async () => {
-      const folders = Array.from({ length: MAX_SCAN_SEARCHES + 5 }, (_, i) => folder(`F${i}`, { title: `F${i}` }));
-      const source = createSource([]);
-
-      await matcher.matchBySearch(folders, source);
-
-      expect(source.searchProjects).toHaveBeenCalledTimes(MAX_SCAN_SEARCHES);
-    });
-  });
-
   it("only logs a failing step", async () => {
     const main = folder("AddonA", { curseProjectId: "1" });
     const source = createSource([]);
@@ -193,24 +128,6 @@ describe("AddonMatcher", () => {
   });
 
   describe("helpers", () => {
-    it("prefers a compatible candidate and falls back to the first", () => {
-      expect(preferCompatible([1, 2, 3], (n) => n === 2)).toBe(2);
-      expect(preferCompatible([1, 2, 3], () => false)).toBe(1);
-      expect(preferCompatible([], () => true)).toBeUndefined();
-    });
-
-    it("strips color codes and an appended version from a TOC title", () => {
-      expect(cleanTocTitle("AddonA|cFF00FF00 v3.1.0|r")).toBe("AddonA");
-      expect(cleanTocTitle("|cff00ccffAddon!|r Damage Meter")).toBe("Addon! Damage Meter");
-      expect(cleanTocTitle("AddonA_Data")).toBe("AddonA_Data");
-    });
-
-    it("splits a TOC author line into names", () => {
-      expect(splitAuthors("author-a, Author-B")).toEqual(["author-a", "author-b"]);
-      expect(splitAuthors("One/Two/Three")).toEqual(["one", "two", "three"]);
-      expect(splitAuthors("")).toEqual([]);
-    });
-
     it("finds the TOC version in a release name as a whole", () => {
       expect(isReleaseOfVersion(["AddonA v3.1.0"], "3.1.0")).toBeTrue();
       expect(isReleaseOfVersion(["x", "AddonB-120.zip"], "120")).toBeTrue();
