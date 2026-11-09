@@ -106,197 +106,204 @@ describe("CurseAddonProvider", () => {
     });
   });
 
-  describe("scan", () => {
-    const RETAIL_TYPE = 517;
-    const FOREVER_TYPE = 88568;
-    const installation = { id: "inst", clientType: WowClientType.Forever } as WowInstallation;
+  /** Every client the provider knows, the scan must behave the same for each of them */
+  const CLIENT_TYPES = Object.values(WowClientType).filter(
+    (value): value is WowClientType => typeof value === "number" && value !== WowClientType.None,
+  );
+  /** A game version type of no client, for releases that are not tagged for the installation */
+  const OTHER_CLIENT_TYPE_ID = 999_999;
 
-    let client: jasmine.SpyObj<cfv2.CFV2Client>;
+  for (const clientType of CLIENT_TYPES) {
+    describe(`scan (${WowClientType[clientType]})`, () => {
+      const installation = { id: "inst", clientType } as WowInstallation;
 
-    function toc(folder: string, fields: Partial<Toc> = {}): Toc {
-      return {
-        fileName: `${folder}.toc`,
-        filePath: `/AddOns/${folder}/${folder}.toc`,
-        interface: ["16001"],
-        dependencyList: [],
-        ...fields,
-      };
-    }
+      let client: jasmine.SpyObj<cfv2.CFV2Client>;
+      let clientTypeId: number;
 
-    function folder(name: string, tocFields: Partial<Toc> = {}, fingerprint?: number): AddonFolder {
-      return {
-        name,
-        path: `/AddOns/${name}`,
-        status: "Pending",
-        tocs: [toc(name, tocFields)],
-        cfScanResults: fingerprint === undefined ? undefined : ({ fingerprintNum: fingerprint } as any),
-      } as AddonFolder;
-    }
+      function toc(folder: string, fields: Partial<Toc> = {}): Toc {
+        return {
+          fileName: `${folder}.toc`,
+          filePath: `/AddOns/${folder}/${folder}.toc`,
+          interface: ["10000"],
+          dependencyList: [],
+          ...fields,
+        };
+      }
 
-    function cfFile(id: number, displayName: string, typeIds: number[], modules: [string, number][]): cfv2.CF2File {
-      return {
-        id,
-        displayName,
-        fileName: `${displayName}.zip`,
-        downloadUrl: `https://example.test/${id}.zip`,
-        fileDate: "2026-11-01T00:00:00Z",
-        releaseType: cfv2.CF2FileReleaseType.Release,
-        sortableGameVersions: typeIds.map((gameVersionTypeId) => ({ gameVersionTypeId })),
-        modules: modules.map(([name, fingerprint]) => ({ name, fingerprint })),
-        dependencies: [],
-      } as unknown as cfv2.CF2File;
-    }
+      function folder(name: string, tocFields: Partial<Toc> = {}, fingerprint?: number): AddonFolder {
+        return {
+          name,
+          path: `/AddOns/${name}`,
+          status: "Pending",
+          tocs: [toc(name, tocFields)],
+          cfScanResults: fingerprint === undefined ? undefined : ({ fingerprintNum: fingerprint } as any),
+        } as AddonFolder;
+      }
 
-    function cfAddon(id: number, slug: string, name: string, files: cfv2.CF2File[], authors = ["someone"]) {
-      return {
-        id,
-        slug,
-        name,
-        summary: "",
-        downloadCount: 1,
-        authors: authors.map((author) => ({ name: author })),
-        screenshots: [],
-        links: { websiteUrl: `https://www.curseforge.com/wow/addons/${slug}` },
-        latestFiles: files,
-      } as unknown as cfv2.CF2Addon;
-    }
+      function cfFile(id: number, displayName: string, typeIds: number[], modules: [string, number][]): cfv2.CF2File {
+        return {
+          id,
+          displayName,
+          fileName: `${displayName}.zip`,
+          downloadUrl: `https://example.test/${id}.zip`,
+          fileDate: "2026-01-01T00:00:00Z",
+          releaseType: cfv2.CF2FileReleaseType.Release,
+          sortableGameVersions: typeIds.map((gameVersionTypeId) => ({ gameVersionTypeId })),
+          modules: modules.map(([name, fingerprint]) => ({ name, fingerprint })),
+          dependencies: [],
+        } as unknown as cfv2.CF2File;
+      }
 
-    function ok<T>(data: T): Promise<any> {
-      return Promise.resolve({ statusCode: 200, data: { data } });
-    }
+      function cfAddon(id: number, slug: string, name: string, files: cfv2.CF2File[], authors = ["someone"]) {
+        return {
+          id,
+          slug,
+          name,
+          summary: "",
+          downloadCount: 1,
+          authors: authors.map((author) => ({ name: author })),
+          screenshots: [],
+          links: { websiteUrl: `https://www.curseforge.com/wow/addons/${slug}` },
+          latestFiles: files,
+        } as unknown as cfv2.CF2Addon;
+      }
 
-    function noFingerprintMatches(): void {
-      client.getFingerprintMatches.and.returnValue(ok({ exactMatches: [], partialMatches: [] }));
-    }
+      function ok<T>(data: T): Promise<any> {
+        return Promise.resolve({ statusCode: 200, data: { data } });
+      }
 
-    beforeEach(() => {
-      client = jasmine.createSpyObj<cfv2.CFV2Client>("CFV2Client", ["getFingerprintMatches", "getMods", "searchMods"]);
-      client.getMods.and.returnValue(ok([]));
-      client.searchMods.and.returnValue(ok([]));
-      (provider as any)._cf2Client = client;
-      (provider as any)._circuitBreaker = { fire: (action: () => Promise<unknown>) => action() };
-      (provider as any)._tocService = { getTocForGameType2: (_name: string, tocs: Toc[]) => tocs[0] };
+      function noFingerprintMatches(): void {
+        client.getFingerprintMatches.and.returnValue(ok({ exactMatches: [], partialMatches: [] }));
+      }
+
+      beforeEach(() => {
+        clientTypeId = (provider as any).getGameVersionTypeId(clientType);
+        client = jasmine.createSpyObj<cfv2.CFV2Client>("CFV2Client", [
+          "getFingerprintMatches",
+          "getMods",
+          "searchMods",
+        ]);
+        client.getMods.and.returnValue(ok([]));
+        client.searchMods.and.returnValue(ok([]));
+        (provider as any)._cf2Client = client;
+        (provider as any)._circuitBreaker = { fire: (action: () => Promise<unknown>) => action() };
+        (provider as any)._tocService = { getTocForGameType2: (_name: string, tocs: Toc[]) => tocs[0] };
+      });
+
+      it("reports a failed fingerprint request instead of leaving every addon unmatched", async () => {
+        client.getFingerprintMatches.and.returnValue(Promise.resolve({ statusCode: 401, data: undefined } as any));
+
+        await expectAsync(
+          provider.scan(installation, AddonChannelType.Stable, [folder("AddonA", {}, 11)]),
+        ).toBeRejectedWithError(/401/);
+      });
+
+      it("matches a fingerprint whose release is not tagged for the client", async () => {
+        const file = cfFile(500, "AddonA 2.0", [OTHER_CLIENT_TYPE_ID], [["AddonA", 11]]);
+        client.getFingerprintMatches.and.returnValue(
+          ok({ exactMatches: [{ id: 1, file, latestFiles: [] }], partialMatches: [] }),
+        );
+        client.getMods.and.returnValue(ok([cfAddon(1, "addon-a", "AddonA", [file])]));
+        const addonA = folder("AddonA", {}, 11);
+
+        await provider.scan(installation, AddonChannelType.Stable, [addonA]);
+
+        expect(addonA.matchingAddon?.externalId).toBe("1");
+        expect(addonA.matchingAddon?.installedVersion).toBe("AddonA 2.0");
+      });
+
+      it("matches a folder by the project ID in its TOC and owns the other folders the release ships", async () => {
+        noFingerprintMatches();
+        const release = cfFile(
+          700,
+          "v3.1.0",
+          [clientTypeId],
+          [
+            ["AddonA", 1],
+            ["AddonA_Data", 2],
+          ],
+        );
+        client.getMods.and.returnValue(ok([cfAddon(1001, "addon-a", "AddonA", [release])]));
+        const addonA = folder("AddonA", { curseProjectId: "1001", version: "3.1.0" }, 21);
+        const addonData = folder("AddonA_Data", { version: "1.0.1" }, 22);
+
+        await provider.scan(installation, AddonChannelType.Stable, [addonA, addonData]);
+
+        expect(client.getMods).toHaveBeenCalledWith({ modIds: [1001] });
+        expect(addonA.matchingAddon?.externalId).toBe("1001");
+        expect(addonA.matchingAddon?.installedExternalReleaseId).toBe("700");
+        expect(addonData.matchingAddon).toBe(addonA.matchingAddon);
+        expect(addonA.matchingAddon?.installedFolderList).toEqual(["AddonA", "AddonA_Data"]);
+      });
+
+      it("keeps the TOC version and an unknown release when no release has that version", async () => {
+        noFingerprintMatches();
+        const release = cfFile(701, "v3.2.0", [clientTypeId], [["AddonA", 1]]);
+        client.getMods.and.returnValue(ok([cfAddon(1001, "addon-a", "AddonA", [release])]));
+        const addonA = folder("AddonA", { curseProjectId: "1001", version: "3.1.0" }, 21);
+
+        await provider.scan(installation, AddonChannelType.Stable, [addonA]);
+
+        expect(addonA.matchingAddon?.installedVersion).toBe("3.1.0");
+        expect(addonA.matchingAddon?.installedExternalReleaseId).toBeUndefined();
+        expect(addonA.matchingAddon?.externalLatestReleaseId).toBe("701");
+      });
+
+      it("looks a folder up by the CurseForge link in its TOC", async () => {
+        noFingerprintMatches();
+        const release = cfFile(800, "120", [clientTypeId], [["AddonB", 1]]);
+        client.searchMods.and.returnValue(ok([cfAddon(42, "addon-b", "AddonB", [release])]));
+        const addonB = folder(
+          "AddonB",
+          { title: "AddonB", website: "https://www.curseforge.com/wow/addons/addon-b", version: "120" },
+          31,
+        );
+
+        await provider.scan(installation, AddonChannelType.Stable, [addonB]);
+
+        expect(client.searchMods).toHaveBeenCalledWith(jasmine.objectContaining({ slug: "addon-b" }));
+        expect(addonB.matchingAddon?.externalId).toBe("42");
+      });
+
+      it("accepts a title search result only when it ships the folder and an author agrees", async () => {
+        noFingerprintMatches();
+        const otherFolder = cfAddon(1, "addon-c", "AddonC", [cfFile(1, "1.0", [clientTypeId], [["SomethingElse", 1]])]);
+        const otherAuthor = cfAddon(2, "addon-c-x", "AddonC X", [cfFile(2, "1.0", [clientTypeId], [["AddonC", 1]])]);
+        const match = cfAddon(
+          3,
+          "addon-c-classic",
+          "Another Name",
+          [cfFile(3, "1.0", [clientTypeId], [["AddonC", 1]])],
+          ["author-a"],
+        );
+        client.searchMods.and.returnValue(ok([otherFolder, otherAuthor, match]));
+        const addonC = folder("AddonC", { title: "AddonC", author: "author-a", version: "1.0" }, 41);
+
+        await provider.scan(installation, AddonChannelType.Stable, [addonC]);
+
+        expect(client.searchMods).toHaveBeenCalledWith(jasmine.objectContaining({ searchFilter: "AddonC" }));
+        expect(addonC.matchingAddon?.externalId).toBe("3");
+      });
+
+      it("leaves a folder unmatched when no search result ships it", async () => {
+        noFingerprintMatches();
+        client.searchMods.and.returnValue(
+          ok([cfAddon(1, "local", "Local", [cfFile(1, "1.0", [clientTypeId], [["Other", 1]])], ["me"])]),
+        );
+        const local = folder("Local", { title: "Local", author: "me" }, 51);
+
+        await provider.scan(installation, AddonChannelType.Stable, [local]);
+
+        expect(local.matchingAddon).toBeUndefined();
+      });
     });
-
-    it("reports a failed fingerprint request instead of leaving every addon unmatched", async () => {
-      client.getFingerprintMatches.and.returnValue(Promise.resolve({ statusCode: 401, data: undefined } as any));
-
-      await expectAsync(
-        provider.scan(installation, AddonChannelType.Stable, [folder("Questie", {}, 11)]),
-      ).toBeRejectedWithError(/401/);
-    });
-
-    it("matches a fingerprint whose release is not tagged for the client", async () => {
-      const file = cfFile(500, "Auctionator 343", [RETAIL_TYPE], [["Auctionator", 11]]);
-      client.getFingerprintMatches.and.returnValue(
-        ok({ exactMatches: [{ id: 1, file, latestFiles: [] }], partialMatches: [] }),
-      );
-      client.getMods.and.returnValue(ok([cfAddon(1, "auctionator", "Auctionator", [file])]));
-      const auctionator = folder("Auctionator", {}, 11);
-
-      await provider.scan(installation, AddonChannelType.Stable, [auctionator]);
-
-      expect(auctionator.matchingAddon?.externalId).toBe("1");
-      expect(auctionator.matchingAddon?.installedVersion).toBe("Auctionator 343");
-    });
-
-    it("matches a folder by the project ID in its TOC and owns the other folders the release ships", async () => {
-      noFingerprintMatches();
-      const release = cfFile(
-        700,
-        "v12.6.4",
-        [FOREVER_TYPE],
-        [
-          ["Questie", 1],
-          ["QuestieDB", 2],
-        ],
-      );
-      client.getMods.and.returnValue(ok([cfAddon(334372, "questie", "Questie", [release])]));
-      const questie = folder("Questie", { curseProjectId: "334372", version: "12.6.4" }, 21);
-      const questieDb = folder("QuestieDB", { version: "1.0.13" }, 22);
-
-      await provider.scan(installation, AddonChannelType.Stable, [questie, questieDb]);
-
-      expect(client.getMods).toHaveBeenCalledWith({ modIds: [334372] });
-      expect(questie.matchingAddon?.externalId).toBe("334372");
-      expect(questie.matchingAddon?.installedExternalReleaseId).toBe("700");
-      expect(questieDb.matchingAddon).toBe(questie.matchingAddon);
-      expect(questie.matchingAddon?.installedFolderList).toEqual(["Questie", "QuestieDB"]);
-    });
-
-    it("keeps the TOC version and an unknown release when no release has that version", async () => {
-      noFingerprintMatches();
-      const release = cfFile(701, "v12.7.0", [FOREVER_TYPE], [["Questie", 1]]);
-      client.getMods.and.returnValue(ok([cfAddon(334372, "questie", "Questie", [release])]));
-      const questie = folder("Questie", { curseProjectId: "334372", version: "12.6.4" }, 21);
-
-      await provider.scan(installation, AddonChannelType.Stable, [questie]);
-
-      expect(questie.matchingAddon?.installedVersion).toBe("12.6.4");
-      expect(questie.matchingAddon?.installedExternalReleaseId).toBeUndefined();
-      expect(questie.matchingAddon?.externalLatestReleaseId).toBe("701");
-    });
-
-    it("looks a folder up by the CurseForge link in its TOC", async () => {
-      noFingerprintMatches();
-      const release = cfFile(800, "343", [FOREVER_TYPE], [["Auctionator", 1]]);
-      client.searchMods.and.returnValue(ok([cfAddon(42, "auctionator", "Auctionator", [release])]));
-      const auctionator = folder(
-        "Auctionator",
-        { title: "Auctionator", website: "https://www.curseforge.com/wow/addons/auctionator", version: "343" },
-        31,
-      );
-
-      await provider.scan(installation, AddonChannelType.Stable, [auctionator]);
-
-      expect(client.searchMods).toHaveBeenCalledWith(jasmine.objectContaining({ slug: "auctionator" }));
-      expect(auctionator.matchingAddon?.externalId).toBe("42");
-    });
-
-    it("accepts a title search result only when it ships the folder and an author agrees", async () => {
-      noFingerprintMatches();
-      const otherFolder = cfAddon(1, "threat-meter", "ForeverThreat", [
-        cfFile(1, "1.7.2", [FOREVER_TYPE], [["SomethingElse", 1]]),
-      ]);
-      const otherAuthor = cfAddon(2, "forever-threat-x", "Forever Threat X", [
-        cfFile(2, "1.7.2", [FOREVER_TYPE], [["ForeverThreat", 1]]),
-      ]);
-      const match = cfAddon(
-        3,
-        "foreverthreat-meter",
-        "Threat Meter",
-        [cfFile(3, "1.7.2", [FOREVER_TYPE], [["ForeverThreat", 1]])],
-        ["Loyftwa"],
-      );
-      client.searchMods.and.returnValue(ok([otherFolder, otherAuthor, match]));
-      const threat = folder("ForeverThreat", { title: "ForeverThreat", author: "Loyftwa", version: "1.7.2" }, 41);
-
-      await provider.scan(installation, AddonChannelType.Stable, [threat]);
-
-      expect(client.searchMods).toHaveBeenCalledWith(jasmine.objectContaining({ searchFilter: "ForeverThreat" }));
-      expect(threat.matchingAddon?.externalId).toBe("3");
-    });
-
-    it("leaves a folder unmatched when no search result ships it", async () => {
-      noFingerprintMatches();
-      client.searchMods.and.returnValue(
-        ok([cfAddon(1, "local", "Local", [cfFile(1, "1.0", [FOREVER_TYPE], [["Other", 1]])], ["me"])]),
-      );
-      const local = folder("Local", { title: "Local", author: "me" }, 51);
-
-      await provider.scan(installation, AddonChannelType.Stable, [local]);
-
-      expect(local.matchingAddon).toBeUndefined();
-    });
-  });
+  }
 
   describe("getCurseForgeSlug", () => {
     it("reads the slug of a CurseForge addon link", () => {
-      expect(getCurseForgeSlug("https://www.curseforge.com/wow/addons/auctionator")).toBe("auctionator");
-      expect(getCurseForgeSlug("https://www.curseforge.com/wow/addons/deadly-boss-mods/files")).toBe(
-        "deadly-boss-mods",
-      );
-      expect(getCurseForgeSlug("https://github.com/Questie/Questie")).toBeUndefined();
+      expect(getCurseForgeSlug("https://www.curseforge.com/wow/addons/addon-b")).toBe("addon-b");
+      expect(getCurseForgeSlug("https://www.curseforge.com/wow/addons/addon-c-classic/files")).toBe("addon-c-classic");
+      expect(getCurseForgeSlug("https://github.com/someone/addon-b")).toBeUndefined();
       expect(getCurseForgeSlug(undefined)).toBeUndefined();
     });
   });

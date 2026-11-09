@@ -58,33 +58,46 @@ describe("AddonMatcher", () => {
 
   describe("TOC project ID", () => {
     it("matches the declaring folder and the unmatched folders the release ships", async () => {
-      const main = folder("Questie", { curseProjectId: "1", version: "12.6.4" });
-      const db = folder("QuestieDB");
+      const main = folder("AddonA", { curseProjectId: "1", version: "3.1.0" });
+      const db = folder("AddonA_Data");
       const other = folder("Other");
-      const source = createSource([project("1", [release(["Questie v12.6.4"], ["Questie", "QuestieDB"])])]);
+      const source = createSource([project("1", [release(["AddonA v3.1.0"], ["AddonA", "AddonA_Data"])])]);
 
       await matcher.matchByTocProjectId([main, db, other], source);
 
       expect(main.matchingAddon?.externalId).toBe("1");
       expect(db.matchingAddon).toBe(main.matchingAddon);
       expect(other.matchingAddon).toBeUndefined();
-      expect(main.matchingAddon?.installedVersion).toBe("Questie v12.6.4");
+      expect(main.matchingAddon?.installedVersion).toBe("AddonA v3.1.0");
       expect(source.getProjectsById).toHaveBeenCalledOnceWith(["1"]);
     });
 
+    it("only claims shipped folders that are installed and not matched yet", async () => {
+      const main = folder("AddonA", { curseProjectId: "1", version: "3.1.0" });
+      const db = folder("AddonA_Data");
+      db.matchingAddon = { externalId: "addon-a-data" } as Addon;
+      const source = createSource([project("1", [release(["v3.1.0"], ["AddonA", "AddonA_Data", "AddonA_Extra"])])]);
+
+      await matcher.matchByTocProjectId([main, db], source);
+
+      expect(main.matchingAddon?.installedFolderList).toEqual(["AddonA"]);
+      expect(main.matchingAddon?.installedFolders).toBe("AddonA");
+      expect(db.matchingAddon.externalId).toBe("addon-a-data");
+    });
+
     it("keeps the TOC version when no release is that version", async () => {
-      const main = folder("Questie", { curseProjectId: "1", version: "12.0.0" });
-      const source = createSource([project("1", [release(["Questie v12.6.4"], ["Questie"])])]);
+      const main = folder("AddonA", { curseProjectId: "1", version: "3.0.0" });
+      const source = createSource([project("1", [release(["AddonA v3.1.0"], ["AddonA"])])]);
 
       await matcher.matchByTocProjectId([main], source);
 
-      expect(main.matchingAddon?.installedVersion).toBe("12.0.0");
+      expect(main.matchingAddon?.installedVersion).toBe("3.0.0");
     });
 
     it("prefers the release for the client", async () => {
-      const main = folder("Questie", { curseProjectId: "1", version: "1.0" });
+      const main = folder("AddonA", { curseProjectId: "1", version: "1.0" });
       const source = createSource([
-        project("1", [release(["other 2.0"], ["Questie"], false), release(["client 1.5"], ["Questie"], true)]),
+        project("1", [release(["other 2.0"], ["AddonA"], false), release(["client 1.5"], ["AddonA"], true)]),
       ]);
 
       await matcher.matchByTocProjectId([main], source);
@@ -93,9 +106,9 @@ describe("AddonMatcher", () => {
     });
 
     it("leaves folders that are already matched alone", async () => {
-      const main = folder("Questie", { curseProjectId: "1" });
+      const main = folder("AddonA", { curseProjectId: "1" });
       main.matchingAddon = { externalId: "fingerprint" } as Addon;
-      const source = createSource([project("1", [release(["1"], ["Questie"])])]);
+      const source = createSource([project("1", [release(["1"], ["AddonA"])])]);
 
       await matcher.matchByTocProjectId([main], source);
 
@@ -106,33 +119,33 @@ describe("AddonMatcher", () => {
 
   describe("search", () => {
     it("accepts a project found by the TOC website slug", async () => {
-      const addonFolder = folder("Auctionator", { website: "https://example.test/auctionator", title: "x" });
+      const addonFolder = folder("AddonB", { website: "https://example.test/addonb", title: "x" });
       const source = createSource([
-        project("2", [release(["343"], ["Auctionator"])], { slug: "other" }),
-        project("1", [release(["343"], ["Auctionator"])], { slug: "auctionator" }),
+        project("2", [release(["120"], ["AddonB"])], { slug: "other" }),
+        project("1", [release(["120"], ["AddonB"])], { slug: "addonb" }),
       ]);
 
       await matcher.matchBySearch([addonFolder], source);
 
-      expect(source.searchProjects).toHaveBeenCalledOnceWith({ slug: "auctionator" });
+      expect(source.searchProjects).toHaveBeenCalledOnceWith({ slug: "addonb" });
       expect(addonFolder.matchingAddon?.externalId).toBe("1");
     });
 
     it("accepts a title search result by its author", async () => {
-      const addonFolder = folder("Baganator", { title: "|cff00ff00Baganator|r", author: "plusmouse, someone" });
+      const addonFolder = folder("AddonC", { title: "|cff00ff00AddonC|r", author: "author-a, someone" });
       const source = createSource([
-        project("1", [release(["1"], ["Baganator"])], { name: "Bags", authors: ["Plusmouse"] }),
+        project("1", [release(["1"], ["AddonC"])], { name: "Bags", authors: ["Author-A"] }),
       ]);
 
       await matcher.matchBySearch([addonFolder], source);
 
-      expect(source.searchProjects).toHaveBeenCalledOnceWith({ title: "Baganator" });
+      expect(source.searchProjects).toHaveBeenCalledOnceWith({ title: "AddonC" });
       expect(addonFolder.matchingAddon?.externalId).toBe("1");
     });
 
     it("rejects a project that does not ship the folder", async () => {
-      const addonFolder = folder("Baganator", { title: "Baganator" });
-      const source = createSource([project("1", [release(["1"], ["Other"])], { name: "Baganator" })]);
+      const addonFolder = folder("AddonC", { title: "AddonC" });
+      const source = createSource([project("1", [release(["1"], ["Other"])], { name: "AddonC" })]);
 
       await matcher.matchBySearch([addonFolder], source);
 
@@ -170,7 +183,7 @@ describe("AddonMatcher", () => {
   });
 
   it("only logs a failing step", async () => {
-    const main = folder("Questie", { curseProjectId: "1" });
+    const main = folder("AddonA", { curseProjectId: "1" });
     const source = createSource([]);
     source.getProjectsById.and.rejectWith(new Error("offline"));
     spyOn(console, "error");
@@ -187,25 +200,25 @@ describe("AddonMatcher", () => {
     });
 
     it("strips color codes and an appended version from a TOC title", () => {
-      expect(cleanTocTitle("Questie|cFF00FF00 v12.6.4|r")).toBe("Questie");
-      expect(cleanTocTitle("|cff00ccffDetails!|r Damage Meter")).toBe("Details! Damage Meter");
-      expect(cleanTocTitle("QuestieDB")).toBe("QuestieDB");
+      expect(cleanTocTitle("AddonA|cFF00FF00 v3.1.0|r")).toBe("AddonA");
+      expect(cleanTocTitle("|cff00ccffAddon!|r Damage Meter")).toBe("Addon! Damage Meter");
+      expect(cleanTocTitle("AddonA_Data")).toBe("AddonA_Data");
     });
 
     it("splits a TOC author line into names", () => {
-      expect(splitAuthors("plusmouse, Borjamacare")).toEqual(["plusmouse", "borjamacare"]);
-      expect(splitAuthors("Aero/Logon/Muehe")).toEqual(["aero", "logon", "muehe"]);
+      expect(splitAuthors("author-a, Author-B")).toEqual(["author-a", "author-b"]);
+      expect(splitAuthors("One/Two/Three")).toEqual(["one", "two", "three"]);
       expect(splitAuthors("")).toEqual([]);
     });
 
     it("finds the TOC version in a release name as a whole", () => {
-      expect(isReleaseOfVersion(["Questie v12.6.4"], "12.6.4")).toBeTrue();
-      expect(isReleaseOfVersion(["x", "Auctionator-343.zip"], "343")).toBeTrue();
-      expect(isReleaseOfVersion(["v12.6.4"], "v12.6.4")).toBeTrue();
-      expect(isReleaseOfVersion(["Questie v12.6.41"], "12.6.4")).toBeFalse();
-      expect(isReleaseOfVersion(["Questie 12.6.4.1"], "12.6.4")).toBeFalse();
-      expect(isReleaseOfVersion(["Questie 1.12.6.4"], "12.6.4")).toBeFalse();
-      expect(isReleaseOfVersion(["Questie 12.6.4"], "")).toBeFalse();
+      expect(isReleaseOfVersion(["AddonA v3.1.0"], "3.1.0")).toBeTrue();
+      expect(isReleaseOfVersion(["x", "AddonB-120.zip"], "120")).toBeTrue();
+      expect(isReleaseOfVersion(["v3.1.0"], "v3.1.0")).toBeTrue();
+      expect(isReleaseOfVersion(["AddonA v3.1.01"], "3.1.0")).toBeFalse();
+      expect(isReleaseOfVersion(["AddonA 3.1.0.1"], "3.1.0")).toBeFalse();
+      expect(isReleaseOfVersion(["AddonA 1.3.1.0"], "3.1.0")).toBeFalse();
+      expect(isReleaseOfVersion(["AddonA 3.1.0"], "")).toBeFalse();
     });
   });
 });
