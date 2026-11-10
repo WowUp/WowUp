@@ -99,7 +99,7 @@
     "@angular-eslint/schematics": "17.3.0",
     "@angular-eslint/template-parser": "17.3.0",
     "@angular/animations": "17.3.4",
-    "@angular/cdk": "17.3.4",
+    "@angular/cdk": "22.2.6",
     "@angular/cli": "17.3.4",
     "@angular/common": "17.3.4",
     "@angular/compiler": "17.3.4",
