@@ -86,12 +86,14 @@ class WagoHandler {
   };
 
   private readonly onWillNavigate = (evt: Electron.Event, url: string) => {
-    log.debug("[wago-handler] will-navigate", url);
+    // The ad page reloads itself every few minutes, which arrives here as a navigation to its own
+    // URL. That is routine, so only a navigation we actually block is worth a line.
     if (this._webContents !== undefined && this._webContents.getURL() === url) {
-      log.debug(`[wago-handler] reload detected`);
-    } else {
-      evt.preventDefault(); // block the webview from navigating at all
+      return;
     }
+
+    log.debug("[wago-handler] blocked navigation", url);
+    evt.preventDefault(); // block the webview from navigating at all
   };
 
   private readonly onWindowOpenHandler = (details: Electron.HandlerDetails): { action: "deny" } => {

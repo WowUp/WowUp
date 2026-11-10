@@ -783,9 +783,10 @@ export class WagoAddonProvider extends AddonProvider {
   }
 
   private onWagoTokenReceived = (evt, token: string) => {
-    console.log(`[wago] onWagoTokenReceived: ${token.length}`);
+    // No line for the routine case: a token arrives on every ad refresh, and "[wago] token ready"
+    // already confirms the token is good when it is actually used.
     if (!this.isValidToken(token)) {
-      console.warn("[wagp] malformed token detected");
+      console.warn(`[wago] malformed token detected: ${token?.length}`);
       return;
     }
 
