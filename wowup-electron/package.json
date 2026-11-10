@@ -101,7 +101,7 @@
     "@angular/animations": "17.3.4",
     "@angular/cdk": "17.3.4",
     "@angular/cli": "17.3.4",
-    "@angular/common": "17.3.4",
+    "@angular/common": "22.2.5",
     "@angular/compiler": "17.3.4",
     "@angular/compiler-cli": "17.3.4",
     "@angular/core": "17.3.4",
