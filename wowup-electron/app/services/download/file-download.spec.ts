@@ -44,7 +44,10 @@ class FakeResponse extends EventEmitter {
 class FakeWriter implements WritableLike {
   public readonly chunks: Buffer[] = [];
   public endCalled = false;
+  /** Set to keep the end callback pending, the way a real stream does while data is still being written. */
+  public holdFlush = false;
   private _errorListener?: (err: Error) => void;
+  private _endCallback?: (err?: Error | null) => void;
 
   public write(chunk: Buffer, callback?: () => void): boolean {
     this.chunks.push(chunk);
@@ -52,8 +55,17 @@ class FakeWriter implements WritableLike {
     return true;
   }
 
-  public end(): void {
+  public end(callback?: (err?: Error | null) => void): void {
     this.endCalled = true;
+    if (this.holdFlush) {
+      this._endCallback = callback;
+    } else {
+      callback?.();
+    }
+  }
+
+  public flush(err?: Error): void {
+    this._endCallback?.(err);
   }
 
   public on(event: "error", listener: (err: Error) => void): void {
@@ -400,26 +412,59 @@ describe("file-download", () => {
       expect(savePath.endsWith("addon.zip")).to.equal(true);
     });
 
-    it("writes to a real file on disk", async () => {
-      // The rest of the suite uses a fake writer; this one proves the default path actually
-      // opens the save path through fs.
-      delete deps.createWriteStream;
+    it("does not resolve until the writer has flushed", async () => {
+      writer.holdFlush = true;
+      let resolved = false;
+      const promise = start().then((savePath) => {
+        resolved = true;
+        return savePath;
+      });
+      const response = await respond(200, { "content-length": "4" });
+      response.emit("data", Buffer.from("abcd"));
+      response.emit("end");
 
+      await waitFor(() => (writer.endCalled ? true : undefined), "the writer to end");
+      await new Promise((resolve) => setTimeout(resolve, 20));
+      expect(resolved).to.equal(false);
+
+      writer.flush();
+      await promise;
+      expect(resolved).to.equal(true);
+    });
+
+    it("rejects and logs when the final flush fails", async () => {
+      writer.holdFlush = true;
       const promise = start();
       const response = await respond(200, { "content-length": "4" });
       response.emit("data", Buffer.from("abcd"));
       response.emit("end");
 
+      await waitFor(() => (writer.endCalled ? true : undefined), "the writer to end");
+      writer.flush(Object.assign(new Error("ENOSPC: no space left on device"), { code: "ENOSPC" }));
+
+      const err = await expectRejection(promise);
+      expect(err.message).to.contain("ENOSPC");
+      expect(errorLines().some((t) => t.includes("[DownloadFile] failed") && t.includes("code=ENOSPC"))).to.equal(true);
+    });
+
+    it("has the complete file on disk when it resolves", async () => {
+      // The rest of the suite uses a fake writer; this one proves the default path writes through
+      // fs. It is large enough that writes are still queued when the response ends, which is what
+      // made the unzip step fail with "End of central directory record signature not found".
+      delete deps.createWriteStream;
+
+      const chunk = Buffer.alloc(64 * 1024, "a");
+      const chunkCount = 256;
+      const promise = start();
+      const response = await respond(200, { "content-length": String(chunk.length * chunkCount) });
+      for (let i = 0; i < chunkCount; i++) {
+        response.emit("data", chunk);
+      }
+      response.emit("end");
+
       const savePath = await promise;
 
-      // NOTE: downloadFile does not await the stream flush before resolving, so the file can
-      // still be short here for a tick or two.
-      const contents = await waitFor(() => {
-        const text = fs.readFileSync(savePath, "utf-8");
-        return text.length === 4 ? text : undefined;
-      }, "the file contents to flush");
-
-      expect(contents).to.equal("abcd");
+      expect(fs.statSync(savePath).size).to.equal(chunk.length * chunkCount);
     });
   });
 });

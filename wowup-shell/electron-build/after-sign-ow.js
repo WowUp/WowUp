@@ -24,18 +24,28 @@ module.exports = async function (params) {
 
   console.log(`Notarizing ${appId} found at ${appPath}`);
 
-  try {
-    await electron_notarize.notarize({
-      appBundleId: appId,
-      appPath: appPath,
-      appleId: process.env.NOTARIZE_APPLE_ID,
-      appleIdPassword: process.env.NOTARIZE_APPLE_PASSWORD,
-      teamId: process.env.NOTARIZE_APPLE_TEAM_ID,
-      ascProvider: process.env.NOTARIZE_APPLE_TEAM_ID
-    });
-  } catch (error) {
-    console.error(error);
+  const missing = ['NOTARIZE_APPLE_ID', 'NOTARIZE_APPLE_PASSWORD', 'NOTARIZE_APPLE_TEAM_ID'].filter(
+    (name) => !process.env[name]
+  );
+  if (missing.length > 0) {
+    // A CI build must never ship un-notarized; local builds may skip it.
+    if (process.env.CI) {
+      throw new Error(`Cannot notarize ${appId}, missing env vars: ${missing.join(', ')}`);
+    }
+    console.warn(`Skipping notarization of ${appId}, missing env vars: ${missing.join(', ')}`);
+    return;
   }
+
+  // Let notarize errors (e.g. HTTP 403 for an expired Apple agreement) propagate so
+  // electron-builder fails the build instead of uploading un-notarized artifacts.
+  await electron_notarize.notarize({
+    appBundleId: appId,
+    appPath: appPath,
+    appleId: process.env.NOTARIZE_APPLE_ID,
+    appleIdPassword: process.env.NOTARIZE_APPLE_PASSWORD,
+    teamId: process.env.NOTARIZE_APPLE_TEAM_ID,
+    ascProvider: process.env.NOTARIZE_APPLE_TEAM_ID
+  });
 
   console.log(`Done notarizing ${appId}`);
 };

@@ -39,6 +39,7 @@ function getArg(argKey: string): string {
 const LOG_PATH = getArg("log-path");
 const USER_DATA_PATH = getArg("user-data-path");
 const BASE_BG_COLOR = getArg("base-bg-color");
+const INSTALL_ID = getArg("install-id");
 
 function onRendererEvent(channel: string, listener: (event: IpcRendererEvent, ...args: any[]) => void) {
   ipcRenderer.on(channel, listener);
@@ -51,12 +52,6 @@ function onceRendererEvent(channel: string, listener: (event: IpcRendererEvent, 
 function rendererSend(channel: string, ...args: any[]) {
   /* eslint-disable @typescript-eslint/no-unsafe-argument */
   ipcRenderer.send(channel, ...args);
-  /* eslint-enable @typescript-eslint/no-unsafe-argument */
-}
-
-function rendererSendSync(channel: string, ...args: any[]): any {
-  /* eslint-disable @typescript-eslint/no-unsafe-argument */
-  return ipcRenderer.sendSync(channel, ...args);
   /* eslint-enable @typescript-eslint/no-unsafe-argument */
 }
 
@@ -96,12 +91,12 @@ try {
     };
     window.userDataPath = USER_DATA_PATH;
     window.logPath = LOG_PATH;
+    window.installId = INSTALL_ID;
     window.platform = process.platform;
     window.wowup = {
       onRendererEvent,
       onceRendererEvent,
       rendererSend,
-      rendererSendSync,
       rendererInvoke,
       rendererOff,
       rendererOn,

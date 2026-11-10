@@ -14,6 +14,15 @@ import { AnalyticsService } from "../analytics/analytics.service";
 import { USER_ACTION_OPEN_LINK } from "../../../common/constants";
 import { ElectronService } from "../electron/electron.service";
 
+function isWebUrl(href: string): boolean {
+  try {
+    const protocol = new URL(href).protocol;
+    return protocol === "http:" || protocol === "https:";
+  } catch {
+    return false;
+  }
+}
+
 @Injectable({
   providedIn: "root",
 })
@@ -23,7 +32,7 @@ export class LinkService {
     private _analyticsService: AnalyticsService,
     private _electronService: ElectronService,
     private _wowUpService: WowUpService,
-    private _translateService: TranslateService
+    private _translateService: TranslateService,
   ) {}
 
   public async openExternalLink(url: string): Promise<void> {
@@ -34,10 +43,17 @@ export class LinkService {
   }
 
   public confirmLinkNavigation(href: string): Observable<any> {
+    // Links come from remote content (addon descriptions, news, webviews); never hand the OS
+    // anything but a web URL, e.g. a relative link that resolved against our file:// origin.
+    if (!isWebUrl(href)) {
+      console.warn(`Ignoring non-web link: ${href}`);
+      return of(undefined);
+    }
+
     return from(this._wowUpService.getTrustedDomains()).pipe(
       first(),
       switchMap((domains) =>
-        from(this._wowUpService.isTrustedDomain(href, domains)).pipe(map((isTrusted) => ({ isTrusted, domains })))
+        from(this._wowUpService.isTrustedDomain(href, domains)).pipe(map((isTrusted) => ({ isTrusted, domains }))),
       ),
       switchMap(({ isTrusted, domains }) => {
         if (isTrusted) {
@@ -49,7 +65,7 @@ export class LinkService {
       catchError((e) => {
         console.error(e);
         return of(undefined);
-      })
+      }),
     );
   }
 
@@ -72,7 +88,7 @@ export class LinkService {
 
         if (result.trustDomain !== "") {
           return from(this._wowUpService.trustDomain(result.trustDomain)).pipe(
-            switchMap(() => from(this.openExternalLink(href)))
+            switchMap(() => from(this.openExternalLink(href))),
           );
         } else {
           return from(this.openExternalLink(href));
@@ -81,7 +97,7 @@ export class LinkService {
       catchError((e) => {
         console.error("failed to open external link", e);
         return of(undefined);
-      })
+      }),
     );
   }
 }

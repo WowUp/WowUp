@@ -7,11 +7,13 @@ import {
   DISABLE_IPV6_PREFERENCE_KEY,
   ENABLE_APP_BADGE_KEY,
   ENABLE_SYSTEM_NOTIFICATIONS_PREFERENCE_KEY,
+  INSTALL_ID_KEY,
   TRUSTED_DOMAINS_KEY,
   USE_HARDWARE_ACCELERATION_PREFERENCE_KEY,
   USE_SYMLINK_MODE_PREFERENCE_KEY,
   WOWUP_RELEASE_CHANNEL_PREFERENCE_KEY,
 } from "../src/common/constants";
+import { v4 as uuidV4 } from "uuid";
 import { WowUpReleaseChannelType } from "../src/common/wowup/wowup-release-channel-type";
 import { getShell } from "../../wowup-shell/contract/shell-api";
 import { getPreferenceStore } from "./stores";
@@ -31,6 +33,17 @@ export function initializeDefaultPreferences() {
   setDefaultPreference(ENABLE_APP_BADGE_KEY, true);
   setDefaultPreference(TRUSTED_DOMAINS_KEY, DEFAULT_TRUSTED_DOMAINS);
   setDefaultPreference(ACCT_PUSH_ENABLED_KEY, false);
+}
+
+export function getInstallId(): string {
+  const store = getPreferenceStore();
+  let id = store.get(INSTALL_ID_KEY) as string | undefined;
+  if (!id) {
+    id = uuidV4();
+    store.set(INSTALL_ID_KEY, id);
+    log.info(`Generated new install ID`);
+  }
+  return id;
 }
 
 export function getWowUpReleaseChannelPreference(): WowUpReleaseChannelType {

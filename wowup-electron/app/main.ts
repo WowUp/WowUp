@@ -43,7 +43,7 @@ import { appUpdater } from "./app-updater";
 import { wagoHandler } from "./wago-handler";
 import { initializeIpcHandlers, setPendingOpenUrl } from "./ipc-events";
 import * as platform from "./platform";
-import { initializeDefaultPreferences } from "./preferences";
+import { initializeDefaultPreferences, getInstallId } from "./preferences";
 import { PUSH_NOTIFICATION_EVENT, pushEvents } from "./push";
 import { getAddonStore, getPreferenceStore, initializeStoreIpcHandlers } from "./stores";
 import { registerControllers } from "./controllers";
@@ -312,6 +312,7 @@ function createWindow(): BrowserWindow {
         `--log-path=${LOG_PATH}`,
         `--user-data-path=${app.getPath("userData")}`,
         `--base-bg-color=${getBackgroundColor()}`,
+        `--install-id=${getInstallId()}`,
       ],
       webviewTag: true,
     },
@@ -334,10 +335,6 @@ function createWindow(): BrowserWindow {
   windowState.trackWindowPlacement(win);
 
   windowState.restoreMainWindowBounds(win);
-
-  if (windowState.wasMaximized()) {
-    win.maximize();
-  }
 
   appUpdater.init(win);
 
@@ -447,10 +444,6 @@ function createWindow(): BrowserWindow {
   win.once("ready-to-show", () => {
     shell.markHealthy();
 
-    if (canStartHidden()) {
-      return;
-    }
-
     win?.webContents.session.setPermissionRequestHandler((contents, permission, callback) => {
       return callback(false);
     });
@@ -459,11 +452,19 @@ function createWindow(): BrowserWindow {
       return false;
     });
 
+    if (canStartHidden()) {
+      return;
+    }
+
     win?.show();
   });
 
   win.once("show", () => {
     // win.webContents.openDevTools();
+
+    if (windowState.wasMaximized()) {
+      win?.maximize();
+    }
 
     if (windowState.wasFullScreen()) {
       win?.setFullScreen(true);

@@ -1,7 +1,6 @@
 import { Injectable } from "@angular/core";
 import { ApplicationInsights } from "@microsoft/applicationinsights-web";
 import { BehaviorSubject } from "rxjs";
-import { v4 as uuidV4 } from "uuid";
 import { AppConfig } from "../../../environments/environment";
 import { PreferenceStorageService } from "../storage/preference-storage.service";
 import { TELEMETRY_ENABLED_KEY } from "../../../common/constants";
@@ -12,17 +11,11 @@ import { WowUpService } from "../wowup/wowup.service";
   providedIn: "root",
 })
 export class AnalyticsService {
-  private readonly installIdPreferenceKey = "install_id";
-  private readonly _installId: string;
   private readonly _telemetryEnabledSrc = new BehaviorSubject(false);
 
   private _insights?: ApplicationInsights;
 
   public readonly telemetryEnabled$ = this._telemetryEnabledSrc.asObservable();
-
-  private get installId() {
-    return this._installId;
-  }
 
   public async shouldPromptTelemetry(): Promise<boolean> {
     return (await this._preferenceStorageService.getAsync(TELEMETRY_ENABLED_KEY)) === undefined;
@@ -49,8 +42,6 @@ export class AnalyticsService {
     private _electronService: ElectronService,
     private _wowUpService: WowUpService,
   ) {
-    this._installId = this.loadInstallId();
-
     this.getTelemetryEnabled()
       .then((enabled) => {
         this._telemetryEnabledSrc.next(enabled);
@@ -85,18 +76,6 @@ export class AnalyticsService {
 
   public trackAction(name: string, properties: any = undefined): void {
     this.track(name, properties);
-  }
-
-  private loadInstallId() {
-    let installId = this._preferenceStorageService.getSync(this.installIdPreferenceKey);
-    if (installId) {
-      return installId;
-    }
-
-    installId = uuidV4();
-    this._preferenceStorageService.setAsync(this.installIdPreferenceKey, installId).catch(console.error);
-
-    return installId;
   }
 
   private configureAppInsights(enable: boolean) {

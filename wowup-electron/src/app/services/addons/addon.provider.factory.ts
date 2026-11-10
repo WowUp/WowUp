@@ -58,6 +58,7 @@ export class AddonProviderFactory {
         AppConfig.defaultHttpResetTimeoutMs,
         AppConfig.wowUpHubHttpTimeoutMs,
       ),
+      { "X-WowUp-Install-Id": window.installId, "X-WowUp-Platform": window.platform },
     );
 
     this._wowInterfaceNetworkInterface = new GenericNetworkInterface(

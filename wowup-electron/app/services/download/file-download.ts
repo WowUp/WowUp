@@ -28,7 +28,7 @@ export interface DownloadLogger {
 
 export interface WritableLike {
   write(chunk: Buffer, callback?: () => void): boolean;
-  end(): void;
+  end(callback?: (err?: Error | null) => void): void;
   on(event: "error", listener: (err: Error) => void): void;
 }
 
@@ -196,12 +196,17 @@ export async function downloadFile(options: DownloadFileOptions, deps: DownloadF
 
       req.end();
     });
+
+    // The response ending only means the last chunk has been queued. Callers unzip the file as
+    // soon as this resolves, so wait for the writes to reach the file.
+    await new Promise<void>((resolve, reject) => {
+      writer.end((err) => (err ? reject(err) : resolve()));
+    });
   } catch (err) {
     log.error(`[DownloadFile] failed '${url}': ${describeError(err)}`);
-    throw err;
-  } finally {
     // always close stream
     writer.end();
+    throw err;
   }
 
   return savePath;

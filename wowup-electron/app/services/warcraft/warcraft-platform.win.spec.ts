@@ -1,5 +1,7 @@
 import { expect } from "chai";
 
+import { WowClientType } from "wowup-lib-core";
+
 import { getBlizzardAgentCandidates, WarcraftPlatformWin } from "./warcraft-platform.win";
 
 const C_AGENT = "C:\\ProgramData\\Battle.net\\Agent\\product.db";
@@ -59,6 +61,55 @@ describe("WarcraftPlatformWin blizzard agent search", () => {
 
     it("returns an empty string when there's no agent", async () => {
       expect(await platformWith([]).getBlizzardAgentPath()).to.equal("");
+    });
+  });
+});
+
+// Whatever architecture WowUp runs as: an x64 WowUp under emulation on ARM64 still sees the ARM64 binaries
+describe("WarcraftPlatformWin binary names", () => {
+  const platform = new WarcraftPlatformWin();
+
+  describe("isWowApplication", () => {
+    it("accepts the x64 and ARM64 binaries", () => {
+      expect(platform.isWowApplication("Wow.exe")).to.equal(true);
+      expect(platform.isWowApplication("Wow-arm64.exe")).to.equal(true);
+      expect(platform.isWowApplication("WowClassicB-arm64.exe")).to.equal(true);
+    });
+
+    it("ignores case, as Windows does", () => {
+      expect(platform.isWowApplication("Wow-ARM64.exe")).to.equal(true);
+      expect(platform.isWowApplication("WOWCLASSIC.EXE")).to.equal(true);
+    });
+
+    it("rejects other executables", () => {
+      expect(platform.isWowApplication("Battle.net.exe")).to.equal(false);
+      expect(platform.isWowApplication("Wow-arm64.exe.bak")).to.equal(false);
+      expect(platform.isWowApplication("Wow-x86.exe")).to.equal(false);
+      expect(platform.isWowApplication("-arm64.exe")).to.equal(false);
+    });
+  });
+
+  describe("getClientType", () => {
+    const binary = (folder: string, name: string) => `C:\\World of Warcraft\\${folder}\\${name}`;
+
+    it("detects ARM64 binaries in any case", () => {
+      expect(platform.getClientType(binary("_retail_", "Wow-ARM64.exe"))).to.equal(WowClientType.Retail);
+      expect(platform.getClientType(binary("_classic_era_", "WowClassic-arm64.exe"))).to.equal(
+        WowClientType.ClassicEra,
+      );
+      expect(platform.getClientType(binary("_xptr_", "WowT-Arm64.exe"))).to.equal(WowClientType.RetailXPtr);
+      expect(platform.getClientType(binary("_classic_beta_", "WowClassicB-arm64.exe"))).to.equal(
+        WowClientType.ClassicBeta,
+      );
+    });
+
+    it("detects x64 binaries regardless of case", () => {
+      expect(platform.getClientType(binary("_ptr_", "WOWT.EXE"))).to.equal(WowClientType.RetailPtr);
+      expect(platform.getClientType(binary("_beta_", "WowB.exe"))).to.equal(WowClientType.Beta);
+    });
+
+    it("returns None for anything else", () => {
+      expect(platform.getClientType(binary("_retail_", "Battle.net.exe"))).to.equal(WowClientType.None);
     });
   });
 });

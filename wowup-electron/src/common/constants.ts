@@ -153,7 +153,6 @@ export const IPC_METRICS_LOG_SNAPSHOT = "metrics-log-snapshot";
 
 // IPC STORAGE
 export const IPC_STORE_GET_OBJECT = "store-get-object";
-export const IPC_STORE_GET_OBJECT_SYNC = "store-get-object-sync";
 export const IPC_STORE_GET_ALL = "store-get-all";
 export const IPC_STORE_SET_OBJECT = "store-set-object";
 export const IPC_STORE_REMOVE_OBJECT = "store-remove-object";
@@ -186,6 +185,7 @@ export const ADDON_PROVIDERS_KEY = "addon_providers";
 export const WOW_INSTALLATIONS_KEY = "wow_installations";
 export const CURRENT_THEME_KEY = "current_theme";
 export const TELEMETRY_ENABLED_KEY = "telemetry_enabled";
+export const INSTALL_ID_KEY = "install_id";
 export const BLIZZARD_AGENT_PATH_KEY = "blizzard_agent_path";
 export const ZOOM_FACTOR_KEY = "zoom_factor";
 export const SELECTED_DETAILS_TAB_KEY = "selected_details_tab";
