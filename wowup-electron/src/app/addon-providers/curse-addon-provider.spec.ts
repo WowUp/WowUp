@@ -97,4 +97,49 @@ describe("CurseAddonProvider", () => {
       );
     });
   });
+
+  describe("description and changelog links", () => {
+    /** Builds a provider whose cache hands back the given HTML as the CF API response. */
+    function providerReturning(html: string): CurseAddonProvider {
+      const cachingService = jasmine.createSpyObj<CachingService>("CachingService", ["transaction"]);
+      cachingService.transaction.and.returnValue(Promise.resolve({ data: { data: html } }));
+      const networkService = jasmine.createSpyObj<NetworkService>("NetworkService", ["getCircuitBreaker"]);
+      networkService.getCircuitBreaker.and.returnValue({} as any);
+      return new CurseAddonProvider(cachingService, networkService, {} as TocService);
+    }
+
+    // Shape taken from a real CurseForge changelog (EllesmereUI, issue #1631): remoteUrl is double-encoded
+    const linkoutHtml =
+      '<p><a href="/linkout?remoteUrl=https%253a%252f%252fellesmereui.com%252fpatch-notes" rel="nofollow">Patch notes</a></p>';
+
+    it("should unwrap /linkout links in changelogs", async () => {
+      const result = await providerReturning(linkoutHtml).getChangelog({} as any, "1477613", "9521650");
+
+      expect(result).toBe('<p><a href="https://ellesmereui.com/patch-notes" rel="nofollow">Patch notes</a></p>');
+    });
+
+    it("should unwrap /linkout links in descriptions", async () => {
+      const result = await providerReturning(linkoutHtml).getDescription({} as any, "1477613");
+
+      expect(result).toContain('href="https://ellesmereui.com/patch-notes"');
+    });
+
+    it("should make other root-relative links absolute to curseforge.com", async () => {
+      const result = await providerReturning("<a href='/wow/addons/details'>Details</a>").getChangelog(
+        {} as any,
+        "1",
+        "2",
+      );
+
+      expect(result).toBe("<a href='https://www.curseforge.com/wow/addons/details'>Details</a>");
+    });
+
+    it("should leave absolute links untouched", async () => {
+      const html = '<a class="x" href="https://example.test/a?b=1">A</a> <a href="//cdn.example.test/x">B</a>';
+
+      const result = await providerReturning(html).getChangelog({} as any, "1", "2");
+
+      expect(result).toBe(html);
+    });
+  });
 });
