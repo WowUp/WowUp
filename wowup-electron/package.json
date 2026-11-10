@@ -165,7 +165,7 @@
     "karma-jasmine": "5.1.0",
     "karma-jasmine-html-reporter": "2.1.0",
     "markdown-it": "13.0.1",
-    "messageformat": "2.3.0",
+    "messageformat": "4.1.0",
     "mocha": "10.2.0",
     "ng-gallery": "11.0.0",
     "ngx-translate-messageformat-compiler": "7.0.0",
