@@ -25,6 +25,7 @@ import { WarcraftInstallationService } from "../warcraft/warcraft-installation.s
 import { WarcraftService } from "../warcraft/warcraft.service";
 import { WowUpService } from "../wowup/wowup.service";
 import { AddonSyncApiService } from "../api/addon-sync-api.service";
+import { AddonInstallApiService } from "../api/addon-install-api.service";
 import { AddonSyncError, GenericProviderError } from "../../errors";
 import { AddonInstallService, InstallQueueItem } from "./addon-install.service";
 import { AddonService, DependencyInstallEvent, DependencyInstallState } from "./addon.service";
@@ -45,6 +46,7 @@ describe("AddonService", () => {
   let addonProviderFactory: jasmine.SpyObj<AddonProviderFactory>;
   let wowUpService: jasmine.SpyObj<WowUpService>;
   let syncApi: jasmine.SpyObj<AddonSyncApiService>;
+  let installApi: jasmine.SpyObj<AddonInstallApiService>;
 
   /** Addons saved to storage, as getAllForInstallationIdAsync returns them. */
   let installed: Addon[];
@@ -150,6 +152,8 @@ describe("AddonService", () => {
     addonInstallService.enqueue.and.callFake((item) => {
       enqueued.push(item);
       if (autoComplete) {
+        // A finished install has been saved by main
+        installed = [...installed.filter((a) => a.id !== item.addon.id), item.addon];
         item.completion.resolve();
       }
     });
@@ -210,6 +214,9 @@ describe("AddonService", () => {
     syncApi.prepareScan.and.resolveTo({ addonFolders: [] });
     syncApi.completeScan.and.resolveTo([]);
 
+    installApi = jasmine.createSpyObj<AddonInstallApiService>("AddonInstallApiService", ["removeAddon"]);
+    installApi.removeAddon.and.callFake((request) => Promise.resolve({ removedAddons: [request.addon] }));
+
     service = new AddonService(
       addonStorage,
       addonInstallService,
@@ -221,6 +228,7 @@ describe("AddonService", () => {
       warcraftInstallationService,
       addonProviderFactory,
       syncApi,
+      installApi,
     );
   });
 
@@ -314,13 +322,13 @@ describe("AddonService", () => {
   });
 
   describe("installAddon", () => {
-    it("should enqueue an install and save the addon afterwards", async () => {
+    it("should enqueue an install and leave saving it to main", async () => {
       const addon = createAddon();
 
       await service.installAddon(addon);
 
       expect(enqueued[0].installType).toEqual("install");
-      expect(addonStorage.setAsync).toHaveBeenCalledWith(addon.id, addon);
+      expect(addonStorage.setAsync).not.toHaveBeenCalled();
     });
   });
 
@@ -1215,54 +1223,56 @@ describe("AddonService", () => {
   });
 
   describe("removeAddon", () => {
-    it("should delete the addon folders and remove it from storage", async () => {
+    it("should ask main to remove the addon", async () => {
       const addon = createAddon({ installedFolderList: ["Baganator"] });
 
       await service.removeAddon(addon);
 
-      expect(fileService.deleteIfExists).toHaveBeenCalledWith(pathJoin(ADDON_FOLDER_PATH, "Baganator"));
-      expect(addonStorage.removeAsync).toHaveBeenCalledWith(addon);
-    });
-
-    it("should not touch dependencies unless asked", async () => {
-      const addon = createAddon({
-        dependencies: [{ externalAddonId: "2002", type: AddonDependencyType.Required }],
+      expect(installApi.removeAddon).toHaveBeenCalledWith({
+        addon,
+        removeDependencies: false,
+        removeDirectories: true,
       });
-
-      await service.removeAddon(addon);
-
-      expect(addonStorage.getByExternalIdAsync).not.toHaveBeenCalled();
-      expect(addonStorage.removeAsync).toHaveBeenCalledTimes(1);
     });
 
-    it("should remove the installed dependencies when asked", async () => {
-      const dependency = createAddon({ id: "dep-1", externalId: "2002", installedFolderList: ["Syndicator"] });
-      addonStorage.getByExternalIdAsync.and.callFake((externalId) =>
-        Promise.resolve(externalId === "2002" ? dependency : undefined),
-      );
-      const addon = createAddon({
-        installedFolderList: ["Baganator"],
-        dependencies: [
-          { externalAddonId: "2002", type: AddonDependencyType.Required },
-          { externalAddonId: "9999", type: AddonDependencyType.Required },
-        ],
+    it("should pass the dependency and folder choices through", async () => {
+      const addon = createAddon();
+
+      await service.removeAddon(addon, true, false);
+
+      expect(installApi.removeAddon).toHaveBeenCalledWith({
+        addon,
+        removeDependencies: true,
+        removeDirectories: false,
       });
-
-      await service.removeAddon(addon, true);
-
-      expect(addonStorage.removeAsync).toHaveBeenCalledWith(addon);
-      expect(addonStorage.removeAsync).toHaveBeenCalledWith(dependency);
-      expect(addonStorage.removeAsync).toHaveBeenCalledTimes(2);
-      expect(fileService.deleteIfExists).toHaveBeenCalledWith(pathJoin(ADDON_FOLDER_PATH, "Syndicator"));
     });
 
-    it("should emit the removed addon id", async () => {
+    it("should emit and track every addon main removed", async () => {
+      const dependency = createAddon({ id: "dep-1", name: "Syndicator", externalId: "2002" });
+      installApi.removeAddon.and.callFake((request) => Promise.resolve({ removedAddons: [request.addon, dependency] }));
+      const removed: string[] = [];
+      service.addonRemoved$.subscribe((id) => removed.push(id));
+
+      await service.removeAddon(createAddon(), true);
+
+      expect(removed).toEqual(["addon-1", "dep-1"]);
+      expect(analyticsService.trackAction).toHaveBeenCalledTimes(2);
+    });
+
+    it("should emit nothing when main left the addon alone", async () => {
+      installApi.removeAddon.and.resolveTo({ removedAddons: [] });
       const removed: string[] = [];
       service.addonRemoved$.subscribe((id) => removed.push(id));
 
       await service.removeAddon(createAddon());
 
-      expect(removed).toEqual(["addon-1"]);
+      expect(removed).toEqual([]);
+    });
+
+    it("should reject when main's remove fails", async () => {
+      installApi.removeAddon.and.rejectWith(new Error("Failed to remove all directories"));
+
+      await expectAsync(service.removeAddon(createAddon())).toBeRejectedWithError("Failed to remove all directories");
     });
   });
 
@@ -1305,6 +1315,7 @@ describe("AddonService", () => {
         warcraftInstallationService,
         addonProviderFactory,
         syncApi,
+        installApi,
       );
 
       // Every scan makes new records with new ids, like the real folder scan does

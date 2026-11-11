@@ -3,12 +3,15 @@ import { app, BrowserWindow } from "electron";
 import * as Store from "electron-store";
 import * as log from "electron-log/main";
 import * as fsp from "fs/promises";
+import * as path from "path";
 
 import { AddonController } from "./addon.controller";
+import { AddonInstallController } from "./addon-install.controller";
 import { AddonSyncController } from "./scan/addon-sync.controller";
+import { AddonInstallService } from "../services/addons/addon-install.service";
 import { AddonRepository } from "../services/addons/addon-repository";
 import { AddonSyncService } from "../services/addons/addon-sync.service";
-import { getLastModifiedFileDate } from "../file.utils";
+import { copyPath, getLastModifiedFileDate, remove, unzipFile } from "../file.utils";
 import { AddonFolderService } from "../services/warcraft/addon-folder.service";
 import { USE_SYMLINK_MODE_PREFERENCE_KEY } from "../../src/common/constants";
 import { WagoAdsController } from "./wago-ads.controller";
@@ -38,6 +41,21 @@ export interface ControllerDeps {
   window: BrowserWindow;
   addonStore: Store;
   preferenceStore: Store;
+}
+
+async function listDirectories(dirPath: string): Promise<string[]> {
+  const entries = await fsp.readdir(dirPath, { withFileTypes: true });
+  return entries.filter((entry) => entry.isDirectory()).map((entry) => entry.name);
+}
+
+/** Unlike file.utils' `exists`, says nothing when the path isn't there: that's the usual answer here */
+async function pathExists(filePath: string): Promise<boolean> {
+  try {
+    await fsp.access(filePath);
+    return true;
+  } catch {
+    return false;
+  }
 }
 
 function getPlatformImpl(): WarcraftPlatform {
@@ -80,16 +98,39 @@ export function registerControllers(deps: ControllerDeps): void {
     getScanSymlinks: () => String(deps.preferenceStore.get(USE_SYMLINK_MODE_PREFERENCE_KEY)) === "true",
     // Only the overwolf flavor has curseforge, the one provider that matches on its own fingerprint
     fingerprintSources: AppEnv.buildFlavor === "ow" ? ["wowup", "curseforge"] : ["wowup"],
-    listDirectories: async (dirPath) =>
-      (await fsp.readdir(dirPath, { withFileTypes: true })).filter((e) => e.isDirectory()).map((e) => e.name),
+    listDirectories,
     getFingerprints: (request) => scanService.scanFolders(request),
     getLatestDirUpdateTime: (dirPath) => getLastModifiedFileDate(dirPath),
     newId: () => randomUUID(),
     log,
   });
 
+  const installService = new AddonInstallService({
+    repository: addonRepository,
+    getInstallations: () => installationService.getAll(),
+    getAddonFolderPath: (installation) => addonFolderService.getAddonFolderPath(installation),
+    getAllTocs: (baseDir, folderNames, clientType) => tocService.getAllTocs(baseDir, folderNames, clientType),
+    // Where the renderer's download service saves addon zips (WowUpService.applicationDownloadsFolderPath)
+    downloadsFolderPath: path.join(app.getPath("userData"), "downloads"),
+    fs: {
+      pathExists,
+      listDirectories,
+      copy: (sourcePath, destinationPath) => copyPath(sourcePath, destinationPath),
+      remove: async (filePath) => {
+        if (await pathExists(filePath)) {
+          await remove(filePath);
+        }
+      },
+      unzip: (zipFilePath, outputFolder) => unzipFile(zipFilePath, outputFolder),
+    },
+    newId: () => randomUUID(),
+    now: () => new Date(),
+    log,
+  });
+
   const controllers: IpcController[] = [
     new AddonController(addonRepository),
+    new AddonInstallController(installService),
     new WarcraftController(getPlatformImpl(), deps.preferenceStore, addonFolderService),
     new WarcraftInstallationController(installationService),
     new TocController(tocService),

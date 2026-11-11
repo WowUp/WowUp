@@ -39,6 +39,7 @@ import { WarcraftService } from "../warcraft/warcraft.service";
 import { WowUpService } from "../wowup/wowup.service";
 import { AddonProviderFactory } from "./addon.provider.factory";
 import { AddonSyncApiService } from "../api/addon-sync-api.service";
+import { AddonInstallApiService } from "../api/addon-install-api.service";
 import { containsOwnExternalId, setExternalIds } from "../../../common/addons/addon-rules";
 import { AddonSyncFailure } from "../../../common/models/addon-scan";
 import { CurseAddonProvider } from "../../addon-providers/curse-addon-provider";
@@ -157,6 +158,7 @@ export class AddonService {
     private _warcraftInstallationService: WarcraftInstallationService,
     private _addonProviderService: AddonProviderFactory,
     private _addonSyncApiService: AddonSyncApiService,
+    private _addonInstallApiService: AddonInstallApiService,
   ) {
     // This should keep the current update queue state snapshot up to date
     this.addonInstalled$
@@ -753,8 +755,8 @@ export class AddonService {
     }
 
     try {
+      // Main saved the addon as part of the install
       await this.installOrUpdateAddon(addon, "install", onUpdate, originalAddon);
-      await this._addonStorage.setAsync(addon.id, addon);
     } catch (e) {
       if (requiredDependencies.length) {
         this.updateDependencyInstall({ addon, state: DependencyInstallState.Complete, total: 0, completed: 0 });
@@ -971,72 +973,15 @@ export class AddonService {
       throw new Error("Invalid addon");
     }
 
-    console.log(`[RemoveAddon] ${addon.providerName ?? ""} ${addon.externalId ?? "NO_EXT_ID"} ${addon.name}`);
+    const { removedAddons } = await this._addonInstallApiService.removeAddon({
+      addon,
+      removeDependencies,
+      removeDirectories,
+    });
 
-    const installedDirectories = addon.installedFolderList ?? [];
-    if (removeDirectories && installedDirectories.length > 0) {
-      const installation = this._warcraftInstallationService.getWowInstallation(addon.installationId);
-      if (!installation) {
-        console.warn("No installation found for remove", addon.installationId);
-        return;
-      }
-
-      const addonFolderPath = this._warcraftService.getAddonFolderPath(installation);
-
-      let failureCt = 0;
-      for (const directory of installedDirectories) {
-        const addonDirectory = path.join(addonFolderPath, directory);
-        console.log(
-          `[RemoveAddonDirectory] ${addon.providerName ?? ""} ${addon.externalId ?? "NO_EXT_ID"} ${addonDirectory}`,
-        );
-        try {
-          await this._fileService.deleteIfExists(addonDirectory);
-        } catch (e) {
-          console.error(e);
-          failureCt += 1;
-        }
-      }
-
-      if (failureCt === installedDirectories.length) {
-        throw new Error("Failed to remove all directories");
-      }
-    }
-
-    await this._addonStorage.removeAsync(addon);
-
-    this._addonRemovedSrc.next(addon.id);
-
-    if (removeDependencies) {
-      await this.removeDependencies(addon);
-    }
-
-    this.trackInstallAction("remove", addon);
-  }
-
-  private async removeDependencies(addon: Addon) {
-    const dependencies = addon.dependencies ?? [];
-    for (const dependency of dependencies) {
-      if (!dependency.externalAddonId) {
-        console.warn("No external addon id for dependency", dependency);
-        continue;
-      }
-
-      if (!addon.providerName || !addon.installationId) {
-        console.warn("Invalid addon for dependency", addon);
-        continue;
-      }
-
-      const dependencyAddon = await this.getByExternalId(
-        dependency.externalAddonId,
-        addon.providerName,
-        addon.installationId,
-      );
-      if (!dependencyAddon) {
-        console.log(`${addon.name}: Dependency not found ${dependency.externalAddonId}`);
-        continue;
-      }
-
-      await this.removeAddon(dependencyAddon);
+    for (const removed of removedAddons) {
+      this._addonRemovedSrc.next(removed.id);
+      this.trackInstallAction("remove", removed);
     }
   }
 

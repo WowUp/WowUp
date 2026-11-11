@@ -100,18 +100,45 @@ Pattern for each phase:
   provider step), `scanUpdate$`/`syncError$`/`scanError$` RxJS events, and the migrations
   that need `provider.shouldMigrate`.
 
-## Phase 5 — Install / Remove Pipeline ⏳ not started
+## Phase 5 — Install / Remove Pipeline ✅ done (providers still renderer-side)
 
-- Move addon install/update/remove orchestration (currently
-  `src/app/services/addons/addon-install.service.ts` and the addon providers under
-  `src/app/addon-providers/`) into main.
-- Addon providers still make their own HTTP calls from the renderer today — decide
-  whether provider HTTP calls move to main as part of this phase or stay renderer-side
-  behind a thinner install pipeline. If they move, the scan's prepare → provider match →
-  complete round trip from Phase 4 collapses into one main-process call, and the rescan
-  queue can move with it.
-- `addon-install.service.ts` still has its own copy of the TOC external-id logic; switch it to
-  `src/common/addons/addon-rules.ts`.
+- `AddonInstallController` (`app/controllers/`) + main `AddonInstallService`
+  (`app/services/addons/`) expose two channels:
+  - `IPC_ADDON_INSTALL_FILE` takes a downloaded zip and the addon. Main backs up the installed
+    folders, unzips, copies the new folders into AddOns (restoring the backup if that fails), marks the
+    addon installed (version, folders, game versions, author/zip title from the tocs), collects toc
+    external ids, carries over the original addon's ids on a provider switch, saves it, drops Unknown
+    addons left on the same folders, and deletes the zip and unzip folder. Backing up / installing
+    progress comes back on `IPC_ADDON_INSTALL_PROGRESS`. Main works from its saved copy where it has
+    one: the folders to back up come from it, and the user's settings (auto-update, notifications,
+    channel) are read again just before the save, so a change made during the download or install is
+    kept. The zip must sit in main's `downloads` folder, or main refuses it and deletes nothing.
+  - `IPC_ADDON_ADD_EXTERNAL_ID` adds one provider id to a saved addon, so the renderer's hub id
+    lookup doesn't write the whole record back.
+  - `IPC_ADDON_REMOVE` deletes an addon's folders and record (main's saved copy wins over the
+    caller's), plus its dependencies when asked.
+- Split around the two steps that still need a provider: the **download** stays in the renderer,
+  because a failed download is retried after the provider re-syncs the addon for a fresh url, and the
+  **hub id lookup** after an install (a Hub HTTP call) runs in the renderer once main returns.
+- Renderer `AddonInstallService` is now the install queue only (concurrency, `addonInstalled$` /
+  `installError$`, `onUpdate`, analytics, download + retry, hub id) behind
+  `AddonInstallApiService` (`src/app/services/api/`). `AddonService.removeAddon` keeps its
+  signature and emits `addonRemoved$` / analytics for every addon main removed.
+- `unzipFile` / `copyPath` moved out of `ipc-events.ts` into `app/file.utils.ts`, shared by the
+  legacy file channels and the install service. The download itself stays on the legacy
+  `IPC_DOWNLOAD_FILE_CHANNEL`.
+- `addon-rules.ts` gained the WowUp Hub id rule (Phase 4 had left it out, so Hub addons lost their
+  own id from `externalIds` and logged "Invalid provider id WowUpHub|…") and
+  `reconcileExternalIds`; the install service's duplicate copy of the external-id logic is gone.
+
+## Phase 5b — Addon Providers ⏳ not started
+
+- Move the providers (`src/app/addon-providers/`, ~2,600 lines on Angular's `HttpClient`,
+  `CachingService`, `CircuitBreaker`, `UiMessageService`; the Wago token already arrives in main via
+  the ad view) into main, with main-side HTTP and caching.
+- Once they move: the scan's prepare → provider match → complete round trip from Phase 4 collapses
+  into one main call, the rescan queue can move with it, and the download + retry and hub id lookup
+  can join the main install pipeline.
 
 ## Phase 6 — `ipc-events.ts` Cleanup ⏳ not started
 

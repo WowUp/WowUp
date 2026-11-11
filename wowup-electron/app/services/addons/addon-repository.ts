@@ -113,6 +113,12 @@ export class AddonRepository {
     this.saveAll(addons);
   }
 
+  public removeById(addonId: string | undefined): void {
+    if (typeof addonId === "string") {
+      this.addonStore.delete(addonId);
+    }
+  }
+
   public saveAll(addons: Addon[]): void {
     if (!Array.isArray(addons)) {
       return;

@@ -1,9 +1,12 @@
 import { exec } from "child_process";
 import * as log from "electron-log/main";
+import { createWriteStream, mkdir as fsMkdir } from "fs";
 import * as fsp from "fs/promises";
 import { max, sumBy } from "lodash";
 import * as path from "path";
 import * as crypto from "crypto";
+import { Transform } from "stream";
+import * as yauzl from "yauzl";
 import AdmZip = require("adm-zip");
 import globrex = require("globrex");
 
@@ -11,6 +14,7 @@ import { TreeNode } from "../src/common/models/ipc-events";
 import { GetDirectoryTreeOptions } from "../src/common/models/ipc-request";
 import { isWin } from "./platform";
 import { ZipEntry } from "../src/common/models/ipc-response";
+import { DEFAULT_FILE_MODE } from "../src/common/constants";
 
 export function zipFile(srcPath: string, outPath: string): Promise<boolean> {
   return new Promise((resolve, reject) => {
@@ -87,6 +91,29 @@ export async function copyDir(src: string, dest: string): Promise<void> {
       await fsp.copyFile(srcPath, destPath);
     }
   }
+}
+
+/** Copy a file or a directory tree, leaving everything copied with the default file mode */
+export async function copyPath(sourcePath: string, destinationPath: string): Promise<void> {
+  const stat = await fsp.lstat(sourcePath);
+  if (stat.isDirectory()) {
+    await copyDir(sourcePath, destinationPath);
+    await chmodDir(destinationPath, DEFAULT_FILE_MODE);
+  } else {
+    await fsp.copyFile(sourcePath, destinationPath);
+    await fsp.chmod(destinationPath, DEFAULT_FILE_MODE);
+  }
+}
+
+/** Extract a zip into `outputFolder`, leaving everything extracted with the default file mode */
+export async function unzipFile(zipFilePath: string, outputFolder: string): Promise<void> {
+  await new Promise((resolve, reject) => {
+    yauzl.open(zipFilePath, { lazyEntries: true }, (err, zipfile) => {
+      handleZipFile(err, zipfile, outputFolder).then(resolve).catch(reject);
+    });
+  });
+
+  await chmodDir(outputFolder, DEFAULT_FILE_MODE);
 }
 
 export async function remove(path: string): Promise<void> {
@@ -254,4 +281,59 @@ export async function hashFile(filePath: string, alg = "md5"): Promise<string> {
     log.error(e);
     throw e;
   }
+}
+
+// Adapted from https://github.com/thejoshwolfe/yauzl/blob/96f0eb552c560632a754ae0e1701a7edacbda389/examples/unzip.js#L124
+function handleZipFile(err: Error | null, zipfile: yauzl.ZipFile, targetDir: string): Promise<boolean> {
+  return new Promise((resolve, reject) => {
+    if (err !== null) {
+      return reject(err);
+    }
+
+    zipfile.on("close", function () {
+      resolve(true);
+    });
+
+    zipfile.on("error", (error: Error) => {
+      reject(error);
+    });
+
+    zipfile.readEntry();
+    zipfile.on("entry", function (entry: yauzl.Entry) {
+      if (/\/$/.test(entry.fileName)) {
+        // directory file names end with '/'
+        const dirPath = path.join(targetDir, entry.fileName);
+        fsMkdir(dirPath, { recursive: true }, function (mkdirErr) {
+          if (mkdirErr) return reject(mkdirErr);
+          zipfile.readEntry();
+        });
+      } else {
+        // ensure parent directory exists
+        const filePath = path.join(targetDir, entry.fileName);
+        const parentPath = path.join(targetDir, path.dirname(entry.fileName));
+        fsMkdir(parentPath, { recursive: true }, function (mkdirErr) {
+          if (mkdirErr) return reject(mkdirErr);
+          zipfile.openReadStream(entry, (err, readStream) => {
+            if (err) {
+              return reject(err);
+            }
+
+            const filter = new Transform();
+            filter._transform = function (chunk, encoding, cb) {
+              cb(null, chunk);
+            };
+            filter._flush = function (cb) {
+              process.stdout.write("\b \b\b \b\b \b\n");
+              cb();
+              zipfile.readEntry();
+            };
+
+            // pump file contents
+            const writeStream = createWriteStream(filePath);
+            readStream.pipe(filter).pipe(writeStream);
+          });
+        });
+      }
+    });
+  });
 }

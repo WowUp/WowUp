@@ -149,6 +149,10 @@ export const IPC_ADDON_GET_SCAN_RESULTS = "addons-get-scan-results";
 export const IPC_ADDON_SCAN_PREPARE = "addons-scan-prepare";
 export const IPC_ADDON_SCAN_COMPLETE = "addons-scan-complete";
 export const IPC_ADDON_SYNC_APPLY = "addons-sync-apply";
+export const IPC_ADDON_INSTALL_FILE = "addons-install-file";
+export const IPC_ADDON_INSTALL_PROGRESS = "addons-install-progress";
+export const IPC_ADDON_REMOVE = "addons-remove";
+export const IPC_ADDON_ADD_EXTERNAL_ID = "addons-add-external-id";
 
 // METRICS CONTROLLER
 export const IPC_METRICS_GET_SNAPSHOT = "metrics-get-snapshot";

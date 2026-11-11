@@ -15,8 +15,6 @@ import * as log from "electron-log/main";
 import globrex = require("globrex");
 import * as _ from "lodash";
 import * as path from "path";
-import { Transform } from "stream";
-import * as yauzl from "yauzl";
 import * as fs from "fs";
 import * as os from "os";
 
@@ -90,8 +88,7 @@ import { createAppMenu } from "./app-menu";
 import * as fsp from "fs/promises";
 
 import {
-  chmodDir,
-  copyDir,
+  copyPath,
   exists,
   getDirTree,
   getLastModifiedFileDate,
@@ -100,6 +97,7 @@ import {
   readFileInZip,
   remove,
   zipFile,
+  unzipFile,
 } from "./file.utils";
 import { getPreferenceStore } from "./stores";
 import { createTray } from "./system-tray";
@@ -386,14 +384,7 @@ export function initializeIpcHandlers(window: BrowserWindow): void {
   });
 
   handle(IPC_UNZIP_FILE_CHANNEL, async (evt, arg: UnzipRequest) => {
-    await new Promise((resolve, reject) => {
-      yauzl.open(arg.zipFilePath, { lazyEntries: true }, (err, zipfile) => {
-        handleZipFile(err, zipfile, arg.outputFolder).then(resolve).catch(reject);
-      });
-    });
-
-    await chmodDir(arg.outputFolder, DEFAULT_FILE_MODE);
-
+    await unzipFile(arg.zipFilePath, arg.outputFolder);
     return arg.outputFolder;
   });
 
@@ -429,14 +420,7 @@ export function initializeIpcHandlers(window: BrowserWindow): void {
 
   handle(IPC_COPY_FILE_CHANNEL, async (evt, arg: CopyFileRequest): Promise<boolean> => {
     log.info(`[FileCopy] '${arg.sourceFilePath}' -> '${arg.destinationFilePath}'`);
-    const stat = await fsp.lstat(arg.sourceFilePath);
-    if (stat.isDirectory()) {
-      await copyDir(arg.sourceFilePath, arg.destinationFilePath);
-      await chmodDir(arg.destinationFilePath, DEFAULT_FILE_MODE);
-    } else {
-      await fsp.copyFile(arg.sourceFilePath, arg.destinationFilePath);
-      await fsp.chmod(arg.destinationFilePath, DEFAULT_FILE_MODE);
-    }
+    await copyPath(arg.sourceFilePath, arg.destinationFilePath);
     return true;
   });
 
@@ -630,59 +614,4 @@ export function initializeIpcHandlers(window: BrowserWindow): void {
 
     window.webContents.send(arg.responseKey, status);
   }
-}
-
-// Adapted from https://github.com/thejoshwolfe/yauzl/blob/96f0eb552c560632a754ae0e1701a7edacbda389/examples/unzip.js#L124
-function handleZipFile(err: Error | null, zipfile: yauzl.ZipFile, targetDir: string): Promise<boolean> {
-  return new Promise((resolve, reject) => {
-    if (err !== null) {
-      return reject(err);
-    }
-
-    zipfile.on("close", function () {
-      resolve(true);
-    });
-
-    zipfile.on("error", (error: Error) => {
-      reject(error);
-    });
-
-    zipfile.readEntry();
-    zipfile.on("entry", function (entry: yauzl.Entry) {
-      if (/\/$/.test(entry.fileName)) {
-        // directory file names end with '/'
-        const dirPath = path.join(targetDir, entry.fileName);
-        fs.mkdir(dirPath, { recursive: true }, function (mkdirErr) {
-          if (mkdirErr) return reject(mkdirErr);
-          zipfile.readEntry();
-        });
-      } else {
-        // ensure parent directory exists
-        const filePath = path.join(targetDir, entry.fileName);
-        const parentPath = path.join(targetDir, path.dirname(entry.fileName));
-        fs.mkdir(parentPath, { recursive: true }, function (mkdirErr) {
-          if (mkdirErr) return reject(mkdirErr);
-          zipfile.openReadStream(entry, (err, readStream) => {
-            if (err) {
-              return reject(err);
-            }
-
-            const filter = new Transform();
-            filter._transform = function (chunk, encoding, cb) {
-              cb(null, chunk);
-            };
-            filter._flush = function (cb) {
-              process.stdout.write("\b \b\b \b\b \b\n");
-              cb();
-              zipfile.readEntry();
-            };
-
-            // pump file contents
-            const writeStream = fs.createWriteStream(filePath);
-            readStream.pipe(filter).pipe(writeStream);
-          });
-        });
-      }
-    });
-  });
 }

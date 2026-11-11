@@ -5,6 +5,7 @@ import {
   ADDON_PROVIDER_CURSEFORGE,
   ADDON_PROVIDER_CURSEFORGEV2,
   ADDON_PROVIDER_GITHUB,
+  ADDON_PROVIDER_HUB,
   ADDON_PROVIDER_RAIDERIO,
   ADDON_PROVIDER_TUKUI,
   ADDON_PROVIDER_WAGO,
@@ -26,12 +27,18 @@ const EXTERNAL_ID_EXCLUDED_PROVIDERS = [ADDON_PROVIDER_RAIDERIO, ADDON_PROVIDER_
 
 const isNumericId = (addonId: string): boolean => !!addonId && !isNaN(parseInt(addonId, 10));
 
+const isPositiveIntegerId = (addonId: string): boolean => {
+  const idNumber = parseInt(addonId, 10);
+  return !isNaN(idNumber) && isFinite(idNumber) && idNumber > 0;
+};
+
 /**
  * What each provider accepts as one of its addon ids. Providers not listed accept none, matching
  * AddonProvider.isValidAddonId's default.
  *
- * The Curse, GitHub and Wago providers answer isValidAddonId from this table. TukUI and WoWInterface
- * live in wowup-lib, which can't import from here, so their rule is repeated: keep the two in step.
+ * The Curse, GitHub and Wago providers answer isValidAddonId from this table. TukUI, WoWInterface and
+ * the WowUp Hub live in wowup-lib, which can't import from here, so their rule is repeated: keep the
+ * two in step.
  */
 const EXTERNAL_ID_RULES: Record<string, (addonId: string) => boolean> = {
   [ADDON_PROVIDER_CURSEFORGE]: isNumericId,
@@ -39,6 +46,7 @@ const EXTERNAL_ID_RULES: Record<string, (addonId: string) => boolean> = {
   [ADDON_PROVIDER_WAGO]: (addonId) => typeof addonId === "string" && addonId.length >= 8 && addonId.length <= 10,
   [ADDON_PROVIDER_TUKUI]: (addonId) => typeof addonId === "string" && isNumericId(addonId),
   [ADDON_PROVIDER_WOWINTERFACE]: (addonId) => typeof addonId === "string" && isNumericId(addonId),
+  [ADDON_PROVIDER_HUB]: isPositiveIntegerId,
 };
 
 export function isValidExternalAddonId(providerName: string, addonId: string): boolean {
@@ -106,6 +114,25 @@ export function setExternalIds(addon: Addon, toc: Toc | undefined, providerNames
   }
 
   addon.externalIds = externalIds;
+}
+
+/**
+ * Carry over the old addon's external ids the new one lacks, then drop any this build can't use: a
+ * provider it doesn't have, or an id that provider could never have issued. Run when an addon is
+ * swapped for the same addon from another provider.
+ */
+export function reconcileExternalIds(newAddon: Addon, oldAddon: Addon, providerNames: ReadonlySet<string>): void {
+  const externalIds = newAddon.externalIds ?? [];
+  for (const oldExtId of oldAddon.externalIds ?? []) {
+    const exists = externalIds.some((ext) => ext.id === oldExtId.id && ext.providerName === oldExtId.providerName);
+    if (!exists) {
+      externalIds.push({ ...oldExtId });
+    }
+  }
+
+  newAddon.externalIds = externalIds.filter(
+    (ext) => providerNames.has(ext.providerName) && isValidExternalAddonId(ext.providerName, ext.id),
+  );
 }
 
 function removeExtension(str: string): string {
