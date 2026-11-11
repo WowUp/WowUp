@@ -12,6 +12,7 @@ export const TOC_X_CURSE_PROJECT_ID = 'X-Curse-Project-ID'; // CurseForge
 export const TOC_X_LOADONDEMAND = 'LoadOnDemand';
 export const TOC_X_LOCALIZATIONS = 'X-Localizations';
 export const TOC_X_PART_OF = 'X-Part-Of';
+export const TOC_X_REPOSITORY = 'X-Repository';
 export const TOC_X_TUKUI_PROJECTID = 'X-Tukui-ProjectID'; // WowInterface
 export const TOC_X_TUKUI_PROJECTFOLDERS = 'X-Tukui-ProjectFolders'; // WowInterface
 export const TOC_X_WEBSITE = 'X-Website';
@@ -27,6 +28,8 @@ export interface Toc {
   titles?: { [gameType: string]: string };
   author?: string;
   website?: string;
+  /** The addon's source repository (X-Repository), e.g. a GitHub URL */
+  repository?: string;
   version?: string;
   partOf?: string;
   category?: string;

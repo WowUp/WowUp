@@ -181,6 +181,40 @@ describe("AddonSyncService", () => {
       expect(prepared.addonFolders.map((af) => af.name)).to.deep.equal(["FromGitHub"]);
     });
 
+    it("only scans the folders asked for", async () => {
+      folders = [createFolder("Baganator"), createFolder("Syndicator")];
+
+      const prepared = await service.prepareScan({ installationId: installation.id, folderNames: ["Syndicator"] });
+
+      expect(prepared.addonFolders.map((af) => af.name)).to.deep.equal(["Syndicator"]);
+      expect(fingerprintRequests).to.deep.equal([{ filePaths: ["AddOns/Syndicator"], sources: ["wowup"] }]);
+    });
+
+    it("hands the folders of an addon the user linked back matched to it", async () => {
+      folders = [createFolder("Baganator"), createFolder("Linked")];
+      const linked = createAddon({
+        id: "linked",
+        externalId: "2002",
+        installedFolderList: ["Linked"],
+        isManuallyLinked: true,
+      });
+      store.set("linked", linked);
+      store.set("cf", createAddon({ id: "cf" }));
+
+      const prepared = await prepare([]);
+
+      expect(prepared.addonFolders.map((af) => af.matchingAddon?.id)).to.deep.equal([undefined, "linked"]);
+    });
+
+    it("leaves a linked addon's folders to the providers when the scan doesn't save", async () => {
+      folders = [createFolder("Linked")];
+      store.set("linked", createAddon({ id: "linked", installedFolderList: ["Linked"], isManuallyLinked: true }));
+
+      const prepared = await prepare();
+
+      expect(prepared.addonFolders[0].matchingAddon).to.equal(undefined);
+    });
+
     it("returns nothing when there are no addon folders", async () => {
       store.set("gh", createAddon({ id: "gh", providerName: "GitHub" }));
 
@@ -268,6 +302,29 @@ describe("AddonSyncService", () => {
       await complete([createFolder("Baganator", { matchingAddon: createAddon({ id: "new" }) })], true, ["GitHub"]);
 
       expect([...store.keys()].sort()).to.deep.equal(["gh", "new"]);
+    });
+
+    it("keeps an addon the user linked across a rescan, until its folders are gone", async () => {
+      folders = [createFolder("Linked")];
+      store.set(
+        "linked",
+        createAddon({ id: "linked", externalId: "2002", installedFolderList: ["Linked"], isManuallyLinked: true }),
+      );
+
+      const prepared = await service.prepareScan({ installationId: installation.id, nonRescanProviders: [] });
+      const kept = await complete(prepared.addonFolders, true, []);
+
+      expect(kept.map((addon) => [addon.id, addon.isManuallyLinked])).to.deep.equal([["linked", true]]);
+      expect(stored().map((addon) => addon.id)).to.deep.equal(["linked"]);
+
+      folders = [];
+      const gone = await complete(
+        (await service.prepareScan({ installationId: installation.id, nonRescanProviders: [] })).addonFolders,
+        true,
+        [],
+      );
+
+      expect(gone).to.deep.equal([]);
     });
 
     it("only reads when not asked to save", async () => {

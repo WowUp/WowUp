@@ -287,6 +287,19 @@
       "VIEW_IN_BROWSER_BUTTON": "Посмотреть в браузере",
       "VIEW_ON_PROVIDER_PREFIX": "Посмотреть на"
     },
+    "ADDON_LINK": {
+      "CLOSE_BUTTON": "Закрыть",
+      "DESCRIPTION": "WowUp не смог определить этот аддон. Найдите его или вставьте URL его страницы и выберите подходящий аддон. Установленные файлы сохраняются, WowUp использует источник только для проверки обновлений.",
+      "LINK_BUTTON": "Привязать",
+      "LINK_FAILED": "Не удалось привязать аддон: у источника нет его версии для этого клиента.",
+      "NO_RESULTS": "Подходящий аддон не найден.",
+      "SEARCH_BUTTON": "Найти",
+      "SEARCH_FAILED": "Поиск не удался, попробуйте ещё раз.",
+      "SEARCH_LABEL": "Название аддона или URL",
+      "SEARCH_PLACEHOLDER": "Например, Questie или https://www.curseforge.com/wow/addons/questie",
+      "TITLE": "Привязать {addonName} к источнику",
+      "WARNING": "Связывайте только с тем аддоном, которому эти файлы действительно принадлежат. Обновление установит выпуск поставщика и заменит установленные файлы, включая внесённые в них изменения. Проблемы из-за файлов, которые поставщик не распространял, автор аддона решать не обязан."
+    },
     "ALERT": {
       "ERROR_TITLE": "Ошибка",
       "POSITIVE_BUTTON": "Окей"
@@ -446,11 +459,13 @@
         "BETA_ADDON_CHANNEL": "Бета",
         "CHANNEL_SUBMENU_TITLE": "Тип выпуска",
         "IGNORE_ADDON_BUTTON": "Пропускать",
+        "LINK_ADDON_BUTTON": "Привязать к источнику…",
         "PROVIDER_SUBMENU_TITLE": "Источники",
         "REINSTALL_ADDON_BUTTON": "Переустановить",
         "REMOVE_ADDON_BUTTON": "Удалить",
         "SHOW_FOLDER": "Показать папку",
-        "STABLE_ADDON_CHANNEL": "Стабильная"
+        "STABLE_ADDON_CHANNEL": "Стабильная",
+        "UNLINK_ADDON_BUTTON": "Отвязать от источника"
       },
       "ADDON_IS_CODE_REPOSITORY": "Модификация является репозиторием кода",
       "ADDON_REMOVED_SNACKBAR": "Успешно удалена: {addonName}",
@@ -475,6 +490,9 @@
         "PAYPAL": "Поддержать этого автора на PayPal"
       },
       "IMPORT_EXPORT_ADDONS_BUTTON": "Импорт/Экспорт модификаций",
+      "MATCH_UNKNOWN_BUTTON": "Сопоставить неизвестные аддоны",
+      "MATCH_UNKNOWN_NONE": "Не удалось сопоставить ни один неизвестный аддон. Так можно сопоставить только аддоны, в TOC которых указан ID поставщика или репозиторий, остальные можно связать через их контекстное меню.",
+      "MATCH_UNKNOWN_SUCCESS": "Сопоставлено неизвестных аддонов: {count}",
       "MULTIPLE_PROVIDERS_TOOLTIP": "Эта модификация имеет несколько источников",
       "PAGE_CONTEXT_FOOTER": {
         "ADDONS_INSTALLED": "{count} {count, plural, one{модификация} few{модификации} other{модификаций}}",

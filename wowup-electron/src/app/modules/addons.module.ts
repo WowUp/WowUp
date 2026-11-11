@@ -24,10 +24,12 @@ import { AddonManageDialogComponent } from "../components/addons/addon-manage-di
 import { WtfBackupComponent } from "../components/addons/wtf-backup/wtf-backup.component";
 import { GameVersionCellComponent } from "../components/addons/game-version-cell/game-version-cell.component";
 import { GameVersionMismatchDialogComponent } from "../components/addons/game-version-mismatch-dialog/game-version-mismatch-dialog.component";
+import { AddonLinkDialogComponent } from "../components/addons/addon-link-dialog/addon-link-dialog.component";
 
 @NgModule({
   declarations: [
     GameVersionMismatchDialogComponent,
+    AddonLinkDialogComponent,
     AddonUpdateButtonComponent,
     AddonDetailComponent,
     DateTooltipCellComponent,

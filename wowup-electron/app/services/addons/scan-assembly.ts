@@ -60,6 +60,29 @@ export function removeNonRescanFolders(
 }
 
 /**
+ * A link the user made (isManuallyLinked) must survive a rescan as long as the addon is still there:
+ * match the folders of those addons to them up front, so no provider is asked about them and the scan
+ * hands the saved addon back. Addons of `nonRescanProviders` are kept by removeNonRescanFolders already.
+ */
+export function keepLinkedAddons(
+  addonFolders: AddonFolder[],
+  currentAddons: Addon[],
+  nonRescanProviders: ReadonlySet<string>,
+): void {
+  for (const currentAddon of currentAddons) {
+    if (currentAddon.isManuallyLinked !== true || nonRescanProviders.has(currentAddon.providerName ?? "")) {
+      continue;
+    }
+
+    for (const addonFolder of addonFolders) {
+      if (!addonFolder.matchingAddon && (currentAddon.installedFolderList ?? []).includes(addonFolder.name)) {
+        addonFolder.matchingAddon = currentAddon;
+      }
+    }
+  }
+}
+
+/**
  * Turn folders the providers have matched into the installation's addon list: one addon per matched
  * addon (its folders grouped), one ignored "unknown" addon per folder nothing matched, plus `keptAddons`.
  */

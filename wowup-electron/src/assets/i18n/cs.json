@@ -287,6 +287,19 @@
       "VIEW_IN_BROWSER_BUTTON": "Zobrazit v prohlížeči",
       "VIEW_ON_PROVIDER_PREFIX": "Zobrazit na"
     },
+    "ADDON_LINK": {
+      "CLOSE_BUTTON": "Zavřít",
+      "DESCRIPTION": "WowUp tento doplněk nerozpoznal. Vyhledejte ho nebo vložte URL jeho stránky a vyberte odpovídající doplněk. Nainstalované soubory zůstanou zachovány, WowUp poskytovatele používá jen ke kontrole aktualizací.",
+      "LINK_BUTTON": "Přiřadit",
+      "LINK_FAILED": "Doplněk nelze přiřadit, poskytovatel pro tohoto klienta nemá žádnou jeho verzi.",
+      "NO_RESULTS": "Nebyl nalezen žádný odpovídající doplněk.",
+      "SEARCH_BUTTON": "Hledat",
+      "SEARCH_FAILED": "Vyhledávání selhalo, zkuste to prosím znovu.",
+      "SEARCH_LABEL": "Název doplňku nebo URL",
+      "SEARCH_PLACEHOLDER": "Např. Questie nebo https://www.curseforge.com/wow/addons/questie",
+      "TITLE": "Přiřadit {addonName} k poskytovateli",
+      "WARNING": "Propojte pouze doplněk, ke kterému tyto soubory skutečně patří. Aktualizace nainstaluje vydání poskytovatele a nahradí nainstalované soubory včetně všech jejich úprav. Problémy způsobené soubory, které poskytovatel nedodal, nemusí autor doplňku řešit."
+    },
     "ALERT": {
       "ERROR_TITLE": "Chyba",
       "POSITIVE_BUTTON": "OK"
@@ -446,11 +459,13 @@
         "BETA_ADDON_CHANNEL": "Beta",
         "CHANNEL_SUBMENU_TITLE": "Kanál aktualizací",
         "IGNORE_ADDON_BUTTON": "Ignorovat",
+        "LINK_ADDON_BUTTON": "Přiřadit k poskytovateli…",
         "PROVIDER_SUBMENU_TITLE": "Poskytovatelé",
         "REINSTALL_ADDON_BUTTON": "Přeinstalovat",
         "REMOVE_ADDON_BUTTON": "Odebrat",
         "SHOW_FOLDER": "Zobrazit složku",
-        "STABLE_ADDON_CHANNEL": "Stabilní"
+        "STABLE_ADDON_CHANNEL": "Stabilní",
+        "UNLINK_ADDON_BUTTON": "Zrušit přiřazení k poskytovateli"
       },
       "ADDON_IS_CODE_REPOSITORY": "Jedná se o addon z repozitáře kódu",
       "ADDON_REMOVED_SNACKBAR": "Successfully removed: {addonName} ",
@@ -475,6 +490,9 @@
         "PAYPAL": "Podpořte autora pomocí PayPalu"
       },
       "IMPORT_EXPORT_ADDONS_BUTTON": "Import/Export Addons",
+      "MATCH_UNKNOWN_BUTTON": "Přiřadit neznámé doplňky",
+      "MATCH_UNKNOWN_NONE": "Žádný neznámý doplněk nebylo možné přiřadit. Takto lze přiřadit jen doplňky, jejichž TOC uvádí ID poskytovatele nebo repozitář, ostatní lze propojit z jejich kontextové nabídky.",
+      "MATCH_UNKNOWN_SUCCESS": "Přiřazeno neznámých doplňků: {count}",
       "MULTIPLE_PROVIDERS_TOOLTIP": "Tento addon má více poskytovatelů",
       "PAGE_CONTEXT_FOOTER": {
         "ADDONS_INSTALLED": "{count} {count, plural, =1{addon} =2{addony} =3{addony} =4{addony} other{addonů}}",

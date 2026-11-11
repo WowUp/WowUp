@@ -23,9 +23,12 @@ export interface PrepareAddonScanRequest {
   installationId: string;
   /**
    * Providers whose addons a scan can't find again (e.g. GitHub, Zip). When given, the folders of the
-   * installation's saved addons from these are left out of the scan. Leave it out to scan every folder.
+   * installation's saved addons from these are left out of the scan, and the folders of the addons the
+   * user linked come back matched to them already. Leave it out to scan every folder.
    */
   nonRescanProviders?: string[];
+  /** Only scan the folders with these names. Leave it out to scan every folder. */
+  folderNames?: string[];
 }
 
 export interface PreparedAddonScan {

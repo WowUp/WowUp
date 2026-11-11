@@ -32,6 +32,7 @@ import {
 } from "wowup-lib-core";
 import { WowInstallation } from "wowup-lib-core";
 import { SourceRemovedAddonError } from "wowup-lib-core";
+import { AddonMatcher, InstalledOverride, MatchProject, MatchSource } from "./addon-matcher";
 
 declare type WagoGameVersion = "retail" | "classic" | "bc" | "wotlk" | "cata" | "mop" | "forever";
 declare type WagoStability = "stable" | "beta" | "alpha";
@@ -295,6 +296,7 @@ export class WagoAddonProvider extends AddonProvider {
     console.debug(`[wago] matchResult: ${matchResult.addons?.length ?? 0} matched`);
 
     const scanResultMap: { [folder: string]: WagoScanAddon } = {};
+    const localFingerprints = new Map(scanResults.map((sr) => [sr.folderName, sr.fingerprint]));
 
     for (const scanResult of scanResults) {
       try {
@@ -330,7 +332,7 @@ export class WagoAddonProvider extends AddonProvider {
 
       try {
         const match = scanResultMap[scanResult.folderName];
-        const newAddon = this.toAddon(installation, addonChannelType, match);
+        const newAddon = this.toAddon(installation, addonChannelType, match, undefined, localFingerprints);
 
         addonFolder.matchingAddon = newAddon;
       } catch (e) {
@@ -340,6 +342,52 @@ export class WagoAddonProvider extends AddonProvider {
     }
 
     console.debug(`[wago] delta: ${addonFolders.length} folders`);
+
+    const matcher = new AddonMatcher((addonFolder) =>
+      this._tocService.getTocForGameType2(addonFolder.name, addonFolder.tocs, installation.clientType),
+    );
+    await matcher.matchUnmatched(addonFolders, this.getMatchSource(installation, addonChannelType));
+  }
+
+  /**
+   * Wago for the shared match steps (X-Wago-ID)
+   */
+  private getMatchSource(
+    installation: WowInstallation,
+    addonChannelType: AddonChannelType,
+  ): MatchSource<WagoScanAddon, WagoScanRelease> {
+    return {
+      logName: "wago",
+      getTocProjectId: (toc) => (toc.wagoAddonId && this.isValidAddonId(toc.wagoAddonId) ? toc.wagoAddonId : undefined),
+      getProjectsById: async (ids) => {
+        const response = await this.getRecents(installation, ids);
+        return Object.values(response.addons ?? {})
+          .filter((addon): addon is WagoScanAddon => typeof addon === "object" && addon !== null)
+          .map((addon) => this.toMatchProject(addon));
+      },
+      createAddon: (mainFolder, project, reference, installed) =>
+        this.toAddon(
+          installation,
+          addonChannelType,
+          { ...project.source, matched_release: reference.source },
+          installed,
+        ),
+    };
+  }
+
+  private toMatchProject(wagoScanAddon: WagoScanAddon): MatchProject<WagoScanAddon, WagoScanRelease> {
+    return {
+      id: wagoScanAddon.id,
+      // The releases are requested for the installation's game version
+      releases: this.getSortedReleaseList(wagoScanAddon).map((release) => ({
+        id: release.id,
+        names: [release.label],
+        folders: Object.keys(wagoScanAddon.modules ?? {}),
+        compatible: true,
+        source: release,
+      })),
+      source: wagoScanAddon,
+    };
   }
 
   public async getFeaturedAddons(installation: WowInstallation): Promise<AddonSearchResult[]> {
@@ -461,21 +509,7 @@ export class WagoAddonProvider extends AddonProvider {
 
   // used when checking for new addon updates
   public override async getAll(installation: WowInstallation, addonIds: string[]): Promise<GetAllResult> {
-    await firstValueFrom(this.ensureToken());
-
-    const url = new URL(`${WAGO_BASE_URL}/addons/_recents`).toString();
-    const request: WagoRecentsRequest = {
-      game_version: this.getGameVersion(installation.clientType),
-      addons: [...addonIds],
-    };
-
-    const response = await this.sendRequest(() =>
-      this._cachingService.transaction(
-        `${installation.id}|${url.toString()}`,
-        () => this._circuitBreaker.postJson<WagoRecentsResponse>(url, request, this.getRequestHeaders()),
-        WAGO_DETAILS_CACHE_TIME_SEC,
-      ),
-    );
+    const response = await this.getRecents(installation, addonIds);
 
     const searchResults: AddonSearchResult[] = [];
     for (const [, addon] of Object.entries(response.addons)) {
@@ -493,6 +527,24 @@ export class WagoAddonProvider extends AddonProvider {
       errors: [...deletedErrors],
       searchResults,
     });
+  }
+
+  private async getRecents(installation: WowInstallation, addonIds: string[]): Promise<WagoRecentsResponse> {
+    await firstValueFrom(this.ensureToken());
+
+    const url = new URL(`${WAGO_BASE_URL}/addons/_recents`).toString();
+    const request: WagoRecentsRequest = {
+      game_version: this.getGameVersion(installation.clientType),
+      addons: [...addonIds],
+    };
+
+    return await this.sendRequest(() =>
+      this._cachingService.transaction(
+        `${installation.id}|${url.toString()}`,
+        () => this._circuitBreaker.postJson<WagoRecentsResponse>(url, request, this.getRequestHeaders()),
+        WAGO_DETAILS_CACHE_TIME_SEC,
+      ),
+    );
   }
 
   public getDownloadAuth(): Promise<DownloadAuth | undefined> {
@@ -654,6 +706,8 @@ export class WagoAddonProvider extends AddonProvider {
     installation: WowInstallation,
     addonChannelType: AddonChannelType,
     wagoScanAddon: WagoScanAddon,
+    installed?: InstalledOverride,
+    localFingerprints?: Map<string, string>,
   ): Addon {
     // Grab a ref to the recent release matching the id of the matched release, the objects do not appear to match.
     // const recentRelease = Object.values(wagoScanAddon.recent_releases).find(
@@ -670,12 +724,19 @@ export class WagoAddonProvider extends AddonProvider {
       ? new Date(wagoScanAddon?.matched_release?.created_at)
       : undefined;
 
-    const installedVersion = wagoScanAddon?.matched_release?.label ?? "";
-    const installedExternalReleaseId = wagoScanAddon?.matched_release?.id ?? "";
+    // installed overrides the matched release for an addon matched through its TOC rather than its files
+    const installedVersion = installed ? installed.version : wagoScanAddon?.matched_release?.label ?? "";
+    const installedExternalReleaseId = installed ? installed.releaseId : wagoScanAddon?.matched_release?.id ?? "";
     const installedFolders: string[] = [];
 
     for (const [key, val] of Object.entries(wagoScanAddon.modules ?? {})) {
       if (typeof val.hash !== "string") {
+        continue;
+      }
+
+      // Only the folders whose files are this release's. A folder the release ships but that holds something
+      // else, e.g. a newer QuestieDB installed on its own, is not this addon's and is matched separately.
+      if (localFingerprints && localFingerprints.get(key) !== val.hash) {
         continue;
       }
 

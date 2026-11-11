@@ -287,6 +287,19 @@
       "VIEW_IN_BROWSER_BUTTON": "View in browser",
       "VIEW_ON_PROVIDER_PREFIX": "View on"
     },
+    "ADDON_LINK": {
+      "CLOSE_BUTTON": "Close",
+      "DESCRIPTION": "WowUp could not identify this addon. Search for it, or paste the URL of its addon page, and pick the matching addon. The installed files are kept, WowUp only uses the provider to check for updates.",
+      "LINK_BUTTON": "Link",
+      "LINK_FAILED": "The addon could not be linked, the provider has no release of it for this client.",
+      "NO_RESULTS": "No matching addon was found.",
+      "SEARCH_BUTTON": "Search",
+      "SEARCH_FAILED": "The search failed, please try again.",
+      "SEARCH_LABEL": "Addon name or URL",
+      "SEARCH_PLACEHOLDER": "Ex. Questie or https://www.curseforge.com/wow/addons/questie",
+      "TITLE": "Link {addonName} to a provider",
+      "WARNING": "Only link the addon these files really belong to. Updating it installs the provider's release and replaces the installed files, including any changes made to them. Problems caused by files the provider did not ship are not for the addon's author to fix."
+    },
     "ALERT": {
       "ERROR_TITLE": "Error",
       "POSITIVE_BUTTON": "Okay"
@@ -446,11 +459,13 @@
         "BETA_ADDON_CHANNEL": "Beta",
         "CHANNEL_SUBMENU_TITLE": "Channel",
         "IGNORE_ADDON_BUTTON": "Ignore",
+        "LINK_ADDON_BUTTON": "Link to provider…",
         "PROVIDER_SUBMENU_TITLE": "Providers",
         "REINSTALL_ADDON_BUTTON": "Re-Install",
         "REMOVE_ADDON_BUTTON": "Remove",
         "SHOW_FOLDER": "Show Folder",
-        "STABLE_ADDON_CHANNEL": "Stable"
+        "STABLE_ADDON_CHANNEL": "Stable",
+        "UNLINK_ADDON_BUTTON": "Remove provider link"
       },
       "ADDON_IS_CODE_REPOSITORY": "Addon appears to be a code repository",
       "ADDON_REMOVED_SNACKBAR": "Successfully removed: {addonName} ",
@@ -475,6 +490,9 @@
         "PAYPAL": "Support this author on PayPal"
       },
       "IMPORT_EXPORT_ADDONS_BUTTON": "Import/Export Addons",
+      "MATCH_UNKNOWN_BUTTON": "Match Unknown Addons",
+      "MATCH_UNKNOWN_NONE": "No unknown addon could be matched. Only addons whose TOC names a provider ID or repository can be matched this way, others can be linked from their context menu.",
+      "MATCH_UNKNOWN_SUCCESS": "Unknown addons matched: {count}",
       "MULTIPLE_PROVIDERS_TOOLTIP": "This addon has multiple providers",
       "PAGE_CONTEXT_FOOTER": {
         "ADDONS_INSTALLED": "{count} {count, plural, =1{addon} other{addons}}",
