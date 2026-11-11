@@ -34,6 +34,7 @@ import {
   NO_LATEST_SEARCH_RESULT_FILES_ERROR,
   NO_SEARCH_RESULTS_ERROR,
 } from "../../common/constants";
+import { isValidExternalAddonId } from "../../common/addons/addon-rules";
 import { AppConfig } from "../../environments/environment";
 import { CachingService } from "../services/caching/caching-service";
 import { CircuitBreakerWrapper, NetworkService } from "../services/network/network.service";
@@ -356,7 +357,7 @@ export class CurseAddonProvider extends AddonProvider {
   }
 
   public override isValidAddonId(addonId: string): boolean {
-    return !!addonId && !isNaN(parseInt(addonId, 10));
+    return isValidExternalAddonId(this.name, addonId);
   }
 
   public override isValidProtocol(protocol: string): boolean {

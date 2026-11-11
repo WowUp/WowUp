@@ -9,15 +9,8 @@ import { Injectable } from "@angular/core";
 
 import {
   ADDON_PROVIDER_CURSEFORGE,
-  ADDON_PROVIDER_CURSEFORGEV2,
   ADDON_PROVIDER_HUB,
   ADDON_PROVIDER_HUB_LEGACY,
-  ADDON_PROVIDER_RAIDERIO,
-  ADDON_PROVIDER_TUKUI,
-  ADDON_PROVIDER_UNKNOWN,
-  ADDON_PROVIDER_WAGO,
-  ADDON_PROVIDER_WOWINTERFACE,
-  ADDON_PROVIDER_WOWUP_COMPANION,
   ERROR_ADDON_ALREADY_INSTALLED,
   USER_ACTION_ADDON_INSTALL,
   USER_ACTION_ADDON_PROTOCOL_SEARCH,
@@ -45,7 +38,9 @@ import { WarcraftInstallationService } from "../warcraft/warcraft-installation.s
 import { WarcraftService } from "../warcraft/warcraft.service";
 import { WowUpService } from "../wowup/wowup.service";
 import { AddonProviderFactory } from "./addon.provider.factory";
-import { AddonFingerprintService } from "./addon-fingerprint.service";
+import { AddonSyncApiService } from "../api/addon-sync-api.service";
+import { containsOwnExternalId, setExternalIds } from "../../../common/addons/addon-rules";
+import { AddonSyncFailure } from "../../../common/models/addon-scan";
 import { CurseAddonProvider } from "../../addon-providers/curse-addon-provider";
 import {
   Addon,
@@ -53,20 +48,16 @@ import {
   AddonChannelType,
   AddonDependency,
   AddonDependencyType,
-  AddonExternalId,
   AddonFolder,
   AddonProvider,
   AddonSearchResult,
   AddonSearchResultDependency,
   AddonSearchResultFile,
-  AddonWarningType,
   ProtocolSearchResult,
   SearchByUrlResult,
-  Toc,
   WowClientType,
 } from "wowup-lib-core";
 import { AddonInstallService, InstallQueueItem, InstallType } from "./addon-install.service";
-import { strIsNotNullOrEmpty } from "../../utils/string.utils";
 import { delayMs } from "../../utils/time.utils";
 
 export interface AddonDependencyDetail {
@@ -109,14 +100,6 @@ export interface AddonActionEvent {
 }
 
 const IGNORED_FOLDER_NAMES = ["__MACOSX"];
-
-const ADDON_PROVIDER_TOC_EXTERNAL_ID_MAP: Record<string, keyof Toc> = {
-  [ADDON_PROVIDER_WOWINTERFACE]: "wowInterfaceId",
-  [ADDON_PROVIDER_TUKUI]: "tukUiProjectId",
-  [ADDON_PROVIDER_CURSEFORGE]: "curseProjectId",
-  [ADDON_PROVIDER_CURSEFORGEV2]: "curseProjectId",
-  [ADDON_PROVIDER_WAGO]: "wagoAddonId",
-};
 
 @Injectable({
   providedIn: "root",
@@ -173,7 +156,7 @@ export class AddonService {
     private _tocService: TocService,
     private _warcraftInstallationService: WarcraftInstallationService,
     private _addonProviderService: AddonProviderFactory,
-    private _addonFingerprintService: AddonFingerprintService,
+    private _addonSyncApiService: AddonSyncApiService,
   ) {
     // This should keep the current update queue state snapshot up to date
     this.addonInstalled$
@@ -875,9 +858,7 @@ export class AddonService {
     for (const installation of installations) {
       const clientTypeName = getEnumName(WowClientType, installation.clientType);
 
-      const useSymlinkMode = await this._wowUpService.getUseSymlinkMode();
-      const addonFolders = await this._warcraftService.listAddons(installation, useSymlinkMode);
-      await this._addonFingerprintService.getFingerprints(addonFolders);
+      const { addonFolders } = await this._addonSyncApiService.prepareScan({ installationId: installation.id });
 
       const curseMap = {};
       const hubMap = {};
@@ -1101,17 +1082,8 @@ export class AddonService {
 
   private async scanAndReplaceAddons(installation: WowInstallation): Promise<Addon[]> {
     console.debug(`[addon-service] rescanInstallation: ${installation.displayName}`);
-    // Fetch existing installation addons
-    let addons = await this._addonStorage.getAllForInstallationIdAsync(installation.id);
-
-    // Collect info on filesystem addons
-    const newAddons = await this.scanAddons(installation, addons);
-
-    // Map the old installation addon settings to the new ones
-    addons = this.updateAddons(addons, newAddons);
-
-    console.debug(`addons: ${addons.length} for ${installation.displayName}`);
-    await this._addonStorage.replaceAllForInstallation(installation.id, addons);
+    // Main keeps the saved addons' settings and replaces them with what the scan found
+    const addons = await this.scanAddons(installation, true);
 
     this._addonActionSrc.next({ type: "scan" });
 
@@ -1225,7 +1197,7 @@ export class AddonService {
 
           const installation = installations.find((i) => i.id === key);
           const installationAddons = batchedAddons.filter((addon) => addon.installationId === key);
-          await this.handleSyncErrors(installation, errors, provider, installationAddons);
+          await this.applySyncResults(installation, provider, installationAddons, [], errors);
         }
 
         // Process the update results for each installation
@@ -1237,7 +1209,7 @@ export class AddonService {
 
           const installation = installations.find((i) => i.id === key);
           const installationAddons = batchedAddons.filter((addon) => addon.installationId === key);
-          await this.handleSyncResults(addonSearchResults, installationAddons, installation);
+          await this.applySyncResults(installation, provider, installationAddons, addonSearchResults, []);
         }
       } catch (e) {
         console.error(e);
@@ -1278,26 +1250,6 @@ export class AddonService {
     return didSync;
   }
 
-  private updateAddons(existingAddons: Addon[], newAddons: Addon[]) {
-    for (const newAddon of newAddons) {
-      const existingAddon = existingAddons.find(
-        (ea) =>
-          ea.externalId?.toString() === newAddon.externalId?.toString() && ea.providerName == newAddon.providerName,
-      );
-
-      if (!existingAddon) {
-        continue;
-      }
-
-      newAddon.autoUpdateEnabled = existingAddon.autoUpdateEnabled;
-      newAddon.isIgnored = existingAddon.isIgnored;
-      newAddon.installedAt = existingAddon.installedAt;
-      newAddon.channelType = Math.max(existingAddon.channelType, newAddon.channelType);
-    }
-
-    return newAddons;
-  }
-
   private async syncProviderAddons(installation: WowInstallation, addons: Addon[], addonProvider: AddonProvider) {
     const providerAddonIds = this.getExternalIdsForProvider(addonProvider, addons);
     if (!providerAddonIds.length) {
@@ -1305,196 +1257,68 @@ export class AddonService {
     }
 
     const getAllResult = await addonProvider.getAll(installation, providerAddonIds);
-    await this.handleSyncErrors(installation, getAllResult.errors, addonProvider, addons);
-    await this.handleSyncResults(getAllResult.searchResults, addons, installation);
+    await this.applySyncResults(installation, addonProvider, addons, getAllResult.searchResults, getAllResult.errors);
   }
 
-  private async handleSyncResults(
-    addonSearchResults: AddonSearchResult[],
-    addons: Addon[],
-    installation: WowInstallation,
-  ): Promise<void> {
-    for (const result of addonSearchResults) {
-      const addon = addons.find((addon) => this.addonMatchesSearchResult(addon, result));
-      if (!addon) {
-        continue;
-      }
-
-      try {
-        const latestFile = SearchResults.getLatestFile(result, addon?.channelType);
-        if (!latestFile) {
-          console.warn(`No latest file found: ${addon.name}, clientType: ${addon.clientType}`);
-
-          addon.warningType = AddonWarningType.NoProviderFiles;
-          await this._addonStorage.setAsync(addon.id, addon);
-
-          this._syncErrorSrc.next(
-            new AddonSyncError({
-              providerName: addon.providerName ?? "",
-              installationName: installation.displayName,
-              addonName: addon?.name,
-            }),
-          );
-          continue;
-        }
-
-        await this.setExternalIdString(addon);
-
-        addon.summary = result.summary;
-        addon.thumbnailUrl = result.thumbnailUrl;
-        addon.latestChangelog = latestFile?.changelog || addon.latestChangelog;
-
-        if (
-          addon.warningType &&
-          [AddonWarningType.MissingOnProvider, AddonWarningType.NoProviderFiles].includes(addon.warningType)
-        ) {
-          addon.warningType = undefined;
-        }
-
-        addon.screenshotUrls = result.screenshotUrls;
-
-        // Check for a new download URL
-        if (strIsNotNullOrEmpty(latestFile?.downloadUrl) && latestFile.downloadUrl !== addon.downloadUrl) {
-          addon.downloadUrl = latestFile.downloadUrl || addon.downloadUrl;
-        }
-
-        // Kept in step with the download URL, so an install or update pulls in what the file it downloads requires.
-        // Refreshed even when the release has not changed, to heal records saved from an older file.
-        if (Array.isArray(latestFile.dependencies)) {
-          addon.dependencies = latestFile.dependencies.map(this.createAddonDependency);
-        }
-
-        if (Array.isArray(result.fundingLinks)) {
-          addon.fundingLinks = result.fundingLinks;
-        }
-
-        // Describes the release on offer, so an update found before the game version was tracked gets one too
-        const latestTargetVersions = AddonUtils.getFileTargetVersions(latestFile);
-        if (latestTargetVersions.length > 0) {
-          addon.gameVersion = getGameVersionList(latestTargetVersions);
-        }
-
-        // If the release ID hasn't changed we don't really need to update the whole record
-        if (!!latestFile?.externalId && latestFile.externalId === addon.externalLatestReleaseId) {
-          continue;
-        } else if (
-          !result ||
-          !latestFile ||
-          (latestFile.version === addon.latestVersion && latestFile.releaseDate === addon.releasedAt)
-        ) {
-          // There was nothing new to update to, just update what we need to
-          continue;
-        }
-
-        addon.latestVersion = latestFile.version;
-        addon.releasedAt = latestFile.releaseDate;
-        addon.externalLatestReleaseId = latestFile.externalId;
-        addon.name = result.name;
-        addon.author = result.author;
-        addon.externalChannel = getEnumName(AddonChannelType, latestFile.channelType);
-
-        if (latestTargetVersions.length === 0) {
-          if (addon.gameVersion) {
-            addon.gameVersion = getGameVersionList(addon.gameVersion ?? []);
-          } else {
-            console.warn("No game version found", addon);
-          }
-        }
-
-        addon.externalUrl = result.externalUrl;
-      } finally {
-        await this._addonStorage.setAsync(addon.id, addon);
-      }
-    }
-  }
-
-  private async handleSyncErrors(
-    installation: WowInstallation,
-    errors: Error[],
+  /**
+   * Hand one provider's answer to main, which applies it to the addons and saves them. The results are
+   * copied back onto `addons` because callers hold on to them, e.g. an install retry needs the new
+   * download url.
+   */
+  private async applySyncResults(
+    installation: WowInstallation | undefined,
     addonProvider: AddonProvider,
     addons: Addon[],
+    searchResults: AddonSearchResult[],
+    errors: Error[],
   ): Promise<void> {
-    for (const error of errors) {
-      const addonId = (error as any).addonId;
-      let addon: Addon | undefined = undefined;
-      if (addonId) {
-        addon = addons.find((a) => a.externalId === addonId && a.providerName === addonProvider.name);
-      }
+    const failures: AddonSyncFailure[] = errors.map((error) => ({
+      addonId: (error as any).addonId,
+      warningType: error instanceof GenericProviderError ? error.warningType : undefined,
+    }));
 
-      if (error instanceof GenericProviderError && addon !== undefined) {
-        addon.warningType = error.warningType;
-        if (addon.id) {
-          await this._addonStorage.setAsync(addon.id, addon);
-        }
-      }
+    const applied = await this._addonSyncApiService.applySync({
+      providerName: addonProvider.name,
+      addons,
+      searchResults,
+      failures,
+    });
 
+    const updatedById = new Map(applied.addons.map((updated) => [updated.id, updated]));
+    for (const addon of addons) {
+      const updated = updatedById.get(addon.id);
+      if (updated) {
+        Object.assign(addon, updated);
+      }
+    }
+
+    const installationName = installation?.displayName ?? "";
+    errors.forEach((error, idx) => {
       this._syncErrorSrc.next(
         new AddonSyncError({
           providerName: addonProvider.name,
-          installationName: installation.displayName,
+          installationName,
           innerError: error,
-          addonName: addon?.name,
+          addonName: applied.failureAddonNames[idx],
+        }),
+      );
+    });
+
+    for (const noFileAddon of applied.noFileAddons) {
+      this._syncErrorSrc.next(
+        new AddonSyncError({
+          providerName: noFileAddon.providerName,
+          installationName,
+          addonName: noFileAddon.name,
         }),
       );
     }
-  }
-
-  // Legacy TukUI/ElvUI ids were ints, correct them
-  private async setExternalIdString(addon: Addon) {
-    if (!addon.id) {
-      return;
-    }
-    if (typeof addon.externalId === "string") {
-      return;
-    }
-
-    const nonStrId: any = addon.externalId;
-    addon.externalId = nonStrId.toString();
-    await this._addonStorage.setAsync(addon.id, addon);
   }
 
   private getExternalIdsForProvider(addonProvider: AddonProvider, addons: Addon[]): string[] {
     return _.filter(addons, (addon) => addon.providerName === addonProvider.name)
       .map((f) => f.externalId)
       .filter((id): id is string => typeof id === "string");
-  }
-
-  private async removeGitFolders(addonFolders: AddonFolder[]) {
-    for (const addonFolder of addonFolders) {
-      const directories = await this._fileService.listDirectories(addonFolder.path);
-      const hasGitFolder = !!directories.find((dir) => dir.toLowerCase() === ".git");
-      if (hasGitFolder) {
-        addonFolder.ignoreReason = "git_repo";
-      }
-    }
-  }
-
-  /**
-   * Determine any addons who have providers with re-scanning disabled then remove any addon folders that match those addons
-   * Ex: GitHub addons should remain as they cannot be re-scanned at this time via toc
-   */
-  private removeNonRescanFolders(addonFolders: AddonFolder[], currentAddons: Addon[]): Addon[] {
-    const remainingAddons: Addon[] = [];
-    const removedAddonFolders: AddonFolder[] = [];
-
-    for (const currentAddon of currentAddons) {
-      const provider = this._addonProviderService.getProvider(currentAddon.providerName);
-      if (provider === undefined || provider.allowReScan === true) {
-        continue;
-      }
-
-      const removed = _.remove(addonFolders, (af) => currentAddon.installedFolderList.includes(af.name));
-      removedAddonFolders.push(...removed);
-
-      remainingAddons.push(currentAddon);
-    }
-
-    console.log(
-      `Removed ${removedAddonFolders.length} NonRescan folders: ${removedAddonFolders.map((af) => af.name).join(", ")}`,
-    );
-    console.log(`Kept ${remainingAddons.length} NonRescan addons: ${remainingAddons.map((ad) => ad.name).join(", ")}`);
-
-    return remainingAddons;
   }
 
   private async migrateLocalAddons(installation: WowInstallation): Promise<void> {
@@ -1622,9 +1446,13 @@ export class AddonService {
     console.log(`Auto update set complete`);
   }
 
-  private async scanAddons(installation: WowInstallation, currentAddons?: Addon[]): Promise<Addon[]> {
-    const addonList: Addon[] = [];
-
+  /**
+   * Read the installation's addons off disk. Main lists, fingerprints and assembles them; only the
+   * providers' matching runs here, between the two calls, until the providers move to main too.
+   * @param save replace the installation's saved addons with the result, keeping the saved addons of
+   * providers a scan can't find again (e.g. GitHub). Without it the scan only reads.
+   */
+  private async scanAddons(installation: WowInstallation, save = false): Promise<Addon[]> {
     if (!installation) {
       return [];
     }
@@ -1634,116 +1462,36 @@ export class AddonService {
     });
 
     try {
-      const defaultAddonChannel = installation.defaultAddonChannelType;
-
-      const useSymlinkMode = await this._wowUpService.getUseSymlinkMode();
-      const addonFolders = await this._warcraftService.listAddons(installation, useSymlinkMode);
-
-      if (addonFolders.length === 0) {
-        return [];
-      }
-
-      await this.removeGitFolders(addonFolders);
-
-      if (Array.isArray(currentAddons)) {
-        const skippedAddons = this.removeNonRescanFolders(addonFolders, currentAddons);
-        addonList.push(...skippedAddons);
-      }
-
-      // Get all the fingerprints we might need
-      await this._addonFingerprintService.getFingerprints(addonFolders);
-
-      this._scanUpdateSrc.next({
-        type: ScanUpdateType.Update,
-        currentCount: 0,
-        totalCount: addonFolders.length,
+      const nonRescanProviders = save ? this._addonProviderService.getNonRescanProviderNames() : undefined;
+      const { addonFolders } = await this._addonSyncApiService.prepareScan({
+        installationId: installation.id,
+        nonRescanProviders,
       });
 
-      const enabledProviders = this._addonProviderService.getEnabledAddonProviders();
-      for (const provider of enabledProviders) {
-        try {
-          const validFolders = addonFolders.filter((af) => !af.ignoreReason && !af.matchingAddon && af.tocs.length > 0);
+      if (addonFolders.length > 0) {
+        this._scanUpdateSrc.next({
+          type: ScanUpdateType.Update,
+          currentCount: 0,
+          totalCount: addonFolders.length,
+        });
 
-          await provider.scan(installation, defaultAddonChannel, validFolders);
-        } catch (e) {
-          console.error("scan failed: " + provider.name);
-          console.error(e);
-          this._scanErrorSrc.next(
-            new AddonScanError({
-              providerName: provider.name,
-              innerError: e,
-            }),
-          );
-        }
+        await this.matchAddonFolders(installation, addonFolders);
       }
 
-      const matchedAddonFolders = addonFolders.filter((addonFolder) => !!addonFolder.matchingAddon);
-      const matchedAddonFolderNames = matchedAddonFolders.map((mf) => mf.name);
-
-      matchedAddonFolders.forEach((maf) => {
-        if (maf.matchingAddon === undefined) {
-          console.warn("matching adding undefined");
-          return;
-        }
-
-        const targetToc = this._tocService.getTocForGameType2(maf.name, maf.tocs, installation.clientType);
-        if (targetToc === undefined) {
-          console.warn("toc file undefined", maf, installation.clientType);
-          // maf.matchingAddon.warningType = AddonWarningType.GameVersionTocMissing;
-          return;
-        }
-
-        if (!targetToc.fileName.startsWith(maf.name)) {
-          console.warn("TOC NAME MISMATCH", maf.name, targetToc.fileName);
-          maf.matchingAddon.warningType = AddonWarningType.TocNameMismatch;
-        }
-
-        this.setExternalIds(maf.matchingAddon, targetToc);
-      });
-
-      const matchedGroups = _.groupBy(
-        matchedAddonFolders,
-        (addonFolder) =>
-          `${addonFolder.matchingAddon?.providerName ?? ""}${addonFolder.matchingAddon?.externalId ?? ""}`,
-      );
-
-      console.debug(`matchedGroups: ${Object.keys(matchedGroups).length} groups`);
-
-      for (const value of Object.values(matchedGroups)) {
-        const ordered = _.orderBy(value, (v) => v.matchingAddon?.externalIds?.length ?? 0).reverse();
-        const first = ordered[0];
-        if (first.matchingAddon) {
-          addonList.push(first.matchingAddon);
-        }
-      }
-
-      const unmatchedFolders = addonFolders.filter((af) =>
-        this.isAddonFolderUnmatched(matchedAddonFolderNames, af, installation),
-      );
-
-      for (const uf of unmatchedFolders) {
-        const unmatchedAddon = await this.createUnmatchedAddon(uf, installation, matchedAddonFolderNames);
-        addonList.push(unmatchedAddon);
-      }
-
-      //Clear the changelogs since they wont always be latest
-      addonList.forEach((addon) => {
-        if (!addon) {
-          return;
-        }
-
-        addon.latestChangelog = undefined;
-        addon.latestChangelogVersion = undefined;
-        addon.channelType = installation.defaultAddonChannelType;
+      const addons = await this._addonSyncApiService.completeScan({
+        installationId: installation.id,
+        addonFolders,
+        nonRescanProviders,
+        providerNames: this._addonProviderService.getProviderNames(),
+        save,
       });
 
       // Not the array itself: devtools keeps a live reference to whatever is logged so it can be
       // expanded, which pinned every addon of every scan in the inspector's heap for the life of
-      // the session. console.debug is also the one level not forwarded to the log file, so this
-      // was invisible everywhere except the devtools that it was bloating.
-      console.debug(`scan complete: ${addonList.length} addons`);
+      // the session.
+      console.debug(`scan complete: ${addons.length} addons`);
 
-      return addonList;
+      return addons;
     } finally {
       this._scanUpdateSrc.next({
         type: ScanUpdateType.Complete,
@@ -1751,86 +1499,24 @@ export class AddonService {
     }
   }
 
-  private setExternalIds(addon: Addon, toc: Toc) {
-    if (!toc) {
-      return;
-    }
+  /** Let each enabled provider set matchingAddon on the folders no provider before it claimed */
+  private async matchAddonFolders(installation: WowInstallation, addonFolders: AddonFolder[]): Promise<void> {
+    const enabledProviders = this._addonProviderService.getEnabledAddonProviders();
+    for (const provider of enabledProviders) {
+      try {
+        const validFolders = addonFolders.filter((af) => !af.ignoreReason && !af.matchingAddon && af.tocs.length > 0);
 
-    const externalIds: AddonExternalId[] = [];
-    for (const [key, value] of Object.entries(ADDON_PROVIDER_TOC_EXTERNAL_ID_MAP)) {
-      this.insertExternalId(externalIds, key, toc[value] as string);
-    }
-
-    //If the addon does not include the current external id add it
-    if (!this.containsOwnExternalId(addon, externalIds)) {
-      if (!addon.providerName || !addon.externalId) {
-        return;
+        await provider.scan(installation, installation.defaultAddonChannelType, validFolders);
+      } catch (e) {
+        console.error("scan failed: " + provider.name);
+        console.error(e);
+        this._scanErrorSrc.next(
+          new AddonScanError({
+            providerName: provider.name,
+            innerError: e,
+          }),
+        );
       }
-
-      this.insertExternalId(externalIds, addon.providerName, addon.externalId);
-    }
-
-    addon.externalIds = externalIds;
-  }
-
-  /**
-   * This should verify that a folder that did not have a match, is actually unmatched
-   * This will happen for any sub folders of TukUI or WowInterface addons
-   */
-  private isAddonFolderUnmatched(
-    matchedFolderNames: string[],
-    addonFolder: AddonFolder,
-    installation: WowInstallation,
-  ) {
-    if (addonFolder.matchingAddon) {
-      return false;
-    }
-
-    const targetToc = this._tocService.getTocForGameType2(addonFolder.name, addonFolder.tocs, installation.clientType);
-
-    // if the folder is load on demand, it 'should' be a sub folder
-    const isLoadOnDemand = targetToc?.loadOnDemand === "1";
-    if (isLoadOnDemand && this.allItemsMatch(targetToc.dependencyList, matchedFolderNames)) {
-      return false;
-    }
-
-    return true;
-  }
-
-  /** Check if all primitives in subset are in the superset (strings, ints) */
-  private allItemsMatch(subset: any[], superset: any[]) {
-    return _.difference(subset, superset).length === 0;
-  }
-
-  public insertExternalId(externalIds: AddonExternalId[], providerName: string, addonId?: string): void {
-    if (!addonId || [ADDON_PROVIDER_RAIDERIO, ADDON_PROVIDER_WOWUP_COMPANION].includes(providerName)) {
-      return;
-    }
-
-    const exists = externalIds.findIndex((extId) => extId.id === addonId && extId.providerName === providerName) !== -1;
-
-    // Runs once per provider per addon, so roughly the addon count times five on every scan. That
-    // the id is already present is the expected case and says nothing worth a console row.
-    if (exists) {
-      return;
-    }
-
-    const provider = this._addonProviderService.getProvider(providerName);
-
-    // A provider that is not enabled for this flavor is the normal case, not something to report.
-    // This runs for every provider of every addon, and console.warn is redirected to electron-log,
-    // so a line here costs an ipc round trip and a disk write per addon.
-    if (provider === undefined) {
-      return;
-    }
-
-    if (provider.isValidAddonId(addonId)) {
-      externalIds.push({
-        id: addonId,
-        providerName: providerName,
-      });
-    } else {
-      console.warn(`Invalid provider id ${providerName}|${addonId}`);
     }
   }
 
@@ -1954,7 +1640,7 @@ export class AddonService {
   }
 
   public async backfillAddon(addon: Addon): Promise<void> {
-    if (addon.externalIds && this.containsOwnExternalId(addon)) {
+    if (addon.externalIds && containsOwnExternalId(addon)) {
       return;
     }
 
@@ -1967,18 +1653,11 @@ export class AddonService {
         throw new Error("Could not find primary toc");
       }
 
-      this.setExternalIds(addon, primaryToc);
+      setExternalIds(addon, primaryToc, new Set(this._addonProviderService.getProviderNames()));
       await this.saveAddon(addon);
     } catch (e) {
       console.error(e);
     }
-  }
-
-  public containsOwnExternalId(addon: Addon, array?: AddonExternalId[]): boolean {
-    const arr = array || addon.externalIds;
-    const result =
-      Array.isArray(arr) && !!arr.find((ext) => ext.id === addon.externalId && ext.providerName === addon.providerName);
-    return result;
   }
 
   public async getTocPaths(addon: Addon): Promise<string[]> {
@@ -2046,50 +1725,6 @@ export class AddonService {
       latestChangelogVersion: latestFile.version,
       installationId: installation.id,
       installedFolderList: [],
-    };
-  }
-
-  private hasValidTocTitle(toc: Toc) {
-    return toc?.title && /[a-zA-Z]/g.test(toc.title);
-  }
-
-  private async createUnmatchedAddon(
-    addonFolder: AddonFolder,
-    installation: WowInstallation,
-    matchedAddonFolderNames: string[],
-  ): Promise<Addon> {
-    const targetToc = this._tocService.getTocForGameType2(addonFolder.name, addonFolder.tocs, installation.clientType);
-    const tocMissingDependencies = _.difference(targetToc?.dependencyList, matchedAddonFolderNames);
-    const lastUpdatedAt = await this._fileService.getLatestDirUpdateTime(addonFolder.path);
-
-    return {
-      id: uuidv4(),
-      name: this.hasValidTocTitle(targetToc) ? targetToc.title ?? addonFolder.name : addonFolder.name,
-      thumbnailUrl: "",
-      latestVersion: targetToc?.version || "",
-      installedVersion: targetToc?.version || "",
-      clientType: installation.clientType,
-      externalId: "",
-      gameVersion: getGameVersionList(targetToc?.interface ?? []),
-      author: targetToc?.author || "",
-      downloadUrl: "",
-      externalUrl: "",
-      providerName: ADDON_PROVIDER_UNKNOWN,
-      channelType: AddonChannelType.Stable,
-      isIgnored: true,
-      autoUpdateEnabled: false,
-      autoUpdateNotificationsEnabled: false,
-      releasedAt: new Date(lastUpdatedAt),
-      installedAt: addonFolder.fileStats?.mtime || new Date(),
-      installedFolders: addonFolder.name,
-      installedFolderList: [addonFolder.name],
-      summary: "",
-      screenshotUrls: [],
-      isLoadOnDemand: targetToc?.loadOnDemand === "1",
-      externalChannel: getEnumName(AddonChannelType, AddonChannelType.Stable),
-      missingDependencies: tocMissingDependencies,
-      ignoreReason: addonFolder.ignoreReason,
-      installationId: installation.id,
     };
   }
 

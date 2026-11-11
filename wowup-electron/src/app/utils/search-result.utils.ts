@@ -4,33 +4,12 @@ import {
   AddonDependencyType,
   AddonSearchResult,
   AddonSearchResultDependency,
-  AddonSearchResultFile,
 } from "wowup-lib-core";
 
-export function getLatestFile(
-  searchResult: AddonSearchResult | undefined,
-  channel: AddonChannelType
-): AddonSearchResultFile | undefined {
-  if (!searchResult?.files) {
-    console.warn(
-      `Search result had no files: [${searchResult?.providerName ?? ""}:${searchResult?.externalId ?? ""}] ${
-        searchResult?.name ?? ""
-      }`
-    );
-    return undefined;
-  }
+import { getLatestFile } from "../../common/addons/search-results";
 
-  let files = _.filter(searchResult.files, (f) => f.channelType <= channel);
-  files = _.orderBy(files, "releaseDate", "desc");
-  let latestFile = _.first(files);
-
-  // In the event that there are no matching files for the desired channel, return the latest regardless of channel
-  if (!latestFile) {
-    latestFile = _.first(_.orderBy(searchResult.files, "releaseDate", "desc"));
-  }
-
-  return latestFile;
-}
+// Moved to src/common so the main process can use it, re-exported so call sites keep their imports
+export { getLatestFile };
 
 export function getDependencies(
   searchResult: AddonSearchResult,

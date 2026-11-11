@@ -14,14 +14,14 @@ WowUp is a World of Warcraft addon manager.
 ## Architecture (coupled UI, mid-migration)
 
 - `nodeIntegration: true` / `contextIsolation: false` (`app/main.ts`): the Angular UI imports Node APIs (`fs`, `path`, …) directly.
-- Not yet migrated, still in the renderer: addon providers (`src/app/addon-providers/`, all HTTP and scraping) and addon scan/sync and install/remove (`src/app/services/addons/`).
+- Not yet migrated, still in the renderer: addon providers (`src/app/addon-providers/`, all HTTP and scraping), addon install/remove, and the provider-matching step of scan/sync (`src/app/services/addons/`).
 - Main process (`app/`): legacy `app/ipc-events.ts` registry, plus **Controllers** (`app/controllers/`, implementing `IpcController`, registered in `app/controllers/index.ts`) and main-process services (`app/services/`) for migrated logic.
 - Migrated domains get a thin renderer wrapper in `src/app/services/api/` (e.g. `warcraft-api.service.ts`) that only wraps `ipcRenderer.invoke()` — no business logic.
 - There is no `Procedure<I, O>` / `EventChannel<P>` layer — just `IpcController` + per-channel `ipcMain.handle()`, wired up in `registerControllers()`.
 
 ## UI Decoupling Plan
 
-Moving business logic from the renderer into main-process Controllers so a future UI swap only replaces the thin API services; shared request/response types go in `src/common/api/contracts/`. Phases 1–3 (Warcraft detection, installation CRUD, TOC parsing) are done; 4–6 (scan/sync, install/remove, `ipc-events.ts` cleanup) are not started. `wowup-electron/UI_DECOUPLING_PLAN.md` is the source of truth — update its checkboxes as phases complete.
+Moving business logic from the renderer into main-process Controllers so a future UI swap only replaces the thin API services; shared request/response types go in `src/common/models/`, pure rules both sides use in `src/common/addons/`. Phases 1–4 (Warcraft detection, installation CRUD, TOC parsing, scan/sync) are done; 5–6 (install/remove incl. moving the addon providers, `ipc-events.ts` cleanup) are not started. `wowup-electron/UI_DECOUPLING_PLAN.md` is the source of truth — update its checkboxes as phases complete.
 
 ## Shell + Bundle
 

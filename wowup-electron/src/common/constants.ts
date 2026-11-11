@@ -146,6 +146,9 @@ export const IPC_TOC_GET_ALL_TOCS = "toc-get-all-tocs";
 
 // ADDON SCAN CONTROLLER
 export const IPC_ADDON_GET_SCAN_RESULTS = "addons-get-scan-results";
+export const IPC_ADDON_SCAN_PREPARE = "addons-scan-prepare";
+export const IPC_ADDON_SCAN_COMPLETE = "addons-scan-complete";
+export const IPC_ADDON_SYNC_APPLY = "addons-sync-apply";
 
 // METRICS CONTROLLER
 export const IPC_METRICS_GET_SNAPSHOT = "metrics-get-snapshot";

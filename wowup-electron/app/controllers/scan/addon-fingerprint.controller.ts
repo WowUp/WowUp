@@ -5,16 +5,9 @@ import { AddonScanRequest, FolderScanResults } from "../../../src/common/models/
 import { AddonScanService } from "../../services/scan/addon-scan.service";
 import { ipcHandle, IpcController } from "../ipc-controller";
 
-export class AddonScanController implements IpcController {
-  /**
-   * @param onScanComplete run after every scan, whatever the outcome. Used to trace renderer memory
-   * across repeated scans, which is the only way to tell a leak from v8 simply not handing back the
-   * heap it grew for one scan's worth of objects.
-   */
-  public constructor(
-    private readonly _scanService: AddonScanService,
-    private readonly _onScanComplete?: () => void,
-  ) {}
+/** Fingerprints on their own, for callers outside a full scan (e.g. after an install). A scan uses AddonSyncController. */
+export class AddonFingerprintController implements IpcController {
+  public constructor(private readonly _scanService: AddonScanService) {}
 
   public register(): void {
     ipcHandle(IPC_ADDON_GET_SCAN_RESULTS, (_evt, request: AddonScanRequest) => this.scan(request));
@@ -26,12 +19,6 @@ export class AddonScanController implements IpcController {
     } catch (e) {
       log.error("Failed during addon scan", e);
       throw e;
-    } finally {
-      try {
-        this._onScanComplete?.();
-      } catch (e) {
-        log.error("Failed to trace memory after a scan", e);
-      }
     }
   }
 }
