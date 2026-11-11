@@ -7,7 +7,7 @@ import flatten from "flat";
 import { catchError, firstValueFrom, Observable, of } from "rxjs";
 import MessageFormat, { MessageFormatOptions } from "@messageformat/core";
 
-const LOCALES = ["cs", "de", "en", "es", "fr", "it", "ko", "nb", "pl", "pt", "ru", "zh-TW", "zh"];
+const LOCALES = ["cs", "de", "en", "es", "fr", "it", "ko", "nb", "pl", "pt", "ru", "tr", "zh-TW", "zh"];
 const LOCALE_DIR = path.join(__dirname, "..", "..", "..", "..", "..", "..", "src", "assets", "i18n");
 
 const LOCALE_SET = {};
