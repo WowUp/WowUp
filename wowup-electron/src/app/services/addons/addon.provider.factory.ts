@@ -197,6 +197,16 @@ export class AddonProviderFactory {
     return this._providerMap.has(providerName);
   }
 
+  /** Every provider this build has, enabled or not */
+  public getProviderNames(): string[] {
+    return [...this._providerMap.keys()];
+  }
+
+  /** Providers whose addons a scan can't find again from the folders on disk, e.g. GitHub */
+  public getNonRescanProviderNames(): string[] {
+    return [...this._providerMap.values()].filter((ap) => ap.allowReScan !== true).map((ap) => ap.name);
+  }
+
   public getAddonProviderForUri(addonUri: URL): AddonProvider | undefined {
     for (const ap of this._providerMap.values()) {
       if (ap.isValidAddonUri(addonUri)) {

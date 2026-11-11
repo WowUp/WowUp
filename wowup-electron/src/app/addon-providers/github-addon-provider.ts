@@ -4,6 +4,7 @@ import { firstValueFrom, from, mergeMap, toArray } from "rxjs";
 import { HttpClient, HttpErrorResponse, HttpHeaders } from "@angular/common/http";
 
 import { ADDON_PROVIDER_GITHUB, PREF_GITHUB_PERSONAL_ACCESS_TOKEN } from "../../common/constants";
+import { isValidExternalAddonId } from "../../common/addons/addon-rules";
 import {
   AssetMissingError,
   GitHubError,
@@ -281,7 +282,7 @@ export class GitHubAddonProvider extends AddonProvider {
   }
 
   public isValidAddonId(addonId: string): boolean {
-    return addonId.indexOf("/") !== -1;
+    return isValidExternalAddonId(this.name, addonId);
   }
 
   private async getLatestValidAsset(releases: GitHubRelease[], clientType: WowClientType): Promise<LatestValidAsset> {

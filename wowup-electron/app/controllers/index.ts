@@ -1,12 +1,20 @@
+import { randomUUID } from "crypto";
 import { app, BrowserWindow } from "electron";
 import * as Store from "electron-store";
 import * as log from "electron-log/main";
+import * as fsp from "fs/promises";
 
 import { AddonController } from "./addon.controller";
+import { AddonSyncController } from "./scan/addon-sync.controller";
+import { AddonRepository } from "../services/addons/addon-repository";
+import { AddonSyncService } from "../services/addons/addon-sync.service";
+import { getLastModifiedFileDate } from "../file.utils";
+import { AddonFolderService } from "../services/warcraft/addon-folder.service";
+import { USE_SYMLINK_MODE_PREFERENCE_KEY } from "../../src/common/constants";
 import { WagoAdsController } from "./wago-ads.controller";
 import { IpcController } from "./ipc-controller";
 import { MetricsController } from "./metrics/metrics.controller";
-import { AddonScanController } from "./scan/addon-scan.controller";
+import { AddonFingerprintController } from "./scan/addon-fingerprint.controller";
 import { TocController } from "./toc/toc.controller";
 import { WarcraftController } from "./warcraft/warcraft.controller";
 import { WarcraftInstallationController } from "./warcraft/warcraft-installation.controller";
@@ -58,14 +66,35 @@ export function registerControllers(deps: ControllerDeps): void {
     log,
   });
 
+  const addonRepository = new AddonRepository(deps.addonStore);
+  const installationService = new WarcraftInstallationService(deps.preferenceStore);
+  const scanService = new AddonScanService({ hashes: nodeHashAlgorithms, log });
+  const addonFolderService = new AddonFolderService(tocService);
+
+  const syncService = new AddonSyncService({
+    repository: addonRepository,
+    getInstallations: () => installationService.getAll(),
+    getAddonFolderPath: (installation) => addonFolderService.getAddonFolderPath(installation),
+    listAddons: (addonFolderPath, scanSymlinks) => addonFolderService.listAddons(addonFolderPath, scanSymlinks),
+    // Saved as the string "true"/"false", like every scalar preference
+    getScanSymlinks: () => String(deps.preferenceStore.get(USE_SYMLINK_MODE_PREFERENCE_KEY)) === "true",
+    // Only the overwolf flavor has curseforge, the one provider that matches on its own fingerprint
+    fingerprintSources: AppEnv.buildFlavor === "ow" ? ["wowup", "curseforge"] : ["wowup"],
+    listDirectories: async (dirPath) =>
+      (await fsp.readdir(dirPath, { withFileTypes: true })).filter((e) => e.isDirectory()).map((e) => e.name),
+    getFingerprints: (request) => scanService.scanFolders(request),
+    getLatestDirUpdateTime: (dirPath) => getLastModifiedFileDate(dirPath),
+    newId: () => randomUUID(),
+    log,
+  });
+
   const controllers: IpcController[] = [
-    new AddonController(deps.addonStore),
-    new WarcraftController(getPlatformImpl(), deps.preferenceStore, tocService),
-    new WarcraftInstallationController(new WarcraftInstallationService(deps.preferenceStore)),
+    new AddonController(addonRepository),
+    new WarcraftController(getPlatformImpl(), deps.preferenceStore, addonFolderService),
+    new WarcraftInstallationController(installationService),
     new TocController(tocService),
-    new AddonScanController(new AddonScanService({ hashes: nodeHashAlgorithms, log }), () =>
-      metricsService.logRendererMemory("renderers after scan"),
-    ),
+    new AddonFingerprintController(scanService),
+    new AddonSyncController(syncService, () => metricsService.logRendererMemory("renderers after scan")),
     // Registered on every flavor on purpose: a resource report is only actionable if the ow numbers
     // can be held against the wago ones.
     new MetricsController(metricsService),

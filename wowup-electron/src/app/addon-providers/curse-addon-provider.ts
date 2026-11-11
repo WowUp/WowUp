@@ -34,6 +34,7 @@ import {
   NO_LATEST_SEARCH_RESULT_FILES_ERROR,
   NO_SEARCH_RESULTS_ERROR,
 } from "../../common/constants";
+import { isValidExternalAddonId } from "../../common/addons/addon-rules";
 import { AppConfig } from "../../environments/environment";
 import { CachingService } from "../services/caching/caching-service";
 import { CircuitBreakerWrapper, NetworkService } from "../services/network/network.service";
@@ -357,7 +358,7 @@ export class CurseAddonProvider extends AddonProvider {
   }
 
   public override isValidAddonId(addonId: string): boolean {
-    return !!addonId && !isNaN(parseInt(addonId, 10));
+    return isValidExternalAddonId(this.name, addonId);
   }
 
   public override isValidProtocol(protocol: string): boolean {
@@ -543,7 +544,7 @@ export class CurseAddonProvider extends AddonProvider {
         CHANGELOG_CACHE_TTL_SEC,
       );
 
-      return response.data?.data || "";
+      return this.standardizeHtmlLinks(response.data?.data || "");
     } catch (e) {
       console.error("Failed to get changelog", e);
     }
@@ -563,7 +564,7 @@ export class CurseAddonProvider extends AddonProvider {
       );
 
       if (response.data) {
-        return this.standardizeDescription(response.data.data);
+        return this.standardizeHtmlLinks(response.data.data);
       }
     } catch (e) {
       console.error("Failed to get changelog", e);
@@ -708,34 +709,46 @@ export class CurseAddonProvider extends AddonProvider {
     }
   }
 
-  /** We want to pull all the A tags and fix what we can */
-  private standardizeDescription(description: string): string {
-    let descriptionCpy = `${description}`;
-    const hrefRegex = /<a\s+(?:[^>]*?\s+)?href=(["'])(.*?)\1/g;
-    const results = descriptionCpy.matchAll(hrefRegex);
-    const resultArr = [...results];
-    for (const result of resultArr) {
+  /**
+   * CurseForge description/changelog HTML uses links relative to curseforge.com. The renderer is
+   * loaded from file://, so left alone they resolve to file:///... — rewrite every A tag's href to
+   * an absolute URL (unwrapping /linkout redirects to their real destination).
+   */
+  private standardizeHtmlLinks(html: string): string {
+    const hrefRegex = /<a\s+(?:[^>]*?\s+)?href=(["'])(.*?)\1/gi;
+    return html.replace(hrefRegex, (match: string, quote: string, href: string) => {
       try {
-        const href = result[2];
-        if (!href) {
-          continue;
+        const resolved = this.resolveCurseHref(href);
+        if (resolved === href) {
+          return match;
         }
 
-        if (href.toLowerCase().indexOf("/linkout") === 0) {
-          descriptionCpy = this.rebuildLinkOut(descriptionCpy, href);
-        }
+        // Keep the rewritten value from breaking out of its quoted attribute
+        const safe = resolved.replace(/"/g, "%22").replace(/'/g, "%27");
+        return match.slice(0, match.length - href.length - 1) + safe + quote;
       } catch (e) {
         console.error(e);
+        return match;
       }
-    }
-    return descriptionCpy;
+    });
   }
 
-  private rebuildLinkOut(description: string, href: string) {
+  private resolveCurseHref(href: string): string {
+    // Only root-relative paths need fixing; absolute and protocol-relative URLs are left alone
+    if (!href.startsWith("/") || href.startsWith("//")) {
+      return href;
+    }
+
     const url = new URL(`https://www.curseforge.com${href}`);
-    const remoteUrl = url.searchParams.get("remoteUrl") ?? "";
-    const destination = window.decodeURIComponent(remoteUrl);
-    return description.replace(href, destination);
+    if (url.pathname.toLowerCase() === "/linkout") {
+      // remoteUrl is double-encoded: searchParams decodes once, decodeURIComponent the second time
+      const destination = decodeURIComponent(url.searchParams.get("remoteUrl") ?? "");
+      if (destination) {
+        return destination;
+      }
+    }
+
+    return url.toString();
   }
 
   private parseProtocol(protocol: string): ProtocolData {

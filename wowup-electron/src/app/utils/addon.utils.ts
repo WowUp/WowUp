@@ -9,6 +9,11 @@ import {
   WowInstallation,
 } from "wowup-lib-core";
 
+import { toInterfaceNumber } from "../../common/addons/game-versions";
+
+// Moved to src/common so the main process can use them, re-exported so call sites keep their imports
+export { getFileTargetVersions, toInterfaceVersion } from "../../common/addons/game-versions";
+
 /** Whether an external id's provider can be switched to in this build, see AddonProviderFactory.isProviderAvailable */
 export type ProviderAvailability = (providerName: string) => boolean;
 
@@ -82,41 +87,6 @@ export function needsInstall(addon: Addon): boolean {
 //   return chunks.map((c) => parseInt(c, 10)).join(".");
 // }
 
-/**
- * Accepts n semver (10.0.0) and formats it as an interface version (100000)
- * if the format is invalid or missing throw error
- */
-export function toInterfaceVersion(version: string): string {
-  if (!version) {
-    throw new Error("interface version empty or undefined");
-  }
-
-  if (version.indexOf(".") === -1) {
-    return version;
-  }
-
-  const parts = version.split(".");
-  if (parts.length != 3) {
-    console.warn(`invalid part length: ${parts.length} - ${version}`);
-    while (parts.length < 3) {
-      parts.push("0");
-    }
-    console.warn(`guessing version: ${parts.join(".")}`);
-  }
-
-  const paddedParts = parts.map((part, idx) => padInterfacePart(part, idx));
-
-  return paddedParts.join("");
-}
-
-function padInterfacePart(part: string, idx: number) {
-  const num = parseInt(part, 10);
-  if (idx === 0) {
-    return num;
-  }
-  return num >= 10 ? num : `0${num}`;
-}
-
 /** Clients whose version tracks a live release; PTR and beta builds are expected to run ahead of addons. */
 const VERSION_CHECKED_CLIENT_TYPES: WowClientType[] = [
   WowClientType.Retail,
@@ -125,27 +95,6 @@ const VERSION_CHECKED_CLIENT_TYPES: WowClientType[] = [
   WowClientType.Anniversary,
   WowClientType.Forever,
 ];
-
-/** "12.1.5", "12.1.5.70688" or the interface number "120105" as a comparable number (120105), undefined if neither. */
-function toInterfaceNumber(version: string | undefined): number | undefined {
-  const trimmed = (version ?? "").trim();
-  if (!/^\d+(\.\d+){0,3}$/.test(trimmed)) {
-    return undefined;
-  }
-
-  const parts = trimmed.split(".");
-  if (parts.length === 1 && trimmed.length < 5) {
-    return undefined;
-  }
-
-  const versionParts = parts.slice(0, 3);
-  while (parts.length > 1 && versionParts.length < 3) {
-    versionParts.push("0");
-  }
-
-  const interfaceNumber = Number(toInterfaceVersion(versionParts.join(".")));
-  return Number.isFinite(interfaceNumber) ? interfaceNumber : undefined;
-}
 
 /**
  * Versions of different game flavors are not comparable (retail 12.1.5 vs classic era 1.15.9), and a
@@ -227,12 +176,6 @@ export function getNewestVersionOfInstalledFlavor(
         entry.interfaceNumber !== undefined && getVersionFlavor(entry.interfaceNumber) === getVersionFlavor(installed),
     )
     .sort((a, b) => (b.interfaceNumber ?? 0) - (a.interfaceNumber ?? 0))[0]?.version;
-}
-
-/** The readable game versions a provider file targets; tags like "Retail" that some providers list are dropped. */
-export function getFileTargetVersions(file: { gameVersion?: string; gameVersions?: string[] }): string[] {
-  const versions = file.gameVersions?.length ? file.gameVersions : [file.gameVersion];
-  return versions.filter((version): version is string => toInterfaceNumber(version) !== undefined);
 }
 
 /** Whether the installation's game version is worth checking addons against, see VERSION_CHECKED_CLIENT_TYPES */

@@ -18,11 +18,24 @@ const CHANGELOGS: ChangeLog[] = [
   {
     Version: "2.25.5",
     html: `
+    <h4>Features</h4>
+    <ul>
+    <li>Linux: the AppImage now carries update information, so tools like AppImageUpdate and Gear Lever can update WowUp</li>
+    </ul>
+    <h4>Changes</h4>
+    <ul>
+    <li>macOS: WowUp is now listed as a utility instead of a game, so it no longer turns on Game Mode while it runs</li>
+    <li>Update translations for the newest messages in all languages</li>
+    </ul>
     <h4>Fixes</h4>
     <ul>
     <li>Fix invisible expand/collapse icons in the WTF Explorer tree</li>
     <li>Fix the client selector dropdown being too narrow on My Addons and Get Addons; keep control bar buttons from wrapping</li>
     <li>Fix a false "Failed to get WowUp update" error message that appeared when checking for updates during a temporary network issue</li>
+    <li>Fix addon installs sometimes failing with a "not a zip file" error because the download had not finished writing</li>
+    <li>Fix links in CurseForge addon changelogs trying to open as a local file instead of in your browser</li>
+    <li>Fix the Start Minimized option being ignored</li>
+    <li>Windows: Fix WowUp not finding ARM64 World of Warcraft installs in some cases, such as when WowUp runs under emulation</li>
     </ul>
     `,
   },

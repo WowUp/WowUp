@@ -91,7 +91,9 @@ keyExpectedTimeout = window.setTimeout(() => {
   backoffReload();
 }, 30000);
 
-console.log(`[wago-preload] init`, window.location.href);
+// debug, not log: this runs on every self-refresh of the ad page, and only console.log/warn/error are
+// forwarded to the main process. Still visible in the ad frame's own devtools.
+console.debug(`[wago-preload] init`, window.location.href);
 
 function backoffReload() {
   let backoffSet = window.sessionStorage.getItem("wago-backoff-set");

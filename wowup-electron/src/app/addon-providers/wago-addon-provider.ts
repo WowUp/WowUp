@@ -4,6 +4,7 @@ import { v4 as uuidv4 } from "uuid";
 import _ from "lodash";
 
 import { ADDON_PROVIDER_WAGO, IPC_POWER_MONITOR_RESUME, PREF_WAGO_ACCESS_KEY } from "../../common/constants";
+import { isValidExternalAddonId } from "../../common/addons/addon-rules";
 import { AppConfig } from "../../environments/environment";
 import { ElectronService } from "../services";
 import { CachingService } from "../services/caching/caching-service";
@@ -242,7 +243,7 @@ export class WagoAddonProvider extends AddonProvider {
   }
 
   public isValidAddonId(addonId: string): boolean {
-    return typeof addonId === "string" && addonId.length >= 8 && addonId.length <= 10;
+    return isValidExternalAddonId(this.name, addonId);
   }
 
   public override async scan(
@@ -844,9 +845,10 @@ export class WagoAddonProvider extends AddonProvider {
   }
 
   private onWagoTokenReceived = (evt, token: string) => {
-    console.log(`[wago] onWagoTokenReceived: ${token.length}`);
+    // No line for the routine case: a token arrives on every ad refresh, and "[wago] token ready"
+    // already confirms the token is good when it is actually used.
     if (!this.isValidToken(token)) {
-      console.warn("[wagp] malformed token detected");
+      console.warn(`[wago] malformed token detected: ${token?.length}`);
       return;
     }
 
