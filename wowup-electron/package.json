@@ -54,6 +54,7 @@
     "test": "npm run test:main && npm run test:scripts && ng test --watch=false",
     "test:renderer": "ng test --watch=false",
     "test:main": "tsc -p app/tsconfig.spec.json && cross-env NODE_PATH=../wowup-shell/node_modules mocha",
+    "test:main:live": "tsc -p app/tsconfig.spec.json && cross-env NODE_PATH=../wowup-shell/node_modules mocha --no-config --timeout 30000 \"out-tsc/app-spec/wowup-electron/app/**/*.live-test.js\"",
     "test:scripts": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON --test \"scripts/**/*.test.mts\"",
     "test:watch": "ng test",
     "test:locales": "ng test --watch=false --include='src/locales.spec.ts'",
@@ -86,6 +87,7 @@
     "protobufjs": "7.2.6",
     "pushy-electron": "1.0.11",
     "rxjs": "7.8.1",
+    "string-similarity": "4.0.4",
     "wowup-lib-core": "file:../wowup-lib",
     "yauzl": "3.4.0"
   },
@@ -132,6 +134,7 @@
     "@types/object-hash": "3.0.4",
     "@types/opossum": "6.2.2",
     "@types/slug": "5.0.4",
+    "@types/string-similarity": "4.0.2",
     "@types/uuid": "9.0.3",
     "@typescript-eslint/eslint-plugin": "^7.2.0",
     "@typescript-eslint/eslint-plugin-tslint": "7.0.2",

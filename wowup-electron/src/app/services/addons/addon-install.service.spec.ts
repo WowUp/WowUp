@@ -8,9 +8,9 @@ import {
   AddonScanResult,
   WowClientType,
   WowInstallation,
-  WowUpAddonProvider,
 } from "wowup-lib-core";
 
+import { RemoteAddonProvider } from "../../addon-providers/remote-addon-provider";
 import { USER_ACTION_ADDON_INSTALL } from "../../../common/constants";
 import { InstallAddonFileRequest, InstalledAddonFile } from "../../../common/models/addon-install";
 import { AddonInstallState } from "../../models/wowup/addon-install-state";
@@ -76,7 +76,7 @@ describe("AddonInstallService", () => {
   let analyticsService: jasmine.SpyObj<AnalyticsService>;
   let addonScanApiService: jasmine.SpyObj<AddonScanApiService>;
   let installApi: jasmine.SpyObj<AddonInstallApiService>;
-  let hubProvider: jasmine.SpyObj<WowUpAddonProvider>;
+  let hubProvider: jasmine.SpyObj<RemoteAddonProvider>;
 
   let service: AddonInstallService;
 
@@ -194,7 +194,7 @@ describe("AddonInstallService", () => {
       return Promise.resolve(fakeInstalled(request));
     });
 
-    hubProvider = jasmine.createSpyObj<WowUpAddonProvider>("WowUpAddonProvider", ["getAddonIdsByFingerprints"]);
+    hubProvider = jasmine.createSpyObj<RemoteAddonProvider>("RemoteAddonProvider", ["getAddonIdsByFingerprints"]);
     hubProvider.getAddonIdsByFingerprints.and.resolveTo(new Map());
     (hubProvider as { enabled: boolean }).enabled = true;
 

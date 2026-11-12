@@ -165,6 +165,11 @@ Done in three steps, each shippable on its own.
       `getAll` failed in main and reported every TukUI addon as removed from TukUI.
 - [x] Removed from the renderer: the Zip, RaiderIO and Companion providers,
       `GenericNetworkInterface`, `mem-cache`.
+- [x] The hub, TukUI and WowInterface providers moved out of wowup-lib-core into
+      `app/services/addon-providers/` (with `NetworkInterface`), since main was their only user.
+      The lib keeps the models, the `AddonProvider` base and the helpers both processes use. Their
+      live-API tests became `*.live-test.ts`, run with `npm run test:main:live` and kept out of
+      `npm run test:main`, which stays offline.
 
 ### Step 2 — the providers with tokens ⏳
 

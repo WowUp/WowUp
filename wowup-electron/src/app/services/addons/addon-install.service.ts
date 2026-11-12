@@ -2,8 +2,9 @@ import { Injectable } from "@angular/core";
 import { catchError, EMPTY, from, mergeMap, Subject } from "rxjs";
 import slug from "slug";
 import { join as pathJoin } from "path";
-import { Addon, getEnumName, WowClientType, WowUpAddonProvider } from "wowup-lib-core";
+import { Addon, getEnumName, WowClientType } from "wowup-lib-core";
 
+import { RemoteAddonProvider } from "../../addon-providers/remote-addon-provider";
 import { ADDON_PROVIDER_HUB, USER_ACTION_ADDON_INSTALL } from "../../../common/constants";
 import { AddonInstallPhase } from "../../../common/models/addon-install";
 import { AddonInstallState } from "../../models/wowup/addon-install-state";
@@ -237,7 +238,7 @@ export class AddonInstallService {
       return;
     }
 
-    const hubProvider = this._addonProviderService.getProvider<WowUpAddonProvider>(ADDON_PROVIDER_HUB);
+    const hubProvider = this._addonProviderService.getProvider<RemoteAddonProvider>(ADDON_PROVIDER_HUB);
     const installation = this._warcraftInstallationService.getWowInstallation(addon.installationId);
     if (!hubProvider?.enabled || !installation) {
       return;

@@ -1,13 +1,12 @@
 import NodeCache = require("node-cache");
-import { GetConfig, NetworkInterface, PostConfig } from "wowup-lib-core";
+import { GetConfig, NetworkInterface, PostConfig } from "./network-interface";
 
 import { HttpCircuitBreaker } from "./circuit-breaker";
 
 const CACHE_TTL_SEC = 30;
 
 /**
- * The `NetworkInterface` wowup-lib-core's providers (hub, WowInterface, TukUI) make their requests
- * through. Port of the renderer's `GenericNetworkInterface`: one breaker per service, default
+ * The `NetworkInterface` the hub, WowInterface and TukUI providers make their requests through. Port of the renderer's `GenericNetworkInterface`: one breaker per service, default
  * headers, and a 30 s cache so the same request from several places in a sync goes out once.
  */
 export class ProviderNetworkInterface implements NetworkInterface {

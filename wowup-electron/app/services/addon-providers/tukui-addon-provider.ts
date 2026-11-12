@@ -1,17 +1,29 @@
-import { filter, find, first, map, orderBy, some, sortBy } from 'lodash';
-import * as stringSimilarity from 'string-similarity';
-import { v4 as uuidv4 } from 'uuid';
+import { randomUUID } from "crypto";
+import { filter, find, first, map, orderBy, some, sortBy } from "lodash";
+import * as stringSimilarity from "string-similarity";
+import {
+  Addon,
+  AddonCategory,
+  AddonChannelType,
+  AddonFolder,
+  AddonProvider,
+  AddonSearchResult,
+  AddonSearchResultFile,
+  convertMarkdown,
+  getEnumName,
+  getTocForGameType2,
+  GetAllResult,
+  SourceRemovedAddonError,
+  Toc,
+  TukUiAddon,
+  WowClientType,
+  WowInstallation,
+} from "wowup-lib-core";
 
-import { AddonProvider, GetAllResult } from '../addon-provider';
-import { Addon, AddonFolder, AddonSearchResult, AddonSearchResultFile } from '../addons';
-import { ADDON_PROVIDER_TUKUI } from '../constants';
-import { SourceRemovedAddonError } from '../errors';
-import { TukUiAddon, WowInstallation } from '../models';
-import { Toc } from '../toc';
-import { AddonCategory, AddonChannelType, WowClientType } from '../types';
-import { convertMarkdown, getEnumName, getTocForGameType2, NetworkInterface } from '../utils';
+import { ADDON_PROVIDER_TUKUI } from "../../../src/common/constants";
+import { NetworkInterface } from "../network/network-interface";
 
-const NEW_API_URL = 'https://api.tukui.org/v1/addons';
+const NEW_API_URL = "https://api.tukui.org/v1/addons";
 const DOWNLOAD_CT = 2147483647;
 
 export class TukUiAddonProvider extends AddonProvider {
@@ -33,7 +45,7 @@ export class TukUiAddonProvider extends AddonProvider {
 
     const searchResults: AddonSearchResult[] = [];
     for (const addon of allAddons) {
-      const searchResult = await this.toSearchResult(addon, installation);
+      const searchResult = this.toSearchResult(addon, installation);
       if (searchResult) {
         searchResults.push(searchResult);
       }
@@ -45,15 +57,15 @@ export class TukUiAddonProvider extends AddonProvider {
   public async getDescription(installation: WowInstallation, externalId: string): Promise<string> {
     const addons = await this.getAllAddons(installation.clientType);
     const addonMatch = find(addons, (addon) => addon.id.toString() === externalId.toString());
-    return addonMatch?.small_desc ?? '';
+    return addonMatch?.small_desc ?? "";
   }
 
   public async getChangelog(installation: WowInstallation, externalId: string): Promise<string> {
     const addons = await this.getAllAddons(installation.clientType);
     const addon = find(addons, (a) => a.id.toString() === externalId.toString());
     if (!addon) {
-      console.warn('Addon not found');
-      return '';
+      console.warn("Addon not found");
+      return "";
     }
 
     return await this.formatChangelog(addon);
@@ -62,21 +74,21 @@ export class TukUiAddonProvider extends AddonProvider {
   public async getAll(installation: WowInstallation, addonIds: string[]): Promise<GetAllResult> {
     const validIds = filter(addonIds, (aid) => this.isValidAddonId(aid));
     const errors: Error[] = filter(addonIds, (aid) => !this.isValidAddonId(aid)).map(
-      (aid) => new Error('invalid addon id found: ' + aid),
+      (aid) => new Error("invalid addon id found: " + aid),
     );
     let results: AddonSearchResult[] = [];
 
     try {
       const addons = await this.getAllAddons(installation.clientType);
       const filteredAddons = addons.filter((addon) => some(validIds, (aid) => aid.toString() === addon.id.toString()));
-      results = await this.mapAddonsToSearchResults(filteredAddons, installation);
+      results = this.mapAddonsToSearchResults(filteredAddons, installation);
     } catch (e) {
-      console.error('Failed during getAll', e);
+      console.error("Failed during getAll", e);
     }
 
     if (results.length !== validIds.length) {
       const missingIds = filter(validIds, (aid) => !some(results, (r) => r.externalId === aid));
-      errors.push(...map(missingIds, (mid) => new SourceRemovedAddonError(mid, new Error('addon not found ' + mid))));
+      errors.push(...map(missingIds, (mid) => new SourceRemovedAddonError(mid, new Error("addon not found " + mid))));
     }
 
     return {
@@ -87,15 +99,15 @@ export class TukUiAddonProvider extends AddonProvider {
 
   public async getFeaturedAddons(installation: WowInstallation): Promise<AddonSearchResult[]> {
     const tukUiAddons = await this.getAllAddons(installation.clientType);
-    return await this.mapAddonsToSearchResults(tukUiAddons, installation);
+    return this.mapAddonsToSearchResults(tukUiAddons, installation);
   }
 
   public async searchByQuery(query: string, installation: WowInstallation): Promise<AddonSearchResult[]> {
     const searchResults = await this.searchAddons(query, installation.clientType, true);
 
-    const similarAddons = orderBy(searchResults, ['downloads']);
+    const similarAddons = orderBy(searchResults, ["downloads"]);
 
-    return await this.mapAddonsToSearchResults(similarAddons, installation);
+    return this.mapAddonsToSearchResults(similarAddons, installation);
   }
 
   public override async getById(
@@ -106,14 +118,14 @@ export class TukUiAddonProvider extends AddonProvider {
 
     const match = find(addons, (addon) => addon.id.toString() === addonId);
     if (match !== undefined) {
-      return await this.toSearchResult(match, installation);
+      return this.toSearchResult(match, installation);
     }
 
     return undefined;
   }
 
   public isValidAddonId(addonId: string): boolean {
-    return typeof addonId === 'string' && !isNaN(parseInt(addonId, 10));
+    return typeof addonId === "string" && !isNaN(parseInt(addonId, 10));
   }
 
   public async scan(
@@ -125,7 +137,7 @@ export class TukUiAddonProvider extends AddonProvider {
 
     // Sort folders to prioritize ones with a toc id
     let tukProjectAddonFolders = sortBy(addonFolders, (folder) =>
-      folder.tocs.some((toc) => !!toc.tukUiProjectId && toc.loadOnDemand !== '1'),
+      folder.tocs.some((toc) => !!toc.tukUiProjectId && toc.loadOnDemand !== "1"),
     ).reverse();
 
     // Remove all folders that do not have a matching game type
@@ -135,22 +147,22 @@ export class TukUiAddonProvider extends AddonProvider {
     );
 
     // Go thru all the folders, see if they have an ID we can match.
-    await this.scanAddonsWithIds(tukProjectAddonFolders, allAddons, installation, addonChannelType);
+    this.scanAddonsWithIds(tukProjectAddonFolders, allAddons, installation, addonChannelType);
 
     // Go thru all the folders and see if any of the non-matched belong to the folder list of any matched ones
-    await this.matchAddonSubfolders(tukProjectAddonFolders, installation);
+    this.matchAddonSubfolders(tukProjectAddonFolders, installation);
 
     // Go thru all the folders and see if the names match anything that did not have a match
     await this.scanAddonsWithNames(tukProjectAddonFolders, installation, addonChannelType);
 
     // repeat step 2 for remaining non-matched folders
-    await this.matchAddonSubfolders(tukProjectAddonFolders, installation);
+    this.matchAddonSubfolders(tukProjectAddonFolders, installation);
   }
 
-  private async mapAddonsToSearchResults(addons: TukUiAddon[], installation: WowInstallation) {
+  private mapAddonsToSearchResults(addons: TukUiAddon[], installation: WowInstallation): AddonSearchResult[] {
     const results: AddonSearchResult[] = [];
     for (const addon of addons) {
-      const searchResult = await this.toSearchResult(addon, installation);
+      const searchResult = this.toSearchResult(addon, installation);
       if (searchResult) {
         results.push(searchResult);
       }
@@ -162,8 +174,8 @@ export class TukUiAddonProvider extends AddonProvider {
     try {
       return await this.fetchChangelogHtml(addon);
     } catch (e) {
-      console.error('Failed to get changelog', e);
-      return '';
+      console.error("Failed to get changelog", e);
+      return "";
     }
   }
 
@@ -191,7 +203,7 @@ export class TukUiAddonProvider extends AddonProvider {
       })
       .filter((result) => result.similarity > 0.7);
 
-    let matches = orderBy(similarity, (match) => match.similarity, 'desc').map((result) => result.addon);
+    let matches = orderBy(similarity, (match) => match.similarity, "desc").map((result) => result.addon);
 
     // If we didnt get any similarity matches
     if (allowContain && matches.length === 0) {
@@ -201,10 +213,7 @@ export class TukUiAddonProvider extends AddonProvider {
     return matches;
   }
 
-  private async toSearchResult(
-    addon: TukUiAddon,
-    installation: WowInstallation,
-  ): Promise<AddonSearchResult | undefined> {
+  private toSearchResult(addon: TukUiAddon, installation: WowInstallation): AddonSearchResult | undefined {
     if (!addon) {
       return undefined;
     }
@@ -233,25 +242,25 @@ export class TukUiAddonProvider extends AddonProvider {
   }
 
   private getPatchForInstall(addon: TukUiAddon, installation: WowInstallation): string {
-    const classicToken = '1.1';
-    const foreverToken = '1.6';
-    const burningCrusadeToken = '2.';
-    const wrathToken = '3.';
-    const cataToken = '4.';
-    const mistsToken = '5.';
+    const classicToken = "1.1";
+    const foreverToken = "1.6";
+    const burningCrusadeToken = "2.";
+    const wrathToken = "3.";
+    const cataToken = "4.";
+    const mistsToken = "5.";
 
     switch (installation.clientType) {
       case WowClientType.Classic:
       case WowClientType.ClassicPtr:
-        return addon.patch.find((p) => p.startsWith(mistsToken)) ?? '';
+        return addon.patch.find((p) => p.startsWith(mistsToken)) ?? "";
       case WowClientType.ClassicEra:
       case WowClientType.ClassicEraPtr:
-        return addon.patch.find((p) => p.startsWith(classicToken)) ?? '';
+        return addon.patch.find((p) => p.startsWith(classicToken)) ?? "";
       case WowClientType.Forever:
       case WowClientType.ClassicBeta:
-        return addon.patch.find((p) => p.startsWith(foreverToken)) ?? '';
+        return addon.patch.find((p) => p.startsWith(foreverToken)) ?? "";
       case WowClientType.Anniversary:
-        return addon.patch.find((p) => p.startsWith(burningCrusadeToken)) ?? '';
+        return addon.patch.find((p) => p.startsWith(burningCrusadeToken)) ?? "";
       default:
         return (
           addon.patch.find(
@@ -261,7 +270,7 @@ export class TukUiAddonProvider extends AddonProvider {
               !p.startsWith(cataToken) &&
               !p.startsWith(mistsToken) &&
               !p.startsWith(foreverToken),
-          ) ?? ''
+          ) ?? ""
         );
     }
   }
@@ -286,12 +295,12 @@ export class TukUiAddonProvider extends AddonProvider {
   };
 
   /** Iterate the list of addon folders, attempting to find and match anything based on the ID inside the correct toc file */
-  private async scanAddonsWithIds(
+  private scanAddonsWithIds(
     addonFolders: AddonFolder[],
     allAddons: TukUiAddon[],
     installation: WowInstallation,
     addonChannelType: AddonChannelType,
-  ): Promise<void> {
+  ): void {
     for (const addonFolder of addonFolders) {
       const targetToc = getTocForGameType2(addonFolder, installation.clientType);
       if (targetToc === undefined) {
@@ -301,13 +310,13 @@ export class TukUiAddonProvider extends AddonProvider {
 
       console.log(`[TukUI]: target ${targetToc.fileName}, ${targetToc.title}, ${targetToc.tukUiProjectId}`);
 
-      if (typeof targetToc.tukUiProjectId === 'string' && targetToc.tukUiProjectId.length > 0) {
+      if (typeof targetToc.tukUiProjectId === "string" && targetToc.tukUiProjectId.length > 0) {
         const match = find(allAddons, (addon) => addon.id.toString() === targetToc.tukUiProjectId);
         if (match === undefined) {
           continue;
         }
 
-        addonFolder.matchingAddon = await this.createAddonFolderAddon(
+        addonFolder.matchingAddon = this.createAddonFolderAddon(
           targetToc,
           addonFolder,
           match,
@@ -339,7 +348,7 @@ export class TukUiAddonProvider extends AddonProvider {
         continue;
       }
 
-      addonFolder.matchingAddon = await this.createAddonFolderAddon(
+      addonFolder.matchingAddon = this.createAddonFolderAddon(
         targetToc,
         addonFolder,
         firstResult,
@@ -350,7 +359,7 @@ export class TukUiAddonProvider extends AddonProvider {
   }
 
   /** Given a list of pre-processed addon folders, attempt to place any matching folders with their 'parent' addon that has a list containing it */
-  private async matchAddonSubfolders(addonFolders: AddonFolder[], installation: WowInstallation): Promise<void> {
+  private matchAddonSubfolders(addonFolders: AddonFolder[], installation: WowInstallation): void {
     const matchedAddons = filter(addonFolders, (af) => af.matchingAddon !== undefined);
     const missingAddons = filter(addonFolders, (af) => af.matchingAddon === undefined);
 
@@ -376,17 +385,17 @@ export class TukUiAddonProvider extends AddonProvider {
   }
 
   /** Create an addon from the matched TukUi addon and correct toc file */
-  private async createAddonFolderAddon(
+  private createAddonFolderAddon(
     targetToc: Toc,
     addonFolder: AddonFolder,
     tukUiAddon: TukUiAddon,
     installation: WowInstallation,
     addonChannelType: AddonChannelType,
-  ): Promise<Addon> {
+  ): Addon {
     const installedFolders = targetToc.tukUiProjectFolders ? targetToc.tukUiProjectFolders : addonFolder.name;
 
     const installedFolderList = targetToc.tukUiProjectFolders
-      ? targetToc.tukUiProjectFolders.split(',').map((f) => f.trim())
+      ? targetToc.tukUiProjectFolders.split(",").map((f) => f.trim())
       : [addonFolder.name];
 
     return {
@@ -394,7 +403,7 @@ export class TukUiAddonProvider extends AddonProvider {
       autoUpdateNotificationsEnabled: false,
       channelType: addonChannelType,
       clientType: installation.clientType,
-      id: uuidv4(),
+      id: randomUUID(),
       isIgnored: false,
       name: tukUiAddon.name,
       author: tukUiAddon.author,

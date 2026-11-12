@@ -1,17 +1,30 @@
-import { filter, first, flatten, map, uniq } from 'lodash';
-import { v4 as uuidv4 } from 'uuid';
+import { randomUUID } from "crypto";
+import { filter, first, flatten, map, uniq } from "lodash";
+import {
+  Addon,
+  AddonChannelType,
+  AddonDetailsResponseV3,
+  AddonDetailsResponseV4,
+  AddonFolder,
+  AddonProvider,
+  AddonSearchResult,
+  AddonSearchResultFile,
+  convertBbcode,
+  getEnumName,
+  getGameVersionList,
+  getTocForGameType2,
+  GetAllResult,
+  SearchByUrlResult,
+  SourceRemovedAddonError,
+  WowInstallation,
+} from "wowup-lib-core";
 
-import { AddonProvider, GetAllResult, SearchByUrlResult } from '../addon-provider';
-import { Addon, AddonFolder, AddonSearchResult, AddonSearchResultFile } from '../addons';
-import { ADDON_PROVIDER_WOWINTERFACE } from '../constants';
-import { SourceRemovedAddonError } from '../errors';
-import { AddonDetailsResponseV3, AddonDetailsResponseV4, WowInstallation } from '../models';
-import { AddonChannelType } from '../types';
-import { convertBbcode, getEnumName, getGameVersionList, getTocForGameType2, NetworkInterface } from '../utils';
+import { ADDON_PROVIDER_WOWINTERFACE } from "../../../src/common/constants";
+import { NetworkInterface } from "../network/network-interface";
 
-const API_URL = 'https://api.mmoui.com/v4/game/WOW';
-const API_URL_FALLBACK = 'https://api.mmoui.com/v3/game/WOW';
-const ADDON_URL = 'https://www.wowinterface.com/downloads/info';
+const API_URL = "https://api.mmoui.com/v4/game/WOW";
+const API_URL_FALLBACK = "https://api.mmoui.com/v3/game/WOW";
+const ADDON_URL = "https://www.wowinterface.com/downloads/info";
 
 export class WowInterfaceAddonProvider extends AddonProvider {
   public readonly name = ADDON_PROVIDER_WOWINTERFACE;
@@ -28,10 +41,10 @@ export class WowInterfaceAddonProvider extends AddonProvider {
   public override async getDescription(installation: WowInstallation, externalId: string): Promise<string> {
     try {
       const addonDetails = await this.getAddonDetails(externalId);
-      return convertBbcode(addonDetails?.description ?? '');
+      return convertBbcode(addonDetails?.description ?? "");
     } catch (error) {
       console.error(error);
-      return '';
+      return "";
     }
   }
 
@@ -47,7 +60,7 @@ export class WowInterfaceAddonProvider extends AddonProvider {
     if (searchResults.length !== filteredIds.length) {
       const missingIds = filter(filteredIds, (aid) => !searchResults.some((sr) => sr.externalId === aid));
       errors.push(
-        ...map(missingIds, (mid) => new SourceRemovedAddonError(mid, new Error('addon not returned ' + mid))),
+        ...map(missingIds, (mid) => new SourceRemovedAddonError(mid, new Error("addon not returned " + mid))),
       );
     }
 
@@ -60,10 +73,10 @@ export class WowInterfaceAddonProvider extends AddonProvider {
   public override async getChangelog(installation: WowInstallation, externalId: string): Promise<string> {
     try {
       const addon = await this.getAddonDetails(externalId);
-      return convertBbcode(addon?.changeLog ?? '');
+      return convertBbcode(addon?.changeLog ?? "");
     } catch (error) {
       console.error(`Failed to get addon changelog`, error);
-      return '';
+      return "";
     }
   }
 
@@ -92,16 +105,16 @@ export class WowInterfaceAddonProvider extends AddonProvider {
   public override async getById(addonId: string): Promise<AddonSearchResult | undefined> {
     const result = await this.getAddonDetails(addonId);
     if (result !== undefined) {
-      return this.toAddonSearchResult(result, '');
+      return this.toAddonSearchResult(result, "");
     }
   }
 
   public override isValidAddonUri(addonUri: URL): boolean {
-    return typeof addonUri.host === 'string' && addonUri.host.length > 0 && addonUri.host.endsWith('wowinterface.com');
+    return typeof addonUri.host === "string" && addonUri.host.length > 0 && addonUri.host.endsWith("wowinterface.com");
   }
 
   public override isValidAddonId(addonId: string): boolean {
-    return typeof addonId === 'string' && addonId.length > 0 && !isNaN(parseInt(addonId, 10));
+    return typeof addonId === "string" && addonId.length > 0 && !isNaN(parseInt(addonId, 10));
   }
 
   public override async scan(
@@ -110,7 +123,7 @@ export class WowInterfaceAddonProvider extends AddonProvider {
     addonFolders: AddonFolder[],
   ): Promise<void> {
     const wowiFolders = addonFolders.filter((folder) =>
-      folder.tocs.some((toc) => !!toc.wowInterfaceId && toc.loadOnDemand !== '1'),
+      folder.tocs.some((toc) => !!toc.wowInterfaceId && toc.loadOnDemand !== "1"),
     );
     const addonIds = uniq(flatten(wowiFolders.map((folder) => folder.tocs.map((toc) => toc.wowInterfaceId)))).filter(
       (aid): aid is string => aid !== undefined,
@@ -126,7 +139,7 @@ export class WowInterfaceAddonProvider extends AddonProvider {
 
       const details = addonDetails.find((ad) => ad.id.toString() === targetToc.wowInterfaceId);
       if (!details) {
-        console.warn('Details not found');
+        console.warn("Details not found");
         continue;
       }
 
@@ -152,7 +165,7 @@ export class WowInterfaceAddonProvider extends AddonProvider {
   }
 
   private getAddonDetails = async (addonId: string): Promise<AddonDetailsResponseV4 | undefined> => {
-    if (typeof addonId !== 'string' || addonId.length === 0) {
+    if (typeof addonId !== "string" || addonId.length === 0) {
       return undefined;
     }
 
@@ -162,7 +175,7 @@ export class WowInterfaceAddonProvider extends AddonProvider {
     try {
       responses = await this._networkInterface.getJson<AddonDetailsResponseV4[]>(url);
     } catch (e) {
-      console.warn('[wowi] addon details failed, using fallback', e);
+      console.warn("[wowi] addon details failed, using fallback", e);
 
       try {
         const fallbackUrl = new URL(`${API_URL_FALLBACK}/filedetails/${addonId}.json`);
@@ -171,7 +184,7 @@ export class WowInterfaceAddonProvider extends AddonProvider {
           responses = map(fallbackResponses, (fr) => this.toV4(fr));
         }
       } catch (e) {
-        console.error('[wowi] fallback request failed', e);
+        console.error("[wowi] fallback request failed", e);
       }
     }
 
@@ -207,21 +220,21 @@ export class WowInterfaceAddonProvider extends AddonProvider {
     let fallbackIds: string[] = [];
     let responses: AddonDetailsResponseV4[] = [];
     try {
-      const url = new URL(`${API_URL}/filedetails/${addonIds.join(',')}.json`);
+      const url = new URL(`${API_URL}/filedetails/${addonIds.join(",")}.json`);
       responses = await this._networkInterface.getJson<AddonDetailsResponseV4[]>(url);
       fallbackIds = addonIds.filter((aid) => !responses.some((r) => r.id.toString() === aid));
     } catch (e) {
-      console.warn('[wowi] addon details failed, using fallback', e);
+      console.warn("[wowi] addon details failed, using fallback", e);
       fallbackIds = [...addonIds];
     }
 
     if (fallbackIds.length > 0) {
       try {
-        const fallbackUrl = new URL(`${API_URL_FALLBACK}/filedetails/${fallbackIds.join(',')}.json`);
+        const fallbackUrl = new URL(`${API_URL_FALLBACK}/filedetails/${fallbackIds.join(",")}.json`);
         const v3Responses = await this._networkInterface.getJson<AddonDetailsResponseV3[]>(fallbackUrl);
         responses.push(...v3Responses.map((r) => this.toV4(r)));
       } catch (e) {
-        console.warn('[wowi] addon details fallback failed', e);
+        console.warn("[wowi] addon details fallback failed", e);
       }
     }
 
@@ -230,13 +243,13 @@ export class WowInterfaceAddonProvider extends AddonProvider {
 
   private async getAllById(addonIds: string[]): Promise<AddonSearchResult[]> {
     const addonDetails = await this.getAllAddonDetails(addonIds);
-    const mapped = addonDetails.map((ad) => this.toAddonSearchResult(ad, ''));
+    const mapped = addonDetails.map((ad) => this.toAddonSearchResult(ad, ""));
     const filtered = filter(mapped, (m): m is AddonSearchResult => m !== undefined);
     return filtered;
   }
 
   private getThumbnailUrl(response: AddonDetailsResponseV4): string {
-    return first(response.images)?.thumbUrl ?? '';
+    return first(response.images)?.thumbUrl ?? "";
   }
 
   private getAddonUrl(response: AddonDetailsResponseV4) {
@@ -252,7 +265,7 @@ export class WowInterfaceAddonProvider extends AddonProvider {
     const targetToc = getTocForGameType2(addonFolder, installation.clientType);
 
     return {
-      id: uuidv4(),
+      id: randomUUID(),
       author: response.author,
       autoUpdateEnabled: false,
       autoUpdateNotificationsEnabled: false,
@@ -289,7 +302,7 @@ export class WowInterfaceAddonProvider extends AddonProvider {
         version: response.version,
         downloadUrl: response.downloadUri,
         folders: folderName ? [folderName] : [],
-        gameVersion: '',
+        gameVersion: "",
         releaseDate: new Date(response.lastUpdate),
         changelog: convertBbcode(response.changeLog),
       };
@@ -306,7 +319,7 @@ export class WowInterfaceAddonProvider extends AddonProvider {
         summary: convertBbcode(response.description),
       };
     } catch (err) {
-      console.error('Failed to create addon search result', err);
+      console.error("Failed to create addon search result", err);
       return undefined;
     }
   }

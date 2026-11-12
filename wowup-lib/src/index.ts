@@ -1,5 +1,4 @@
 export * from './addon-provider';
-export * from './addon-providers';
 export * from './addons';
 export * from './toc';
 export * from './ipc';

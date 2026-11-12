@@ -1,15 +1,5 @@
 import NodeCache = require("node-cache");
-import {
-  AddonFolder,
-  AddonProvider,
-  GetAllBatchResult,
-  GetAllResult,
-  Toc,
-  TukUiAddonProvider,
-  WowInstallation,
-  WowInterfaceAddonProvider,
-  WowUpAddonProvider,
-} from "wowup-lib-core";
+import { AddonFolder, AddonProvider, GetAllBatchResult, GetAllResult, Toc, WowInstallation } from "wowup-lib-core";
 
 import {
   ADDON_PROVIDER_METHODS,
@@ -25,6 +15,9 @@ import { FetchFn, HttpClient } from "../network/http-client";
 import { ProviderNetworkInterface } from "../network/provider-network-interface";
 import { serializeProviderError } from "./provider-errors";
 import { RaiderIoAddonProvider } from "./raiderio-provider";
+import { TukUiAddonProvider } from "./tukui-addon-provider";
+import { WowInterfaceAddonProvider } from "./wow-interface-addon-provider";
+import { WowUpAddonProvider } from "./wowup-addon-provider";
 import { WowUpCompanionAddonProvider } from "./wowup-companion-addon-provider";
 import { ZipAddonProvider } from "./zip-provider";
 

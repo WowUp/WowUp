@@ -26,7 +26,8 @@ import { AddonUpdateEvent } from "../../models/wowup/addon-update-event";
 import { AddonVersionMismatch, AutoUpdateResult } from "../../models/wowup/addon-version-mismatch";
 
 import * as AddonUtils from "../../utils/addon.utils";
-import { getEnumName, getGameVersionList, WowInstallation, WowUpAddonProvider } from "wowup-lib-core";
+import { getEnumName, getGameVersionList, WowInstallation } from "wowup-lib-core";
+import { RemoteAddonProvider } from "../../addon-providers/remote-addon-provider";
 import * as SearchResults from "../../utils/search-result.utils";
 
 import { AnalyticsService } from "../analytics/analytics.service";
@@ -847,7 +848,7 @@ export class AddonService {
 
   public async logDebugData(): Promise<void> {
     const curseProvider = this._addonProviderService.getProvider<CurseAddonProvider>(ADDON_PROVIDER_CURSEFORGE);
-    const hubProvider = this._addonProviderService.getProvider<WowUpAddonProvider>(ADDON_PROVIDER_HUB);
+    const hubProvider = this._addonProviderService.getProvider<RemoteAddonProvider>(ADDON_PROVIDER_HUB);
     if (curseProvider === undefined) {
       throw new Error("curse provider not found");
     }
