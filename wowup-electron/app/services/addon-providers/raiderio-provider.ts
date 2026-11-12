@@ -1,12 +1,17 @@
 import * as _ from "lodash";
-import { v4 as uuidv4 } from "uuid";
+import {
+  AddonChannelType,
+  AddonFolder,
+  AddonProvider,
+  getEnumName,
+  getGameVersionList,
+  WowInstallation,
+} from "wowup-lib-core";
 
-import { ADDON_PROVIDER_RAIDERIO } from "../../common/constants";
-import { TocService } from "../services/toc/toc.service";
-import { AddonChannelType, AddonFolder, AddonProvider, getGameVersionList } from "wowup-lib-core";
-import { getEnumName } from "wowup-lib-core";
-import { WowInstallation } from "wowup-lib-core";
+import { ADDON_PROVIDER_RAIDERIO } from "../../../src/common/constants";
+import { getTocForGameType2 } from "../../../src/common/addons/addon-rules";
 
+/** Recognises the RaiderIO client and the data addons that depend on it, so a scan groups them as one addon */
 export class RaiderIoAddonProvider extends AddonProvider {
   private readonly _scanWebsite = "https://raider.io";
   private readonly _scanAddonProvider = "raiderio-client";
@@ -19,7 +24,7 @@ export class RaiderIoAddonProvider extends AddonProvider {
   public readonly allowEdit = false;
   public enabled = true;
 
-  public constructor(private _tocService: TocService) {
+  public constructor(private readonly _newId: () => string) {
     super();
   }
 
@@ -28,26 +33,20 @@ export class RaiderIoAddonProvider extends AddonProvider {
     addonChannelType: AddonChannelType,
     addonFolders: AddonFolder[],
   ): Promise<void> {
-    console.debug("RAIDER IO CLIENT SCAN");
     const raiderIo = _.find(addonFolders, (addonFolder) => this.isRaiderIo(addonFolder));
     if (!raiderIo) {
       return Promise.resolve(undefined);
     }
 
-    const targetToc = this._tocService.getTocForGameType2(raiderIo.name, raiderIo.tocs, installation.clientType);
+    const targetToc = getTocForGameType2(raiderIo.name, raiderIo.tocs, installation.clientType);
     const dependencies = _.filter(addonFolders, (addonFolder) => this.isRaiderIoDependant(addonFolder));
-    console.debug("RAIDER IO CLIENT FOUND", dependencies);
 
     const rioAddonFolders = [raiderIo, ...dependencies];
     const installedFolderList = rioAddonFolders.map((addonFolder) => addonFolder.name);
     const installedFolders = installedFolderList.join(",");
 
     for (const rioAddonFolder of rioAddonFolders) {
-      const subTargetToc = this._tocService.getTocForGameType2(
-        rioAddonFolder.name,
-        rioAddonFolder.tocs,
-        installation.clientType,
-      );
+      const subTargetToc = getTocForGameType2(rioAddonFolder.name, rioAddonFolder.tocs, installation.clientType);
       if (subTargetToc === undefined) {
         throw new Error("subTargetToc was undefined");
       }
@@ -57,9 +56,9 @@ export class RaiderIoAddonProvider extends AddonProvider {
         autoUpdateNotificationsEnabled: false,
         channelType: AddonChannelType.Stable,
         clientType: installation.clientType,
-        id: uuidv4(),
+        id: this._newId(),
         isIgnored: true,
-        name: targetToc.title ?? "unknown",
+        name: targetToc?.title ?? "unknown",
         author: subTargetToc.author,
         downloadUrl: "",
         externalId: this.name,
@@ -68,7 +67,7 @@ export class RaiderIoAddonProvider extends AddonProvider {
         installedAt: new Date(),
         installedFolders: installedFolders,
         installedFolderList: installedFolderList,
-        installedVersion: subTargetToc.version || targetToc.version,
+        installedVersion: subTargetToc.version || targetToc?.version,
         latestVersion: subTargetToc.version,
         providerName: this.name,
         thumbnailUrl: "http://cdnassets.raider.io/images/fb_app_image.jpg?2019-11-18",

@@ -280,7 +280,7 @@ export class TukUiAddonProvider extends AddonProvider {
   };
 
   private fetchApiResults = async () => {
-    const url = new window.URL(NEW_API_URL);
+    const url = new URL(NEW_API_URL);
     const addons = await this._networkInterface.getJson<TukUiAddon[]>(url);
     return addons;
   };

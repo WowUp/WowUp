@@ -1,11 +1,13 @@
 import { randomUUID } from "crypto";
-import { app, BrowserWindow } from "electron";
+import { app, BrowserWindow, net } from "electron";
 import * as Store from "electron-store";
 import * as log from "electron-log/main";
 import * as fsp from "fs/promises";
 import * as path from "path";
 
 import { AddonController } from "./addon.controller";
+import { AddonProviderController } from "./addon-provider.controller";
+import { AddonProviderRegistry } from "../services/addon-providers/addon-provider-registry";
 import { AddonInstallController } from "./addon-install.controller";
 import { AddonSyncController } from "./scan/addon-sync.controller";
 import { AddonInstallService } from "../services/addons/addon-install.service";
@@ -36,6 +38,7 @@ import { WarcraftPlatformLinux } from "../services/warcraft/warcraft-platform.li
 import { WarcraftPlatform } from "../services/warcraft/warcraft-platform.service";
 import { AppEnv } from "../env/environment";
 import * as platform from "../platform";
+import { getInstallId } from "../preferences";
 
 export interface ControllerDeps {
   window: BrowserWindow;
@@ -46,6 +49,15 @@ export interface ControllerDeps {
 async function listDirectories(dirPath: string): Promise<string[]> {
   const entries = await fsp.readdir(dirPath, { withFileTypes: true });
   return entries.filter((entry) => entry.isDirectory()).map((entry) => entry.name);
+}
+
+/** Names of the `.toc` files directly in a folder; none if the folder isn't there */
+async function listTocFiles(dirPath: string): Promise<string[]> {
+  if (!(await pathExists(dirPath))) {
+    return [];
+  }
+  const entries = await fsp.readdir(dirPath, { withFileTypes: true });
+  return entries.filter((entry) => entry.isFile() && entry.name.endsWith(".toc")).map((entry) => entry.name);
 }
 
 /** Unlike file.utils' `exists`, says nothing when the path isn't there: that's the usual answer here */
@@ -128,8 +140,26 @@ export function registerControllers(deps: ControllerDeps): void {
     log,
   });
 
+  const providerController = new AddonProviderController(
+    (config) =>
+      new AddonProviderRegistry({
+        config,
+        // Chromium's network stack, so proxies and certificates work as they did for the renderer
+        fetch: (url, init) => net.fetch(url, init),
+        installId: getInstallId(),
+        platform: process.platform,
+        getAddonFolderPath: (installation) => addonFolderService.getAddonFolderPath(installation),
+        listTocFiles,
+        parseToc: (tocPath) => tocService.parse(tocPath),
+        getLatestDirUpdateTime: (dirPath) => getLastModifiedFileDate(dirPath),
+        newId: () => randomUUID(),
+        log,
+      }),
+  );
+
   const controllers: IpcController[] = [
     new AddonController(addonRepository),
+    providerController,
     new AddonInstallController(installService),
     new WarcraftController(getPlatformImpl(), deps.preferenceStore, addonFolderService),
     new WarcraftInstallationController(installationService),

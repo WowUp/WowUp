@@ -1,16 +1,26 @@
 import * as _ from "lodash";
-import { v4 as uuidv4 } from "uuid";
+import {
+  AddonChannelType,
+  AddonFolder,
+  AddonProvider,
+  getEnumName,
+  getGameVersionList,
+  WowInstallation,
+} from "wowup-lib-core";
 
-import { ADDON_PROVIDER_WOWUP_COMPANION, WOWUP_DATA_ADDON_FOLDER_NAME } from "../../common/constants";
-import { FileService } from "../services/files/file.service";
-import { TocService } from "../services/toc/toc.service";
-import { getEnumName, getGameVersionList } from "wowup-lib-core";
-import { AddonChannelType, AddonFolder, AddonProvider } from "wowup-lib-core";
-import { WowInstallation } from "wowup-lib-core";
+import { ADDON_PROVIDER_WOWUP_COMPANION, WOWUP_DATA_ADDON_FOLDER_NAME } from "../../../src/common/constants";
+import { getTocForGameType2 } from "../../../src/common/addons/addon-rules";
 
 export const X_WOWUP_ADDON_PROVIDER = "wowup-app";
 export const X_WEBSITE = "https://wowup.io";
 
+export interface WowUpCompanionDeps {
+  /** Newest modified time of any file under the folder, in ms */
+  getLatestDirUpdateTime: (dirPath: string) => Promise<number>;
+  newId: () => string;
+}
+
+/** Recognises the data addon WowUp writes for its in-game companion, so a scan doesn't list it as unknown */
 export class WowUpCompanionAddonProvider extends AddonProvider {
   public readonly name = ADDON_PROVIDER_WOWUP_COMPANION;
   public readonly forceIgnore = true;
@@ -19,10 +29,7 @@ export class WowUpCompanionAddonProvider extends AddonProvider {
   public readonly allowEdit = false;
   public enabled = true;
 
-  public constructor(
-    private _fileService: FileService,
-    private _tocService: TocService,
-  ) {
+  public constructor(private readonly _deps: WowUpCompanionDeps) {
     super();
   }
 
@@ -36,19 +43,19 @@ export class WowUpCompanionAddonProvider extends AddonProvider {
       return;
     }
 
-    const targetToc = this._tocService.getTocForGameType2(companion.name, companion.tocs, installation.clientType);
+    const targetToc = getTocForGameType2(companion.name, companion.tocs, installation.clientType);
     if (targetToc === undefined) {
       throw new Error("target toc was not found");
     }
 
-    const lastUpdatedAt = await this._fileService.getLatestDirUpdateTime(companion.path);
+    const lastUpdatedAt = await this._deps.getLatestDirUpdateTime(companion.path);
 
     companion.matchingAddon = {
       autoUpdateEnabled: false,
       autoUpdateNotificationsEnabled: false,
       channelType: AddonChannelType.Stable,
       clientType: installation.clientType,
-      id: uuidv4(),
+      id: this._deps.newId(),
       isIgnored: true,
       name: targetToc.title ?? "unknown",
       author: targetToc.author ?? "unknown",

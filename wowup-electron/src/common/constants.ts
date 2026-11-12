@@ -154,6 +154,11 @@ export const IPC_ADDON_INSTALL_PROGRESS = "addons-install-progress";
 export const IPC_ADDON_REMOVE = "addons-remove";
 export const IPC_ADDON_ADD_EXTERNAL_ID = "addons-add-external-id";
 
+// ADDON PROVIDER CONTROLLER
+export const IPC_ADDON_PROVIDERS_INIT = "addon-providers-init";
+export const IPC_ADDON_PROVIDERS_CALL = "addon-providers-call";
+export const IPC_ADDON_PROVIDERS_MATCH = "addon-providers-match";
+
 // METRICS CONTROLLER
 export const IPC_METRICS_GET_SNAPSHOT = "metrics-get-snapshot";
 export const IPC_METRICS_LOG_SNAPSHOT = "metrics-log-snapshot";

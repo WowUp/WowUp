@@ -131,14 +131,55 @@ Pattern for each phase:
   own id from `externalIds` and logged "Invalid provider id WowUpHub|…") and
   `reconcileExternalIds`; the install service's duplicate copy of the external-id logic is gone.
 
-## Phase 5b — Addon Providers ⏳ not started
+## Phase 5b — Addon Providers 🚧 in progress (step 1 of 3 done)
 
-- Move the providers (`src/app/addon-providers/`, ~2,600 lines on Angular's `HttpClient`,
-  `CachingService`, `CircuitBreaker`, `UiMessageService`; the Wago token already arrives in main via
-  the ad view) into main, with main-side HTTP and caching.
-- Once they move: the scan's prepare → provider match → complete round trip from Phase 4 collapses
-  into one main call, the rescan queue can move with it, and the download + retry and hub id lookup
-  can join the main install pipeline.
+Done in three steps, each shippable on its own.
+
+### Step 1 — main HTTP, registry, renderer stand-ins, the simple providers ✅
+
+- [x] Main HTTP (`app/services/network/`): `HttpClient` on Electron's `net.fetch`, so requests keep
+      going through Chromium's network stack (proxy, certificates) as they did from the renderer; it
+      logs the same `[GET] url status ms` line the renderer's interceptor did. `HttpCircuitBreaker`
+      ports the opossum wrapper (404s don't trip it, `EOPENBREAKER` when open), and
+      `ProviderNetworkInterface` ports `GenericNetworkInterface` (default headers, 30 s cache).
+- [x] `AddonProviderRegistry` (`app/services/addon-providers/`) runs Zip, RaiderIO, WowUpCompanion,
+      the hub, TukUI and WowInterface. The hub requests carry the install id from main's
+      preferences. `AddonProviderController` exposes `IPC_ADDON_PROVIDERS_INIT` (config in,
+      provider flags out), `IPC_ADDON_PROVIDERS_CALL` (one whitelisted provider method; never
+      rejects, a failure comes back serialized) and `IPC_ADDON_PROVIDERS_MATCH` (which providers
+      claim a url or protocol link).
+- [x] Config: main's build can't see which Angular environment file was picked (dev/prod,
+      wago/ow), so the renderer sends the provider settings in `IPC_ADDON_PROVIDERS_INIT` during
+      `loadProviders`. Temporary until main's build gets its own copy of the config.
+- [x] Renderer: `AddonProviderFactory` keeps its public API but holds a `RemoteAddonProvider`
+      stand-in for each moved provider, so `AddonService` and the components barely change. The
+      synchronous checks can't wait on ipc and became async on the factory:
+      `getAddonProviderForUri`, `getAddonProviderForProtocol` (both keep the providers' order across
+      main and renderer) and `shouldMigrate`. The stand-in throws if one is called on it directly.
+- [x] Errors: ipc keeps only an error's message, and callers branch on class and code, so main
+      serializes them (`serializeProviderError`, also the errors inside `getAll`/`getAllBatch`
+      results) and the renderer rebuilds `HttpErrorResponse`, `GenericProviderError`,
+      `SourceRemovedAddonError` and the breaker's `code` (`reviveProviderError`).
+- [x] wowup-lib-core used `window.URL` in the hub's featured list and protocol parsing and in
+      TukUI's addon list; now plain `URL`, which works in both processes. Without it TukUI's
+      `getAll` failed in main and reported every TukUI addon as removed from TukUI.
+- [x] Removed from the renderer: the Zip, RaiderIO and Companion providers,
+      `GenericNetworkInterface`, `mem-cache`.
+
+### Step 2 — the providers with tokens ⏳
+
+- Curse (its `curseforge-v2` client uses axios, which in main would skip the system proxy: route it
+  through `net.fetch` or decide that's acceptable), GitHub (personal access token from the sensitive
+  store, which is already in main), Wago (token straight from `wago-handler`, the power-resume reset
+  on main's `powerMonitor`, `ad-frame-reload` sent to the renderer as an event).
+- After this the renderer factory holds only stand-ins.
+
+### Step 3 — scan and install join up in main ⏳
+
+- The scan's prepare → provider match → complete round trip from Phase 4 collapses into one main
+  call, and the rescan queue moves with it.
+- The download + retry and the hub id lookup join main's install pipeline; the stand-ins on those
+  paths go away.
 
 ## Phase 6 — `ipc-events.ts` Cleanup ⏳ not started
 

@@ -267,7 +267,7 @@ export class WowUpAddonProvider extends AddonProvider {
 
   public override async getFeaturedAddons(installation: WowInstallation): Promise<AddonSearchResult[]> {
     const gameType = getWowGameType(installation.clientType);
-    const url = new window.URL(`${this._baseUrl}/addons/featured/${gameType}`);
+    const url = new URL(`${this._baseUrl}/addons/featured/${gameType}`);
     url.searchParams.set('count', '60');
     url.searchParams.set('recent', '30');
 
@@ -342,7 +342,7 @@ export class WowUpAddonProvider extends AddonProvider {
   }
 
   private parseProtocol(protocol: string): ProtocolData {
-    const url = new window.URL(protocol);
+    const url = new URL(protocol);
     return {
       addonId: url.searchParams.get('addonId') || '',
       releaseId: url.searchParams.get('releaseId') || '',

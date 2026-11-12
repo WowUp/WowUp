@@ -4,6 +4,7 @@ import { filter } from "rxjs/operators";
 import { Injectable } from "@angular/core";
 
 import {
+  ADDON_PROVIDER_WOWUP_COMPANION,
   WOWUP_ADDON_FOLDER_NAME,
   WOWUP_ASSET_FOLDER_NAME,
   WOWUP_DATA_ADDON_FOLDER_NAME,
@@ -122,7 +123,10 @@ export class WowUpAddonService {
       return;
     }
 
-    const provider = this._addonProviderFactory.createWowUpCompanionAddonProvider();
+    const provider = this._addonProviderFactory.getProvider(ADDON_PROVIDER_WOWUP_COMPANION);
+    if (provider === undefined) {
+      return;
+    }
     await provider.scan(installation, AddonChannelType.Stable, [addonFolder]);
 
     if (companionAddon) {

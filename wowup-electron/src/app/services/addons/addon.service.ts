@@ -911,7 +911,7 @@ export class AddonService {
   }
 
   public async getAddonByUrl(url: URL, installation: WowInstallation): Promise<SearchByUrlResult | undefined> {
-    const provider = this._addonProviderService.getAddonProviderForUri(url);
+    const provider = await this._addonProviderService.getAddonProviderForUri(url);
     if (!provider) {
       console.warn(`No provider found for url: ${url.toString()}`);
       return undefined;
@@ -1062,7 +1062,7 @@ export class AddonService {
   }
 
   public async getAddonForProtocol(protocol: string): Promise<ProtocolSearchResult | undefined> {
-    const addonProvider = this.getAddonProviderForProtocol(protocol);
+    const addonProvider = await this._addonProviderService.getAddonProviderForProtocol(protocol);
     if (!addonProvider) {
       throw new Error(`No addon provider found for protocol ${protocol}`);
     }
@@ -1072,10 +1072,6 @@ export class AddonService {
     });
 
     return await addonProvider.searchProtocol(protocol);
-  }
-
-  private getAddonProviderForProtocol(protocol: string): AddonProvider | undefined {
-    return this._addonProviderService.getEnabledAddonProviders().find((provider) => provider.isValidProtocol(protocol));
   }
 
   /** Iterate over all the installed WoW clients and attempt to check for addon updates */
@@ -1273,7 +1269,7 @@ export class AddonService {
       return;
     }
 
-    const needsMigration = existingAddons.some((addon) => this.needsMigration(addon));
+    const needsMigration = await this.anyNeedsMigration(existingAddons);
     if (!needsMigration) {
       console.log(`[MigrateInstall] ${installation.displayName} No addons needed to be migrated`);
       return;
@@ -1300,7 +1296,7 @@ export class AddonService {
       return;
     }
 
-    const needsMigration = existingAddons.some((addon) => this.needsMigration(addon));
+    const needsMigration = await this.anyNeedsMigration(existingAddons);
     if (!needsMigration) {
       console.log(`[MigrateInstall] ${installation.displayName} No addons needed to be migrated`);
       return;
@@ -1312,18 +1308,25 @@ export class AddonService {
     }
   }
 
-  private needsMigration(addon: Addon) {
-    const provider = this._addonProviderService.getProvider(addon.providerName ?? "");
+  private async anyNeedsMigration(addons: Addon[]): Promise<boolean> {
+    for (const addon of addons) {
+      if (await this.needsMigration(addon)) {
+        return true;
+      }
+    }
+    return false;
+  }
 
+  private async needsMigration(addon: Addon): Promise<boolean> {
     const migrationNeeded =
       typeof addon.gameVersion === "string" ||
       addon.providerName === ADDON_PROVIDER_HUB_LEGACY ||
       typeof addon.autoUpdateNotificationsEnabled === "undefined" ||
       !addon.installedFolderList ||
-      !addon.externalChannel ||
-      (provider?.shouldMigrate(addon) ?? false);
+      !addon.externalChannel;
 
-    return migrationNeeded;
+    // Checked last: the provider may be in main, so this one costs an ipc call
+    return migrationNeeded || (await this._addonProviderService.shouldMigrate(addon));
   }
 
   private async migrateLocalAddon(addon: Addon): Promise<boolean> {

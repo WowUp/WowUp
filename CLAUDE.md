@@ -14,14 +14,14 @@ WowUp is a World of Warcraft addon manager.
 ## Architecture (coupled UI, mid-migration)
 
 - `nodeIntegration: true` / `contextIsolation: false` (`app/main.ts`): the Angular UI imports Node APIs (`fs`, `path`, …) directly.
-- Not yet migrated, still in the renderer: addon providers (`src/app/addon-providers/`, all HTTP and scraping), plus the steps of scan/sync and install that need one: provider matching, the addon download and its retry, and the post-install Hub id lookup (`src/app/services/addons/`).
+- Addon providers are mid-move (Phase 5b). Zip, RaiderIO, Companion, Hub, TukUI and WowInterface run in main (`app/services/addon-providers/`, HTTP via `net.fetch` in `app/services/network/`); the renderer reaches them through `RemoteAddonProvider` stand-ins in `AddonProviderFactory`. Curse, GitHub and Wago are still in the renderer (`src/app/addon-providers/`), as are the scan/sync and install steps that call providers: provider matching, the addon download and its retry, and the post-install Hub id lookup (`src/app/services/addons/`).
 - Main process (`app/`): legacy `app/ipc-events.ts` registry, plus **Controllers** (`app/controllers/`, implementing `IpcController`, registered in `app/controllers/index.ts`) and main-process services (`app/services/`) for migrated logic.
 - Migrated domains get a thin renderer wrapper in `src/app/services/api/` (e.g. `warcraft-api.service.ts`) that only wraps `ipcRenderer.invoke()` — no business logic.
 - There is no `Procedure<I, O>` / `EventChannel<P>` layer — just `IpcController` + per-channel `ipcMain.handle()`, wired up in `registerControllers()`.
 
 ## UI Decoupling Plan
 
-Moving business logic from the renderer into main-process Controllers so a future UI swap only replaces the thin API services; shared request/response types go in `src/common/models/`, pure rules both sides use in `src/common/addons/`. Phases 1–5 (Warcraft detection, installation CRUD, TOC parsing, scan/sync, install/remove) are done; 5b (moving the addon providers) and 6 (`ipc-events.ts` cleanup) are not started. `wowup-electron/UI_DECOUPLING_PLAN.md` is the source of truth — update its checkboxes as phases complete.
+Moving business logic from the renderer into main-process Controllers so a future UI swap only replaces the thin API services; shared request/response types go in `src/common/models/`, pure rules both sides use in `src/common/addons/`. Phases 1–5 (Warcraft detection, installation CRUD, TOC parsing, scan/sync, install/remove) are done; 5b (moving the addon providers) is in progress, step 1 of 3 done; 6 (`ipc-events.ts` cleanup) is not started. `wowup-electron/UI_DECOUPLING_PLAN.md` is the source of truth — update its checkboxes as phases complete.
 
 ## Shell + Bundle
 

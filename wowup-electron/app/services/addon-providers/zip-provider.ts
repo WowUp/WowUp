@@ -1,12 +1,5 @@
 import * as _ from "lodash";
 import { basename, join } from "path";
-
-import { HttpClient } from "@angular/common/http";
-
-import { ADDON_PROVIDER_ZIP } from "../../common/constants";
-import { FileService } from "../services/files/file.service";
-import { TocService } from "../services/toc/toc.service";
-import { WarcraftService } from "../services/warcraft/warcraft.service";
 import {
   Addon,
   AddonChannelType,
@@ -15,11 +8,23 @@ import {
   AddonSearchResultFile,
   SearchByUrlResult,
   Toc,
+  WowInstallation,
 } from "wowup-lib-core";
-import { WowInstallation } from "wowup-lib-core";
+
+import { ADDON_PROVIDER_ZIP } from "../../../src/common/constants";
 
 const VALID_ZIP_CONTENT_TYPES = ["application/zip", "application/x-zip-compressed", "application/octet-stream"];
 
+export interface ZipProviderDeps {
+  /** The response headers for a HEAD request to the url */
+  head: (url: URL) => Promise<Headers>;
+  getAddonFolderPath: (installation: WowInstallation) => string;
+  /** Names of the `.toc` files directly in the folder, none if it's missing */
+  listTocFiles: (dirPath: string) => Promise<string[]>;
+  parseToc: (tocPath: string) => Promise<Toc>;
+}
+
+/** Installs an addon from a direct link to its zip. There's no source to update from, so it's always ignored. */
 export class ZipAddonProvider extends AddonProvider {
   public readonly name = ADDON_PROVIDER_ZIP;
   public readonly forceIgnore = true;
@@ -30,12 +35,7 @@ export class ZipAddonProvider extends AddonProvider {
   public readonly canShowChangelog = false;
   public enabled = true;
 
-  public constructor(
-    private _httpClient: HttpClient,
-    private _fileService: FileService,
-    private _tocService: TocService,
-    private _warcraftService: WarcraftService
-  ) {
+  public constructor(private readonly _deps: ZipProviderDeps) {
     super();
   }
 
@@ -53,16 +53,15 @@ export class ZipAddonProvider extends AddonProvider {
     }
 
     const folders = addon?.installedFolderList ?? [];
-    const clientAddonFolderPath = this._warcraftService.getAddonFolderPath(installation);
+    const clientAddonFolderPath = this._deps.getAddonFolderPath(installation);
     const allTocs = await this.getAllTocs(clientAddonFolderPath, folders);
 
-    const primaryToc = this.getPrimaryToc(allTocs);
+    const primaryToc = _.maxBy(allTocs, (toc) => Object.values(toc).join("").length);
     if (!primaryToc) {
-      console.warn("No primary toc found");
       return "";
     }
 
-    const lines = _.map(Object.entries(primaryToc), ([key, value]) => {
+    return _.map(Object.entries(primaryToc), ([key, value]) => {
       if (typeof value === "string" && !!value) {
         return `${key}: ${value}`;
       }
@@ -71,12 +70,6 @@ export class ZipAddonProvider extends AddonProvider {
       .filter((str) => !!str)
       .map((str) => `<p>${str}</p>`)
       .join("");
-
-    return lines;
-  }
-
-  private getPrimaryToc(tocs: Toc[]) {
-    return _.maxBy(tocs, (toc) => Object.values(toc).join("").length);
   }
 
   private async getAllTocs(baseDir: string, installedFolders: string[]) {
@@ -85,14 +78,12 @@ export class ZipAddonProvider extends AddonProvider {
     for (const dir of installedFolders) {
       const dirPath = join(baseDir, dir);
 
-      const tocFiles = await this._fileService.listFiles(dirPath, "*.toc");
-      const tocFile = _.first(tocFiles);
+      const tocFile = _.first(await this._deps.listTocFiles(dirPath));
       if (!tocFile) {
         continue;
       }
 
-      const tocPath = join(dirPath, tocFile);
-      const toc = await this._tocService.parse(tocPath);
+      const toc = await this._deps.parseToc(join(dirPath, tocFile));
       if (!toc.interface) {
         continue;
       }
@@ -160,7 +151,7 @@ export class ZipAddonProvider extends AddonProvider {
       releaseDate: new Date(),
     };
 
-    const potentialAddon: AddonSearchResult = {
+    return {
       author: "",
       downloadCount: 1,
       externalId: addonUri.toString(),
@@ -170,19 +161,13 @@ export class ZipAddonProvider extends AddonProvider {
       thumbnailUrl: "",
       files: [searchResultFile],
     };
-
-    return potentialAddon;
   }
 
   private async validateUrlContentType(addonUri: URL) {
-    const response = await this.getUrlInfo(addonUri);
-    const contentType = response.headers.get("content-type") ?? "";
+    const headers = await this._deps.head(addonUri);
+    const contentType = headers.get("content-type") ?? "";
     if (!VALID_ZIP_CONTENT_TYPES.includes(contentType)) {
       throw new Error(`Invalid zip content type ${contentType}`);
     }
-  }
-
-  private getUrlInfo(addonUri: URL) {
-    return this._httpClient.head(addonUri.toString(), { observe: "response", responseType: "text" }).toPromise();
   }
 }
