@@ -36,9 +36,7 @@ export class OptionsWowSectionComponent implements OnInit {
   public ngOnInit(): void {}
 
   public onReScan = (): void => {
-    this._warcraftInstallationService
-      .importWowInstallations(this._warcraftInstallationService.blizzardAgentPath)
-      .catch((e) => console.error(e));
+    this._warcraftInstallationService.rescanWowInstallations().catch((e) => console.error(e));
   };
 
   public onAddNew(): void {

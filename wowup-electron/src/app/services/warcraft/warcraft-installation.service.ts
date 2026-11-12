@@ -26,13 +26,13 @@ export class WarcraftInstallationService {
   private readonly _legacyInstallationSrc = new Subject<WowInstallation[]>();
 
   private _wowInstallations: WowInstallation[] = [];
-  private _blizzardAgentPath = "";
+  private _blizzardAgentPaths: string[] = [];
 
   public readonly wowInstallations$ = this._wowInstallationsSrc.asObservable();
   public readonly legacyInstallationSrc$ = this._legacyInstallationSrc.asObservable();
 
-  public get blizzardAgentPath(): string {
-    return `${this._blizzardAgentPath}`;
+  public get blizzardAgentPaths(): string[] {
+    return [...this._blizzardAgentPaths];
   }
 
   public constructor(
@@ -54,13 +54,12 @@ export class WarcraftInstallationService {
       this._wowInstallations = installations;
     });
 
-    from(this._warcraftService.getBlizzardAgentPath())
+    from(this._warcraftService.getBlizzardAgentPaths())
       .pipe(
-        tap((blizzardAgentPath) => {
-          this._blizzardAgentPath = blizzardAgentPath;
+        tap((blizzardAgentPaths) => {
+          this._blizzardAgentPaths = blizzardAgentPaths;
         }),
-        // switchMap((blizzardAgentPath) => this.migrateAllLegacyInstallations(blizzardAgentPath)),
-        map((blizzardAgentPath) => this.importWowInstallations(blizzardAgentPath)),
+        map((blizzardAgentPaths) => this.importWowInstallations(blizzardAgentPaths)),
       )
       .subscribe();
   }
@@ -207,10 +206,10 @@ export class WarcraftInstallationService {
     const installations = await this.getWowInstallationsAsync();
     const gameVersions: Record<string, string> = {};
 
-    if (this._blizzardAgentPath) {
-      const installedProducts = await this._warcraftService.getInstalledProducts(this._blizzardAgentPath);
+    if (this._blizzardAgentPaths.length > 0) {
+      const installedProducts = await this._warcraftService.getInstalledProducts(this._blizzardAgentPaths);
       const versionsByPath = new Map<string, string>();
-      for (const product of installedProducts.values()) {
+      for (const product of installedProducts) {
         if (!product.gameVersion) {
           continue;
         }
@@ -239,8 +238,14 @@ export class WarcraftInstallationService {
     return storedInstallations;
   }
 
-  public async importWowInstallations(blizzardAgentPath: string): Promise<void> {
-    if (!blizzardAgentPath) {
+  /** Searches for product.db files again, e.g. in a newly added wine prefix, and imports their clients */
+  public async rescanWowInstallations(): Promise<void> {
+    this._blizzardAgentPaths = await this._warcraftService.getBlizzardAgentPaths(true);
+    await this.importWowInstallations(this._blizzardAgentPaths);
+  }
+
+  public async importWowInstallations(blizzardAgentPaths: string[]): Promise<void> {
+    if (blizzardAgentPaths.length === 0) {
       console.log(`Cannot import wow installations, no agent path`);
       await this.refreshGameVersionsSafe();
       const installations = await this.getWowInstallationsAsync();
@@ -248,9 +253,9 @@ export class WarcraftInstallationService {
       return;
     }
 
-    const installedProducts = await this._warcraftService.getInstalledProducts(blizzardAgentPath);
+    const installedProducts = await this._warcraftService.getInstalledProducts(blizzardAgentPaths);
 
-    for (const product of Array.from(installedProducts.values())) {
+    for (const product of installedProducts) {
       const typeName = getEnumName(WowClientType, product.clientType);
       const currentInstallations = await this.getWowInstallationsByClientType(product.clientType);
 

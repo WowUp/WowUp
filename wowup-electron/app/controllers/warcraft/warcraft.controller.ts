@@ -3,7 +3,7 @@ import * as Store from "electron-store";
 import {
   BLIZZARD_AGENT_PATH_KEY,
   IPC_WARCRAFT_GET_ADDON_FOLDER,
-  IPC_WARCRAFT_GET_BLIZZARD_AGENT_PATH,
+  IPC_WARCRAFT_GET_BLIZZARD_AGENT_PATHS,
   IPC_WARCRAFT_GET_CLIENT_TYPE_FOR_BINARY,
   IPC_WARCRAFT_GET_EXECUTABLE_EXTENSION,
   IPC_WARCRAFT_GET_EXECUTABLE_NAME,
@@ -25,8 +25,12 @@ export class WarcraftController implements IpcController {
   ) {}
 
   public register(): void {
-    ipcHandle(IPC_WARCRAFT_GET_BLIZZARD_AGENT_PATH, () => this.getBlizzardAgentPath());
-    ipcHandle(IPC_WARCRAFT_GET_INSTALLED_PRODUCTS, (_evt, agentPath: string) => this.getInstalledProducts(agentPath));
+    ipcHandle(IPC_WARCRAFT_GET_BLIZZARD_AGENT_PATHS, (_evt, rescan?: boolean) =>
+      this.getBlizzardAgentPaths(rescan === true),
+    );
+    ipcHandle(IPC_WARCRAFT_GET_INSTALLED_PRODUCTS, (_evt, agentPaths: string[]) =>
+      this.getInstalledProducts(agentPaths),
+    );
     ipcHandle(IPC_WARCRAFT_GET_EXECUTABLE_NAME, (_evt, clientType: WowClientType) =>
       this.platform.getExecutableName(clientType),
     );
@@ -43,28 +47,50 @@ export class WarcraftController implements IpcController {
     );
   }
 
-  public async getBlizzardAgentPath(): Promise<string> {
-    const stored = this.prefStore.get(BLIZZARD_AGENT_PATH_KEY) as string | undefined;
-    if (stored) {
+  /**
+   * The product.db files found earlier, as long as they still exist. Searches again when none is left or
+   * on rescan, keeping the ones still found, so a newly added wine prefix is picked up by a rescan.
+   */
+  public async getBlizzardAgentPaths(rescan = false): Promise<string[]> {
+    const stored: string[] = [];
+    for (const agentPath of this.getStoredAgentPaths()) {
+      if (await exists(agentPath)) {
+        stored.push(agentPath);
+      }
+    }
+
+    if (stored.length > 0 && !rescan) {
       return stored;
     }
 
-    const agentPath = await this.platform.getBlizzardAgentPath();
-    if (agentPath) {
-      this.prefStore.set(BLIZZARD_AGENT_PATH_KEY, agentPath);
+    const agentPaths = [...new Set([...stored, ...(await this.platform.getBlizzardAgentPaths())])];
+    if (agentPaths.length > 0) {
+      this.prefStore.set(BLIZZARD_AGENT_PATH_KEY, agentPaths);
+    } else {
+      this.prefStore.delete(BLIZZARD_AGENT_PATH_KEY);
     }
 
-    return agentPath;
+    return agentPaths;
   }
 
-  public async getInstalledProducts(agentPath: string): Promise<Map<WowClientType, InstalledProduct>> {
-    const decoded = await decodeProducts(agentPath);
-    const resolved = this.platform.resolveProducts(decoded, agentPath);
-
-    const result = new Map<WowClientType, InstalledProduct>();
-    for (const product of resolved) {
-      result.set(product.clientType, product);
+  /** The WoW products of every product.db, with their locations resolved for this platform */
+  public async getInstalledProducts(agentPaths: string[]): Promise<InstalledProduct[]> {
+    const products: InstalledProduct[] = [];
+    for (const agentPath of agentPaths) {
+      const decoded = await decodeProducts(agentPath);
+      products.push(...this.platform.resolveProducts(decoded, agentPath));
     }
-    return result;
+
+    return products;
+  }
+
+  /** Older versions stored a single path */
+  private getStoredAgentPaths(): string[] {
+    const stored = this.prefStore.get(BLIZZARD_AGENT_PATH_KEY) as string | string[] | undefined;
+    if (Array.isArray(stored)) {
+      return stored.filter((agentPath) => typeof agentPath === "string" && agentPath.length > 0);
+    }
+
+    return typeof stored === "string" && stored.length > 0 ? [stored] : [];
   }
 }
