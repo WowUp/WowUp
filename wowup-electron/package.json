@@ -117,7 +117,7 @@
     "@fortawesome/free-solid-svg-icons": "6.4.2",
     "@messageformat/core": "3.2.0",
     "@microsoft/applicationinsights-web": "3.0.5",
-    "@ngx-translate/core": "15.0.0",
+    "@ngx-translate/core": "18.1.0",
     "@ngx-translate/http-loader": "8.0.0",
     "@overwolf/ow-electron": "42.7.1",
     "@types/adm-zip": "0.5.1",
