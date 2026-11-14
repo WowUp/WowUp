@@ -287,6 +287,19 @@
       "VIEW_IN_BROWSER_BUTTON": "Visualizza nel browser",
       "VIEW_ON_PROVIDER_PREFIX": "Visualizza su"
     },
+    "ADDON_LINK": {
+      "CLOSE_BUTTON": "Chiudi",
+      "DESCRIPTION": "WowUp non è riuscito a identificare questo addon. Cercalo o incolla l'URL della sua pagina e scegli l'addon corrispondente. I file installati vengono mantenuti, WowUp usa il fornitore solo per controllare gli aggiornamenti.",
+      "LINK_BUTTON": "Collega",
+      "LINK_FAILED": "Impossibile collegare l'addon, il fornitore non ne ha una versione per questo client.",
+      "NO_RESULTS": "Nessun addon corrispondente trovato.",
+      "SEARCH_BUTTON": "Cerca",
+      "SEARCH_FAILED": "La ricerca non è riuscita, riprova.",
+      "SEARCH_LABEL": "Nome dell'addon o URL",
+      "SEARCH_PLACEHOLDER": "Es. Questie o https://www.curseforge.com/wow/addons/questie",
+      "TITLE": "Collega {addonName} a un fornitore",
+      "WARNING": "Collega solo l'addon a cui questi file appartengono davvero. L'aggiornamento installa la versione del provider e sostituisce i file installati, comprese eventuali modifiche. I problemi causati da file non distribuiti dal provider non spetta all'autore dell'addon risolverli."
+    },
     "ALERT": {
       "ERROR_TITLE": "Errore",
       "POSITIVE_BUTTON": "Okay"
@@ -446,11 +459,13 @@
         "BETA_ADDON_CHANNEL": "Beta",
         "CHANNEL_SUBMENU_TITLE": "Canale",
         "IGNORE_ADDON_BUTTON": "Ignora",
+        "LINK_ADDON_BUTTON": "Collega a un fornitore…",
         "PROVIDER_SUBMENU_TITLE": "Providers",
         "REINSTALL_ADDON_BUTTON": "Reinstalla",
         "REMOVE_ADDON_BUTTON": "Rimuovi",
         "SHOW_FOLDER": "Mostra Cartella",
-        "STABLE_ADDON_CHANNEL": "Stabile"
+        "STABLE_ADDON_CHANNEL": "Stabile",
+        "UNLINK_ADDON_BUTTON": "Rimuovi collegamento al fornitore"
       },
       "ADDON_IS_CODE_REPOSITORY": "L'addon sembra essere un code repository",
       "ADDON_REMOVED_SNACKBAR": "Rimosso con successo: {addonName} ",
@@ -475,6 +490,9 @@
         "PAYPAL": "Supporta questo autore su PayPal"
       },
       "IMPORT_EXPORT_ADDONS_BUTTON": "Import/Export Addons",
+      "MATCH_UNKNOWN_BUTTON": "Associa addon sconosciuti",
+      "MATCH_UNKNOWN_NONE": "Nessun addon sconosciuto è stato associato. In questo modo si possono associare solo gli addon il cui TOC indica un ID del provider o un repository, gli altri possono essere collegati dal loro menu contestuale.",
+      "MATCH_UNKNOWN_SUCCESS": "Addon sconosciuti associati: {count}",
       "MULTIPLE_PROVIDERS_TOOLTIP": "Questo addon ha più di un provider",
       "PAGE_CONTEXT_FOOTER": {
         "ADDONS_INSTALLED": "{count} {count, plural, =1{addon} other{addons}}",

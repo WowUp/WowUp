@@ -287,6 +287,19 @@
       "VIEW_IN_BROWSER_BUTTON": "Voir dans le navigateur",
       "VIEW_ON_PROVIDER_PREFIX": "Voir sur"
     },
+    "ADDON_LINK": {
+      "CLOSE_BUTTON": "Fermer",
+      "DESCRIPTION": "WowUp n'a pas pu identifier cet addon. Recherchez-le ou collez l'URL de sa page, puis choisissez l'addon correspondant. Les fichiers installés sont conservés, WowUp utilise le fournisseur uniquement pour vérifier les mises à jour.",
+      "LINK_BUTTON": "Associer",
+      "LINK_FAILED": "L'addon n'a pas pu être associé, le fournisseur n'en propose aucune version pour ce client.",
+      "NO_RESULTS": "Aucun addon correspondant n'a été trouvé.",
+      "SEARCH_BUTTON": "Rechercher",
+      "SEARCH_FAILED": "La recherche a échoué, veuillez réessayer.",
+      "SEARCH_LABEL": "Nom de l'addon ou URL",
+      "SEARCH_PLACEHOLDER": "Ex. Questie ou https://www.curseforge.com/wow/addons/questie",
+      "TITLE": "Associer {addonName} à un fournisseur",
+      "WARNING": "Ne liez que l'addon auquel ces fichiers appartiennent réellement. Sa mise à jour installe la version du fournisseur et remplace les fichiers installés, y compris les modifications qui y ont été apportées. Les problèmes causés par des fichiers que le fournisseur n'a pas distribués ne relèvent pas de l'auteur de l'addon."
+    },
     "ALERT": {
       "ERROR_TITLE": "Erreur",
       "POSITIVE_BUTTON": "Ok"
@@ -446,11 +459,13 @@
         "BETA_ADDON_CHANNEL": "Bêta",
         "CHANNEL_SUBMENU_TITLE": "Canal",
         "IGNORE_ADDON_BUTTON": "Ignorer",
+        "LINK_ADDON_BUTTON": "Associer à un fournisseur…",
         "PROVIDER_SUBMENU_TITLE": "Fournisseurs",
         "REINSTALL_ADDON_BUTTON": "Réinstaller",
         "REMOVE_ADDON_BUTTON": "Désinstaller",
         "SHOW_FOLDER": "Afficher le dossier",
-        "STABLE_ADDON_CHANNEL": "Stable"
+        "STABLE_ADDON_CHANNEL": "Stable",
+        "UNLINK_ADDON_BUTTON": "Retirer l'association au fournisseur"
       },
       "ADDON_IS_CODE_REPOSITORY": "Addon appears to be a code repository",
       "ADDON_REMOVED_SNACKBAR": "Successfully removed: {addonName} ",
@@ -475,6 +490,9 @@
         "PAYPAL": "Supporter ce créateur sur PayPal"
       },
       "IMPORT_EXPORT_ADDONS_BUTTON": "Import/Export Addons",
+      "MATCH_UNKNOWN_BUTTON": "Associer les addons inconnus",
+      "MATCH_UNKNOWN_NONE": "Aucun addon inconnu n'a pu être associé. Seuls les addons dont le TOC indique un ID de fournisseur ou un dépôt peuvent être associés ainsi, les autres peuvent être liés depuis leur menu contextuel.",
+      "MATCH_UNKNOWN_SUCCESS": "Addons inconnus associés : {count}",
       "MULTIPLE_PROVIDERS_TOOLTIP": "Cet addon a de multiples fournisseurs",
       "PAGE_CONTEXT_FOOTER": {
         "ADDONS_INSTALLED": "{count} {count, plural, =1{addon} other{addons}}",

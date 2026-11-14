@@ -287,6 +287,19 @@
       "VIEW_IN_BROWSER_BUTTON": "Otwórz w przeglądarce",
       "VIEW_ON_PROVIDER_PREFIX": "Otwórz w"
     },
+    "ADDON_LINK": {
+      "CLOSE_BUTTON": "Zamknij",
+      "DESCRIPTION": "WowUp nie rozpoznał tego dodatku. Wyszukaj go lub wklej adres URL jego strony i wybierz pasujący dodatek. Zainstalowane pliki zostaną zachowane, WowUp używa dostawcy tylko do sprawdzania aktualizacji.",
+      "LINK_BUTTON": "Przypisz",
+      "LINK_FAILED": "Nie udało się przypisać dodatku, dostawca nie ma jego wersji dla tego klienta.",
+      "NO_RESULTS": "Nie znaleziono pasującego dodatku.",
+      "SEARCH_BUTTON": "Szukaj",
+      "SEARCH_FAILED": "Wyszukiwanie nie powiodło się, spróbuj ponownie.",
+      "SEARCH_LABEL": "Nazwa dodatku lub URL",
+      "SEARCH_PLACEHOLDER": "Np. Questie lub https://www.curseforge.com/wow/addons/questie",
+      "TITLE": "Przypisz {addonName} do dostawcy",
+      "WARNING": "Połącz tylko z dodatkiem, do którego te pliki naprawdę należą. Aktualizacja instaluje wydanie dostawcy i zastępuje zainstalowane pliki, łącznie z wprowadzonymi w nich zmianami. Problemy spowodowane plikami, których dostawca nie dostarczył, nie są sprawą autora dodatku."
+    },
     "ALERT": {
       "ERROR_TITLE": "Błąd",
       "POSITIVE_BUTTON": "Okej"
@@ -446,11 +459,13 @@
         "BETA_ADDON_CHANNEL": "Beta",
         "CHANNEL_SUBMENU_TITLE": "Kanał",
         "IGNORE_ADDON_BUTTON": "Ignoruj",
+        "LINK_ADDON_BUTTON": "Przypisz do dostawcy…",
         "PROVIDER_SUBMENU_TITLE": "Dostawcy",
         "REINSTALL_ADDON_BUTTON": "Zainstaluj ponownie",
         "REMOVE_ADDON_BUTTON": "Usuń",
         "SHOW_FOLDER": "Pokaż folder",
-        "STABLE_ADDON_CHANNEL": "Stabilna"
+        "STABLE_ADDON_CHANNEL": "Stabilna",
+        "UNLINK_ADDON_BUTTON": "Usuń przypisanie do dostawcy"
       },
       "ADDON_IS_CODE_REPOSITORY": "Addon wydaje się być repozytorium kodu",
       "ADDON_REMOVED_SNACKBAR": "Pomyślnie usunięto: {addonName} ",
@@ -475,6 +490,9 @@
         "PAYPAL": "Wesprzyj tego autora na PayPal"
       },
       "IMPORT_EXPORT_ADDONS_BUTTON": "Import/Eksport addonów",
+      "MATCH_UNKNOWN_BUTTON": "Dopasuj nieznane dodatki",
+      "MATCH_UNKNOWN_NONE": "Nie udało się dopasować żadnego nieznanego dodatku. W ten sposób można dopasować tylko dodatki, których TOC podaje identyfikator dostawcy lub repozytorium, pozostałe można połączyć z ich menu kontekstowego.",
+      "MATCH_UNKNOWN_SUCCESS": "Dopasowane nieznane dodatki: {count}",
       "MULTIPLE_PROVIDERS_TOOLTIP": "Ten addon ma wielu dostawców",
       "PAGE_CONTEXT_FOOTER": {
         "ADDONS_INSTALLED": "{count} {count, plural, =1{addon} other{addonów}}",

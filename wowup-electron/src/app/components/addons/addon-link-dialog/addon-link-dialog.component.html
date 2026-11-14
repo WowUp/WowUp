@@ -1,0 +1,57 @@
+<h1 mat-dialog-title>{{ "DIALOGS.ADDON_LINK.TITLE" | translate: { addonName: data.addon.name } }}</h1>
+<div mat-dialog-content class="addon-link-content">
+  <p class="description text-2">{{ "DIALOGS.ADDON_LINK.DESCRIPTION" | translate }}</p>
+  <p class="link-warning">{{ "DIALOGS.ADDON_LINK.WARNING" | translate }}</p>
+  <mat-form-field class="search-input">
+    <mat-label>{{ "DIALOGS.ADDON_LINK.SEARCH_LABEL" | translate }}</mat-label>
+    <input
+      matInput
+      [placeholder]="'DIALOGS.ADDON_LINK.SEARCH_PLACEHOLDER' | translate"
+      [(ngModel)]="query"
+      (keyup.enter)="onSearch()"
+      [disabled]="isBusy === true"
+    />
+  </mat-form-field>
+  <div *ngIf="isBusy === true" class="busy-container">
+    <mat-spinner diameter="40"></mat-spinner>
+  </div>
+  <p *ngIf="errorKey" class="error-message">{{ errorKey | translate }}</p>
+  <p *ngIf="isBusy === false && hasSearched === true && !errorKey && candidates.length === 0" class="text-2">
+    {{ "DIALOGS.ADDON_LINK.NO_RESULTS" | translate }}
+  </p>
+  <div class="candidate-list">
+    <div *ngFor="let candidate of candidates" class="candidate">
+      <div
+        *ngIf="candidate.result.thumbnailUrl"
+        class="candidate-thumb"
+        [style.backgroundImage]="'url(' + candidate.result.thumbnailUrl + ')'"
+      ></div>
+      <div *ngIf="!candidate.result.thumbnailUrl" class="candidate-thumb">
+        <span class="text-3">{{ candidate.thumbnailLetter }}</span>
+      </div>
+      <div class="candidate-info">
+        <div class="text-1 candidate-name">{{ candidate.result.name }}</div>
+        <div class="text-2">{{ candidate.result.author }}</div>
+        <div class="text-3">
+          {{ candidate.result.providerName }}
+          <span *ngIf="candidate.latestVersion"> · {{ candidate.latestVersion }}</span>
+        </div>
+      </div>
+      <button
+        class="wu-btn wu-btn-flat wu-btn-primary link-button"
+        [disabled]="isBusy === true"
+        (click)="onLink(candidate)"
+      >
+        {{ "DIALOGS.ADDON_LINK.LINK_BUTTON" | translate }}
+      </button>
+    </div>
+  </div>
+</div>
+<div mat-dialog-actions align="end">
+  <button class="wu-btn wu-btn-flat mr-2" (click)="onClose()">
+    {{ "DIALOGS.ADDON_LINK.CLOSE_BUTTON" | translate }}
+  </button>
+  <button class="wu-btn wu-btn-primary" [disabled]="isBusy === true" (click)="onSearch()">
+    {{ "DIALOGS.ADDON_LINK.SEARCH_BUTTON" | translate }}
+  </button>
+</div>

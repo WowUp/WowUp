@@ -41,6 +41,7 @@ import { CircuitBreakerWrapper, NetworkService } from "../services/network/netwo
 import { TocService } from "../services/toc/toc.service";
 import { strictFilter } from "../utils/array.utils";
 import { TocNotFoundError } from "../errors";
+import { AddonMatcher, InstalledOverride, MatchProject, MatchSource } from "./addon-matcher";
 
 interface ProtocolData {
   addonId: number;
@@ -364,6 +365,10 @@ export class CurseAddonProvider extends AddonProvider {
     return protocol.toLowerCase().startsWith("curseforge://");
   }
 
+  /**
+   * Matches addon folders to CurseForge projects: first by the folder fingerprint, the exact files of a CurseForge
+   * release for the client, then the folders left through the shared TOC project ID step (AddonMatcher)
+   */
   public override async scan(
     installation: WowInstallation,
     addonChannelType: AddonChannelType,
@@ -373,27 +378,50 @@ export class CurseAddonProvider extends AddonProvider {
       return;
     }
 
+    await this.matchByFingerprint(installation, addonFolders);
+
+    const matcher = new AddonMatcher((addonFolder) =>
+      this._tocService.getTocForGameType2(addonFolder.name, addonFolder.tocs, installation.clientType),
+    );
+    await matcher.matchUnmatched(addonFolders, this.getMatchSource(installation));
+  }
+
+  private async matchByFingerprint(installation: WowInstallation, addonFolders: AddonFolder[]): Promise<void> {
     const scanResults = addonFolders
       .map((af) => af.cfScanResults)
       .filter((sr): sr is AddonScanResult => sr !== undefined);
 
     const fingerprints = scanResults.map((sr) => sr.fingerprintNum);
+    if (!fingerprints.length) {
+      return;
+    }
 
     const result = await this._cf2Client.getFingerprintMatches({ fingerprints });
     const fingerprintData = result.data?.data;
+    if (result.statusCode !== 200 || fingerprintData === undefined) {
+      // Failing quietly left every addon unmatched without a hint why, e.g. on an invalid API key
+      throw new Error(`CurseForge fingerprint request failed: ${result.statusCode} ${result.message ?? ""}`.trim());
+    }
+
     try {
       const matchPairs: ScanMatchPair[] = [];
       for (const af of addonFolders) {
-        let exactMatch = fingerprintData?.exactMatches.find(
+        const fingerprint = af.cfScanResults?.fingerprintNum;
+        if (fingerprint === undefined) {
+          continue;
+        }
+
+        // Only a release for this client: an addon its author does not publish for the client is not supported there
+        let exactMatch = (fingerprintData.exactMatches ?? []).find(
           (em) =>
             this.isCfFileCompatible(installation.clientType, em.file) &&
-            em.file.modules.some((m) => m.fingerprint == af.cfScanResults?.fingerprintNum),
+            em.file?.modules?.some((m) => m.fingerprint == fingerprint),
         );
 
         // If the addon does not have an exact match, check the partial matches.
-        if (!exactMatch && Array.isArray(fingerprintData?.partialMatches) && fingerprintData !== undefined) {
+        if (!exactMatch && Array.isArray(fingerprintData.partialMatches)) {
           exactMatch = fingerprintData.partialMatches.find((partialMatch) =>
-            partialMatch.file?.modules?.some((module) => module.fingerprint === af.cfScanResults?.fingerprintNum),
+            partialMatch.file?.modules?.some((module) => module.fingerprint === fingerprint),
           );
         }
 
@@ -403,6 +431,10 @@ export class CurseAddonProvider extends AddonProvider {
             match: exactMatch,
           });
         }
+      }
+
+      if (!matchPairs.length) {
+        return;
       }
 
       const addonIds = matchPairs.map((mp) => mp.match.id);
@@ -417,7 +449,19 @@ export class CurseAddonProvider extends AddonProvider {
         }
 
         try {
-          mp.addonFolder.matchingAddon = this.createAddon(installation, mp.addonFolder, mp.match.file, cfAddon);
+          const addon = this.createAddon(installation, mp.addonFolder, mp.match.file, cfAddon);
+          // Only the folders whose files are this release's. A folder the release ships but that holds something else,
+          // e.g. a sub addon from another source, is not this addon's and is matched separately.
+          const ownedFolders = (mp.match.file.modules ?? [])
+            .filter((module) =>
+              addonFolders.some(
+                (folder) => folder.name === module.name && folder.cfScanResults?.fingerprintNum === module.fingerprint,
+              ),
+            )
+            .map((module) => module.name);
+          addon.installedFolderList = ownedFolders.length ? ownedFolders : [mp.addonFolder.name];
+          addon.installedFolders = addon.installedFolderList.join(",");
+          mp.addonFolder.matchingAddon = addon;
         } catch (e) {
           if (e instanceof TocNotFoundError) {
             potentialChildren.push(mp);
@@ -439,6 +483,45 @@ export class CurseAddonProvider extends AddonProvider {
       console.log(result);
       throw e;
     }
+  }
+
+  /** CurseForge for the shared match steps */
+  private getMatchSource(installation: WowInstallation): MatchSource<cfv2.CF2Addon, cfv2.CF2File> {
+    return {
+      logName: "curseforge",
+      getTocProjectId: (toc) => {
+        const projectId = parseInt(toc.curseProjectId ?? "", 10);
+        return isNaN(projectId) || projectId <= 0 ? undefined : projectId.toString();
+      },
+      getProjectsById: async (ids) => {
+        const cfAddons = await this.getAllIds(ids.map((id) => parseInt(id, 10)));
+        return cfAddons.map((cfAddon) => this.toMatchProject(installation, cfAddon));
+      },
+      createAddon: (mainFolder, project, reference, installed) =>
+        this.createAddon(installation, mainFolder, reference.source, project.source, installed),
+    };
+  }
+
+  private toMatchProject(
+    installation: WowInstallation,
+    cfAddon: cfv2.CF2Addon,
+  ): MatchProject<cfv2.CF2Addon, cfv2.CF2File> {
+    const files = _.sortBy(
+      (cfAddon.latestFiles ?? []).filter((file) => file.exposeAsAlternative !== true),
+      (file) => file.id,
+    ).reverse();
+
+    return {
+      id: cfAddon.id.toString(),
+      releases: files.map((file) => ({
+        id: file.id.toString(),
+        names: [file.displayName, file.fileName],
+        folders: (file.modules ?? []).map((module) => module.name),
+        compatible: this.isCfFileCompatible(installation.clientType, file),
+        source: file,
+      })),
+      source: cfAddon,
+    };
   }
 
   private isChildAddon(cfAddon: cfv2.CF2File, addonName: string) {
@@ -537,11 +620,16 @@ export class CurseAddonProvider extends AddonProvider {
     return result.screenshots.map((f) => f.url).filter(Boolean);
   }
 
+  /**
+   * installed overrides the installed release when it isn't cfFile, e.g. for an addon matched through its TOC rather
+   * than the files of a release
+   */
   private createAddon(
     installation: WowInstallation,
     addonFolder: AddonFolder,
     cfFile: cfv2.CF2File,
     cfAddon: cfv2.CF2Addon,
+    installed?: InstalledOverride,
   ): Addon {
     const authors = cfAddon.authors.map((author) => author.name).join(", ");
     const folders = cfFile.modules.map((module) => module.name);
@@ -574,8 +662,8 @@ export class CurseAddonProvider extends AddonProvider {
       installedAt: new Date(addonFolder?.fileStats?.birthtimeMs ?? 0),
       installedFolders: folderList,
       installedFolderList: folders,
-      installedVersion: cfFile.displayName,
-      installedExternalReleaseId: cfFile.id.toString(),
+      installedVersion: installed ? installed.version : cfFile.displayName,
+      installedExternalReleaseId: installed ? installed.releaseId : cfFile.id.toString(),
       isIgnored: false,
       latestVersion: latestVersion?.displayName ?? cfFile.displayName ?? "",
       providerName: this.name,

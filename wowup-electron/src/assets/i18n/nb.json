@@ -287,6 +287,19 @@
       "VIEW_IN_BROWSER_BUTTON": "Se i nettleser",
       "VIEW_ON_PROVIDER_PREFIX": "Se på"
     },
+    "ADDON_LINK": {
+      "CLOSE_BUTTON": "Lukk",
+      "DESCRIPTION": "WowUp kunne ikke identifisere denne addonen. Søk etter den, eller lim inn URL-en til addon-siden, og velg riktig addon. De installerte filene beholdes, WowUp bruker leverandøren kun til å se etter oppdateringer.",
+      "LINK_BUTTON": "Koble til",
+      "LINK_FAILED": "Addonen kunne ikke kobles til, leverandøren har ingen versjon av den for denne klienten.",
+      "NO_RESULTS": "Fant ingen passende addon.",
+      "SEARCH_BUTTON": "Søk",
+      "SEARCH_FAILED": "Søket mislyktes, prøv igjen.",
+      "SEARCH_LABEL": "Addon-navn eller URL",
+      "SEARCH_PLACEHOLDER": "F.eks. Questie eller https://www.curseforge.com/wow/addons/questie",
+      "TITLE": "Koble {addonName} til en leverandør",
+      "WARNING": "Koble bare til tillegget disse filene faktisk hører til. En oppdatering installerer leverandørens utgivelse og erstatter de installerte filene, også endringer som er gjort i dem. Problemer forårsaket av filer leverandøren ikke har levert, er ikke tilleggets forfatter sitt ansvar."
+    },
     "ALERT": {
       "ERROR_TITLE": "Feil",
       "POSITIVE_BUTTON": "OK"
@@ -446,11 +459,13 @@
         "BETA_ADDON_CHANNEL": "Beta",
         "CHANNEL_SUBMENU_TITLE": "Kanal",
         "IGNORE_ADDON_BUTTON": "Ignorer",
+        "LINK_ADDON_BUTTON": "Koble til leverandør…",
         "PROVIDER_SUBMENU_TITLE": "Leverandører",
         "REINSTALL_ADDON_BUTTON": "Reinstaller",
         "REMOVE_ADDON_BUTTON": "Fjern",
         "SHOW_FOLDER": "Vis mappe",
-        "STABLE_ADDON_CHANNEL": "Stabil"
+        "STABLE_ADDON_CHANNEL": "Stabil",
+        "UNLINK_ADDON_BUTTON": "Fjern kobling til leverandør"
       },
       "ADDON_IS_CODE_REPOSITORY": "Utvidelsen ser ut til å være et koderepository",
       "ADDON_REMOVED_SNACKBAR": "{addonName} ble fjernet",
@@ -475,6 +490,9 @@
         "PAYPAL": "Støtt denne forfatteren på PayPal"
       },
       "IMPORT_EXPORT_ADDONS_BUTTON": "Importer/eksporter utvidelser",
+      "MATCH_UNKNOWN_BUTTON": "Koble ukjente tillegg",
+      "MATCH_UNKNOWN_NONE": "Ingen ukjente tillegg kunne kobles. Slik kan bare tillegg der TOC-filen oppgir en leverandør-ID eller et repository kobles, andre kan kobles fra hurtigmenyen sin.",
+      "MATCH_UNKNOWN_SUCCESS": "Ukjente tillegg koblet: {count}",
       "MULTIPLE_PROVIDERS_TOOLTIP": "Denne utvidelsen har flere leverandører",
       "PAGE_CONTEXT_FOOTER": {
         "ADDONS_INSTALLED": "{count} {count, plural, =1{utvidelse} other{utvidelser}}",
