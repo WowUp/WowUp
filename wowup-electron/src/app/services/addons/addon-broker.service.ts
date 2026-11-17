@@ -191,6 +191,10 @@ export class AddonBrokerService {
 
     if (!this.isSameClient(installation.clientType, exportPayload.client_type)) {
       summary.errorCode = "INVALID_CLIENT_TYPE";
+      summary.errorParams = {
+        importedClient: exportPayload.client_type || "unknown",
+        targetClient: this.getClientType(installation.clientType),
+      };
       return summary;
     }
 
