@@ -218,8 +218,27 @@ Done in three steps, each shippable on its own.
   `getAll` / `getAllBatch` through the stand-ins and hands main the answer (`applySync`), and
   search, install-from-url and dependency lookups still go through the stand-ins.
 
-## Phase 6 — `ipc-events.ts` Cleanup ⏳ not started
+## Phase 6 — `ipc-events.ts` Cleanup ✅ done
 
-- Once all domains have dedicated controllers, retire the legacy
-  `app/ipc-events.ts` grab-bag registry (or shrink it to only what genuinely doesn't
-  fit the controller pattern, e.g. window-chrome events).
+- [x] Removed what nothing called: the `webview-log` / `webview-error` listeners, the
+      `will-download` session hook (nothing ever registered a download with it), and the
+      home dir, readdir, read-file-buffer, latest-dir-update-time, list-dir-recursive and
+      zip-list-files channels with their `FileService` wrappers (plus `removeAll` /
+      `removeAllSafe`).
+- [x] `app/ipc-events.ts` is gone. Its handlers moved, channel names unchanged, into:
+  - `FileSystemController`: `FileService`'s file access; the listing and stat logic lives in
+    `FileSystemService` (`app/services/files/`), which `AddonFolderService` now shares
+    instead of keeping its own copy;
+  - `WindowController`: titlebar buttons, focus, zoom;
+  - `AppController`: versions, locale, launch args, pending open urls (`app/pending-open-urls.ts`),
+    login item, protocol client, badge, dialogs, shell, clipboard, base64, restart/quit, and
+    the overwolf consent window;
+  - `MenuController`: app menu and tray; `PushController`: push registration.
+- [x] Every handler now registers through `ipcHandle`, so a recreated window replaces them
+      instead of throwing on a second `ipcMain.handle`.
+- Still registered outside a controller: the store channels (`app/stores.ts`), the updater
+  (`app/app-updater.ts`), the wago token listener (`app/wago-handler.ts`) and the wago cmp
+  close event.
+- Not in any phase yet: the renderer still imports Node (`fs`, `path`, …) directly because
+  `nodeIntegration` is on, and sync orchestration still runs there (see Phase 5b step 3).
+  Both have to move before the UI can be swapped.

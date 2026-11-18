@@ -8,12 +8,10 @@ import * as crypto from "crypto";
 import { Transform } from "stream";
 import * as yauzl from "yauzl";
 import AdmZip = require("adm-zip");
-import globrex = require("globrex");
 
 import { TreeNode } from "../src/common/models/ipc-events";
 import { GetDirectoryTreeOptions } from "../src/common/models/ipc-request";
 import { isWin } from "./platform";
-import { ZipEntry } from "../src/common/models/ipc-response";
 import { DEFAULT_FILE_MODE } from "../src/common/constants";
 
 export function zipFile(srcPath: string, outPath: string): Promise<boolean> {
@@ -33,22 +31,6 @@ export function readFileInZip(zipPath: string, filePath: string): Promise<string
     zip.readAsTextAsync(filePath, (data, err) => {
       return err ? reject(err) : resolve(data);
     });
-  });
-}
-
-export function listZipFiles(zipPath: string, filter: string): ZipEntry[] {
-  const zip = new AdmZip(zipPath);
-  const entries = zip.getEntries();
-
-  const globFilter = globrex(filter);
-  const matches = entries.filter((entry) => globFilter.regex.test(entry.name));
-
-  return matches.map((entry) => {
-    return {
-      isDirectory: entry.isDirectory,
-      name: entry.name,
-      path: entry.entryName,
-    };
   });
 }
 

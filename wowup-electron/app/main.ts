@@ -41,7 +41,7 @@ import { AppOptions } from "../src/common/wowup/models";
 import { createAppMenu } from "./app-menu";
 import { appUpdater } from "./app-updater";
 import { wagoHandler } from "./wago-handler";
-import { initializeIpcHandlers, setPendingOpenUrl } from "./ipc-events";
+import { setPendingOpenUrl } from "./pending-open-urls";
 import * as platform from "./platform";
 import { initializeDefaultPreferences, getInstallId } from "./preferences";
 import { PUSH_NOTIFICATION_EVENT, pushEvents } from "./push";
@@ -60,6 +60,7 @@ const shell = getShell();
 const LOG_PATH = shell.logPath;
 log.info("Main starting");
 log.info(`Electron: ${process.versions.electron}`);
+log.info("process.versions", process.versions);
 log.info(`BinaryPath: ${app.getPath("exe")}`);
 log.info("ExecPath", process.execPath);
 log.info("Args", process.argv);
@@ -338,7 +339,6 @@ function createWindow(): BrowserWindow {
 
   appUpdater.init(win);
 
-  initializeIpcHandlers(win);
   initializeStoreIpcHandlers();
   registerControllers({
     window: win,

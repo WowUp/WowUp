@@ -21,6 +21,13 @@ import { AddonFolderService } from "../services/warcraft/addon-folder.service";
 import { ADDON_PROVIDERS_KEY, IPC_ADDON_SCAN_EVENT, USE_SYMLINK_MODE_PREFERENCE_KEY } from "../../src/common/constants";
 import { WagoAdsController } from "./wago-ads.controller";
 import { IpcController } from "./ipc-controller";
+import { AppController } from "./app.controller";
+import { FileSystemController } from "./file-system.controller";
+import { MenuController } from "./menu.controller";
+import { PushController } from "./push.controller";
+import { WindowController } from "./window.controller";
+import { FileSystemService } from "../services/files/file-system.service";
+import { takePendingOpenUrls } from "../pending-open-urls";
 import { MetricsController } from "./metrics/metrics.controller";
 import { TocController } from "./toc/toc.controller";
 import { WarcraftController } from "./warcraft/warcraft.controller";
@@ -103,7 +110,8 @@ export function registerControllers(deps: ControllerDeps): void {
   const addonRepository = new AddonRepository(deps.addonStore);
   const installationService = new WarcraftInstallationService(deps.preferenceStore);
   const scanService = new AddonScanService({ hashes: nodeHashAlgorithms, log });
-  const addonFolderService = new AddonFolderService(tocService);
+  const fileSystemService = new FileSystemService(log);
+  const addonFolderService = new AddonFolderService(tocService, fileSystemService);
 
   const syncService = new AddonSyncService({
     repository: addonRepository,
@@ -208,6 +216,11 @@ export function registerControllers(deps: ControllerDeps): void {
     // Registered on every flavor on purpose: a resource report is only actionable if the ow numbers
     // can be held against the wago ones.
     new MetricsController(metricsService),
+    new AppController(takePendingOpenUrls, log),
+    new WindowController(deps.window, deps.preferenceStore),
+    new MenuController(deps.window),
+    new FileSystemController(fileSystemService, log),
+    new PushController(),
   ];
 
   // The overwolf flavor renders its ad through the overwolf sdk.

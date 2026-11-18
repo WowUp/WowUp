@@ -9,9 +9,3 @@ export interface BackupGetExistingResponse {
 export interface BackupCreateResponse {
   error?: string;
 }
-
-export interface ZipEntry {
-  name: string;
-  path: string;
-  isDirectory: boolean;
-}

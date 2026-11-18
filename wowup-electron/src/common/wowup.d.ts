@@ -54,8 +54,6 @@ declare type RendererChannels =
   | "get-asset-file-path"
   | "get-directory-tree"
   | "get-focus"
-  | "get-home-dir"
-  | "get-latest-dir-update-time"
   | "get-launch-args"
   | "get-locale"
   | "get-login-item-settings"
@@ -64,7 +62,6 @@ declare type RendererChannels =
   | "get-zoom-factor"
   | "is-default-protocol-client"
   | "leave-full-screen"
-  | "list-dir-recursive"
   | "list-directories"
   | "list-entries"
   | "list-files"
@@ -79,8 +76,6 @@ declare type RendererChannels =
   | "push-unregister"
   | "quit-app"
   | "read-file"
-  | "read-file-buffer"
-  | "readdir"
   | "remove-as-default-protocol-client"
   | "rename-file"
   | "restart-app"
@@ -109,8 +104,7 @@ declare type RendererChannels =
   | "wago-ads-show-cmp"
   | "write-file"
   | "zip-file"
-  | "zip-read-file"
-  | "zip-list-files";
+  | "zip-read-file";
 
 declare global {
   interface Window {

@@ -1,16 +1,19 @@
 import * as log from "electron-log/main";
-import * as fs from "fs";
 import * as fsp from "fs/promises";
 import * as path from "path";
-import { AddonFolder, FsStats, Toc, WowInstallation } from "wowup-lib-core";
+import { AddonFolder, Toc, WowInstallation } from "wowup-lib-core";
 
 import { WOW_ADDON_FOLDER_NAME, WOW_INTERFACE_FOLDER_NAME } from "../../../src/common/constants";
 import { exists } from "../../file.utils";
+import { FileSystemService } from "../files/file-system.service";
 import { TocService } from "../toc/toc.service";
 
 /** An installation's addon folders on disk, each with its parsed tocs */
 export class AddonFolderService {
-  public constructor(private readonly tocService: TocService) {}
+  public constructor(
+    private readonly tocService: TocService,
+    private readonly fileSystem: FileSystemService,
+  ) {}
 
   /** Same rule as the renderer's WarcraftService.getAddonFolderPath */
   public getAddonFolderPath(installation: WowInstallation): string {
@@ -25,7 +28,7 @@ export class AddonFolderService {
       return addonFolders;
     }
 
-    const directories = await this.listDirectoryNames(addonFolderPath, scanSymlinks);
+    const directories = await this.fileSystem.listDirectories(addonFolderPath, scanSymlinks);
 
     for (const dir of directories) {
       const addonFolder = await this.getAddonFolder(addonFolderPath, dir);
@@ -34,7 +37,7 @@ export class AddonFolderService {
         continue;
       }
 
-      addonFolder.fileStats = await this.statPath(path.join(addonFolderPath, dir));
+      addonFolder.fileStats = await this.fileSystem.statPath(path.join(addonFolderPath, dir));
       addonFolders.push(addonFolder);
     }
 
@@ -67,63 +70,5 @@ export class AddonFolderService {
       log.error(e);
       return undefined;
     }
-  }
-
-  private async listDirectoryNames(dirPath: string, scanSymlinks: boolean): Promise<string[]> {
-    const entries = await fsp.readdir(dirPath, { withFileTypes: true });
-
-    let symlinkNames: string[] = [];
-    if (scanSymlinks) {
-      symlinkNames = await this.getSymlinkDirNames(dirPath, entries);
-    }
-
-    const directories = entries.filter((entry) => entry.isDirectory()).map((entry) => entry.name);
-    return [...directories, ...symlinkNames];
-  }
-
-  private async getSymlinkDirNames(basePath: string, entries: fs.Dirent[]): Promise<string[]> {
-    const symlinks = entries.filter((entry) => entry.isSymbolicLink());
-    const names: string[] = [];
-
-    for (const symlink of symlinks) {
-      const realPath = await fsp.realpath(path.join(basePath, symlink.name));
-      const stat = await fsp.lstat(realPath);
-      if (stat.isDirectory()) {
-        names.push(symlink.name);
-      }
-    }
-
-    return names;
-  }
-
-  private async statPath(filePath: string): Promise<FsStats> {
-    const stats = await fsp.stat(filePath);
-    return {
-      atime: stats.atime,
-      atimeMs: stats.atimeMs,
-      birthtime: stats.birthtime,
-      birthtimeMs: stats.birthtimeMs,
-      blksize: stats.blksize,
-      blocks: stats.blocks,
-      ctime: stats.ctime,
-      ctimeMs: stats.ctimeMs,
-      dev: stats.dev,
-      gid: stats.gid,
-      ino: stats.ino,
-      isBlockDevice: stats.isBlockDevice(),
-      isCharacterDevice: stats.isCharacterDevice(),
-      isDirectory: stats.isDirectory(),
-      isFIFO: stats.isFIFO(),
-      isFile: stats.isFile(),
-      isSocket: stats.isSocket(),
-      isSymbolicLink: stats.isSymbolicLink(),
-      mode: stats.mode,
-      mtime: stats.mtime,
-      mtimeMs: stats.mtimeMs,
-      nlink: stats.nlink,
-      rdev: stats.rdev,
-      size: stats.size,
-      uid: stats.uid,
-    };
   }
 }
