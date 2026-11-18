@@ -45,7 +45,7 @@ import { initializeIpcHandlers, setPendingOpenUrl } from "./ipc-events";
 import * as platform from "./platform";
 import { initializeDefaultPreferences, getInstallId } from "./preferences";
 import { PUSH_NOTIFICATION_EVENT, pushEvents } from "./push";
-import { getAddonStore, getPreferenceStore, initializeStoreIpcHandlers } from "./stores";
+import { getAddonStore, getPreferenceStore, getSensitiveStore, initializeStoreIpcHandlers } from "./stores";
 import { registerControllers } from "./controllers";
 import * as windowState from "./window-state";
 import { getShell } from "../../wowup-shell/contract/shell-api";
@@ -340,7 +340,12 @@ function createWindow(): BrowserWindow {
 
   initializeIpcHandlers(win);
   initializeStoreIpcHandlers();
-  registerControllers({ window: win, addonStore: getAddonStore(), preferenceStore: getPreferenceStore() });
+  registerControllers({
+    window: win,
+    addonStore: getAddonStore(),
+    preferenceStore: getPreferenceStore(),
+    sensitiveStore: getSensitiveStore(),
+  });
 
   if (AppEnv.buildFlavor === "wago") {
     wagoHandler.initialize(win);

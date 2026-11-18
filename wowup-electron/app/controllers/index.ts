@@ -1,5 +1,5 @@
 import { randomUUID } from "crypto";
-import { app, BrowserWindow, net } from "electron";
+import { app, BrowserWindow, net, powerMonitor } from "electron";
 import * as Store from "electron-store";
 import * as log from "electron-log/main";
 import * as fsp from "fs/promises";
@@ -39,11 +39,13 @@ import { WarcraftPlatform } from "../services/warcraft/warcraft-platform.service
 import { AppEnv } from "../env/environment";
 import * as platform from "../platform";
 import { getInstallId } from "../preferences";
+import { wagoHandler } from "../wago-handler";
 
 export interface ControllerDeps {
   window: BrowserWindow;
   addonStore: Store;
   preferenceStore: Store;
+  sensitiveStore: Store;
 }
 
 async function listDirectories(dirPath: string): Promise<string[]> {
@@ -140,6 +142,9 @@ export function registerControllers(deps: ControllerDeps): void {
     log,
   });
 
+  // The overwolf flavor renders its ad through the overwolf sdk.
+  const adView = AppEnv.buildFlavor === "wago" ? new WagoAdViewService(deps.window) : undefined;
+
   const providerController = new AddonProviderController(
     (config) =>
       new AddonProviderRegistry({
@@ -153,6 +158,14 @@ export function registerControllers(deps: ControllerDeps): void {
         parseToc: (tocPath) => tocService.parse(tocPath),
         getLatestDirUpdateTime: (dirPath) => getLastModifiedFileDate(dirPath),
         newId: () => randomUUID(),
+        getSecret: (key) => deps.sensitiveStore.get(key),
+        onSecretChange: (key, listener) => deps.sensitiveStore.onDidChange(key, (value) => listener(value)),
+        onWagoToken: (listener) => wagoHandler.onToken(listener),
+        onPowerResume: (listener) => {
+          powerMonitor.on("resume", listener);
+          return () => powerMonitor.off("resume", listener);
+        },
+        reloadAd: () => adView?.reload(),
         log,
       }),
   );
@@ -172,8 +185,7 @@ export function registerControllers(deps: ControllerDeps): void {
   ];
 
   // The overwolf flavor renders its ad through the overwolf sdk.
-  if (AppEnv.buildFlavor === "wago") {
-    const adView = new WagoAdViewService(deps.window);
+  if (adView) {
     const cmpWindow = new WagoCmpWindowService(deps.window, (visible) => adView.setCmpOpen(visible));
     controllers.push(new WagoAdsController(deps.window, adView, cmpWindow));
   }

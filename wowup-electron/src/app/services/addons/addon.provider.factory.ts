@@ -1,34 +1,13 @@
-import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { Addon, AddonProvider, AddonProviderType } from "wowup-lib-core";
 import { Subject } from "rxjs";
 
-import { CachingService } from "../caching/caching-service";
-import { ElectronService } from "../electron/electron.service";
 import { WowUpService } from "../wowup/wowup.service";
-import { NetworkService } from "../network/network.service";
-import { TocService } from "../toc/toc.service";
-import { WarcraftService } from "../warcraft/warcraft.service";
 import { AddonProviderState } from "../../models/wowup/addon-provider-state";
-import {
-  ADDON_PROVIDER_HUB,
-  ADDON_PROVIDER_RAIDERIO,
-  ADDON_PROVIDER_TUKUI,
-  ADDON_PROVIDER_UNKNOWN,
-  ADDON_PROVIDER_WOWINTERFACE,
-  ADDON_PROVIDER_WOWUP_COMPANION,
-  ADDON_PROVIDER_ZIP,
-  WAGO_PROMPT_KEY,
-} from "../../../common/constants";
+import { ADDON_PROVIDER_UNKNOWN, WAGO_PROMPT_KEY } from "../../../common/constants";
 import { PreferenceStorageService } from "../storage/preference-storage.service";
-import { SensitiveStorageService } from "../storage/sensitive-storage.service";
-import { UiMessageService } from "../ui-message/ui-message.service";
-import { CurseAddonProvider } from "../../addon-providers/curse-addon-provider";
-import { GitHubAddonProvider } from "../../addon-providers/github-addon-provider";
 import { RemoteAddonProvider } from "../../addon-providers/remote-addon-provider";
-import { WagoAddonProvider } from "../../addon-providers/wago-addon-provider";
 import { AppConfig } from "../../../environments/environment";
-import { AddonProviderDescriptor } from "../../../common/models/addon-provider";
 import { AddonProviderApiService } from "../api/addon-provider-api.service";
 
 @Injectable({
@@ -37,22 +16,13 @@ import { AddonProviderApiService } from "../api/addon-provider-api.service";
 export class AddonProviderFactory {
   private readonly _addonProviderChangeSrc = new Subject<AddonProvider>();
 
-  private _providerMap: Map<string, AddonProvider> = new Map();
+  private _providerMap: Map<string, RemoteAddonProvider> = new Map();
 
   public readonly addonProviderChange$ = this._addonProviderChangeSrc.asObservable();
 
   public constructor(
-    private _cachingService: CachingService,
-    private _electronService: ElectronService,
-    private _httpClient: HttpClient,
     private _wowupService: WowUpService,
-    private _networkService: NetworkService,
-    private _tocService: TocService,
-    private _warcraftService: WarcraftService,
-
     private _preferenceStorageService: PreferenceStorageService,
-    private _sensitiveStorageService: SensitiveStorageService,
-    private _uiMessageService: UiMessageService,
     private _addonProviderApiService: AddonProviderApiService,
   ) {}
 
@@ -62,32 +32,26 @@ export class AddonProviderFactory {
       return;
     }
 
-    // These run in main now (UI_DECOUPLING_PLAN.md, Phase 5b); the renderer keeps a stand-in for each
+    // Every provider runs in main (UI_DECOUPLING_PLAN.md, Phase 5b); the renderer keeps a stand-in for each,
+    // in main's order, which is the order lookups go through them
     const descriptors = await this._addonProviderApiService.init({
       wowUpHubUrl: AppConfig.wowUpHubUrl,
       wowUpWebsiteUrl: AppConfig.wowUpWebsiteUrl,
       defaultHttpTimeoutMs: AppConfig.defaultHttpTimeoutMs,
       defaultHttpResetTimeoutMs: AppConfig.defaultHttpResetTimeoutMs,
       wowUpHubHttpTimeoutMs: AppConfig.wowUpHubHttpTimeoutMs,
+      wagoHttpTimeoutMs: AppConfig.wagoHttpTimeoutMs,
+      featuredAddonsCacheTimeSec: AppConfig.featuredAddonsCacheTimeSec,
+      wago: { enabled: AppConfig.wago.enabled },
+      curseforge: {
+        enabled: AppConfig.curseforge.enabled,
+        apiKey: AppConfig.curseforge.apiKey,
+        httpTimeoutMs: AppConfig.curseforge.httpTimeoutMs,
+      },
     });
-    const remote = (name: string) => this.createRemoteProvider(descriptors, name);
-
-    const providers: AddonProvider[] = [
-      remote(ADDON_PROVIDER_ZIP),
-      remote(ADDON_PROVIDER_RAIDERIO),
-      remote(ADDON_PROVIDER_WOWUP_COMPANION),
-      remote(ADDON_PROVIDER_HUB),
-    ];
-
-    if (AppConfig.wago.enabled) {
-      providers.push(this.createWagoAddonProvider());
-    }
-
-    if (AppConfig.curseforge.enabled) {
-      providers.push(this.createCurseProvider());
-    }
-
-    providers.push(remote(ADDON_PROVIDER_TUKUI), remote(ADDON_PROVIDER_WOWINTERFACE), this.createGitHubAddonProvider());
+    const providers = descriptors.map(
+      (descriptor) => new RemoteAddonProvider(descriptor, this._addonProviderApiService),
+    );
 
     for (const provider of providers) {
       await this.setProviderState(provider);
@@ -126,34 +90,6 @@ export class AddonProviderFactory {
     this._addonProviderChangeSrc.next(provider);
   }
 
-  public createWagoAddonProvider(): WagoAddonProvider {
-    return new WagoAddonProvider(
-      this._electronService,
-      this._cachingService,
-      this._warcraftService,
-      this._tocService,
-      this._uiMessageService,
-      this._sensitiveStorageService,
-      this._networkService,
-    );
-  }
-
-  public createCurseProvider(): CurseAddonProvider {
-    return new CurseAddonProvider(this._cachingService, this._networkService, this._tocService);
-  }
-
-  public createGitHubAddonProvider(): GitHubAddonProvider {
-    return new GitHubAddonProvider(this._httpClient, this._sensitiveStorageService);
-  }
-
-  private createRemoteProvider(descriptors: AddonProviderDescriptor[], name: string): RemoteAddonProvider {
-    const descriptor = descriptors.find((d) => d.name === name);
-    if (!descriptor) {
-      throw new Error(`Main has no addon provider ${name}`);
-    }
-    return new RemoteAddonProvider(descriptor, this._addonProviderApiService);
-  }
-
   public getProvider<T = AddonProvider>(providerName: string): T | undefined {
     if (!providerName || !this.hasProvider(providerName)) {
       return undefined;
@@ -177,28 +113,19 @@ export class AddonProviderFactory {
   }
 
   public async getAddonProviderForUri(addonUri: URL): Promise<AddonProvider | undefined> {
-    const claimedInMain = new Set(
-      await this._addonProviderApiService.match({ kind: "uri", value: addonUri.toString() }),
-    );
-    return [...this._providerMap.values()].find((ap) =>
-      ap instanceof RemoteAddonProvider ? claimedInMain.has(ap.name) : ap.isValidAddonUri(addonUri),
-    );
+    const claimed = new Set(await this._addonProviderApiService.match({ kind: "uri", value: addonUri.toString() }));
+    return [...this._providerMap.values()].find((ap) => claimed.has(ap.name));
   }
 
   public async getAddonProviderForProtocol(protocol: string): Promise<AddonProvider | undefined> {
-    const claimedInMain = new Set(await this._addonProviderApiService.match({ kind: "protocol", value: protocol }));
-    return this.getEnabledAddonProviders().find((ap) =>
-      ap instanceof RemoteAddonProvider ? claimedInMain.has(ap.name) : ap.isValidProtocol(protocol),
-    );
+    const claimed = new Set(await this._addonProviderApiService.match({ kind: "protocol", value: protocol }));
+    return this.getEnabledAddonProviders().find((ap) => claimed.has(ap.name));
   }
 
   /** Whether the addon's provider wants it re-matched, e.g. a hub addon saved without its release id */
   public async shouldMigrate(addon: Addon): Promise<boolean> {
-    const provider = this.getProvider(addon.providerName ?? "");
-    if (provider instanceof RemoteAddonProvider) {
-      return await provider.shouldMigrateAsync(addon);
-    }
-    return provider?.shouldMigrate(addon) ?? false;
+    const provider = this._providerMap.get(addon.providerName ?? "");
+    return provider ? await provider.shouldMigrateAsync(addon) : false;
   }
 
   /** Registered in this build and not turned off by the user */

@@ -1,5 +1,14 @@
 import { GenericProviderError, SourceRemovedAddonError } from "wowup-lib-core";
 
+import {
+  AssetMissingError,
+  ErrorContainer,
+  GitHubFetchReleasesError,
+  GitHubFetchRepositoryError,
+  GitHubLimitError,
+  NoReleaseFoundError,
+  TocNotFoundError,
+} from "../../../src/common/errors";
 import { SerializedProviderError } from "../../../src/common/models/addon-provider";
 import { HttpError } from "../network/http-client";
 
@@ -31,9 +40,31 @@ export function serializeProviderError(error: unknown): SerializedProviderError 
     serialized.addonId = error.addonId;
   } else if (error instanceof GenericProviderError) {
     serialized.kind = "provider";
+  } else if (error instanceof GitHubLimitError) {
+    serialized.kind = "githubLimit";
+    serialized.rateLimit = {
+      max: error.rateLimitMax,
+      used: error.rateLimitUsed,
+      remaining: error.rateLimitRemaining,
+      reset: error.rateLimitReset,
+    };
+  } else if (error instanceof GitHubFetchReleasesError) {
+    serialized.kind = "githubFetchReleases";
+    serialized.addonId = error.addonId;
+  } else if (error instanceof GitHubFetchRepositoryError) {
+    serialized.kind = "githubFetchRepository";
+    serialized.addonId = error.addonId;
+  } else if (error instanceof AssetMissingError) {
+    serialized.kind = "assetMissing";
+    serialized.clientGroup = error.clientGroup;
+  } else if (error instanceof NoReleaseFoundError) {
+    serialized.kind = "noReleaseFound";
+  } else if (error instanceof TocNotFoundError) {
+    serialized.kind = "tocNotFound";
   }
 
-  if (error instanceof GenericProviderError) {
+  // wowup-lib-core's and src/common's error containers both carry these
+  if (error instanceof GenericProviderError || error instanceof ErrorContainer) {
     serialized.warningType = error.warningType;
     if (error.innerError) {
       serialized.innerError = serializeProviderError(error.innerError);

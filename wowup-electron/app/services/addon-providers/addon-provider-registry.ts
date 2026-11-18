@@ -10,12 +10,17 @@ import {
   AddonProviderMatchRequest,
   AddonProviderMethod,
 } from "../../../src/common/models/addon-provider";
+import { ProviderCache } from "../caching/provider-cache";
 import { HttpCircuitBreaker } from "../network/circuit-breaker";
+import { CurseForgeClient } from "../network/curseforge-client";
 import { FetchFn, HttpClient } from "../network/http-client";
 import { ProviderNetworkInterface } from "../network/provider-network-interface";
+import { CurseAddonProvider } from "./curse-addon-provider";
+import { GitHubAddonProvider } from "./github-addon-provider";
 import { serializeProviderError } from "./provider-errors";
 import { RaiderIoAddonProvider } from "./raiderio-provider";
 import { TukUiAddonProvider } from "./tukui-addon-provider";
+import { WagoAddonProvider } from "./wago-addon-provider";
 import { WowInterfaceAddonProvider } from "./wow-interface-addon-provider";
 import { WowUpAddonProvider } from "./wowup-addon-provider";
 import { WowUpCompanionAddonProvider } from "./wowup-companion-addon-provider";
@@ -32,16 +37,27 @@ export interface AddonProviderRegistryDeps {
   parseToc: (tocPath: string) => Promise<Toc>;
   getLatestDirUpdateTime: (dirPath: string) => Promise<number>;
   newId: () => string;
+  /** Reads the sensitive store: the GitHub personal access token, the Wago access key */
+  getSecret: (key: string) => unknown;
+  onSecretChange: (key: string, listener: (value: unknown) => void) => () => void;
+  /** Each Wago api token the ad page hands over */
+  onWagoToken: (listener: (token: string) => void) => () => void;
+  onPowerResume: (listener: () => void) => () => void;
+  /** Reloads the Wago ad page, which then hands over a fresh token */
+  reloadAd: () => void;
   log: { info(...args: unknown[]): void; error(...args: unknown[]): void };
 }
 
+/** The old CFV2Client's default; the Curse breaker's own timeout never applied to it */
+const CURSEFORGE_HTTP_TIMEOUT_MS = 30000;
+
 /**
- * The addon providers that run in main. The renderer reaches them through `RemoteAddonProvider`
- * stand-ins, one ipc call per provider method; the rest of the providers are still in the renderer
- * (see UI_DECOUPLING_PLAN.md, Phase 5b).
+ * Every addon provider, in the order the renderer looks them up. The renderer reaches them through
+ * `RemoteAddonProvider` stand-ins, one ipc call per provider method.
  */
 export class AddonProviderRegistry {
   private readonly _providers = new Map<string, AddonProvider>();
+  private readonly _wago: WagoAddonProvider | undefined;
 
   public constructor(private readonly _deps: AddonProviderRegistryDeps) {
     const { config, log } = _deps;
@@ -58,6 +74,11 @@ export class AddonProviderRegistry {
         cache,
         defaultHeaders,
       );
+
+    const breaker = (name: string, httpTimeoutMs: number) =>
+      new HttpCircuitBreaker(http, { name, resetTimeoutMs: config.defaultHttpResetTimeoutMs, httpTimeoutMs, log });
+    // Wago and Curse each had the renderer's CachingService; their keys don't overlap
+    const providerCache = new ProviderCache();
 
     const providers: AddonProvider[] = [
       new ZipAddonProvider({
@@ -79,9 +100,37 @@ export class AddonProviderRegistry {
           "X-WowUp-Platform": _deps.platform,
         }),
       ),
+    ];
+
+    if (config.wago.enabled) {
+      this._wago = new WagoAddonProvider({
+        cache: providerCache,
+        breaker: breaker("Wago_main", config.wagoHttpTimeoutMs),
+        getSecret: _deps.getSecret,
+        onSecretChange: _deps.onSecretChange,
+        onToken: _deps.onWagoToken,
+        onPowerResume: _deps.onPowerResume,
+        reloadAd: _deps.reloadAd,
+      });
+      providers.push(this._wago);
+    }
+
+    if (config.curseforge.enabled) {
+      providers.push(
+        new CurseAddonProvider(
+          providerCache,
+          breaker("Curse_main", config.curseforge.httpTimeoutMs),
+          new CurseForgeClient(http, config.curseforge.apiKey, CURSEFORGE_HTTP_TIMEOUT_MS),
+          config.featuredAddonsCacheTimeSec,
+        ),
+      );
+    }
+
+    providers.push(
       new TukUiAddonProvider(network("tukui_provider")),
       new WowInterfaceAddonProvider(network("wow_interface_provider")),
-    ];
+      new GitHubAddonProvider(http, _deps.getSecret),
+    );
 
     for (const provider of providers) {
       this._providers.set(provider.name, provider);
@@ -103,7 +152,13 @@ export class AddonProviderRegistry {
       authRequired: provider.authRequired,
       adRequired: provider.adRequired,
       providerNote: provider.providerNote,
+      adPageParams: provider.getAdPageParams(),
     }));
+  }
+
+  /** Stops the listeners the providers hold (the Wago token, store changes, resume) */
+  public dispose(): void {
+    this._wago?.dispose();
   }
 
   /** The providers here, in order, that claim the url or protocol link */

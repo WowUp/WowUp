@@ -1,14 +1,13 @@
 import { Injectable } from "@angular/core";
 import { MatDialog } from "@angular/material/dialog";
 import { fromEvent, Subject } from "rxjs";
-import { auditTime, filter, takeUntil } from "rxjs/operators";
+import { auditTime, takeUntil } from "rxjs/operators";
 import { AdPageOptions } from "wowup-lib-core";
 
 import { AppConfig } from "../../../environments/environment";
 import { AddonProviderFactory } from "../addons/addon.provider.factory";
 import { WagoAdsApiService } from "../api/wago-ads-api.service";
 import { SessionService } from "../session/session.service";
-import { UiMessageService } from "../ui-message/ui-message.service";
 import { ZoomService } from "../zoom/zoom.service";
 
 /**
@@ -41,7 +40,6 @@ export class WagoAdService {
     private readonly _adsApi: WagoAdsApiService,
     private readonly _sessionService: SessionService,
     private readonly _addonProviderService: AddonProviderFactory,
-    private readonly _uiMessageService: UiMessageService,
     private readonly _dialog: MatDialog,
     private readonly _zoomService: ZoomService,
   ) {
@@ -67,15 +65,6 @@ export class WagoAdService {
       .subscribe(() => this.reportBounds());
 
     this._resize$.pipe(takeUntil(this._destroy$), auditTime(16)).subscribe(() => this.reportBounds());
-
-    this._uiMessageService.message$
-      .pipe(
-        takeUntil(this._destroy$),
-        filter((msg) => msg.action === "ad-frame-reload"),
-      )
-      .subscribe(() => {
-        this._adsApi.reload().catch((e) => console.error("[ads] failed to reload ad view", e));
-      });
 
     this._sessionService.debugAdFrame$.pipe(takeUntil(this._destroy$)).subscribe(() => {
       this._adsApi.openDevTools().catch((e) => console.error("[ads] failed to open ad dev tools", e));

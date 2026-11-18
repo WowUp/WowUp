@@ -107,7 +107,6 @@ declare type RendererChannels =
   | "wago-ads-resurface-cmp"
   | "wago-ads-set-bounds"
   | "wago-ads-show-cmp"
-  | "wago-token-received"
   | "write-file"
   | "zip-file"
   | "zip-read-file"

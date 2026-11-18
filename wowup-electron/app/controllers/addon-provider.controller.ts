@@ -27,6 +27,7 @@ export class AddonProviderController implements IpcController {
   public register(): void {
     // A renderer reload sends this again; the fresh registry also drops the old one's caches and breakers
     ipcHandle(IPC_ADDON_PROVIDERS_INIT, (_evt, config: AddonProviderConfig): AddonProviderDescriptor[] => {
+      this._registry?.dispose();
       this._registry = this._createRegistry(config);
       return this._registry.getDescriptors();
     });
@@ -36,5 +37,10 @@ export class AddonProviderController implements IpcController {
     ipcHandle(IPC_ADDON_PROVIDERS_MATCH, (_evt, request: AddonProviderMatchRequest) =>
       this._registry ? this._registry.match(request) : [],
     );
+  }
+
+  public dispose(): void {
+    this._registry?.dispose();
+    this._registry = undefined;
   }
 }

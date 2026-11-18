@@ -1,21 +1,8 @@
-import { BehaviorSubject, firstValueFrom, from, Observable, of } from "rxjs";
-import { catchError, filter, first, tap, timeout } from "rxjs/operators";
-import { v4 as uuidv4 } from "uuid";
-import _ from "lodash";
-
-import { ADDON_PROVIDER_WAGO, IPC_POWER_MONITOR_RESUME, PREF_WAGO_ACCESS_KEY } from "../../common/constants";
-import { isValidExternalAddonId } from "../../common/addons/addon-rules";
-import { AppConfig } from "../../environments/environment";
-import { ElectronService } from "../services";
-import { CachingService } from "../services/caching/caching-service";
-import { CircuitBreakerWrapper, NetworkService } from "../services/network/network.service";
-import { TocService } from "../services/toc/toc.service";
-import { WarcraftService } from "../services/warcraft/warcraft.service";
-import { getEnumName, getWowClientGroupForType } from "wowup-lib-core";
-import { convertMarkdown } from "wowup-lib-core";
-import { HttpErrorResponse } from "@angular/common/http";
-import { UiMessageService } from "../services/ui-message/ui-message.service";
-import { SensitiveStorageService } from "../services/storage/sensitive-storage.service";
+import { randomUUID } from "crypto";
+import * as _ from "lodash";
+import { BehaviorSubject, firstValueFrom, Observable, of } from "rxjs";
+import { catchError, first, tap, timeout } from "rxjs/operators";
+import { convertMarkdown, getEnumName, getWowClientGroupForType } from "wowup-lib-core";
 import {
   Addon,
   AddonChannelType,
@@ -29,9 +16,31 @@ import {
   GetAllResult,
   WowClientGroup,
   WowClientType,
+  WowInstallation,
 } from "wowup-lib-core";
-import { WowInstallation } from "wowup-lib-core";
+
+import { getTocForGameType2, isValidExternalAddonId } from "../../../src/common/addons/addon-rules";
+import { ADDON_PROVIDER_WAGO, PREF_WAGO_ACCESS_KEY } from "../../../src/common/constants";
+import { ProviderCache } from "../caching/provider-cache";
+import { HttpCircuitBreaker } from "../network/circuit-breaker";
+import { HttpError } from "../network/http-client";
 import { SourceRemovedAddonError } from "wowup-lib-core";
+
+/** What the Wago provider needs from the rest of main */
+export interface WagoAddonProviderDeps {
+  cache: ProviderCache;
+  breaker: HttpCircuitBreaker;
+  /** Reads the sensitive store, where the options page saves the access key */
+  getSecret: (key: string) => unknown;
+  /** Calls back with the key's new value when the sensitive store changes it; returns the unsubscribe */
+  onSecretChange: (key: string, listener: (value: unknown) => void) => () => void;
+  /** Each api token the ad page hands over (wago-handler); returns the unsubscribe */
+  onToken: (listener: (token: string) => void) => () => void;
+  /** The system woke up; returns the unsubscribe */
+  onPowerResume: (listener: () => void) => () => void;
+  /** Reloads the ad page, which hands over a fresh token */
+  reloadAd: () => void;
+}
 
 declare type WagoGameVersion = "retail" | "classic" | "bc" | "wotlk" | "cata" | "mop" | "forever";
 declare type WagoStability = "stable" | "beta" | "alpha";
@@ -167,7 +176,9 @@ const WAGO_DETAILS_CACHE_TIME_SEC = 60;
 const WAGO_FEATURED_ADDONS_CACHE_TIME_SEC = 60;
 
 export class WagoAddonProvider extends AddonProvider {
-  private readonly _circuitBreaker: CircuitBreakerWrapper;
+  private readonly _circuitBreaker: HttpCircuitBreaker;
+  private readonly _cachingService: ProviderCache;
+  private readonly _unsubscribes: (() => void)[] = [];
 
   private _apiTokenSrc = new BehaviorSubject<string>("");
   private _wagoSecret = "";
@@ -184,61 +195,45 @@ export class WagoAddonProvider extends AddonProvider {
   public allowReinstall = true;
   public allowChannelChange = true;
 
-  public constructor(
-    private _electronService: ElectronService,
-    private _cachingService: CachingService,
-    private _warcraftService: WarcraftService,
-    private _tocService: TocService,
-    private _uiMessageService: UiMessageService,
-    private _sensitiveStorageService: SensitiveStorageService,
-    _networkService: NetworkService,
-  ) {
+  public constructor(private readonly _deps: WagoAddonProviderDeps) {
     super();
 
-    this._circuitBreaker = _networkService.getCircuitBreaker(
-      `${this.name}_main`,
-      AppConfig.defaultHttpResetTimeoutMs,
-      AppConfig.wagoHttpTimeoutMs,
-    );
+    this._circuitBreaker = _deps.breaker;
+    this._cachingService = _deps.cache;
 
-    this._electronService.on("wago-token-received", this.onWagoTokenReceived);
+    this._unsubscribes.push(_deps.onToken(this.onWagoTokenReceived));
 
     // Watch for the change of the wago secret in the store
-    this._sensitiveStorageService.change$
-      .pipe(filter((change) => change.key == PREF_WAGO_ACCESS_KEY))
-      .subscribe((change) => {
-        console.log("[wago] wago secret set", change);
-        if (this.isValidToken(change.value as string)) {
-          this._wagoSecret = change.value;
+    this._unsubscribes.push(
+      _deps.onSecretChange(PREF_WAGO_ACCESS_KEY, (value) => {
+        console.log("[wago] wago secret changed");
+        if (typeof value === "string" && this.isValidToken(value)) {
+          this._wagoSecret = value;
           this._circuitBreaker.close();
         } else {
           this._wagoSecret = "";
         }
-      });
+      }),
+    );
 
     // Initial load of the wago secret
-    from(this._sensitiveStorageService.getAsync(PREF_WAGO_ACCESS_KEY))
-      .pipe(
-        first(),
-        tap((accessKey) => {
-          const validToken = this.isValidToken(accessKey);
-          this.adRequired = !validToken;
-          if (validToken) {
-            this._wagoSecret = accessKey;
-            console.debug("[wago] secret key set");
-          }
-        }),
-        catchError((e) => {
-          console.error("[wago] failed to load secret key", e);
-          return of(undefined);
-        }),
-      )
-      .subscribe();
+    const accessKey = _deps.getSecret(PREF_WAGO_ACCESS_KEY);
+    const validToken = typeof accessKey === "string" && this.isValidToken(accessKey);
+    this.adRequired = !validToken;
+    if (validToken) {
+      this._wagoSecret = accessKey;
+      console.debug("[wago] secret key set");
+    }
 
     // clear the token on resume so we wait for a new one
-    this._electronService.powerMonitor$.pipe(filter((state) => state === IPC_POWER_MONITOR_RESUME)).subscribe(() => {
-      this._apiTokenSrc.next("");
-    });
+    this._unsubscribes.push(_deps.onPowerResume(() => this._apiTokenSrc.next("")));
+  }
+
+  /** Stops listening for tokens, store changes and resume */
+  public dispose(): void {
+    for (const unsubscribe of this._unsubscribes.splice(0)) {
+      unsubscribe();
+    }
   }
 
   public isValidAddonId(addonId: string): boolean {
@@ -271,7 +266,7 @@ export class WagoAddonProvider extends AddonProvider {
         return;
       }
 
-      const toc = this._tocService.getTocForGameType2(addonFolder.name, addonFolder.tocs, installation.clientType);
+      const toc = getTocForGameType2(addonFolder.name, addonFolder.tocs, installation.clientType);
       if (toc === undefined) {
         console.warn("[wago]: getTocForGameType2 returned undefined, " + addonFolder.name);
         return;
@@ -451,9 +446,9 @@ export class WagoAddonProvider extends AddonProvider {
     try {
       return await action.call(this, null);
     } catch (err) {
-      if (err instanceof HttpErrorResponse) {
+      if (err instanceof HttpError) {
         console.error("HttpErr", err);
-        this._uiMessageService.sendMessage("ad-frame-reload");
+        this._deps.reloadAd();
       }
       throw err;
     }
@@ -695,7 +690,7 @@ export class WagoAddonProvider extends AddonProvider {
     const downloadUrl = validVersion.link ?? "";
 
     return {
-      id: uuidv4(),
+      id: randomUUID(),
       author: authors,
       name,
       channelType: validVersion.addonChannelType,
@@ -783,7 +778,7 @@ export class WagoAddonProvider extends AddonProvider {
     }
   }
 
-  private onWagoTokenReceived = (evt, token: string) => {
+  private onWagoTokenReceived = (token: string) => {
     // No line for the routine case: a token arrives on every ad refresh, and "[wago] token ready"
     // already confirms the token is good when it is actually used.
     if (!this.isValidToken(token)) {

@@ -11,6 +11,8 @@ import {
   WowInstallation,
 } from "wowup-lib-core";
 
+import { PREF_WAGO_ACCESS_KEY } from "../../../src/common/constants";
+import { AssetMissingError, GitHubLimitError } from "../../../src/common/errors";
 import { AddonProviderCallResult, SerializedProviderError } from "../../../src/common/models/addon-provider";
 import { HttpError } from "../network/http-client";
 import { AddonProviderRegistry } from "./addon-provider-registry";
@@ -20,8 +22,23 @@ const silentLog = { info: () => undefined, error: () => undefined };
 
 const installation = { id: "inst-1", clientType: WowClientType.Retail, location: "C:/wow" } as WowInstallation;
 
-function createRegistry(fetchResponse: (url: string, init: RequestInit) => Response) {
+interface RegistryOptions {
+  wago?: boolean;
+  curseforge?: boolean;
+  secrets?: Record<string, string>;
+}
+
+function createRegistry(
+  fetchResponse: (url: string, init: RequestInit) => Response,
+  { wago = false, curseforge = false, secrets = {} }: RegistryOptions = {},
+) {
   const requests: { url: string; init: RequestInit }[] = [];
+  const listeners = {
+    secret: new Map<string, (value: unknown) => void>(),
+    token: undefined as ((token: string) => void) | undefined,
+    resume: undefined as (() => void) | undefined,
+  };
+  let adReloads = 0;
   const registry = new AddonProviderRegistry({
     config: {
       wowUpHubUrl: "https://hub.test",
@@ -29,6 +46,10 @@ function createRegistry(fetchResponse: (url: string, init: RequestInit) => Respo
       defaultHttpTimeoutMs: 1000,
       defaultHttpResetTimeoutMs: 1000,
       wowUpHubHttpTimeoutMs: 1000,
+      wagoHttpTimeoutMs: 1000,
+      featuredAddonsCacheTimeSec: 30,
+      wago: { enabled: wago },
+      curseforge: { enabled: curseforge, apiKey: "cf-key", httpTimeoutMs: 1000 },
     },
     fetch: (url, init) => {
       requests.push({ url, init });
@@ -41,10 +62,26 @@ function createRegistry(fetchResponse: (url: string, init: RequestInit) => Respo
     parseToc: () => Promise.reject(new Error("no tocs here")),
     getLatestDirUpdateTime: () => Promise.resolve(Date.parse("2026-10-01")),
     newId: () => "new-id",
+    getSecret: (key) => secrets[key],
+    onSecretChange: (key, listener) => {
+      listeners.secret.set(key, listener);
+      return () => listeners.secret.delete(key);
+    },
+    onWagoToken: (listener) => {
+      listeners.token = listener;
+      return () => (listeners.token = undefined);
+    },
+    onPowerResume: (listener) => {
+      listeners.resume = listener;
+      return () => (listeners.resume = undefined);
+    },
+    reloadAd: () => adReloads++,
     log: silentLog,
   });
-  return { registry, requests };
+  return { registry, requests, listeners, adReloads: () => adReloads };
 }
+
+const WAGO_TOKEN = "a-wago-api-token-longer-than-twenty";
 
 function expectOk(result: AddonProviderCallResult): unknown {
   if ("error" in result) {
@@ -75,7 +112,7 @@ describe("AddonProviderRegistry", () => {
 
     const names = registry.getDescriptors().map((d) => d.name);
 
-    expect(names).to.deep.equal(["Zip", "RaiderIO", "WowUpCompanion", "WowUpHub", "TukUI", "WowInterface"]);
+    expect(names).to.deep.equal(["Zip", "RaiderIO", "WowUpCompanion", "WowUpHub", "TukUI", "WowInterface", "GitHub"]);
     const hub = registry.getDescriptors().find((d) => d.name === "WowUpHub");
     expect(hub).to.include({ enabled: true, canBatchFetch: true, allowEdit: true });
   });
@@ -176,6 +213,114 @@ describe("AddonProviderRegistry", () => {
   });
 });
 
+describe("AddonProviderRegistry with Wago and CurseForge", () => {
+  let consoleLog: typeof console.log;
+  let consoleError: typeof console.error;
+  beforeEach(() => {
+    consoleLog = console.log;
+    consoleError = console.error;
+    console.log = () => undefined;
+    console.error = () => undefined;
+  });
+  afterEach(() => {
+    console.log = consoleLog;
+    console.error = consoleError;
+  });
+
+  it("should put them between the hub and TukUI, as the renderer did", () => {
+    const { registry } = createRegistry(() => new Response("[]"), { wago: true, curseforge: true });
+
+    expect(registry.getDescriptors().map((d) => d.name)).to.deep.equal([
+      "Zip",
+      "RaiderIO",
+      "WowUpCompanion",
+      "WowUpHub",
+      "Wago",
+      "Curse",
+      "TukUI",
+      "WowInterface",
+      "GitHub",
+    ]);
+  });
+
+  it("should describe the Wago ad, required unless an access key is saved", () => {
+    const withoutKey = createRegistry(() => new Response("[]"), { wago: true }).registry;
+    const withKey = createRegistry(() => new Response("[]"), {
+      wago: true,
+      secrets: { [PREF_WAGO_ACCESS_KEY]: WAGO_TOKEN },
+    }).registry;
+
+    const wago = withoutKey.getDescriptors().find((d) => d.name === "Wago");
+    expect(wago?.adRequired).to.equal(true);
+    expect(wago?.adPageParams?.pageUrl).to.equal("https://addons.wago.io/wowup_ad_nitro");
+    expect(withKey.getDescriptors().find((d) => d.name === "Wago")?.adRequired).to.equal(false);
+  });
+
+  it("should call Wago with the token the ad page handed over", async () => {
+    const { registry, requests, listeners } = createRegistry(
+      () => new Response(JSON.stringify({ description: "hello" })),
+      { wago: true },
+    );
+    listeners.token?.(WAGO_TOKEN);
+
+    const value = expectOk(
+      await registry.call({ providerName: "Wago", method: "getDescription", args: [installation, "abc"] }),
+    );
+
+    expect(value).to.contain("hello");
+    expect(requests[0].url).to.equal("https://addons.wago.io/api/external/addons/abc");
+    expect(requests[0].init.headers).to.include({ Authorization: "Bearer " + WAGO_TOKEN });
+  });
+
+  it("should switch Wago to an access key saved while running", async () => {
+    const { registry, requests, listeners } = createRegistry(() => new Response(JSON.stringify({})), {
+      wago: true,
+    });
+    listeners.secret.get(PREF_WAGO_ACCESS_KEY)?.("a-saved-access-key-longer-than-twenty");
+
+    await registry.call({ providerName: "Wago", method: "getDescription", args: [installation, "abc"] });
+
+    expect(requests[0].init.headers).to.include({ Authorization: "Bearer a-saved-access-key-longer-than-twenty" });
+  });
+
+  it("should reload the ad page when a Wago request fails", async () => {
+    const { registry, listeners, adReloads } = createRegistry(() => new Response("{}", { status: 401 }), {
+      wago: true,
+    });
+    listeners.token?.(WAGO_TOKEN);
+
+    await registry.call({ providerName: "Wago", method: "getDescription", args: [installation, "abc"] });
+
+    expect(adReloads()).to.equal(1);
+  });
+
+  it("should stop listening when disposed", () => {
+    const { registry, listeners } = createRegistry(() => new Response("[]"), { wago: true });
+
+    registry.dispose();
+
+    expect(listeners.token).to.equal(undefined);
+    expect(listeners.resume).to.equal(undefined);
+    expect(listeners.secret.size).to.equal(0);
+  });
+
+  it("should send the CurseForge api key with each request and with downloads", async () => {
+    const { registry, requests } = createRegistry(() => new Response(JSON.stringify({ data: "<p>about</p>" })), {
+      curseforge: true,
+    });
+
+    const description = expectOk(
+      await registry.call({ providerName: "Curse", method: "getDescription", args: [installation, "1001"] }),
+    );
+    const auth = expectOk(await registry.call({ providerName: "Curse", method: "getDownloadAuth", args: [] }));
+
+    expect(description).to.equal("<p>about</p>");
+    expect(requests[0].url).to.equal("https://api.curseforge.com/v1/mods/1001/description");
+    expect(requests[0].init.headers).to.include({ "x-api-key": "cf-key" });
+    expect(auth).to.deep.equal({ headers: { "X-Api-Key": "cf-key" } });
+  });
+});
+
 describe("serializeProviderError", () => {
   it("should keep what callers branch on for each kind of error", () => {
     const breakerOpen = Object.assign(new Error("Breaker is open"), { code: "EOPENBREAKER" });
@@ -195,5 +340,13 @@ describe("serializeProviderError", () => {
       serializeProviderError(new GenericProviderError(undefined, "bad", AddonWarningType.NoProviderFiles)),
     ).to.include({ kind: "provider", message: "bad", warningType: AddonWarningType.NoProviderFiles });
     expect(serializeProviderError("plain")).to.deep.equal({ kind: "error", name: "Error", message: "plain" });
+    expect(serializeProviderError(new GitHubLimitError(60, 60, 0, 1700000000))).to.deep.include({
+      kind: "githubLimit",
+      rateLimit: { max: 60, used: 60, remaining: 0, reset: 1700000000 },
+    });
+    expect(serializeProviderError(new AssetMissingError("https://github.com/a/b", 2))).to.include({
+      kind: "assetMissing",
+      clientGroup: 2,
+    });
   });
 });

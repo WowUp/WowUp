@@ -27,7 +27,6 @@ import { AddonVersionMismatch, AutoUpdateResult } from "../../models/wowup/addon
 
 import * as AddonUtils from "../../utils/addon.utils";
 import { getEnumName, getGameVersionList, WowInstallation } from "wowup-lib-core";
-import { RemoteAddonProvider } from "../../addon-providers/remote-addon-provider";
 import * as SearchResults from "../../utils/search-result.utils";
 
 import { AnalyticsService } from "../analytics/analytics.service";
@@ -43,7 +42,6 @@ import { AddonSyncApiService } from "../api/addon-sync-api.service";
 import { AddonInstallApiService } from "../api/addon-install-api.service";
 import { containsOwnExternalId, setExternalIds } from "../../../common/addons/addon-rules";
 import { AddonSyncFailure } from "../../../common/models/addon-scan";
-import { CurseAddonProvider } from "../../addon-providers/curse-addon-provider";
 import {
   Addon,
   AddonCategory,
@@ -847,12 +845,10 @@ export class AddonService {
   }
 
   public async logDebugData(): Promise<void> {
-    const curseProvider = this._addonProviderService.getProvider<CurseAddonProvider>(ADDON_PROVIDER_CURSEFORGE);
-    const hubProvider = this._addonProviderService.getProvider<RemoteAddonProvider>(ADDON_PROVIDER_HUB);
-    if (curseProvider === undefined) {
+    if (!this._addonProviderService.hasProvider(ADDON_PROVIDER_CURSEFORGE)) {
       throw new Error("curse provider not found");
     }
-    if (hubProvider === undefined) {
+    if (!this._addonProviderService.hasProvider(ADDON_PROVIDER_HUB)) {
       throw new Error("hub provider not found");
     }
 

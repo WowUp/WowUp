@@ -131,7 +131,7 @@ Pattern for each phase:
   own id from `externalIds` and logged "Invalid provider id WowUpHub|…") and
   `reconcileExternalIds`; the install service's duplicate copy of the external-id logic is gone.
 
-## Phase 5b — Addon Providers 🚧 in progress (step 1 of 3 done)
+## Phase 5b — Addon Providers 🚧 in progress (steps 1 and 2 of 3 done)
 
 Done in three steps, each shippable on its own.
 
@@ -171,13 +171,26 @@ Done in three steps, each shippable on its own.
       live-API tests became `*.live-test.ts`, run with `npm run test:main:live` and kept out of
       `npm run test:main`, which stays offline.
 
-### Step 2 — the providers with tokens ⏳
+### Step 2 — the providers with tokens ✅
 
-- Curse (its `curseforge-v2` client uses axios, which in main would skip the system proxy: route it
-  through `net.fetch` or decide that's acceptable), GitHub (personal access token from the sensitive
-  store, which is already in main), Wago (token straight from `wago-handler`, the power-resume reset
-  on main's `powerMonitor`, `ad-frame-reload` sent to the renderer as an event).
-- After this the renderer factory holds only stand-ins.
+- [x] GitHub runs in main on `HttpClient`; it reads the personal access token from the sensitive
+      store directly. `HttpError` now carries the response headers for its rate-limit check.
+- [x] Curse runs in main. `CurseForgeClient` (`app/services/network/`) replaces curseforge-v2's
+      `CFV2Client`, which runs on axios and so would skip the system proxy in main; it covers the 8
+      endpoints the provider uses and, like the old client, returns http errors as results. Only the
+      package's types and enums are still used.
+- [x] Wago runs in main. It takes the ad page's token from `wago-handler.onToken`, watches the
+      sensitive store for the access key (`onDidChange`), clears its token on `powerMonitor`
+      resume, and reloads the ad view itself on a failed request, so the renderer's
+      `UiMessageService` (`ad-frame-reload`) is gone. `AddonProviderRegistry.dispose` drops
+      those listeners when the renderer re-inits or the window closes.
+- [x] The renderer still sends the config (now also the Wago and CurseForge settings) in
+      `IPC_ADDON_PROVIDERS_INIT`. Descriptors carry each provider's ad page
+      (`getAdPageParams`).
+- [x] Errors: the GitHub and install errors (`GitHubLimitError`, the GitHub fetch errors,
+      `AssetMissingError`, `NoReleaseFoundError`, `TocNotFoundError`) moved to
+      `src/common/errors/` so main can throw them; they cross ipc and are rebuilt like the others.
+- [x] The renderer factory holds only stand-ins, in main's order; URL and protocol lookups ask main.
 
 ### Step 3 — scan and install join up in main ⏳
 

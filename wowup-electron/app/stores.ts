@@ -24,6 +24,11 @@ export function getPreferenceStore(): Store {
   return preferenceStore;
 }
 
+/** Tokens and keys: the GitHub personal access token, the Wago access key */
+export function getSensitiveStore(): Store {
+  return sensitiveStore;
+}
+
 export function getAddonStore(): Store {
   return addonStore;
 }

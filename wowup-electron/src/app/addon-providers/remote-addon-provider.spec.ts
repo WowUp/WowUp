@@ -3,17 +3,20 @@ import {
   Addon,
   AddonChannelType,
   AddonFolder,
-  AddonProvider,
   AddonWarningType,
   GenericProviderError,
   SourceRemovedAddonError,
+  WowClientGroup,
   WowClientType,
   WowInstallation,
 } from "wowup-lib-core";
 
+import { AssetMissingError, GitHubLimitError } from "../../common/errors";
+
 import { AddonProviderDescriptor } from "../../common/models/addon-provider";
 import { AddonProviderApiService } from "../services/api/addon-provider-api.service";
 import { AddonProviderFactory } from "../services/addons/addon.provider.factory";
+import { WowUpService } from "../services/wowup/wowup.service";
 import { RemoteAddonProvider, reviveProviderError } from "./remote-addon-provider";
 
 const installation = { id: "inst-1", clientType: WowClientType.Retail } as WowInstallation;
@@ -126,45 +129,84 @@ describe("reviveProviderError", () => {
 
     expect((error as Error & { code?: string }).code).toBe("EOPENBREAKER");
   });
-});
 
-describe("AddonProviderFactory lookups", () => {
-  let api: jasmine.SpyObj<AddonProviderApiService>;
-  let factory: AddonProviderFactory;
-  let local: jasmine.SpyObj<AddonProvider>;
-  let remote: RemoteAddonProvider;
+  it("should rebuild GitHub rate limit errors with their limits", () => {
+    const error = reviveProviderError({
+      kind: "githubLimit",
+      name: "GitHubLimitError",
+      message: "",
+      rateLimit: { max: 60, used: 60, remaining: 0, reset: 1700000000 },
+    });
 
-  beforeEach(() => {
-    api = jasmine.createSpyObj<AddonProviderApiService>("AddonProviderApiService", ["call", "match", "init"]);
-    factory = new AddonProviderFactory(null, null, null, null, null, null, null, null, null, null, api);
-    remote = new RemoteAddonProvider(descriptor({ name: "Zip" }), api);
-    local = jasmine.createSpyObj<AddonProvider>("GitHub", ["isValidAddonUri", "isValidProtocol", "shouldMigrate"]);
-    local.name = "GitHub";
-    local.enabled = true;
-    (factory as unknown as { _providerMap: Map<string, AddonProvider> })._providerMap = new Map<string, AddonProvider>([
-      ["Zip", remote],
-      ["GitHub", local],
-    ]);
+    expect(error).toBeInstanceOf(GitHubLimitError);
+    expect((error as GitHubLimitError).rateLimitReset).toBe(1700000000);
   });
 
-  it("should keep the providers' order when main and the renderer both claim a url", async () => {
-    api.match.and.resolveTo(["Zip"]);
-    local.isValidAddonUri.and.returnValue(true);
+  it("should rebuild missing asset errors with their client group", () => {
+    const error = reviveProviderError({
+      kind: "assetMissing",
+      name: "AssetMissingError",
+      message: "https://github.com/a/b",
+      clientGroup: WowClientGroup.Classic,
+    });
+
+    expect(error).toBeInstanceOf(AssetMissingError);
+    expect((error as AssetMissingError).clientGroup).toBe(WowClientGroup.Classic);
+  });
+});
+
+describe("AddonProviderFactory", () => {
+  let api: jasmine.SpyObj<AddonProviderApiService>;
+  let wowupService: jasmine.SpyObj<WowUpService>;
+  let factory: AddonProviderFactory;
+
+  beforeEach(async () => {
+    api = jasmine.createSpyObj<AddonProviderApiService>("AddonProviderApiService", ["call", "match", "init"]);
+    api.init.and.resolveTo([
+      descriptor({ name: "Zip" }),
+      descriptor({ name: "Wago", adRequired: true, adPageParams: { pageUrl: "https://ads.test" } }),
+      descriptor({ name: "GitHub" }),
+    ]);
+    wowupService = jasmine.createSpyObj<WowUpService>("WowUpService", ["getAddonProviderState"]);
+    wowupService.getAddonProviderState.and.callFake((name: string) =>
+      Promise.resolve(name === "Wago" ? { providerName: name, enabled: false, canEdit: true } : undefined),
+    );
+    factory = new AddonProviderFactory(wowupService, null, api);
+    await factory.loadProviders();
+  });
+
+  it("should build a stand-in for each provider main has, in the same order", () => {
+    expect(factory.getProviderNames()).toEqual(["Zip", "Wago", "GitHub"]);
+    expect(factory.getProvider("GitHub")).toBeInstanceOf(RemoteAddonProvider);
+  });
+
+  it("should keep the provider state the user saved", () => {
+    expect(factory.isProviderAvailable("Wago")).toBeFalse();
+    expect(factory.isProviderAvailable("Zip")).toBeTrue();
+  });
+
+  it("should serve the ad page params main described", () => {
+    expect(factory.getProvider("Wago")?.getAdPageParams()).toEqual({ pageUrl: "https://ads.test" });
+  });
+
+  it("should take the first provider, in order, that main says claims a url", async () => {
+    api.match.and.resolveTo(["GitHub", "Zip"]);
 
     const provider = await factory.getAddonProviderForUri(new URL("https://github.com/a/b/releases/x.zip"));
 
-    expect(provider).toBe(remote);
+    expect(provider?.name).toBe("Zip");
     expect(api.match.calls.mostRecent().args[0]).toEqual({
       kind: "uri",
       value: "https://github.com/a/b/releases/x.zip",
     });
   });
 
-  it("should fall through to a renderer provider main's don't claim", async () => {
-    api.match.and.resolveTo([]);
-    local.isValidAddonUri.and.returnValue(true);
+  it("should skip turned off providers for protocol links", async () => {
+    api.match.and.resolveTo(["Wago", "GitHub"]);
 
-    expect(await factory.getAddonProviderForUri(new URL("https://github.com/a/b"))).toBe(local);
+    const provider = await factory.getAddonProviderForProtocol("wago-app://addons/abc");
+
+    expect(provider?.name).toBe("GitHub");
   });
 
   it("should ask main whether its provider wants an addon migrated", async () => {

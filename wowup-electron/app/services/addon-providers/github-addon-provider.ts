@@ -1,32 +1,34 @@
 import * as _ from "lodash";
 import { firstValueFrom, from, mergeMap, toArray } from "rxjs";
+import {
+  AddonChannelType,
+  AddonProvider,
+  AddonSearchResult,
+  AddonSearchResultFile,
+  convertMarkdown,
+  DownloadAuth,
+  GetAllResult,
+  getWowClientGroupForType,
+  GitHubAsset,
+  GitHubRelease,
+  GitHubRepository,
+  SearchByUrlResult,
+  SourceRemovedAddonError,
+  WowClientType,
+  WowInstallation,
+} from "wowup-lib-core";
 
-import { HttpClient, HttpErrorResponse, HttpHeaders } from "@angular/common/http";
-
-import { ADDON_PROVIDER_GITHUB, PREF_GITHUB_PERSONAL_ACCESS_TOKEN } from "../../common/constants";
-import { isValidExternalAddonId } from "../../common/addons/addon-rules";
+import { isValidExternalAddonId } from "../../../src/common/addons/addon-rules";
+import { ADDON_PROVIDER_GITHUB, PREF_GITHUB_PERSONAL_ACCESS_TOKEN } from "../../../src/common/constants";
 import {
   AssetMissingError,
   GitHubError,
   GitHubFetchReleasesError,
   GitHubFetchRepositoryError,
   GitHubLimitError,
-} from "../errors";
-import { convertMarkdown, getWowClientGroupForType } from "wowup-lib-core";
-import { strictFilterBy } from "../utils/array.utils";
-import { SensitiveStorageService } from "../services/storage/sensitive-storage.service";
-import {
-  AddonChannelType,
-  AddonProvider,
-  AddonSearchResult,
-  AddonSearchResultFile,
-  DownloadAuth,
-  GetAllResult,
-  SearchByUrlResult,
-  WowClientType,
-} from "wowup-lib-core";
-import { GitHubAsset, GitHubRelease, GitHubRepository, WowInstallation } from "wowup-lib-core";
-import { SourceRemovedAddonError } from "wowup-lib-core";
+} from "../../../src/common/errors";
+import { strictFilterBy } from "../../../src/common/utils/array.utils";
+import { HttpClient, HttpError } from "../network/http-client";
 
 type MetadataFlavor = "bcc" | "classic" | "mainline" | "wrath" | "cata" | "mists" | "forever";
 
@@ -77,24 +79,25 @@ export class GitHubAddonProvider extends AddonProvider {
   public enabled = true;
 
   public constructor(
-    private _httpClient: HttpClient,
-    private _sensitiveStorageService: SensitiveStorageService,
+    private readonly _http: HttpClient,
+    /** Reads the sensitive store, where the options page saves the personal access token */
+    private readonly _getSecret: (key: string) => unknown,
   ) {
     super();
   }
 
-  public async getDownloadAuth(): Promise<DownloadAuth | undefined> {
+  public getDownloadAuth(): Promise<DownloadAuth | undefined> {
     // The GitHub REST API asset endpoint (asset.url) only streams the binary when the
     // request carries Accept: application/octet-stream; without it, it returns 200 with a
     // small JSON metadata payload that then gets saved as the addon zip and fails to unzip.
     // Send the header unconditionally so anonymous/public-repo downloads work, and add the
     // PAT Authorization header on top when one is configured (required for private repos).
-    const headers = await this.getAuthorizationHeader();
+    const headers = this.getAuthorizationHeader();
     headers.Accept = "application/octet-stream";
 
-    return {
+    return Promise.resolve({
       headers,
-    };
+    });
   }
 
   public async getAll(installation: WowInstallation, addonIds: string[]): Promise<GetAllResult> {
@@ -345,7 +348,7 @@ export class GitHubAddonProvider extends AddonProvider {
       throw new Error("No metadata asset found");
     }
 
-    const hasPat = await this.hasPersonalAccessKey();
+    const hasPat = this.hasPersonalAccessKey();
     const url = metadataAsset.browser_download_url || metadataAsset.url;
 
     return await this.getWithRateLimit<ReleaseMeta>(url, hasPat);
@@ -549,7 +552,7 @@ export class GitHubAddonProvider extends AddonProvider {
     return this.getWithRateLimit<GitHubRepository>(url);
   }
 
-  private handleRateLimitError(response: HttpErrorResponse) {
+  private handleRateLimitError(response: HttpError) {
     if (response.status === 403) {
       const rateLimitMax = this.getIntHeader(response.headers, HEADER_RATE_LIMIT_MAX);
       const rateLimitUsed = this.getIntHeader(response.headers, HEADER_RATE_LIMIT_USED);
@@ -562,23 +565,23 @@ export class GitHubAddonProvider extends AddonProvider {
     }
   }
 
-  private handleNotFoundError(response: HttpErrorResponse) {
+  private handleNotFoundError(response: HttpError) {
     if (response.status === 404) {
       throw new SourceRemovedAddonError("", response);
     }
   }
 
-  private getIntHeader(headers: HttpHeaders, key: string) {
+  private getIntHeader(headers: Headers, key: string) {
     return parseInt(headers.get(key) ?? "", 10);
   }
 
-  private async hasPersonalAccessKey(): Promise<boolean> {
-    const pat = await this._sensitiveStorageService.getAsync(PREF_GITHUB_PERSONAL_ACCESS_TOKEN);
+  private hasPersonalAccessKey(): boolean {
+    const pat = this._getSecret(PREF_GITHUB_PERSONAL_ACCESS_TOKEN);
     return typeof pat === "string" && pat.length > 0;
   }
 
-  private async getAuthorizationHeader(): Promise<{ [param: string]: string }> {
-    const personalAccessToken = await this._sensitiveStorageService.getAsync(PREF_GITHUB_PERSONAL_ACCESS_TOKEN);
+  private getAuthorizationHeader(): { [param: string]: string } {
+    const personalAccessToken = this._getSecret(PREF_GITHUB_PERSONAL_ACCESS_TOKEN);
     const headers: { [param: string]: string } = {};
     if (typeof personalAccessToken === "string" && personalAccessToken.length > 0) {
       headers.Authorization = `Bearer ${personalAccessToken}`;
@@ -589,15 +592,15 @@ export class GitHubAddonProvider extends AddonProvider {
 
   private async getWithRateLimit<T>(url: URL | string, expectBinary = false): Promise<T> {
     try {
-      const headers = await this.getAuthorizationHeader();
+      const headers = this.getAuthorizationHeader();
 
       if (expectBinary) {
         headers.Accept = "application/octet-stream";
       }
 
-      return await firstValueFrom(this._httpClient.get<T>(url.toString(), { headers }));
+      return await this._http.getJson<T>(url, headers);
     } catch (e) {
-      if (e instanceof HttpErrorResponse) {
+      if (e instanceof HttpError) {
         this.handleRateLimitError(e);
         this.handleNotFoundError(e);
       }

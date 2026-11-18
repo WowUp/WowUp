@@ -15,6 +15,8 @@ export class HttpError extends Error {
     public readonly status: number,
     public readonly url: string,
     public readonly statusText: string,
+    /** The response headers, e.g. for GitHub's rate-limit headers */
+    public readonly headers: Headers = new Headers(),
   ) {
     super(`Http failure response for ${url}: ${status} ${statusText}`);
     this.name = "HttpError";
@@ -91,7 +93,7 @@ export class HttpClient {
     this._deps.log.info(`[${method}] ${urlStr} ${response.status} ${this._now() - start}ms`);
 
     if (!response.ok) {
-      throw new HttpError(response.status, urlStr, response.statusText);
+      throw new HttpError(response.status, urlStr, response.statusText, response.headers);
     }
     return response;
   }

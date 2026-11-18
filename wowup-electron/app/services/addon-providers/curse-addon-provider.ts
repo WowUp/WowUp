@@ -1,6 +1,7 @@
-import * as cfv2 from "curseforge-v2";
+import { randomUUID } from "crypto";
+// The api types and enums only: the package's client runs on axios (see CurseForgeClient)
+import * as cfv2 from "curseforge-v2/lib/curseforge-api-v2";
 import * as _ from "lodash";
-import { v4 as uuidv4 } from "uuid";
 import {
   Addon,
   AddonCategory,
@@ -33,14 +34,13 @@ import {
   ADDON_PROVIDER_CURSEFORGE,
   NO_LATEST_SEARCH_RESULT_FILES_ERROR,
   NO_SEARCH_RESULTS_ERROR,
-} from "../../common/constants";
-import { isValidExternalAddonId } from "../../common/addons/addon-rules";
-import { AppConfig } from "../../environments/environment";
-import { CachingService } from "../services/caching/caching-service";
-import { CircuitBreakerWrapper, NetworkService } from "../services/network/network.service";
-import { TocService } from "../services/toc/toc.service";
-import { strictFilter } from "../utils/array.utils";
-import { TocNotFoundError } from "../errors";
+} from "../../../src/common/constants";
+import { getTocForGameType2, isValidExternalAddonId } from "../../../src/common/addons/addon-rules";
+import { TocNotFoundError } from "../../../src/common/errors";
+import { strictFilter } from "../../../src/common/utils/array.utils";
+import { ProviderCache } from "../caching/provider-cache";
+import { HttpCircuitBreaker } from "../network/circuit-breaker";
+import { CurseForgeClient } from "../network/curseforge-client";
 
 interface ProtocolData {
   addonId: number;
@@ -54,7 +54,6 @@ interface ScanMatchPair {
 }
 
 const CHANGELOG_CACHE_TTL_SEC = 30 * 60;
-const FEATURED_ADDONS_CACHE_TTL_SEC = AppConfig.featuredAddonsCacheTimeSec;
 
 const GAME_TYPE_LISTS = [
   {
@@ -100,10 +99,6 @@ const GAME_TYPE_LISTS = [
 ];
 
 export class CurseAddonProvider extends AddonProvider {
-  private readonly _circuitBreaker: CircuitBreakerWrapper;
-  private readonly _cf2Client: cfv2.CFV2Client;
-  private readonly _cf2ApiKey = AppConfig.curseforge.apiKey;
-
   public readonly name = ADDON_PROVIDER_CURSEFORGE;
   public readonly forceIgnore = false;
   public readonly allowChannelChange = true;
@@ -115,21 +110,12 @@ export class CurseAddonProvider extends AddonProvider {
   public enabled = true;
 
   public constructor(
-    private _cachingService: CachingService,
-    private _networkService: NetworkService,
-    private _tocService: TocService,
+    private readonly _cachingService: ProviderCache,
+    private readonly _circuitBreaker: HttpCircuitBreaker,
+    private readonly _cf2Client: CurseForgeClient,
+    private readonly _featuredAddonsCacheTtlSec: number,
   ) {
     super();
-
-    this._circuitBreaker = this._networkService.getCircuitBreaker(
-      `${this.name}_main`,
-      undefined,
-      AppConfig.curseforge.httpTimeoutMs,
-    );
-
-    this._cf2Client = new cfv2.CFV2Client({
-      apiKey: this._cf2ApiKey,
-    });
   }
 
   public override async getAllBatch(installations: WowInstallation[], addonIds: string[]): Promise<GetAllBatchResult> {
@@ -499,7 +485,7 @@ export class CurseAddonProvider extends AddonProvider {
   public override getDownloadAuth(): Promise<DownloadAuth | undefined> {
     return Promise.resolve({
       headers: {
-        "X-Api-Key": this._cf2ApiKey,
+        "X-Api-Key": this._cf2Client.apiKey,
       },
     });
   }
@@ -551,7 +537,7 @@ export class CurseAddonProvider extends AddonProvider {
     const channelType = this.getChannelType(cfFile.releaseType);
     const latestVersion = latestFiles.find((lf) => this.getChannelType(lf.releaseType) <= channelType);
 
-    const targetToc = this._tocService.getTocForGameType2(addonFolder.name, addonFolder.tocs, installation.clientType);
+    const targetToc = getTocForGameType2(addonFolder.name, addonFolder.tocs, installation.clientType);
     if (!targetToc) {
       console.error("targetToc undefined", cfAddon.name, addonFolder.tocs);
       throw new TocNotFoundError("Target toc not found");
@@ -560,7 +546,7 @@ export class CurseAddonProvider extends AddonProvider {
     const gameVersions = getGameVersionList(targetToc.interface);
 
     const addon: Addon = {
-      id: uuidv4(),
+      id: randomUUID(),
       author: authors,
       name: cfAddon?.name ?? "unknown",
       channelType,
@@ -884,7 +870,7 @@ export class CurseAddonProvider extends AddonProvider {
     const result = await this._cachingService.transaction(
       cacheKey,
       () => this._cf2Client.getFeaturedMods(request),
-      FEATURED_ADDONS_CACHE_TTL_SEC,
+      this._featuredAddonsCacheTtlSec,
     );
 
     if (!result || result.statusCode !== 200) {

@@ -1,5 +1,6 @@
 import { HttpErrorResponse } from "@angular/common/http";
 import {
+  AdPageOptions,
   Addon,
   AddonCategory,
   AddonChannelType,
@@ -16,6 +17,14 @@ import {
   WowInstallation,
 } from "wowup-lib-core";
 
+import {
+  AssetMissingError,
+  GitHubFetchReleasesError,
+  GitHubFetchRepositoryError,
+  GitHubLimitError,
+  NoReleaseFoundError,
+  TocNotFoundError,
+} from "../../common/errors";
 import {
   AddonProviderDescriptor,
   AddonProviderMethod,
@@ -43,6 +52,26 @@ export function reviveProviderError(serialized: SerializedProviderError): Error 
     case "provider":
       error = new GenericProviderError(innerError, serialized.message, serialized.warningType);
       break;
+    case "githubLimit": {
+      const limit = serialized.rateLimit ?? { max: NaN, used: NaN, remaining: NaN, reset: NaN };
+      error = new GitHubLimitError(limit.max, limit.used, limit.remaining, limit.reset, serialized.message);
+      break;
+    }
+    case "githubFetchReleases":
+      error = new GitHubFetchReleasesError(serialized.addonId ?? "", innerError);
+      break;
+    case "githubFetchRepository":
+      error = new GitHubFetchRepositoryError(serialized.addonId ?? "", innerError);
+      break;
+    case "assetMissing":
+      error = new AssetMissingError(serialized.message, serialized.clientGroup);
+      break;
+    case "noReleaseFound":
+      error = new NoReleaseFoundError(serialized.message);
+      break;
+    case "tocNotFound":
+      error = new TocNotFoundError(serialized.message);
+      break;
     default:
       error = new Error(serialized.message);
       error.name = serialized.name;
@@ -62,6 +91,8 @@ export function reviveProviderError(serialized: SerializedProviderError): Error 
  * go through `AddonProviderFactory` for those, which asks main.
  */
 export class RemoteAddonProvider extends AddonProvider {
+  private readonly _adPageParams?: AdPageOptions;
+
   public constructor(
     descriptor: AddonProviderDescriptor,
     private readonly _api: AddonProviderApiService,
@@ -80,6 +111,11 @@ export class RemoteAddonProvider extends AddonProvider {
     this.authRequired = descriptor.authRequired;
     this.adRequired = descriptor.adRequired;
     this.providerNote = descriptor.providerNote;
+    this._adPageParams = descriptor.adPageParams;
+  }
+
+  public override getAdPageParams(): AdPageOptions | undefined {
+    return this._adPageParams;
   }
 
   public override async getAllBatch(installations: WowInstallation[], addonIds: string[]): Promise<GetAllBatchResult> {

@@ -1,4 +1,4 @@
-import { AddonProviderType, AddonWarningType } from "wowup-lib-core";
+import { AdPageOptions, AddonProviderType, AddonWarningType, WowClientGroup } from "wowup-lib-core";
 
 /**
  * What main needs from the renderer's build config to run its providers. The Angular build picks the
@@ -11,6 +11,10 @@ export interface AddonProviderConfig {
   defaultHttpTimeoutMs: number;
   defaultHttpResetTimeoutMs: number;
   wowUpHubHttpTimeoutMs: number;
+  wagoHttpTimeoutMs: number;
+  featuredAddonsCacheTimeSec: number;
+  wago: { enabled: boolean };
+  curseforge: { enabled: boolean; apiKey: string; httpTimeoutMs: number };
 }
 
 /** A main-side provider's fixed flags, for the renderer's stand-in */
@@ -29,6 +33,8 @@ export interface AddonProviderDescriptor {
   authRequired: boolean;
   adRequired: boolean;
   providerNote: string;
+  /** The ad page an ad-supported provider shows (`AddonProvider.getAdPageParams`) */
+  adPageParams?: AdPageOptions;
 }
 
 /** The provider methods the renderer may call on a main-side provider */
@@ -67,8 +73,20 @@ export interface AddonProviderCallRequest {
  * `HttpErrorResponse`) and by the breaker's `code`, so each is flattened here and rebuilt in the
  * renderer.
  */
+export type SerializedProviderErrorKind =
+  | "error"
+  | "provider"
+  | "sourceRemoved"
+  | "http"
+  | "githubLimit"
+  | "githubFetchReleases"
+  | "githubFetchRepository"
+  | "assetMissing"
+  | "noReleaseFound"
+  | "tocNotFound";
+
 export interface SerializedProviderError {
-  kind: "error" | "provider" | "sourceRemoved" | "http";
+  kind: SerializedProviderErrorKind;
   name: string;
   message: string;
   code?: string;
@@ -77,6 +95,8 @@ export interface SerializedProviderError {
   url?: string;
   addonId?: string;
   warningType?: AddonWarningType;
+  clientGroup?: WowClientGroup;
+  rateLimit?: { max: number; used: number; remaining: number; reset: number };
   innerError?: SerializedProviderError;
 }
 

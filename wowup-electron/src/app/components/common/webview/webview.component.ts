@@ -1,10 +1,9 @@
 import { AfterViewInit, Component, ElementRef, Input, NgZone, OnDestroy, ViewChild } from "@angular/core";
-import { filter, Subject, takeUntil } from "rxjs";
+import { Subject, takeUntil } from "rxjs";
 import { AdPageOptions } from "wowup-lib-core";
 import { ElectronService } from "../../../services/electron/electron.service";
 import { LinkService } from "../../../services/links/link.service";
 import { SessionService } from "../../../services/session/session.service";
-import { UiMessageService } from "../../../services/ui-message/ui-message.service";
 import { AppConfig } from "../../../../environments/environment";
 
 @Component({
@@ -20,13 +19,11 @@ export class WebViewComponent implements OnDestroy, AfterViewInit {
   private readonly destroy$: Subject<boolean> = new Subject<boolean>();
 
   private _tag: Electron.WebviewTag;
-  private _webviewReady = false;
 
   public constructor(
     private _electronService: ElectronService,
     private _linkService: LinkService,
     private _sessionService: SessionService,
-    private _uiMessageService: UiMessageService,
     private _ngZone: NgZone,
   ) {}
 
@@ -36,16 +33,6 @@ export class WebViewComponent implements OnDestroy, AfterViewInit {
     }
 
     this._electronService.on("webview-new-window", this.onWebviewNewWindow);
-    this._uiMessageService.message$
-      .pipe(
-        takeUntil(this.destroy$),
-        filter((msg) => msg.action === "ad-frame-reload"),
-      )
-      .subscribe(() => {
-        if (this._webviewReady) {
-          this._tag?.reloadIgnoringCache();
-        }
-      });
   }
 
   public ngOnDestroy(): void {
@@ -91,8 +78,6 @@ export class WebViewComponent implements OnDestroy, AfterViewInit {
   }
 
   private onWebviewReady = () => {
-    this._webviewReady = true;
-
     this._sessionService.debugAdFrame$.pipe(takeUntil(this.destroy$)).subscribe(() => {
       if (!this._tag.isDevToolsOpened()) {
         this._tag?.openDevTools();
