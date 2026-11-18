@@ -24,6 +24,11 @@ export class AddonProviderController implements IpcController {
   /** Builds the registry once the renderer has sent its config, see `AddonProviderConfig` */
   public constructor(private readonly _createRegistry: (config: AddonProviderConfig) => AddonProviderRegistry) {}
 
+  /** Undefined until the renderer has sent its config */
+  public get registry(): AddonProviderRegistry | undefined {
+    return this._registry;
+  }
+
   public register(): void {
     // A renderer reload sends this again; the fresh registry also drops the old one's caches and breakers
     ipcHandle(IPC_ADDON_PROVIDERS_INIT, (_evt, config: AddonProviderConfig): AddonProviderDescriptor[] => {

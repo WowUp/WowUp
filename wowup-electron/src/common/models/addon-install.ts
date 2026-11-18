@@ -1,5 +1,16 @@
 import { Addon } from "wowup-lib-core";
 
+/**
+ * Download an addon from its provider and install it over whatever version is in its AddOns folder.
+ * A failed download is retried up to 3 times, re-syncing the addon in between for a fresh url.
+ */
+export interface InstallAddonRequest {
+  /** The addon as the provider describes the version being installed */
+  addon: Addon;
+  /** The addon being replaced, when switching an addon to another provider */
+  originalAddon?: Addon;
+}
+
 /** Install a downloaded addon zip over whatever version of the addon is in its AddOns folder */
 export interface InstallAddonFileRequest {
   /** The addon as the provider describes the version being installed */
@@ -21,7 +32,8 @@ export interface InstalledAddonFile {
   removedAddons: Addon[];
 }
 
-export type AddonInstallPhase = "backingUp" | "installing";
+/** "retry": a download failed and is tried again shortly */
+export type AddonInstallPhase = "downloading" | "retry" | "backingUp" | "installing";
 
 /** Sent on IPC_ADDON_INSTALL_PROGRESS while an install runs in main */
 export interface AddonInstallProgress {

@@ -41,14 +41,14 @@ import { AddonProviderFactory } from "./addon.provider.factory";
 import { AddonSyncApiService } from "../api/addon-sync-api.service";
 import { AddonInstallApiService } from "../api/addon-install-api.service";
 import { containsOwnExternalId, setExternalIds } from "../../../common/addons/addon-rules";
-import { AddonSyncFailure } from "../../../common/models/addon-scan";
+import { AddonScanEvent, AddonSyncFailure } from "../../../common/models/addon-scan";
+import { reviveProviderError } from "../../addon-providers/remote-addon-provider";
 import {
   Addon,
   AddonCategory,
   AddonChannelType,
   AddonDependency,
   AddonDependencyType,
-  AddonFolder,
   AddonProvider,
   AddonSearchResult,
   AddonSearchResultDependency,
@@ -58,7 +58,6 @@ import {
   WowClientType,
 } from "wowup-lib-core";
 import { AddonInstallService, InstallQueueItem, InstallType } from "./addon-install.service";
-import { delayMs } from "../../utils/time.utils";
 
 export interface AddonDependencyDetail {
   externalAddonId: string;
@@ -125,10 +124,6 @@ export class AddonService {
   private readonly _activeDependencyInstalls = new Map<string, DependencyInstallEvent>();
   private readonly _dependencyInstallSrc = new Subject<DependencyInstallEvent>();
   private readonly _installingSrc = new BehaviorSubject<boolean>(false);
-  /** Rescan running right now for each installation, by installation id */
-  private readonly _activeRescans = new Map<string, Promise<Addon[]>>();
-  /** Rescan waiting for the running one to finish, by installation id */
-  private readonly _queuedRescans = new Map<string, Promise<Addon[]>>();
 
   public readonly addonAction$ = this._addonActionSrc.asObservable();
   public readonly addonInstalled$ = this._addonInstallService.addonInstalled$;
@@ -159,6 +154,9 @@ export class AddonService {
     private _addonSyncApiService: AddonSyncApiService,
     private _addonInstallApiService: AddonInstallApiService,
   ) {
+    // Main runs the scans and reports each one here, once however many callers share it
+    this._addonSyncApiService.onScanEvent(this.onScanEvent);
+
     // This should keep the current update queue state snapshot up to date
     this.addonInstalled$
       .pipe(
@@ -778,18 +776,9 @@ export class AddonService {
       throw new Error(`Addon not found or invalid: ${addon?.id ?? "unknown"}`);
     }
 
-    const wowInstallation = this.getWowInstallation(addon);
-    const addonProvider = this.getAddonProvider(addon);
-
-    const _onUpdate = async (installState: AddonInstallState, progress: number) => {
-      if (installState === AddonInstallState.Retry) {
-        await this.syncProviderAddons(wowInstallation, [addon], addonProvider);
-        await delayMs(1000);
-        return;
-      }
-
-      onUpdate?.call(this, installState, progress);
-    };
+    // Fail here rather than in the queue: main checks both again, but the caller should hear now
+    this.getWowInstallation(addon);
+    this.getAddonProvider(addon);
 
     // addonInstalled$ gets its pending event from the queue itself
     onUpdate?.call(this, AddonInstallState.Pending, 0);
@@ -802,7 +791,7 @@ export class AddonService {
 
     const installQueueItem: InstallQueueItem = {
       addon,
-      onUpdate: _onUpdate,
+      onUpdate,
       completion,
       installType,
       originalAddon: originalAddon ? { ...originalAddon } : undefined,
@@ -991,41 +980,14 @@ export class AddonService {
    * Only one scan runs per installation at a time: a call made while one is running waits for it
    * and then scans again, so overlapping scans can't each save a copy of every addon (#1561).
    */
-  public rescanInstallation(installation: WowInstallation): Promise<Addon[]> {
+  public async rescanInstallation(installation: WowInstallation, joinRunning = false): Promise<Addon[]> {
     if (!installation) {
-      return Promise.resolve([]);
+      return [];
     }
 
-    const queued = this._queuedRescans.get(installation.id);
-    if (queued !== undefined) {
-      return queued;
-    }
-
-    const active = this._activeRescans.get(installation.id);
-    if (active === undefined) {
-      return this.startRescan(installation);
-    }
-
-    const next = active
-      .catch(() => undefined)
-      .then(() => {
-        this._queuedRescans.delete(installation.id);
-        return this.startRescan(installation);
-      });
-    this._queuedRescans.set(installation.id, next);
-    return next;
-  }
-
-  private startRescan(installation: WowInstallation): Promise<Addon[]> {
-    const rescan = this.scanAndReplaceAddons(installation).finally(() => this._activeRescans.delete(installation.id));
-    this._activeRescans.set(installation.id, rescan);
-    return rescan;
-  }
-
-  private async scanAndReplaceAddons(installation: WowInstallation): Promise<Addon[]> {
     console.debug(`[addon-service] rescanInstallation: ${installation.displayName}`);
-    // Main keeps the saved addons' settings and replaces them with what the scan found
-    const addons = await this.scanAddons(installation, true);
+    // Main queues it behind a scan already running, keeps the saved addons' settings and replaces them
+    const addons = await this.scanAddons(installation, true, joinRunning);
 
     this._addonActionSrc.next({ type: "scan" });
 
@@ -1055,7 +1017,7 @@ export class AddonService {
     }
 
     // Nothing saved yet: share a scan that's already running rather than starting another
-    return await (this._activeRescans.get(installation.id) ?? this.rescanInstallation(installation));
+    return await this.rescanInstallation(installation, true);
   }
 
   public async getAddonForProtocol(protocol: string): Promise<ProtocolSearchResult | undefined> {
@@ -1392,78 +1354,42 @@ export class AddonService {
   }
 
   /**
-   * Read the installation's addons off disk. Main lists, fingerprints and assembles them; only the
-   * providers' matching runs here, between the two calls, until the providers move to main too.
+   * Read the installation's addons off disk; main lists, fingerprints and matches them
    * @param save replace the installation's saved addons with the result, keeping the saved addons of
    * providers a scan can't find again (e.g. GitHub). Without it the scan only reads.
+   * @param joinRunning with save, share a saving scan already running rather than queue one after it
    */
-  private async scanAddons(installation: WowInstallation, save = false): Promise<Addon[]> {
+  private async scanAddons(installation: WowInstallation, save = false, joinRunning = false): Promise<Addon[]> {
     if (!installation) {
       return [];
     }
 
-    this._scanUpdateSrc.next({
-      type: ScanUpdateType.Start,
-    });
-
-    try {
-      const nonRescanProviders = save ? this._addonProviderService.getNonRescanProviderNames() : undefined;
-      const { addonFolders } = await this._addonSyncApiService.prepareScan({
-        installationId: installation.id,
-        nonRescanProviders,
-      });
-
-      if (addonFolders.length > 0) {
-        this._scanUpdateSrc.next({
-          type: ScanUpdateType.Update,
-          currentCount: 0,
-          totalCount: addonFolders.length,
-        });
-
-        await this.matchAddonFolders(installation, addonFolders);
-      }
-
-      const addons = await this._addonSyncApiService.completeScan({
-        installationId: installation.id,
-        addonFolders,
-        nonRescanProviders,
-        providerNames: this._addonProviderService.getProviderNames(),
-        save,
-      });
-
-      // Not the array itself: devtools keeps a live reference to whatever is logged so it can be
-      // expanded, which pinned every addon of every scan in the inspector's heap for the life of
-      // the session.
-      console.debug(`scan complete: ${addons.length} addons`);
-
-      return addons;
-    } finally {
-      this._scanUpdateSrc.next({
-        type: ScanUpdateType.Complete,
-      });
-    }
+    const addons = await this._addonSyncApiService.scan({ installationId: installation.id, save, joinRunning });
+    // Not the array itself: devtools keeps a live reference to whatever is logged so it can be
+    // expanded, which pinned every addon of every scan in the inspector's heap for the life of
+    // the session.
+    console.debug(`scan complete: ${addons.length} addons`);
+    return addons;
   }
 
-  /** Let each enabled provider set matchingAddon on the folders no provider before it claimed */
-  private async matchAddonFolders(installation: WowInstallation, addonFolders: AddonFolder[]): Promise<void> {
-    const enabledProviders = this._addonProviderService.getEnabledAddonProviders();
-    for (const provider of enabledProviders) {
-      try {
-        const validFolders = addonFolders.filter((af) => !af.ignoreReason && !af.matchingAddon && af.tocs.length > 0);
-
-        await provider.scan(installation, installation.defaultAddonChannelType, validFolders);
-      } catch (e) {
-        console.error("scan failed: " + provider.name);
-        console.error(e);
+  private onScanEvent = (event: AddonScanEvent): void => {
+    switch (event.type) {
+      case "start":
+        this._scanUpdateSrc.next({ type: ScanUpdateType.Start });
+        break;
+      case "folders":
+        this._scanUpdateSrc.next({ type: ScanUpdateType.Update, currentCount: 0, totalCount: event.totalCount });
+        break;
+      case "providerError":
         this._scanErrorSrc.next(
-          new AddonScanError({
-            providerName: provider.name,
-            innerError: e,
-          }),
+          new AddonScanError({ providerName: event.providerName, innerError: reviveProviderError(event.error) }),
         );
-      }
+        break;
+      case "complete":
+        this._scanUpdateSrc.next({ type: ScanUpdateType.Complete });
+        break;
     }
-  }
+  };
 
   public async setProvider(
     addon: Addon | undefined,

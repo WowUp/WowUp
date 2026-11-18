@@ -1,10 +1,10 @@
 import * as log from "electron-log/main";
 
-import { IPC_ADDON_SCAN_COMPLETE, IPC_ADDON_SCAN_PREPARE, IPC_ADDON_SYNC_APPLY } from "../../../src/common/constants";
+import { IPC_ADDON_SCAN, IPC_ADDON_SCAN_PREPARE, IPC_ADDON_SYNC_APPLY } from "../../../src/common/constants";
 import {
   ApplyAddonSyncRequest,
-  CompleteAddonScanRequest,
   PrepareAddonScanRequest,
+  ScanAddonsRequest,
 } from "../../../src/common/models/addon-scan";
 import { AddonSyncService } from "../../services/addons/addon-sync.service";
 import { ipcHandle, IpcController } from "../ipc-controller";
@@ -21,18 +21,19 @@ export class AddonSyncController implements IpcController {
   ) {}
 
   public register(): void {
+    // Only the debug log's fingerprint dump still asks for the folders on their own
     ipcHandle(IPC_ADDON_SCAN_PREPARE, (_evt, request: PrepareAddonScanRequest) =>
       this._syncService.prepareScan(request),
     );
-    ipcHandle(IPC_ADDON_SCAN_COMPLETE, (_evt, request: CompleteAddonScanRequest) => this.completeScan(request));
+    ipcHandle(IPC_ADDON_SCAN, (_evt, request: ScanAddonsRequest) => this.scan(request));
     ipcHandle(IPC_ADDON_SYNC_APPLY, (_evt, request: ApplyAddonSyncRequest) => this._syncService.applySync(request));
   }
 
-  private async completeScan(request: CompleteAddonScanRequest) {
+  private async scan(request: ScanAddonsRequest) {
     try {
-      return await this._syncService.completeScan(request);
+      return await this._syncService.scan(request);
     } catch (e) {
-      log.error("Failed to complete addon scan", e);
+      log.error("Failed to scan addons", e);
       throw e;
     } finally {
       try {

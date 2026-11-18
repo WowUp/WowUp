@@ -1,34 +1,13 @@
-/* eslint-disable @typescript-eslint/unbound-method, @typescript-eslint/no-unsafe-argument */
-import { basename, join as pathJoin } from "path";
-import {
-  Addon,
-  AddonChannelType,
-  AddonDependencyType,
-  AddonProvider,
-  AddonScanResult,
-  WowClientType,
-  WowInstallation,
-} from "wowup-lib-core";
+/* eslint-disable @typescript-eslint/unbound-method */
+import { Addon, AddonChannelType, AddonDependencyType, WowClientType } from "wowup-lib-core";
 
-import { RemoteAddonProvider } from "../../addon-providers/remote-addon-provider";
 import { USER_ACTION_ADDON_INSTALL } from "../../../common/constants";
-import { InstallAddonFileRequest, InstalledAddonFile } from "../../../common/models/addon-install";
+import { AddonInstallPhase, InstallAddonRequest, InstalledAddonFile } from "../../../common/models/addon-install";
 import { AddonInstallState } from "../../models/wowup/addon-install-state";
 import { AddonUpdateEvent } from "../../models/wowup/addon-update-event";
 import { AnalyticsService } from "../analytics/analytics.service";
 import { AddonInstallApiService } from "../api/addon-install-api.service";
-import { AddonScanApiService } from "../api/addon-scan-api.service";
-import { DownloadService } from "../download/download.service";
-import { FileService } from "../files/file.service";
-import { WarcraftInstallationService } from "../warcraft/warcraft-installation.service";
-import { WarcraftService } from "../warcraft/warcraft.service";
-import { WowUpService } from "../wowup/wowup.service";
 import { AddonInstallService, InstallQueueItem, InstallType } from "./addon-install.service";
-import { AddonProviderFactory } from "./addon.provider.factory";
-
-const ADDON_FOLDER_PATH = pathJoin("wow", "_retail_", "Interface", "AddOns");
-const DOWNLOADS_FOLDER_PATH = pathJoin("wowup", "downloads");
-const DOWNLOADED_ZIP_PATH = pathJoin(DOWNLOADS_FOLDER_PATH, "baganator.zip");
 
 interface Deferred {
   promise: Promise<void>;
@@ -43,40 +22,30 @@ function createDeferred(): Deferred {
   return { promise, completion };
 }
 
-/** What main hands back for a good install: the addon marked installed, plus the original's ids */
-function fakeInstalled(request: InstallAddonFileRequest): InstalledAddonFile {
-  const externalIds = [...(request.addon.externalIds ?? [])];
-  for (const extId of request.originalAddon?.externalIds ?? []) {
-    if (!externalIds.some((e) => e.id === extId.id && e.providerName === extId.providerName)) {
-      externalIds.push(extId);
-    }
-  }
+/** What main hands back for a good install: the addon marked installed */
+function fakeInstalled(request: InstallAddonRequest): InstalledAddonFile {
   return {
     addon: {
       ...request.addon,
       installedVersion: request.addon.latestVersion,
       installedFolderList: ["Baganator"],
       installedFolders: "Baganator",
-      isIgnored: request.forceIgnore,
-      externalIds,
     },
     removedAddons: [],
   };
 }
 
-describe("AddonInstallService", () => {
-  let installation: WowInstallation;
-  let provider: jasmine.SpyObj<AddonProvider>;
+/** Main's phases for a good install, as it reports them */
+function goodInstall(request: InstallAddonRequest, onPhase: (phase: AddonInstallPhase) => void) {
+  onPhase("downloading");
+  onPhase("backingUp");
+  onPhase("installing");
+  return Promise.resolve(fakeInstalled(request));
+}
 
-  let warcraftInstallationService: jasmine.SpyObj<WarcraftInstallationService>;
-  let addonProviderFactory: jasmine.SpyObj<AddonProviderFactory>;
-  let warcraftService: jasmine.SpyObj<WarcraftService>;
-  let downloadService: jasmine.SpyObj<DownloadService>;
-  let fileService: jasmine.SpyObj<FileService>;
+describe("AddonInstallService", () => {
   let analyticsService: jasmine.SpyObj<AnalyticsService>;
-  let addonScanApiService: jasmine.SpyObj<AddonScanApiService>;
   let installApi: jasmine.SpyObj<AddonInstallApiService>;
-  let hubProvider: jasmine.SpyObj<RemoteAddonProvider>;
 
   let service: AddonInstallService;
 
@@ -92,7 +61,7 @@ describe("AddonInstallService", () => {
       downloadUrl: "https://example.test/baganator.zip",
       clientType: WowClientType.Retail,
       channelType: AddonChannelType.Stable,
-      installationId: installation.id,
+      installationId: "install-1",
       installedFolderList: [],
       externalIds: [{ id: "1001", providerName: "Curse" }],
       isIgnored: false,
@@ -124,128 +93,45 @@ describe("AddonInstallService", () => {
     return { result: deferred.promise, onUpdate };
   }
 
-  beforeEach(() => {
-    installation = {
-      id: "install-1",
-      clientType: WowClientType.Retail,
-      location: pathJoin("wow", "_retail_", "Wow.exe"),
-      label: "Retail",
-      displayName: "Retail",
-      selected: true,
-      defaultAddonChannelType: AddonChannelType.Stable,
-      defaultAutoUpdate: false,
-    };
-
-    provider = jasmine.createSpyObj<AddonProvider>("AddonProvider", ["getDownloadAuth", "isValidAddonId"]);
-    provider.getDownloadAuth.and.resolveTo(undefined);
-    provider.isValidAddonId.and.returnValue(true);
-    (provider as { name: string }).name = "Curse";
-    (provider as { forceIgnore: boolean }).forceIgnore = false;
-
-    warcraftInstallationService = jasmine.createSpyObj<WarcraftInstallationService>("WarcraftInstallationService", [
-      "getWowInstallation",
-    ]);
-    warcraftInstallationService.getWowInstallation.and.callFake((id) =>
-      id === installation.id ? installation : undefined,
+  /** Makes main's install hang until the returned functions are called, one per install */
+  function holdInstalls(): Array<() => void> {
+    const pending: Array<() => void> = [];
+    installApi.install.and.callFake(
+      (request) => new Promise<InstalledAddonFile>((resolve) => pending.push(() => resolve(fakeInstalled(request)))),
     );
+    return pending;
+  }
 
-    addonProviderFactory = jasmine.createSpyObj<AddonProviderFactory>("AddonProviderFactory", [
-      "getProvider",
-      "getProviderNames",
-    ]);
-    addonProviderFactory.getProvider.and.callFake(((name: string) => (name === "Curse" ? provider : undefined)) as any);
-    addonProviderFactory.getProviderNames.and.returnValue(["Curse", "Wago", "WowUpHub"]);
-
-    warcraftService = jasmine.createSpyObj<WarcraftService>("WarcraftService", ["getAddonFolderPath"]);
-    warcraftService.getAddonFolderPath.and.returnValue(ADDON_FOLDER_PATH);
-
-    downloadService = jasmine.createSpyObj<DownloadService>("DownloadService", ["downloadZipFile"]);
-    downloadService.downloadZipFile.and.resolveTo(DOWNLOADED_ZIP_PATH);
-
-    fileService = jasmine.createSpyObj<FileService>("FileService", ["pathExists", "remove"]);
-    fileService.pathExists.and.resolveTo(false);
-    fileService.remove.and.resolveTo(true);
-
-    analyticsService = jasmine.createSpyObj<AnalyticsService>("AnalyticsService", ["trackAction"]);
-
-    addonScanApiService = jasmine.createSpyObj<AddonScanApiService>("AddonScanApiService", ["getScanResults"]);
-    addonScanApiService.getScanResults.and.callFake((filePaths) =>
-      Promise.resolve(
-        filePaths.map((path) => ({
-          path,
-          wowup: { fingerprint: `fp-${basename(path)}` } as AddonScanResult,
-        })),
-      ),
-    );
-
-    installApi = jasmine.createSpyObj<AddonInstallApiService>("AddonInstallApiService", [
-      "installFile",
-      "addExternalId",
-    ]);
-    installApi.addExternalId.and.callFake((request) =>
-      Promise.resolve([
-        { id: "1001", providerName: "Curse" },
-        { id: request.externalId, providerName: request.providerName },
-      ]),
-    );
-    installApi.installFile.and.callFake((request, onPhase) => {
-      onPhase("backingUp");
-      onPhase("installing");
-      return Promise.resolve(fakeInstalled(request));
+  function enqueueMany(count: number): Deferred[] {
+    return Array.from({ length: count }, (_, i) => {
+      const deferred = createDeferred();
+      service.enqueue({
+        addon: createAddon({ id: `addon-${i + 1}`, name: `Addon ${i + 1}` }),
+        onUpdate: () => {},
+        completion: deferred.completion,
+        installType: "install",
+      });
+      return deferred;
     });
+  }
 
-    hubProvider = jasmine.createSpyObj<RemoteAddonProvider>("RemoteAddonProvider", ["getAddonIdsByFingerprints"]);
-    hubProvider.getAddonIdsByFingerprints.and.resolveTo(new Map());
-    (hubProvider as { enabled: boolean }).enabled = true;
+  beforeEach(() => {
+    analyticsService = jasmine.createSpyObj<AnalyticsService>("AnalyticsService", ["trackAction"]);
+    installApi = jasmine.createSpyObj<AddonInstallApiService>("AddonInstallApiService", ["install"]);
+    installApi.install.and.callFake(goodInstall);
 
-    service = new AddonInstallService(
-      warcraftInstallationService,
-      addonProviderFactory,
-      { applicationDownloadsFolderPath: DOWNLOADS_FOLDER_PATH } as WowUpService,
-      warcraftService,
-      downloadService,
-      fileService,
-      analyticsService,
-      addonScanApiService,
-      installApi,
-    );
+    service = new AddonInstallService(analyticsService, installApi);
   });
 
   describe("install queue", () => {
-    it("should download the addon and hand the zip to main", async () => {
+    it("should hand the addon and the one it replaces to main", async () => {
       const addon = createAddon();
-
-      const { result } = await runInstall(addon);
-
-      await expectAsync(result).toBeResolved();
-      expect(downloadService.downloadZipFile).toHaveBeenCalledWith(
-        jasmine.objectContaining({
-          fileName: "baganator.zip",
-          outputFolder: DOWNLOADS_FOLDER_PATH,
-          url: addon.downloadUrl,
-        }),
-      );
-      expect(installApi.installFile).toHaveBeenCalledWith(
-        {
-          addon,
-          zipFilePath: DOWNLOADED_ZIP_PATH,
-          originalAddon: undefined,
-          forceIgnore: false,
-          providerNames: ["Curse", "Wago", "WowUpHub"],
-        },
-        jasmine.any(Function),
-      );
-    });
-
-    it("should pass the provider's forceIgnore and the original addon to main", async () => {
-      (provider as { forceIgnore: boolean }).forceIgnore = true;
       const original = createAddon({ id: "old", providerName: "Wago" });
 
-      await runInstall(createAddon(), "install", jasmine.createSpy("onUpdate"), original);
+      const { result } = await runInstall(addon, "install", jasmine.createSpy("onUpdate"), original);
 
-      const request = installApi.installFile.calls.mostRecent().args[0];
-      expect(request.forceIgnore).toBeTrue();
-      expect(request.originalAddon).toEqual(original);
+      await expectAsync(result).toBeResolved();
+      expect(installApi.install).toHaveBeenCalledWith({ addon, originalAddon: original }, jasmine.any(Function));
     });
 
     it("should copy main's saved addon onto the queued addon object", async () => {
@@ -257,7 +143,7 @@ describe("AddonInstallService", () => {
       expect(addon.installedFolderList).toEqual(["Baganator"]);
     });
 
-    it("should report progress through onUpdate and addonInstalled$ in order", async () => {
+    it("should report main's phases through onUpdate and addonInstalled$ in order", async () => {
       const events: AddonUpdateEvent[] = [];
       service.addonInstalled$.subscribe((e) => events.push(e));
 
@@ -274,6 +160,21 @@ describe("AddonInstallService", () => {
       expect(events.map((e) => e.installState)).toEqual([AddonInstallState.Pending, ...expectedStates]);
     });
 
+    it("should show a retry on the grids only, not to the caller", async () => {
+      installApi.install.and.callFake((request, onPhase) => {
+        onPhase("downloading");
+        onPhase("retry");
+        return goodInstall(request, onPhase);
+      });
+      const events: AddonUpdateEvent[] = [];
+      service.addonInstalled$.subscribe((e) => events.push(e));
+
+      const { onUpdate } = await runInstall(createAddon());
+
+      expect(events.map((e) => e.installState)).toContain(AddonInstallState.Retry);
+      expect(onUpdate).not.toHaveBeenCalledWith(AddonInstallState.Retry, jasmine.anything());
+    });
+
     it("should track the install type in analytics", async () => {
       await runInstall(createAddon(), "update");
 
@@ -284,7 +185,7 @@ describe("AddonInstallService", () => {
     });
 
     it("should track the unknown addons main dropped as removed", async () => {
-      installApi.installFile.and.callFake((request) =>
+      installApi.install.and.callFake((request) =>
         Promise.resolve({
           ...fakeInstalled(request),
           removedAddons: [createAddon({ id: "unknown-1", name: "Baganator", providerName: "Unknown" })],
@@ -299,23 +200,8 @@ describe("AddonInstallService", () => {
       );
     });
 
-    // Waits out the real one second backoff before the second attempt
-    it("should retry a failed download after letting the caller refresh the addon", async () => {
-      downloadService.downloadZipFile.and.returnValues(
-        Promise.reject(new Error("403")),
-        Promise.resolve(DOWNLOADED_ZIP_PATH),
-      );
-
-      const { result, onUpdate } = await runInstall(createAddon());
-
-      await expectAsync(result).toBeResolved();
-      expect(onUpdate).toHaveBeenCalledWith(AddonInstallState.Retry, 0);
-      expect(downloadService.downloadZipFile).toHaveBeenCalledTimes(2);
-      expect(installApi.installFile).toHaveBeenCalledTimes(1);
-    });
-
     it("should reject and report an error when main's install fails", async () => {
-      installApi.installFile.and.rejectWith(new Error("bad zip"));
+      installApi.install.and.rejectWith(new Error("bad zip"));
       const events: AddonUpdateEvent[] = [];
       service.addonInstalled$.subscribe((e) => events.push(e));
       const addon = createAddon({ installedFolderList: ["Baganator"] });
@@ -328,19 +214,10 @@ describe("AddonInstallService", () => {
       expect(addon.installedVersion).toEqual("1.1.0");
     });
 
-    it("should remove the zip itself when main never got to it", async () => {
-      installApi.installFile.and.rejectWith(new Error("ipc down"));
-      fileService.pathExists.and.callFake((p) => Promise.resolve(p === DOWNLOADED_ZIP_PATH));
-
-      await runInstall(createAddon());
-
-      expect(fileService.remove).toHaveBeenCalledWith(DOWNLOADED_ZIP_PATH);
-    });
-
     it("should keep processing later items after an install fails", async () => {
-      installApi.installFile.and.returnValues(
+      installApi.install.and.returnValues(
         Promise.reject(new Error("bad zip")),
-        Promise.resolve(fakeInstalled({ addon: createAddon({ id: "addon-2" }) } as InstallAddonFileRequest)),
+        Promise.resolve(fakeInstalled({ addon: createAddon({ id: "addon-2" }) })),
       );
 
       const first = await runInstall(createAddon({ id: "addon-1" }));
@@ -351,28 +228,17 @@ describe("AddonInstallService", () => {
     });
 
     it("should report items waiting for a free slot as pending", async () => {
-      const pending: Array<() => void> = [];
-      downloadService.downloadZipFile.and.callFake(
-        () => new Promise<string>((resolve) => pending.push(() => resolve(DOWNLOADED_ZIP_PATH))),
-      );
+      const pending = holdInstalls();
       const events: AddonUpdateEvent[] = [];
       service.addonInstalled$.subscribe((e) => events.push(e));
 
-      const deferreds = [1, 2, 3, 4].map((i) => {
-        const deferred = createDeferred();
-        service.enqueue({
-          addon: createAddon({ id: `addon-${i}`, name: `Addon ${i}` }),
-          onUpdate: () => {},
-          completion: deferred.completion,
-          installType: "install",
-        });
-        return deferred;
-      });
+      const deferreds = enqueueMany(4);
 
       await new Promise((r) => setTimeout(r));
       const statesOf = (id: string) => events.filter((e) => e.addon.id === id).map((e) => e.installState);
-      expect(statesOf("addon-1")).toEqual([AddonInstallState.Pending, AddonInstallState.Downloading]);
+      expect(statesOf("addon-1")).toEqual([AddonInstallState.Pending]);
       expect(statesOf("addon-4")).toEqual([AddonInstallState.Pending]);
+      expect(installApi.install).toHaveBeenCalledTimes(3);
 
       pending.forEach((resolve) => resolve());
       await deferreds[0].promise;
@@ -382,159 +248,36 @@ describe("AddonInstallService", () => {
     });
 
     it("should run at most three installs at the same time", async () => {
-      const pending: Array<() => void> = [];
-      downloadService.downloadZipFile.and.callFake(
-        () => new Promise<string>((resolve) => pending.push(() => resolve(DOWNLOADED_ZIP_PATH))),
-      );
+      const pending = holdInstalls();
 
-      const deferreds = [1, 2, 3, 4].map((i) => {
-        const deferred = createDeferred();
-        service.enqueue({
-          addon: createAddon({ id: `addon-${i}`, name: `Addon ${i}` }),
-          onUpdate: () => {},
-          completion: deferred.completion,
-          installType: "install",
-        });
-        return deferred;
-      });
+      const deferreds = enqueueMany(4);
 
       await new Promise((r) => setTimeout(r));
-      expect(downloadService.downloadZipFile).toHaveBeenCalledTimes(3);
+      expect(installApi.install).toHaveBeenCalledTimes(3);
 
       pending.shift()?.();
       await deferreds[0].promise;
       await new Promise((r) => setTimeout(r));
-      expect(downloadService.downloadZipFile).toHaveBeenCalledTimes(4);
+      expect(installApi.install).toHaveBeenCalledTimes(4);
 
       pending.forEach((resolve) => resolve());
       await Promise.all(deferreds.map((d) => d.promise));
     });
 
-    it("should reject and report an error when the installation is missing", async () => {
-      const events: AddonUpdateEvent[] = [];
-      service.addonInstalled$.subscribe((e) => events.push(e));
-
-      const { result, onUpdate } = await runInstall(createAddon({ installationId: "missing" }));
-
-      await expectAsync(result).toBeRejectedWithError(/Installation not found/);
-      expect(onUpdate).toHaveBeenCalledWith(AddonInstallState.Error, 100);
-      expect(events.map((e) => e.installState)).toEqual([AddonInstallState.Pending, AddonInstallState.Error]);
-      expect(downloadService.downloadZipFile).not.toHaveBeenCalled();
-    });
-
-    it("should reject and report an error when the provider is missing", async () => {
-      const { result, onUpdate } = await runInstall(createAddon({ providerName: "Nope" }));
-
-      await expectAsync(result).toBeRejectedWithError(/Addon provider not found/);
-      expect(onUpdate).toHaveBeenCalledWith(AddonInstallState.Error, 100);
-      expect(downloadService.downloadZipFile).not.toHaveBeenCalled();
-    });
-
-    // Regression: these used to throw outside the try block, which ended the queue subscription
-    it("should keep processing later items after an installation or provider lookup fails", async () => {
-      const missingInstall = await runInstall(createAddon({ id: "addon-1", installationId: "missing" }));
-      const missingProvider = await runInstall(createAddon({ id: "addon-2", providerName: "Nope" }));
-      const valid = await runInstall(createAddon({ id: "addon-3" }));
-
-      await expectAsync(missingInstall.result).toBeRejected();
-      await expectAsync(missingProvider.result).toBeRejected();
-      await expectAsync(valid.result).toBeResolved();
-    });
-
     it("should report an error escaping the install and keep going", async () => {
       const errors: Error[] = [];
       service.installError$.subscribe((e) => errors.push(e));
-      // The cleanup in the finally block runs outside the catch, so a throw there escapes processInstallQueue
-      fileService.pathExists.and.returnValues(Promise.reject(new Error("disk gone")), Promise.resolve(false));
+      installApi.install.and.rejectWith(new Error("bad zip"));
+      // A throw from the caller's callback in the error path escapes processInstallQueue
+      const throwing = jasmine.createSpy("onUpdate").and.throwError(new Error("ui gone"));
 
-      await runInstall(createAddon({ id: "addon-1" }));
+      await runInstall(createAddon({ id: "addon-1" }), "install", throwing);
       await new Promise((r) => setTimeout(r));
+      installApi.install.and.callFake(goodInstall);
       const second = await runInstall(createAddon({ id: "addon-2" }));
 
-      expect(errors.map((e) => e.message)).toEqual(["disk gone"]);
+      expect(errors.map((e) => e.message)).toEqual(["ui gone"]);
       await expectAsync(second.result).toBeResolved();
-    });
-  });
-
-  describe("hub external id", () => {
-    beforeEach(() => {
-      addonProviderFactory.getProvider.and.callFake(((name: string) =>
-        name === "Curse" ? provider : name === "WowUpHub" ? hubProvider : undefined) as any);
-    });
-
-    it("should add the hub id of an addon installed from another provider", async () => {
-      hubProvider.getAddonIdsByFingerprints.and.resolveTo(new Map([["fp-Baganator", "50"]]));
-      const addon = createAddon();
-
-      const { result } = await runInstall(addon);
-
-      await expectAsync(result).toBeResolved();
-      expect(addonScanApiService.getScanResults).toHaveBeenCalledWith(
-        [pathJoin(ADDON_FOLDER_PATH, "Baganator")],
-        ["wowup"],
-      );
-      expect(hubProvider.getAddonIdsByFingerprints).toHaveBeenCalledWith(["fp-Baganator"]);
-      expect(addon.externalIds).toContain({ id: "50", providerName: "WowUpHub" });
-      expect(installApi.addExternalId).toHaveBeenCalledWith({
-        addonId: addon.id,
-        providerName: "WowUpHub",
-        externalId: "50",
-      });
-    });
-
-    it("should leave the external ids alone when the hub does not know the addon", async () => {
-      const addon = createAddon();
-
-      await runInstall(addon);
-
-      expect(addon.externalIds).toEqual([{ id: "1001", providerName: "Curse" }]);
-      expect(installApi.addExternalId).not.toHaveBeenCalled();
-    });
-
-    it("should still finish the install when the hub lookup fails", async () => {
-      hubProvider.getAddonIdsByFingerprints.and.rejectWith(new Error("hub down"));
-      spyOn(console, "error");
-      const addon = createAddon();
-
-      const { result, onUpdate } = await runInstall(addon);
-
-      await expectAsync(result).toBeResolved();
-      expect(onUpdate).toHaveBeenCalledWith(AddonInstallState.Complete, 100);
-      expect(addon.externalIds?.some((extId) => extId.providerName === "WowUpHub")).toBeFalse();
-    });
-
-    it("should not ask the hub about an addon installed from the hub", async () => {
-      const addon = createAddon({
-        providerName: "WowUpHub",
-        externalId: "50",
-        externalIds: [{ id: "50", providerName: "WowUpHub" }],
-      });
-      addonProviderFactory.getProvider.and.callFake(((name: string) =>
-        name === "WowUpHub" ? hubProvider : undefined) as any);
-
-      await runInstall(addon);
-
-      expect(hubProvider.getAddonIdsByFingerprints).not.toHaveBeenCalled();
-    });
-
-    it("should not ask the hub again when the hub id is already known", async () => {
-      const original = createAddon({ id: "old", externalIds: [{ id: "50", providerName: "WowUpHub" }] });
-      const addon = createAddon();
-
-      await runInstall(addon, "update", jasmine.createSpy("onUpdate"), original);
-
-      expect(hubProvider.getAddonIdsByFingerprints).not.toHaveBeenCalled();
-      expect(addon.externalIds).toContain({ id: "50", providerName: "WowUpHub" });
-    });
-
-    it("should not ask the hub when the hub provider is turned off", async () => {
-      (hubProvider as { enabled: boolean }).enabled = false;
-      const addon = createAddon();
-
-      await runInstall(addon);
-
-      expect(addonScanApiService.getScanResults).not.toHaveBeenCalled();
-      expect(hubProvider.getAddonIdsByFingerprints).not.toHaveBeenCalled();
     });
   });
 

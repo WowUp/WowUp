@@ -206,6 +206,10 @@ export async function downloadFile(options: DownloadFileOptions, deps: DownloadF
     log.error(`[DownloadFile] failed '${url}': ${describeError(err)}`);
     // always close stream
     writer.end();
+    // Nothing else knows this path, so a failed download would leave its partial file behind
+    await fsp
+      .rm(savePath, { force: true })
+      .catch((rmErr) => log.warn(`[DownloadFile] could not delete '${savePath}'`, rmErr));
     throw err;
   }
 

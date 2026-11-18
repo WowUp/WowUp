@@ -1,19 +1,11 @@
 import { Injectable } from "@angular/core";
 import { IpcRendererEvent } from "electron";
 
+import { IPC_ADDON_INSTALL, IPC_ADDON_INSTALL_PROGRESS, IPC_ADDON_REMOVE } from "../../../common/constants";
 import {
-  IPC_ADDON_ADD_EXTERNAL_ID,
-  IPC_ADDON_INSTALL_FILE,
-  IPC_ADDON_INSTALL_PROGRESS,
-  IPC_ADDON_REMOVE,
-} from "../../../common/constants";
-import { AddonExternalId } from "wowup-lib-core";
-
-import {
-  AddExternalIdRequest,
   AddonInstallPhase,
   AddonInstallProgress,
-  InstallAddonFileRequest,
+  InstallAddonRequest,
   InstalledAddonFile,
   RemoveAddonRequest,
   RemovedAddons,
@@ -27,9 +19,9 @@ import { ElectronService } from "../electron/electron.service";
 export class AddonInstallApiService {
   public constructor(private readonly _electronService: ElectronService) {}
 
-  /** Install a downloaded zip, reporting each phase main reaches for this addon */
-  public async installFile(
-    request: InstallAddonFileRequest,
+  /** Download and install an addon, reporting each phase main reaches for it */
+  public async install(
+    request: InstallAddonRequest,
     onPhase: (phase: AddonInstallPhase) => void,
   ): Promise<InstalledAddonFile> {
     const listener = (_evt: IpcRendererEvent, progress: AddonInstallProgress) => {
@@ -40,15 +32,10 @@ export class AddonInstallApiService {
 
     this._electronService.on(IPC_ADDON_INSTALL_PROGRESS, listener);
     try {
-      return await this._electronService.invoke(IPC_ADDON_INSTALL_FILE, request);
+      return await this._electronService.invoke(IPC_ADDON_INSTALL, request);
     } finally {
       this._electronService.off(IPC_ADDON_INSTALL_PROGRESS, listener);
     }
-  }
-
-  /** Add one provider id to a saved addon; undefined when the addon isn't saved */
-  public addExternalId(request: AddExternalIdRequest): Promise<AddonExternalId[] | undefined> {
-    return this._electronService.invoke(IPC_ADDON_ADD_EXTERNAL_ID, request);
   }
 
   /** Delete an addon's folders and forget it, plus its dependencies when asked */

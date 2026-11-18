@@ -1,5 +1,7 @@
 import { Addon, AddonFolder, AddonScanResult, AddonSearchResult, AddonWarningType } from "wowup-lib-core";
 
+import { SerializedProviderError } from "./addon-provider";
+
 /** Which fingerprint a scan should produce. One folder can be asked for both at once. */
 export type AddonScanSource = "wowup" | "curseforge";
 
@@ -16,8 +18,8 @@ export interface FolderScanResults {
 }
 
 /**
- * Ask main to list an installation's addon folders and get them ready for the providers to match.
- * Main works out the folder path, the symlink setting and which fingerprints this build needs.
+ * Ask main to list an installation's addon folders and fingerprint them, without matching them to a
+ * provider. Main works out the folder path, the symlink setting and which fingerprints this build needs.
  */
 export interface PrepareAddonScanRequest {
   installationId: string;
@@ -33,20 +35,28 @@ export interface PreparedAddonScan {
   addonFolders: AddonFolder[];
 }
 
-/** Hand main the folders once the providers have set their matchingAddon */
-export interface CompleteAddonScanRequest {
+/** Read an installation's addons off disk and match them to the providers the user has on */
+export interface ScanAddonsRequest {
   installationId: string;
-  addonFolders: AddonFolder[];
-  /** Every provider this build has, which decides which toc ids become external ids */
-  providerNames: string[];
-  /** As given to prepare: the saved addons of these providers are carried over unchanged */
-  nonRescanProviders?: string[];
   /**
    * Replace the installation's saved addons with the result, keeping the user's settings for the ones
-   * that were already there. Leave it off to only read what's on disk.
+   * that were already there and the saved addons of providers a scan can't find again (e.g. GitHub).
+   * One saving scan runs per installation at a time: one asked for while another runs waits for it,
+   * then scans again, and every caller waiting meanwhile shares that next scan (#1561).
+   * Leave it off to only read what's on disk.
    */
   save: boolean;
+  /** With `save`: share a saving scan already running instead of queueing another after it */
+  joinRunning?: boolean;
 }
+
+/** Sent on IPC_ADDON_SCAN_EVENT as each scan runs, once per scan however many callers share it */
+export type AddonScanEvent = { installationId: string } & (
+  | { type: "start" }
+  | { type: "folders"; totalCount: number }
+  | { type: "providerError"; providerName: string; error: SerializedProviderError }
+  | { type: "complete" }
+);
 
 /** What a provider reported against one of its addon ids instead of a result */
 export interface AddonSyncFailure {

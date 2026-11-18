@@ -66,8 +66,7 @@ export interface AddonInstallServiceDeps {
  * version installed, unzips and copies the new one in (restoring the backup if that fails), reads the
  * new tocs, and saves the result. Removing an addon goes through here too.
  *
- * Downloading stays with the caller, because a failed download is retried after asking the addon's
- * provider for a fresh url, and the providers still live in the renderer.
+ * Downloading is the caller's job (`AddonInstaller`), which hands this the zip.
  */
 export class AddonInstallService {
   public constructor(private readonly deps: AddonInstallServiceDeps) {}

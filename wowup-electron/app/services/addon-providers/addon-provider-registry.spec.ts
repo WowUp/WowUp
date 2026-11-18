@@ -26,11 +26,12 @@ interface RegistryOptions {
   wago?: boolean;
   curseforge?: boolean;
   secrets?: Record<string, string>;
+  userStates?: { providerName: string; enabled: boolean }[];
 }
 
 function createRegistry(
   fetchResponse: (url: string, init: RequestInit) => Response,
-  { wago = false, curseforge = false, secrets = {} }: RegistryOptions = {},
+  { wago = false, curseforge = false, secrets = {}, userStates = [] }: RegistryOptions = {},
 ) {
   const requests: { url: string; init: RequestInit }[] = [];
   const listeners = {
@@ -76,6 +77,7 @@ function createRegistry(
       return () => (listeners.resume = undefined);
     },
     reloadAd: () => adReloads++,
+    getUserProviderStates: () => userStates,
     log: silentLog,
   });
   return { registry, requests, listeners, adReloads: () => adReloads };
@@ -107,6 +109,27 @@ function rioFolder(name: string, toc: Partial<Toc>): AddonFolder {
 }
 
 describe("AddonProviderRegistry", () => {
+  it("should leave out the providers the user turned off, keeping the order", () => {
+    const { registry } = createRegistry(() => new Response("[]"), {
+      userStates: [
+        { providerName: "tukui", enabled: false },
+        { providerName: "wowinterface", enabled: true },
+      ],
+    });
+
+    expect(registry.isEnabled("TukUI")).to.equal(false);
+    expect(registry.isEnabled("Nope")).to.equal(false);
+    expect(registry.getEnabledProviders().map((p) => p.name)).to.deep.equal([
+      "Zip",
+      "RaiderIO",
+      "WowUpCompanion",
+      "WowUpHub",
+      "WowInterface",
+      "GitHub",
+    ]);
+    expect(registry.getNonRescanProviderNames()).to.include("GitHub");
+  });
+
   it("should list its providers in the factory's order", () => {
     const { registry } = createRegistry(() => new Response("[]"));
 

@@ -466,5 +466,17 @@ describe("file-download", () => {
 
       expect(fs.statSync(savePath).size).to.equal(chunk.length * chunkCount);
     });
+
+    it("deletes the partial file when it fails", async () => {
+      delete deps.createWriteStream;
+
+      const promise = start();
+      const response = await respond(500);
+      response.emit("data", Buffer.from("oops"));
+      response.emit("end");
+
+      await expectRejection(promise);
+      expect(await fsp.readdir(outputFolder)).to.deep.equal([]);
+    });
   });
 });

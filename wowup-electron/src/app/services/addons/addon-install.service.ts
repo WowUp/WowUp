@@ -1,25 +1,14 @@
 import { Injectable } from "@angular/core";
 import { catchError, EMPTY, from, mergeMap, Subject } from "rxjs";
-import slug from "slug";
-import { join as pathJoin } from "path";
 import { Addon, getEnumName, WowClientType } from "wowup-lib-core";
 
-import { RemoteAddonProvider } from "../../addon-providers/remote-addon-provider";
-import { ADDON_PROVIDER_HUB, USER_ACTION_ADDON_INSTALL } from "../../../common/constants";
+import { USER_ACTION_ADDON_INSTALL } from "../../../common/constants";
 import { AddonInstallPhase } from "../../../common/models/addon-install";
 import { AddonInstallState } from "../../models/wowup/addon-install-state";
 import { AddonUpdateEvent } from "../../models/wowup/addon-update-event";
 import { capitalizeString } from "../../utils/string.utils";
-import { delayMs } from "../../utils/time.utils";
 import { AnalyticsService } from "../analytics/analytics.service";
 import { AddonInstallApiService } from "../api/addon-install-api.service";
-import { AddonScanApiService } from "../api/addon-scan-api.service";
-import { DownloadOptions, DownloadService } from "../download/download.service";
-import { FileService } from "../files/file.service";
-import { WarcraftInstallationService } from "../warcraft/warcraft-installation.service";
-import { WarcraftService } from "../warcraft/warcraft.service";
-import { WowUpService } from "../wowup/wowup.service";
-import { AddonProviderFactory } from "./addon.provider.factory";
 
 export type InstallType = "install" | "update" | "remove";
 
@@ -32,14 +21,15 @@ export interface InstallQueueItem {
 }
 
 const PHASE_STATES: Record<AddonInstallPhase, { installState: AddonInstallState; progress: number }> = {
+  downloading: { installState: AddonInstallState.Downloading, progress: 25 },
+  retry: { installState: AddonInstallState.Retry, progress: 0 },
   backingUp: { installState: AddonInstallState.BackingUp, progress: 50 },
   installing: { installState: AddonInstallState.Installing, progress: 75 },
 };
 
 /**
- * The install queue. Each item is downloaded here, because a failed download is retried after the
- * addon's provider refreshes its url and the providers live in the renderer, then main installs the
- * zip (`AddonInstallApiService`). The hub id lookup afterwards also needs a provider, so it runs here.
+ * The install queue: up to 3 at a time, each one a single call to main, which downloads the addon
+ * (retrying with a fresh url), installs it and looks up its hub id (`AddonInstallApiService`).
  */
 @Injectable({
   providedIn: "root",
@@ -53,14 +43,7 @@ export class AddonInstallService {
   public readonly installError$ = this._installErrorSrc.asObservable();
 
   public constructor(
-    private _warcraftInstallationService: WarcraftInstallationService,
-    private _addonProviderService: AddonProviderFactory,
-    private _wowUpService: WowUpService,
-    private _warcraftService: WarcraftService,
-    private _downloadService: DownloadService,
-    private _fileService: FileService,
     private _analyticsService: AnalyticsService,
-    private _addonScanApiService: AddonScanApiService,
     private _addonInstallApiService: AddonInstallApiService,
   ) {
     // Setup our install queue pump here. An error escaping one item must not reach the outer
@@ -113,65 +96,10 @@ export class AddonInstallService {
       `'${addon.installedVersion ?? ""}' -> '${addon.latestVersion ?? ""}'`,
     );
 
-    const downloadFileName = `${slug(addon.name)}.zip`;
-
-    let downloadedFilePath = "";
-
     try {
-      const installation = this._warcraftInstallationService.getWowInstallation(addon.installationId);
-      if (!installation) {
-        throw new Error(`Installation not found: ${addon.installationId ?? ""}`);
-      }
-
-      const addonProvider = this._addonProviderService.getProvider(addon.providerName ?? "");
-      if (!addonProvider) {
-        throw new Error(`Addon provider not found: ${addon.providerName ?? ""}`);
-      }
-
-      this.reportState(queueItem, AddonInstallState.Downloading, 25);
-
-      const downloadAuth = await addonProvider.getDownloadAuth();
-      console.debug(`Download auth for ${addon.name}:`, downloadAuth);
-
-      let retryCt = 0;
-      while (downloadedFilePath.length === 0) {
-        const downloadOptions: DownloadOptions = {
-          fileName: downloadFileName,
-          outputFolder: this._wowUpService.applicationDownloadsFolderPath,
-          url: addon.downloadUrl ?? "",
-          auth: downloadAuth,
-        };
-
-        try {
-          downloadedFilePath = await this._downloadService.downloadZipFile(downloadOptions);
-        } catch (e) {
-          if (retryCt === 3) {
-            throw e;
-          }
-          retryCt += 1;
-          const backoffMs = 1000 * Math.pow(2, retryCt - 1);
-          console.log(`install download failed, retry ${retryCt} in ${backoffMs}ms`);
-
-          this._addonInstalledSrc.next({
-            addon,
-            installState: AddonInstallState.Retry,
-            progress: 0,
-          });
-          // The caller re-syncs the addon here, which can hand it a fresh download url
-          await onUpdate?.call(this, AddonInstallState.Retry, 0);
-          await delayMs(backoffMs);
-        }
-      }
-
-      const installed = await this._addonInstallApiService.installFile(
-        {
-          addon,
-          zipFilePath: downloadedFilePath,
-          originalAddon: queueItem.originalAddon,
-          forceIgnore: addonProvider.forceIgnore,
-          providerNames: this._addonProviderService.getProviderNames(),
-        },
-        (phase) => this.reportState(queueItem, PHASE_STATES[phase].installState, PHASE_STATES[phase].progress),
+      const installed = await this._addonInstallApiService.install(
+        { addon, originalAddon: queueItem.originalAddon },
+        (phase) => this.reportPhase(queueItem, phase),
       );
       // Callers and the grids hold this object, so the saved result goes onto it rather than replacing it
       Object.assign(addon, installed.addon);
@@ -180,8 +108,6 @@ export class AddonInstallService {
       for (const removed of installed.removedAddons) {
         this.trackInstallAction("remove", removed);
       }
-
-      await this.addHubExternalId(addon);
 
       queueItem.completion.resolve();
 
@@ -203,14 +129,19 @@ export class AddonInstallService {
         progress: 100,
         error: err instanceof Error ? err : undefined,
       });
-    } finally {
-      // Main deletes the zip once it has it; this catches a failure before it got that far
-      if (downloadedFilePath && (await this._fileService.pathExists(downloadedFilePath))) {
-        await this._fileService.remove(downloadedFilePath);
-      }
     }
     return addon.name;
   };
+
+  private reportPhase(queueItem: InstallQueueItem, phase: AddonInstallPhase): void {
+    const { installState, progress } = PHASE_STATES[phase];
+    // A retry only shows on the grids; the caller's callback never heard about one
+    if (installState === AddonInstallState.Retry) {
+      this._addonInstalledSrc.next({ addon: queueItem.addon, installState, progress });
+      return;
+    }
+    this.reportState(queueItem, installState, progress);
+  }
 
   private reportState(queueItem: InstallQueueItem, installState: AddonInstallState, progress: number): void {
     queueItem.onUpdate?.call(this, installState, progress);
@@ -221,52 +152,6 @@ export class AddonInstallService {
     console.log(
       `[${action}] ${addon.providerName ?? ""} ${addon.externalId ?? "NO_EXT_ID"} ${addon.name} ${extras.join(" ")}`,
     );
-  }
-
-  /**
-   * The hub has no toc field and can only be matched by fingerprint, so an addon installed from
-   * another provider never learns its hub id from its tocs. Ask the hub about the installed
-   * folders instead. Best effort: a hub failure must never fail the install.
-   */
-  private async addHubExternalId(addon: Addon): Promise<void> {
-    if (
-      addon.providerName === ADDON_PROVIDER_HUB ||
-      !addon.installationId ||
-      !addon.installedFolderList?.length ||
-      addon.externalIds?.some((extId) => extId.providerName === ADDON_PROVIDER_HUB)
-    ) {
-      return;
-    }
-
-    const hubProvider = this._addonProviderService.getProvider<RemoteAddonProvider>(ADDON_PROVIDER_HUB);
-    const installation = this._warcraftInstallationService.getWowInstallation(addon.installationId);
-    if (!hubProvider?.enabled || !installation) {
-      return;
-    }
-
-    try {
-      const addonFolderPath = this._warcraftService.getAddonFolderPath(installation);
-      const folderPaths = addon.installedFolderList.map((folderName) => pathJoin(addonFolderPath, folderName));
-      const scanResults = await this._addonScanApiService.getScanResults(folderPaths, ["wowup"]);
-      const fingerprints = scanResults.map((result) => result.wowup?.fingerprint).filter((fp): fp is string => !!fp);
-
-      const hubIds = await hubProvider.getAddonIdsByFingerprints(fingerprints);
-      const hubId = fingerprints.map((fp) => hubIds.get(fp)).find((id) => id !== undefined);
-      if (!hubId) {
-        return;
-      }
-
-      const externalIds = await this._addonInstallApiService.addExternalId({
-        addonId: addon.id,
-        providerName: ADDON_PROVIDER_HUB,
-        externalId: hubId,
-      });
-      if (externalIds) {
-        addon.externalIds = externalIds;
-      }
-    } catch (e) {
-      console.error(`Failed to look up hub id for ${addon.name}`, e);
-    }
   }
 
   private trackInstallAction(installType: InstallType, addon: Addon) {

@@ -1,15 +1,18 @@
 import { Addon, AddonFolder, WowInstallation } from "wowup-lib-core";
 
 import {
+  AddonScanEvent,
   AddonScanRequest,
   AddonScanSource,
   AppliedAddonSync,
   ApplyAddonSyncRequest,
-  CompleteAddonScanRequest,
   FolderScanResults,
   PrepareAddonScanRequest,
   PreparedAddonScan,
+  ScanAddonsRequest,
 } from "../../../src/common/models/addon-scan";
+import { ProviderLookup } from "../addon-providers/addon-provider-registry";
+import { serializeProviderError } from "../addon-providers/provider-errors";
 import { AddonRepository } from "./addon-repository";
 import { assembleScannedAddons, mergeAddonSettings, removeNonRescanFolders, ScanAssemblyLog } from "./scan-assembly";
 import { applyAddonSync } from "./sync-results";
@@ -28,16 +31,106 @@ export interface AddonSyncDeps {
   getFingerprints: (request: AddonScanRequest) => Promise<FolderScanResults[]>;
   getLatestDirUpdateTime: (dirPath: string) => Promise<number>;
   newId: () => string;
-  log: ScanAssemblyLog;
+  /** Undefined until the renderer has sent the providers' config */
+  getProviders: () => ProviderLookup | undefined;
+  /** Each scan's progress and provider failures, see `AddonScanEvent` */
+  onScanEvent: (event: AddonScanEvent) => void;
+  log: ScanAssemblyLog & { error(...args: unknown[]): void };
 }
 
 /**
- * Scanning and syncing an installation's addons, except for talking to the addon providers, which
- * still happens in the renderer (UI_DECOUPLING_PLAN.md Phase 5). A scan is therefore two calls with
- * the providers' matching in between: prepareScan, then completeScan.
+ * Scanning and syncing an installation's addons. A scan lists and fingerprints the folders, lets each
+ * enabled provider match the ones no provider before it claimed, and builds the addon list from that.
+ * Syncing still asks the providers from the renderer, which hands main each answer (applySync).
  */
 export class AddonSyncService {
+  /** Saving scan running right now, by installation id */
+  private readonly _activeScans = new Map<string, Promise<Addon[]>>();
+  /** Saving scan waiting for the running one to finish, by installation id */
+  private readonly _queuedScans = new Map<string, Promise<Addon[]>>();
+
   public constructor(private readonly deps: AddonSyncDeps) {}
+
+  public scan(request: ScanAddonsRequest): Promise<Addon[]> {
+    if (!request.save) {
+      return this.runScan(request.installationId, false);
+    }
+
+    const { installationId } = request;
+    const active = this._activeScans.get(installationId);
+    if (active !== undefined && request.joinRunning) {
+      return active;
+    }
+
+    const queued = this._queuedScans.get(installationId);
+    if (queued !== undefined) {
+      return queued;
+    }
+
+    if (active === undefined) {
+      return this.startSavingScan(installationId);
+    }
+
+    const next = active
+      .catch(() => undefined)
+      .then(() => {
+        this._queuedScans.delete(installationId);
+        return this.startSavingScan(installationId);
+      });
+    this._queuedScans.set(installationId, next);
+    return next;
+  }
+
+  private startSavingScan(installationId: string): Promise<Addon[]> {
+    const scan = this.runScan(installationId, true).finally(() => this._activeScans.delete(installationId));
+    this._activeScans.set(installationId, scan);
+    return scan;
+  }
+
+  private async runScan(installationId: string, save: boolean): Promise<Addon[]> {
+    const providers = this.deps.getProviders();
+    if (!providers) {
+      throw new Error("Addon providers are not initialized");
+    }
+
+    const installation = this.getInstallation(installationId);
+    this.deps.onScanEvent({ installationId, type: "start" });
+    try {
+      const nonRescanProviders = save ? providers.getNonRescanProviderNames() : undefined;
+      const { addonFolders } = await this.prepareScan({ installationId, nonRescanProviders });
+
+      if (addonFolders.length > 0) {
+        this.deps.onScanEvent({ installationId, type: "folders", totalCount: addonFolders.length });
+        await this.matchAddonFolders(installation, addonFolders, providers);
+      }
+
+      return await this.completeScan(installation, addonFolders, providers, nonRescanProviders, save);
+    } finally {
+      this.deps.onScanEvent({ installationId, type: "complete" });
+    }
+  }
+
+  /** Let each enabled provider set matchingAddon on the folders no provider before it claimed */
+  private async matchAddonFolders(
+    installation: WowInstallation,
+    addonFolders: AddonFolder[],
+    providers: ProviderLookup,
+  ): Promise<void> {
+    for (const provider of providers.getEnabledProviders()) {
+      try {
+        const validFolders = addonFolders.filter((af) => !af.ignoreReason && !af.matchingAddon && af.tocs.length > 0);
+        await provider.scan(installation, installation.defaultAddonChannelType, validFolders);
+      } catch (e) {
+        this.deps.log.error(`scan failed: ${provider.name}`, e);
+        this.deps.onScanEvent({
+          installationId: installation.id,
+          type: "providerError",
+          providerName: provider.name,
+          error: serializeProviderError(e),
+        });
+      }
+    }
+  }
 
   /** List the installation's addon folders, flag the ones to skip, and fingerprint them */
   public async prepareScan(request: PrepareAddonScanRequest): Promise<PreparedAddonScan> {
@@ -65,23 +158,28 @@ export class AddonSyncService {
   }
 
   /** Build the installation's addon list from the matched folders, and save it when asked */
-  public async completeScan(request: CompleteAddonScanRequest): Promise<Addon[]> {
-    const installation = this.getInstallation(request.installationId);
+  private async completeScan(
+    installation: WowInstallation,
+    addonFolders: AddonFolder[],
+    providers: ProviderLookup,
+    nonRescanProviders: string[] | undefined,
+    save: boolean,
+  ): Promise<Addon[]> {
     const existing = this.deps.repository.getAllForInstallation(installation.id);
 
-    // Read from the store now rather than at prepare, so anything saved during the providers' matching counts
-    const nonRescan = new Set(request.nonRescanProviders ?? []);
+    // Read from the store now rather than before matching, so anything saved during the providers' matching counts
+    const nonRescan = new Set(nonRescanProviders ?? []);
     const keptAddons = existing.filter((addon) => nonRescan.has(addon.providerName ?? ""));
 
     const scanned = await assembleScannedAddons(
-      request.addonFolders,
+      addonFolders,
       keptAddons,
       installation,
-      new Set(request.providerNames),
+      new Set(providers.getProviderNames()),
       this.deps,
     );
 
-    if (!request.save) {
+    if (!save) {
       return scanned;
     }
 

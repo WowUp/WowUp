@@ -11,15 +11,17 @@ import { AddonProviderRegistry } from "../services/addon-providers/addon-provide
 import { AddonInstallController } from "./addon-install.controller";
 import { AddonSyncController } from "./scan/addon-sync.controller";
 import { AddonInstallService } from "../services/addons/addon-install.service";
+import { AddonInstaller } from "../services/addons/addon-installer";
+import { UserProviderState } from "../services/addon-providers/addon-provider-registry";
+import { downloadFile } from "../services/download/file-download";
 import { AddonRepository } from "../services/addons/addon-repository";
 import { AddonSyncService } from "../services/addons/addon-sync.service";
 import { copyPath, getLastModifiedFileDate, remove, unzipFile } from "../file.utils";
 import { AddonFolderService } from "../services/warcraft/addon-folder.service";
-import { USE_SYMLINK_MODE_PREFERENCE_KEY } from "../../src/common/constants";
+import { ADDON_PROVIDERS_KEY, IPC_ADDON_SCAN_EVENT, USE_SYMLINK_MODE_PREFERENCE_KEY } from "../../src/common/constants";
 import { WagoAdsController } from "./wago-ads.controller";
 import { IpcController } from "./ipc-controller";
 import { MetricsController } from "./metrics/metrics.controller";
-import { AddonFingerprintController } from "./scan/addon-fingerprint.controller";
 import { TocController } from "./toc/toc.controller";
 import { WarcraftController } from "./warcraft/warcraft.controller";
 import { WarcraftInstallationController } from "./warcraft/warcraft-installation.controller";
@@ -116,29 +118,52 @@ export function registerControllers(deps: ControllerDeps): void {
     getFingerprints: (request) => scanService.scanFolders(request),
     getLatestDirUpdateTime: (dirPath) => getLastModifiedFileDate(dirPath),
     newId: () => randomUUID(),
+    getProviders: () => providerController.registry,
+    onScanEvent: (event) => {
+      if (!deps.window.isDestroyed()) {
+        deps.window.webContents.send(IPC_ADDON_SCAN_EVENT, event);
+      }
+    },
     log,
   });
+
+  // Where addon zips are downloaded to, and the only folder an install unzips from
+  const downloadsFolderPath = path.join(app.getPath("userData"), "downloads");
+  const removeFile = async (filePath: string) => {
+    if (await pathExists(filePath)) {
+      await remove(filePath);
+    }
+  };
 
   const installService = new AddonInstallService({
     repository: addonRepository,
     getInstallations: () => installationService.getAll(),
     getAddonFolderPath: (installation) => addonFolderService.getAddonFolderPath(installation),
     getAllTocs: (baseDir, folderNames, clientType) => tocService.getAllTocs(baseDir, folderNames, clientType),
-    // Where the renderer's download service saves addon zips (WowUpService.applicationDownloadsFolderPath)
-    downloadsFolderPath: path.join(app.getPath("userData"), "downloads"),
+    downloadsFolderPath,
     fs: {
       pathExists,
       listDirectories,
       copy: (sourcePath, destinationPath) => copyPath(sourcePath, destinationPath),
-      remove: async (filePath) => {
-        if (await pathExists(filePath)) {
-          await remove(filePath);
-        }
-      },
+      remove: removeFile,
       unzip: (zipFilePath, outputFolder) => unzipFile(zipFilePath, outputFolder),
     },
     newId: () => randomUUID(),
     now: () => new Date(),
+    log,
+  });
+
+  const installer = new AddonInstaller({
+    getProviders: () => providerController.registry,
+    installService,
+    applySync: (request) => syncService.applySync(request),
+    download: (options) => downloadFile(options, { net, log }),
+    getInstallations: () => installationService.getAll(),
+    getAddonFolderPath: (installation) => addonFolderService.getAddonFolderPath(installation),
+    getFingerprints: (request) => scanService.scanFolders(request),
+    downloadsFolderPath,
+    removeFile,
+    delay: (ms) => new Promise((resolve) => setTimeout(resolve, ms)),
     log,
   });
 
@@ -166,6 +191,8 @@ export function registerControllers(deps: ControllerDeps): void {
           return () => powerMonitor.off("resume", listener);
         },
         reloadAd: () => adView?.reload(),
+        // The renderer saves these (WowUpService.setAddonProviderState); main only reads them
+        getUserProviderStates: () => (deps.preferenceStore.get(ADDON_PROVIDERS_KEY) as UserProviderState[]) ?? [],
         log,
       }),
   );
@@ -173,11 +200,10 @@ export function registerControllers(deps: ControllerDeps): void {
   const controllers: IpcController[] = [
     new AddonController(addonRepository),
     providerController,
-    new AddonInstallController(installService),
+    new AddonInstallController(installer, installService),
     new WarcraftController(getPlatformImpl(), deps.preferenceStore, addonFolderService),
     new WarcraftInstallationController(installationService),
     new TocController(tocService),
-    new AddonFingerprintController(scanService),
     new AddonSyncController(syncService, () => metricsService.logRendererMemory("renderers after scan")),
     // Registered on every flavor on purpose: a resource report is only actionable if the ow numbers
     // can be held against the wago ones.

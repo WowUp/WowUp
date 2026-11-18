@@ -45,7 +45,25 @@ export interface AddonProviderRegistryDeps {
   onPowerResume: (listener: () => void) => () => void;
   /** Reloads the Wago ad page, which then hands over a fresh token */
   reloadAd: () => void;
+  /** The user's on/off choice per provider (the ADDON_PROVIDERS_KEY preference), names lower case */
+  getUserProviderStates: () => UserProviderState[];
   log: { info(...args: unknown[]): void; error(...args: unknown[]): void };
+}
+
+export interface UserProviderState {
+  providerName: string;
+  enabled: boolean;
+}
+
+/** What the scan and install pipelines need from the registry */
+export interface ProviderLookup {
+  getProvider(providerName: string): AddonProvider | undefined;
+  /** In order, those the user hasn't turned off */
+  getEnabledProviders(): AddonProvider[];
+  isEnabled(providerName: string): boolean;
+  getProviderNames(): string[];
+  /** Providers whose addons a scan can't find again from the folders on disk, e.g. GitHub */
+  getNonRescanProviderNames(): string[];
 }
 
 /** The old CFV2Client's default; the Curse breaker's own timeout never applied to it */
@@ -55,7 +73,7 @@ const CURSEFORGE_HTTP_TIMEOUT_MS = 30000;
  * Every addon provider, in the order the renderer looks them up. The renderer reaches them through
  * `RemoteAddonProvider` stand-ins, one ipc call per provider method.
  */
-export class AddonProviderRegistry {
+export class AddonProviderRegistry implements ProviderLookup {
   private readonly _providers = new Map<string, AddonProvider>();
   private readonly _wago: WagoAddonProvider | undefined;
 
@@ -154,6 +172,33 @@ export class AddonProviderRegistry {
       providerNote: provider.providerNote,
       adPageParams: provider.getAdPageParams(),
     }));
+  }
+
+  public getProvider(providerName: string): AddonProvider | undefined {
+    return this._providers.get(providerName);
+  }
+
+  /** The user's choice when there is one, as the renderer applies it to its stand-ins, else the provider's own */
+  public isEnabled(providerName: string): boolean {
+    const provider = this._providers.get(providerName);
+    if (!provider) {
+      return false;
+    }
+    const states = this._deps.getUserProviderStates();
+    const state = Array.isArray(states) ? states.find((s) => s.providerName === providerName.toLowerCase()) : undefined;
+    return state ? state.enabled : provider.enabled;
+  }
+
+  public getEnabledProviders(): AddonProvider[] {
+    return [...this._providers.values()].filter((provider) => this.isEnabled(provider.name));
+  }
+
+  public getProviderNames(): string[] {
+    return [...this._providers.keys()];
+  }
+
+  public getNonRescanProviderNames(): string[] {
+    return [...this._providers.values()].filter((p) => p.allowReScan !== true).map((p) => p.name);
   }
 
   /** Stops the listeners the providers hold (the Wago token, store changes, resume) */

@@ -5,7 +5,6 @@ import {
   dialog,
   ipcMain,
   IpcMainInvokeEvent,
-  net,
   OpenDialogOptions,
   Settings,
   shell,
@@ -25,7 +24,6 @@ import {
   IPC_CREATE_DIRECTORY_CHANNEL,
   IPC_CREATE_TRAY_MENU_CHANNEL,
   IPC_DELETE_DIRECTORY_CHANNEL,
-  IPC_DOWNLOAD_FILE_CHANNEL,
   IPC_FOCUS_WINDOW,
   IPC_GET_APP_VERSION,
   IPC_GET_SHELL_VERSION,
@@ -77,9 +75,6 @@ import {
 } from "../src/common/constants";
 
 import { CopyFileRequest } from "../src/common/models/copy-file-request";
-import { DownloadRequest } from "../src/common/models/download-request";
-import { DownloadStatus } from "../src/common/models/download-status";
-import { DownloadStatusType } from "../src/common/models/download-status-type";
 import { FsDirent, TreeNode } from "../src/common/models/ipc-events";
 import { UnzipRequest } from "../src/common/models/unzip-request";
 import { RendererChannels } from "../src/common/wowup";
@@ -105,7 +100,6 @@ import * as push from "./push";
 import { GetDirectoryTreeRequest } from "../src/common/models/ipc-request";
 import { restoreWindow } from "./window-state";
 import { firstValueFrom, from, mergeMap, toArray } from "rxjs";
-import { downloadFile } from "./services/download/file-download";
 import { getAssetPath } from "./bundle-paths";
 import {
   isDefaultProtocolClient,
@@ -538,10 +532,6 @@ export function initializeIpcHandlers(window: BrowserWindow): void {
     return window.isFocused();
   });
 
-  ipcMain.on(IPC_DOWNLOAD_FILE_CHANNEL, (evt, arg: DownloadRequest) => {
-    handleDownloadFile(arg).catch((e) => log.error(e.toString()));
-  });
-
   // In order to allow concurrent downloads, we have to get creative with this session handler
   window.webContents.session.on("will-download", (evt, item, wc) => {
     for (const key of _dlMap.keys()) {
@@ -595,23 +585,5 @@ export function initializeIpcHandlers(window: BrowserWindow): void {
       uid: stats.uid,
     };
     return { path: filePath, fsStats };
-  }
-
-  async function handleDownloadFile(arg: DownloadRequest) {
-    const status: DownloadStatus = {
-      type: DownloadStatusType.Pending,
-      savePath: "",
-    };
-
-    try {
-      status.savePath = await downloadFile(arg, { net, log });
-      status.type = DownloadStatusType.Complete;
-    } catch (err) {
-      log.error(err);
-      status.type = DownloadStatusType.Error;
-      status.error = err instanceof Error ? err : undefined;
-    }
-
-    window.webContents.send(arg.responseKey, status);
   }
 }

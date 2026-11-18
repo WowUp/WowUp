@@ -13,11 +13,9 @@ import {
   WowInstallation,
 } from "wowup-lib-core";
 
-import { IPC_ADDONS_GET_ALL_FOR_INSTALLATION } from "../../../common/constants";
 import { AddonInstallState } from "../../models/wowup/addon-install-state";
 import { AddonUpdateEvent } from "../../models/wowup/addon-update-event";
 import { AnalyticsService } from "../analytics/analytics.service";
-import { ElectronService } from "../electron/electron.service";
 import { FileService } from "../files/file.service";
 import { AddonStorageService } from "../storage/addon-storage.service";
 import { TocService } from "../toc/toc.service";
@@ -26,9 +24,16 @@ import { WarcraftService } from "../warcraft/warcraft.service";
 import { WowUpService } from "../wowup/wowup.service";
 import { AddonSyncApiService } from "../api/addon-sync-api.service";
 import { AddonInstallApiService } from "../api/addon-install-api.service";
-import { AddonSyncError, GenericProviderError } from "../../errors";
+import { AddonScanError, AddonSyncError, GenericProviderError } from "../../errors";
+import { AddonScanEvent } from "../../../common/models/addon-scan";
 import { AddonInstallService, InstallQueueItem } from "./addon-install.service";
-import { AddonService, DependencyInstallEvent, DependencyInstallState } from "./addon.service";
+import {
+  AddonService,
+  DependencyInstallEvent,
+  DependencyInstallState,
+  ScanUpdate,
+  ScanUpdateType,
+} from "./addon.service";
 import { AddonProviderFactory } from "./addon.provider.factory";
 
 const ADDON_FOLDER_PATH = pathJoin("wow", "_retail_", "Interface", "AddOns");
@@ -46,6 +51,8 @@ describe("AddonService", () => {
   let addonProviderFactory: jasmine.SpyObj<AddonProviderFactory>;
   let wowUpService: jasmine.SpyObj<WowUpService>;
   let syncApi: jasmine.SpyObj<AddonSyncApiService>;
+  /** What main's scan events reach, as the service subscribed to them */
+  let scanEventListener: (event: AddonScanEvent) => void;
   let installApi: jasmine.SpyObj<AddonInstallApiService>;
 
   /** Addons saved to storage, as getAllForInstallationIdAsync returns them. */
@@ -201,9 +208,14 @@ describe("AddonService", () => {
     // Main applies the sync and hands the addons back as copies, like a real ipc round trip
     syncApi = jasmine.createSpyObj<AddonSyncApiService>("AddonSyncApiService", [
       "prepareScan",
-      "completeScan",
+      "scan",
+      "onScanEvent",
       "applySync",
     ]);
+    syncApi.onScanEvent.and.callFake((listener) => {
+      scanEventListener = listener;
+      return () => undefined;
+    });
     syncApi.applySync.and.callFake((request) =>
       Promise.resolve({
         addons: request.addons.map((a) => ({ ...a })),
@@ -212,7 +224,7 @@ describe("AddonService", () => {
       }),
     );
     syncApi.prepareScan.and.resolveTo({ addonFolders: [] });
-    syncApi.completeScan.and.resolveTo([]);
+    syncApi.scan.and.resolveTo([]);
 
     installApi = jasmine.createSpyObj<AddonInstallApiService>("AddonInstallApiService", ["removeAddon"]);
     installApi.removeAddon.and.callFake((request) => Promise.resolve({ removedAddons: [request.addon] }));
@@ -1276,158 +1288,67 @@ describe("AddonService", () => {
     });
   });
 
-  describe("rescanInstallation", () => {
-    /** The addon store in the main process, keyed by addon id */
-    let store: Map<string, Addon>;
-    /** Main's half of a scan, which saves the result when asked */
-    let scanSpy: jasmine.Spy;
-    let scanService: AddonService;
+  describe("scanning", () => {
+    it("should ask main for a saving scan and announce it", async () => {
+      const scanned = [createAddon({ id: "scanned" })];
+      syncApi.scan.and.resolveTo(scanned);
+      const actions: string[] = [];
+      service.addonAction$.subscribe((action) => actions.push(action.type));
 
-    /** Every IPC call takes a turn of the event loop, like a real round trip to the main process */
-    function createElectronService(): ElectronService {
-      return {
-        invoke: async (channel: string, ...args: any[]) => {
-          await new Promise((r) => setTimeout(r));
-          switch (channel) {
-            case IPC_ADDONS_GET_ALL_FOR_INSTALLATION:
-              return [...store.values()].filter((a) => a.installationId === args[0]);
-            default:
-              return [];
-          }
-        },
-      } as unknown as ElectronService;
-    }
+      const addons = await service.rescanInstallation(installation);
 
-    function storedNames(): Array<string | undefined> {
-      return [...store.values()].map((a) => a.name).sort();
-    }
-
-    beforeEach(() => {
-      store = new Map();
-      scanService = new AddonService(
-        new AddonStorageService(createElectronService()),
-        addonInstallService,
-        analyticsService,
-        warcraftService,
-        wowUpService,
-        fileService,
-        {} as TocService,
-        warcraftInstallationService,
-        addonProviderFactory,
-        syncApi,
-        installApi,
-      );
-
-      // Every scan makes new records with new ids, like the real folder scan does
-      let scanCt = 0;
-      scanSpy = syncApi.completeScan.and.callFake(async (request) => {
-        scanCt += 1;
-        await new Promise((r) => setTimeout(r, 5));
-        const addons = ["Baganator", "Syndicator"].map((name) =>
-          createAddon({ id: `${name}-${scanCt}`, name, externalId: name }),
-        );
-        if (request.save) {
-          for (const [id, a] of [...store]) {
-            if (a.installationId === request.installationId) {
-              store.delete(id);
-            }
-          }
-          addons.forEach((a) => store.set(a.id, a));
-        }
-        return addons;
-      });
+      expect(syncApi.scan).toHaveBeenCalledWith({ installationId: installation.id, save: true, joinRunning: false });
+      expect(addons).toBe(scanned);
+      expect(actions).toEqual(["scan"]);
     });
 
-    it("should ask main to keep the addons a scan can't find again and to save the result", async () => {
-      await scanService.rescanInstallation(installation);
+    it("should share a running scan when nothing is saved yet", async () => {
+      addonStorage.getAllForInstallationIdAsync.and.resolveTo([]);
 
-      expect(syncApi.prepareScan).toHaveBeenCalledWith({
+      await service.getAddons(installation);
+
+      expect(syncApi.scan).toHaveBeenCalledWith({ installationId: installation.id, save: true, joinRunning: true });
+    });
+
+    it("should not scan when addons are saved", async () => {
+      addonStorage.getAllForInstallationIdAsync.and.resolveTo([createAddon()]);
+
+      await service.getAddons(installation);
+
+      expect(syncApi.scan).not.toHaveBeenCalled();
+    });
+
+    it("should turn main's scan events into scan updates", () => {
+      const updates: ScanUpdate[] = [];
+      service.scanUpdate$.subscribe((update) => updates.push(update));
+      // It replays the latest update to a new subscriber
+      updates.length = 0;
+
+      scanEventListener({ installationId: installation.id, type: "start" });
+      scanEventListener({ installationId: installation.id, type: "folders", totalCount: 12 });
+      scanEventListener({ installationId: installation.id, type: "complete" });
+
+      expect(updates).toEqual([
+        { type: ScanUpdateType.Start },
+        { type: ScanUpdateType.Update, currentCount: 0, totalCount: 12 },
+        { type: ScanUpdateType.Complete },
+      ]);
+    });
+
+    it("should report a provider that failed to scan, with its error rebuilt", () => {
+      const errors: AddonScanError[] = [];
+      service.scanError$.subscribe((error) => errors.push(error));
+
+      scanEventListener({
         installationId: installation.id,
-        nonRescanProviders: ["GitHub"],
+        type: "providerError",
+        providerName: "Curse",
+        error: { kind: "error", name: "Error", message: "down" },
       });
-      expect(scanSpy.calls.mostRecent().args[0]).toEqual(
-        jasmine.objectContaining({
-          installationId: installation.id,
-          providerNames: ["Curse"],
-          nonRescanProviders: ["GitHub"],
-          save: true,
-        }),
-      );
-    });
 
-    it("should let the providers match the prepared folders before main completes the scan", async () => {
-      const folder = { name: "Baganator", path: "Baganator", status: "Pending", tocs: [{}] } as any;
-      const matched = createAddon();
-      const scanningProvider = jasmine.createSpyObj<AddonProvider>("AddonProvider", ["scan"], { name: "Curse" });
-      scanningProvider.scan.and.callFake((_install, _channel, folders) => {
-        folders.forEach((af) => (af.matchingAddon = matched));
-        return Promise.resolve();
-      });
-      addonProviderFactory.getEnabledAddonProviders.and.returnValue([scanningProvider]);
-      syncApi.prepareScan.and.resolveTo({ addonFolders: [folder] });
-
-      await scanService.rescanInstallation(installation);
-
-      expect(scanningProvider.scan).toHaveBeenCalledWith(installation, AddonChannelType.Stable, [folder]);
-      expect(scanSpy.calls.mostRecent().args[0].addonFolders[0].matchingAddon).toBe(matched);
-    });
-
-    it("should save each addon once when several loads find nothing saved at the same time", async () => {
-      await Promise.all([
-        scanService.getAddons(installation),
-        scanService.getAddons(installation),
-        scanService.getAddons(installation),
-      ]);
-
-      expect(storedNames()).toEqual(["Baganator", "Syndicator"]);
-      expect(scanSpy).toHaveBeenCalledTimes(1);
-    });
-
-    it("should give every caller the addons of the shared scan", async () => {
-      const results = await Promise.all([scanService.getAddons(installation), scanService.getAddons(installation)]);
-
-      expect(results.map((r) => r.map((a) => a.id))).toEqual([
-        ["Baganator-1", "Syndicator-1"],
-        ["Baganator-1", "Syndicator-1"],
-      ]);
-    });
-
-    it("should save each addon once when rescans overlap", async () => {
-      await scanService.getAddons(installation, true);
-
-      await Promise.all([scanService.getAddons(installation, true), scanService.getAddons(installation, true)]);
-
-      expect(storedNames()).toEqual(["Baganator", "Syndicator"]);
-    });
-
-    it("should scan again after the running scan when a rescan is asked for mid-scan", async () => {
-      const first = scanService.rescanInstallation(installation);
-      const second = scanService.rescanInstallation(installation);
-      const third = scanService.rescanInstallation(installation);
-
-      const [, secondResult, thirdResult] = await Promise.all([first, second, third]);
-
-      expect(scanSpy).toHaveBeenCalledTimes(2);
-      expect(secondResult.map((a) => a.id)).toEqual(["Baganator-2", "Syndicator-2"]);
-      expect(thirdResult).toBe(secondResult);
-      expect([...store.keys()].sort()).toEqual(["Baganator-2", "Syndicator-2"]);
-    });
-
-    it("should run a waiting rescan even when the running one fails", async () => {
-      scanSpy.and.returnValues(Promise.reject(new Error("disk")), Promise.resolve([createAddon({ id: "ok" })]));
-
-      const failed = scanService.rescanInstallation(installation);
-      const next = scanService.rescanInstallation(installation);
-
-      await expectAsync(failed).toBeRejectedWithError("disk");
-      expect((await next).map((a) => a.id)).toEqual(["ok"]);
-    });
-
-    it("should start a new scan once the last one has finished", async () => {
-      await scanService.rescanInstallation(installation);
-      await scanService.rescanInstallation(installation);
-
-      expect(scanSpy).toHaveBeenCalledTimes(2);
+      expect(errors.length).toBe(1);
+      expect(errors[0].providerName).toBe("Curse");
+      expect(errors[0].innerError?.message).toBe("down");
     });
   });
 });

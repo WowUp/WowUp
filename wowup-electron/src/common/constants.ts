@@ -26,7 +26,6 @@ export const WOWUP_DATA_ADDON_FOLDER_NAME = "wowup_data_addon";
 export const WOWUP_ASSET_FOLDER_NAME = "WowUpAddon";
 
 // IPC CHANNELS
-export const IPC_DOWNLOAD_FILE_CHANNEL = "download-file";
 export const IPC_COPY_DIRECTORY_CHANNEL = "copy-directory";
 export const IPC_CREATE_DIRECTORY_CHANNEL = "create-directory";
 export const IPC_DELETE_DIRECTORY_CHANNEL = "delete-directory";
@@ -145,14 +144,13 @@ export const IPC_TOC_PARSE = "toc-parse";
 export const IPC_TOC_GET_ALL_TOCS = "toc-get-all-tocs";
 
 // ADDON SCAN CONTROLLER
-export const IPC_ADDON_GET_SCAN_RESULTS = "addons-get-scan-results";
 export const IPC_ADDON_SCAN_PREPARE = "addons-scan-prepare";
-export const IPC_ADDON_SCAN_COMPLETE = "addons-scan-complete";
+export const IPC_ADDON_SCAN = "addons-scan";
+export const IPC_ADDON_SCAN_EVENT = "addons-scan-event";
 export const IPC_ADDON_SYNC_APPLY = "addons-sync-apply";
-export const IPC_ADDON_INSTALL_FILE = "addons-install-file";
+export const IPC_ADDON_INSTALL = "addons-install";
 export const IPC_ADDON_INSTALL_PROGRESS = "addons-install-progress";
 export const IPC_ADDON_REMOVE = "addons-remove";
-export const IPC_ADDON_ADD_EXTERNAL_ID = "addons-add-external-id";
 
 // ADDON PROVIDER CONTROLLER
 export const IPC_ADDON_PROVIDERS_INIT = "addon-providers-init";

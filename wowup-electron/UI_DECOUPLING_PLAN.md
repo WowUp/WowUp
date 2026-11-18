@@ -131,7 +131,7 @@ Pattern for each phase:
   own id from `externalIds` and logged "Invalid provider id WowUpHub|…") and
   `reconcileExternalIds`; the install service's duplicate copy of the external-id logic is gone.
 
-## Phase 5b — Addon Providers 🚧 in progress (steps 1 and 2 of 3 done)
+## Phase 5b — Addon Providers ✅ done
 
 Done in three steps, each shippable on its own.
 
@@ -192,12 +192,31 @@ Done in three steps, each shippable on its own.
       `src/common/errors/` so main can throw them; they cross ipc and are rebuilt like the others.
 - [x] The renderer factory holds only stand-ins, in main's order; URL and protocol lookups ask main.
 
-### Step 3 — scan and install join up in main ⏳
+### Step 3 — scan and install join up in main ✅
 
-- The scan's prepare → provider match → complete round trip from Phase 4 collapses into one main
-  call, and the rescan queue moves with it.
-- The download + retry and the hub id lookup join main's install pipeline; the stand-ins on those
-  paths go away.
+- [x] A scan is one call, `IPC_ADDON_SCAN` (`AddonSyncService.scan`): main lists and fingerprints
+      the folders, lets each enabled provider match what no provider before it claimed, and builds
+      the addon list. The complete-scan channel is gone; prepare stays for the debug log's
+      fingerprint dump.
+- [x] The rescan queue (#1561) moved with it: one saving scan per installation at a time, callers
+      meanwhile share the next one, `joinRunning` shares the running one (`getAddons` with
+      nothing saved).
+- [x] Main reads the user's on/off choice per provider from the preference store
+      (`ADDON_PROVIDERS_KEY`, `AddonProviderRegistry.isEnabled`); the renderer still writes it.
+- [x] Scan progress and provider failures reach the renderer as `IPC_ADDON_SCAN_EVENT`, once per
+      scan however many callers share it, and become `scanUpdate$` / `scanError$` as before.
+- [x] Install is one call, `IPC_ADDON_INSTALL` (`AddonInstaller`): main downloads the addon with
+      the provider's auth, retries a failed download up to 3 times after re-syncing the addon for
+      a fresh url, installs it, and looks up its hub id. The renderer keeps the queue (3 at a time,
+      pending/progress states) and the analytics. The phases now include `downloading` and
+      `retry`; a retry shows on the grids only, as before.
+- [x] A failed download no longer leaves its partial zip in the downloads folder.
+- [x] Removed: the renderer's `DownloadService` and main's `IPC_DOWNLOAD_FILE_CHANNEL` handler,
+      `AddonScanApiService` and `AddonFingerprintController` (`IPC_ADDON_GET_SCAN_RESULTS`), the
+      add-external-id channel, and the renderer install retry's re-sync hook.
+- Left in the renderer: the sync orchestration. `syncAllClients` still calls each provider's
+  `getAll` / `getAllBatch` through the stand-ins and hands main the answer (`applySync`), and
+  search, install-from-url and dependency lookups still go through the stand-ins.
 
 ## Phase 6 — `ipc-events.ts` Cleanup ⏳ not started
 
