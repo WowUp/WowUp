@@ -41,6 +41,11 @@ export class WarcraftPlatformMac implements WarcraftPlatform {
     return WOW_APP_NAMES.includes(appName);
   }
 
+  public async getBlizzardAgentPaths(): Promise<string[]> {
+    const agentPath = await this.getBlizzardAgentPath();
+    return agentPath ? [agentPath] : [];
+  }
+
   public async getBlizzardAgentPath(): Promise<string> {
     const agentPath = path.join(BLIZZARD_AGENT_PATH, BLIZZARD_PRODUCT_DB_NAME);
     return (await pathExists(agentPath)) ? agentPath : "";
