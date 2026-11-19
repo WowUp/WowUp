@@ -136,6 +136,8 @@
       "SNACKBAR_ACTION": "업데이트 & Restart",
       "SNACKBAR_TEXT": "새 버전 설치 가능",
       "TOOLTIP": "프로그램 업데이트가 있습니다.",
+      "UNSUPPORTED_OS_TEXT": "WowUp {{version}} needs macOS {{osVersion}} or later. Update macOS to keep getting WowUp updates.",
+      "UNSUPPORTED_OS_UNKNOWN_TEXT": "WowUp {{version}} needs a newer version of macOS. Update macOS to keep getting WowUp updates.",
       "UPDATE_AVAILABLE": "Starting download",
       "UPDATE_ERROR": "업데이트 실패"
     }

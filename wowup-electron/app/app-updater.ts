@@ -1,6 +1,7 @@
 import { app, BrowserWindow, ipcMain } from "electron";
 import * as log from "electron-log/main";
 import { autoUpdater } from "electron-updater";
+import * as os from "os";
 import { getShell } from "../../wowup-shell/contract/shell-api";
 import {
   IPC_APP_CHECK_UPDATE,
@@ -18,6 +19,7 @@ import {
 } from "../src/common/wowup/models";
 import { WowUpReleaseChannelType } from "../src/common/wowup/wowup-release-channel-type";
 import { getWowUpReleaseChannelPreference } from "./preferences";
+import { darwinToMacOsVersion, isUpdateUnsupportedOnOs } from "./update-os-support";
 
 /** How long "Later" can put off restarting into a downloaded bundle, so few installs stay on old versions */
 const BUNDLE_RESTART_DEADLINE_MS = 6 * 60 * 60 * 1000;
@@ -145,6 +147,17 @@ class AppUpdater {
       const evt: AppUpdateEvent = {
         state: AppUpdateState.UpdateNotAvailable,
       };
+
+      // electron-updater skips releases that need a newer OS and reports them as not available
+      if (
+        info.version !== autoUpdater.currentVersion.version &&
+        isUpdateUnsupportedOnOs(info.minimumSystemVersion, os.release())
+      ) {
+        log.info(`WowUp ${info.version} needs OS ${info.minimumSystemVersion ?? ""}, this is ${os.release()}`);
+        evt.state = AppUpdateState.UnsupportedOs;
+        evt.version = info.version;
+        evt.requiredOsVersion = darwinToMacOsVersion(info.minimumSystemVersion ?? "");
+      }
 
       this._win?.webContents?.send(IPC_APP_UPDATE_STATE, evt);
     });

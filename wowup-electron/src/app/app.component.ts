@@ -39,7 +39,13 @@ import {
   WOWUP_LOGO_FILENAME_CF,
   ZOOM_FACTOR_KEY,
 } from "../common/constants";
-import { AppUpdateState, BundleUpdateEvent, MenuConfig, SystemTrayConfig } from "../common/wowup/models";
+import {
+  AppUpdateEvent,
+  AppUpdateState,
+  BundleUpdateEvent,
+  MenuConfig,
+  SystemTrayConfig,
+} from "../common/wowup/models";
 import { AppConfig } from "../environments/environment";
 import { InstallFromUrlDialogComponent } from "./components/addons/install-from-url-dialog/install-from-url-dialog.component";
 import { AlertDialogComponent } from "./components/common/alert-dialog/alert-dialog.component";
@@ -116,6 +122,9 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
   public quitEnabled?: boolean;
   public showPreLoad$ = new BehaviorSubject<boolean>(true);
 
+  /** The update that needs a newer OS the user was last told about, so the hourly update check doesn't repeat it */
+  private _unsupportedOsUpdateShown?: string;
+
   public constructor(
     private _addonService: AddonService,
     private _addonProviderService: AddonProviderFactory,
@@ -154,6 +163,8 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
         if (!this.isTransientUpdateError(evt.error)) {
           this._snackbarService.showErrorSnackbar("APP.WOWUP_UPDATE.UPDATE_ERROR");
         }
+      } else if (evt.state === AppUpdateState.UnsupportedOs) {
+        this.showUnsupportedOsUpdate(evt);
       } else if (evt.state === AppUpdateState.Downloaded) {
         // Force the user to update when one is ready
         const dialogRef = this._dialog.open(AlertDialogComponent, {
@@ -187,6 +198,22 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
       .subscribe((update) => this.promptBundleRestart(update));
 
     this._wowUpProtocolService.initialize();
+  }
+
+  /** The newest version needs a newer macOS than this one, so this install stays on its version */
+  private showUnsupportedOsUpdate(evt: AppUpdateEvent): void {
+    if (evt.version === undefined || this._unsupportedOsUpdateShown === evt.version) {
+      return;
+    }
+    this._unsupportedOsUpdateShown = evt.version;
+
+    const localeKey = evt.requiredOsVersion
+      ? "APP.WOWUP_UPDATE.UNSUPPORTED_OS_TEXT"
+      : "APP.WOWUP_UPDATE.UNSUPPORTED_OS_UNKNOWN_TEXT";
+    this._snackbarService.showErrorSnackbar(localeKey, {
+      timeout: 20000,
+      localeArgs: { version: evt.version, osVersion: evt.requiredOsVersion },
+    });
   }
 
   /**

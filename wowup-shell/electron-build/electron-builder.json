@@ -4,7 +4,7 @@
   "directories": {
     "output": "release/"
   },
-  "artifactBuildCompleted": "./electron-build/appimage-update-info.js",
+  "artifactBuildCompleted": "./electron-build/artifact-build-completed.js",
   "afterSign": "./electron-build/after-sign.js",
   "generateUpdatesFilesForAllChannels": true,
   "publish": ["github"],
@@ -37,6 +37,7 @@
   "mac": {
     "icon": "electron-build/icon.icns",
     "category": "public.app-category.utilities",
+    "minimumSystemVersion": "12.0",
     "target": [
       {
         "target": "default",
