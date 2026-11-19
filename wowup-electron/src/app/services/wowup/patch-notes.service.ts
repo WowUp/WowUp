@@ -16,6 +16,21 @@ export class PatchNotesService {
 
 const CHANGELOGS: ChangeLog[] = [
   {
+    Version: "2.26.0",
+    html: `
+    <h4>Changes</h4>
+    <ul>
+    <li>Addon scanning, installing and provider lookups now run in WowUp's background process instead of its window</li>
+    </ul>
+    <h4>Fixes</h4>
+    <ul>
+    <li>Fix WowUp Hub addons that support both the current and the upcoming WoW patch (such as Raider.IO) being flagged as needing a newer WoW version</li>
+    <li>Fix addon settings changed while an install was running being lost when the install finished</li>
+    <li>Fix a failed addon download leaving a partial file behind</li>
+    </ul>
+    `,
+  },
+  {
     Version: "2.25.5",
     html: `
     <h4>Features</h4>
