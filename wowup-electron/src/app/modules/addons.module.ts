@@ -22,6 +22,7 @@ import { DirectiveModule } from "./directive.module";
 import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { AddonManageDialogComponent } from "../components/addons/addon-manage-dialog/addon-manage-dialog.component";
 import { WtfBackupComponent } from "../components/addons/wtf-backup/wtf-backup.component";
+import { WtfRestoreDialogComponent } from "../components/addons/wtf-backup/wtf-restore-dialog.component";
 import { GameVersionCellComponent } from "../components/addons/game-version-cell/game-version-cell.component";
 import { GameVersionMismatchDialogComponent } from "../components/addons/game-version-mismatch-dialog/game-version-mismatch-dialog.component";
 
@@ -44,6 +45,7 @@ import { GameVersionMismatchDialogComponent } from "../components/addons/game-ve
     InstallFromUrlDialogComponent,
     AddonManageDialogComponent,
     WtfBackupComponent,
+    WtfRestoreDialogComponent,
   ],
   imports: [
     CommonModule,

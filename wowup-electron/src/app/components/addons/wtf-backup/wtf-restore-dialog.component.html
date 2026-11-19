@@ -1,0 +1,37 @@
+<h1 mat-dialog-title>{{ "WTF_BACKUP.APPLY_CONFIRMATION.TITLE" | translate }}</h1>
+<div mat-dialog-content>
+  <p class="message">{{ "WTF_BACKUP.APPLY_CONFIRMATION.MESSAGE" | translate: { name: data.backupName } }}</p>
+
+  <p *ngIf="data.differentGameType" class="warning">
+    {{ "WTF_BACKUP.APPLY_CONFIRMATION.DIFFERENT_FLAVOR" | translate }}
+  </p>
+  <p *ngIf="data.source === 'this_device'">
+    {{ "WTF_BACKUP.APPLY_CONFIRMATION.THIS_DEVICE" | translate }}
+  </p>
+  <p *ngIf="data.source === 'other_device'">
+    {{ "WTF_BACKUP.APPLY_CONFIRMATION.OTHER_DEVICE" | translate }}
+  </p>
+  <p *ngIf="data.source === 'unknown'">
+    {{ "WTF_BACKUP.APPLY_CONFIRMATION.UNKNOWN_DEVICE" | translate }}
+  </p>
+
+  <mat-checkbox *ngIf="data.hasConfig" [(ngModel)]="keepCurrentConfig">
+    {{ "WTF_BACKUP.APPLY_CONFIRMATION.KEEP_CONFIG" | translate }}
+  </mat-checkbox>
+  <p *ngIf="data.hasConfig" class="hint">
+    {{ "WTF_BACKUP.APPLY_CONFIRMATION.KEEP_CONFIG_HELP" | translate }}
+  </p>
+  <p *ngIf="!data.hasConfig" class="hint">
+    {{ "WTF_BACKUP.APPLY_CONFIRMATION.NO_CONFIG" | translate }}
+  </p>
+</div>
+<div mat-dialog-actions class="dialog-buttons">
+  <div class="btn-wrapper">
+    <button class="wu-btn wu-btn-flat mr-2" (click)="dialogRef.close()">
+      {{ "WTF_BACKUP.APPLY_CONFIRMATION.CANCEL_BUTTON" | translate }}
+    </button>
+    <button class="wu-btn wu-btn-primary" (click)="onRestore()" cdkFocusInitial>
+      {{ "WTF_BACKUP.APPLY_CONFIRMATION.RESTORE_BUTTON" | translate }}
+    </button>
+  </div>
+</div>
