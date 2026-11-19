@@ -364,6 +364,20 @@ export class WowUpAddonProvider extends AddonProvider {
     return release.game_versions.find((gv) => gv.game_type === gameType);
   }
 
+  /**
+   * Every interface the release's folders declare for a game type, newest first. The hub sends one game version
+   * per folder and game type: `interface` is the newest, `interfaces` (newer hubs) lists them all, so a toc
+   * declaring the live patch and the next one (## Interface: 120105, 120107) is not read as needing the next one.
+   */
+  private getGameTypeInterfaces(release: WowUpAddonReleaseRepresentation, gameType: WowGameType): string[] {
+    const interfaces = release.game_versions
+      .filter((gv) => gv.game_type === gameType)
+      .flatMap((gv) => (gv.interfaces?.length ? gv.interfaces : [gv.interface]))
+      .filter((iface): iface is string => !!iface);
+
+    return sortBy(uniq(interfaces), (iface) => -Number(iface));
+  }
+
   private filterReleases(representation: WowUpAddonRepresentation, gameType: WowGameType) {
     return filter(representation.releases, (release) => release.game_versions.some((gv) => gv.game_type === gameType));
   }
@@ -416,6 +430,7 @@ export class WowUpAddonProvider extends AddonProvider {
       downloadUrl: release.download_url,
       folders: [],
       gameVersion: getGameVersion(matchingVersion?.interface),
+      gameVersions: getGameVersionList(this.getGameTypeInterfaces(release, matchingVersion.game_type)),
       releaseDate: release.published_at,
       version,
       dependencies: [],
@@ -458,7 +473,10 @@ export class WowUpAddonProvider extends AddonProvider {
       matchedRelease.toc_titles?.[gameType] || matchingVersion?.title || scanResult.exactMatch?.repository_name;
     const version = matchingVersion?.version || scanResult.exactMatch?.matched_release?.tag_name || "";
     const authors = matchingVersion?.authors || scanResult.exactMatch?.owner_name || "";
-    const interfaceVer = [matchingVersion?.interface];
+    const gameTypeInterfaces = matchingVersion
+      ? this.getGameTypeInterfaces(matchedRelease, matchingVersion.game_type)
+      : [];
+    const interfaceVer = gameTypeInterfaces.length > 0 ? gameTypeInterfaces : [matchingVersion?.interface];
 
     if (!name || !version || !interfaceVer) {
       throw new Error(

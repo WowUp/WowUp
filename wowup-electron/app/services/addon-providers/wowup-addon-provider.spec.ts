@@ -1,10 +1,11 @@
 import { expect } from "chai";
-import { GetAddonsByFingerprintResponse } from "wowup-lib-core";
+import { GetAddonsByFingerprintResponse, WowClientType, WowGameType, WowInstallation } from "wowup-lib-core";
 
 import { NetworkInterface, PostConfig } from "../network/network-interface";
 import { WowUpAddonProvider } from "./wowup-addon-provider";
 
-function createProvider(response: Partial<GetAddonsByFingerprintResponse>) {
+/** `response` is what every POST answers, a fingerprint or a batch response */
+function createProvider(response: Partial<GetAddonsByFingerprintResponse> | { addons: unknown[] }) {
   const posts: { url: string; config: PostConfig }[] = [];
   const network: NetworkInterface = {
     getJson: () => Promise.reject(new Error("unexpected GET")),
@@ -67,5 +68,52 @@ describe("WowUpAddonProvider.getAddonIdsByFingerprints", () => {
     const ids = await provider.getAddonIdsByFingerprints(["aaa"]);
 
     expect(ids.size).to.equal(0);
+  });
+});
+
+describe("WowUpAddonProvider.getAllBatch game versions", () => {
+  const retail = { id: "inst-1", clientType: WowClientType.Retail } as WowInstallation;
+
+  function gameVersion(iface: string, interfaces?: string[]) {
+    return {
+      game_type: WowGameType.Retail,
+      interface: iface,
+      interfaces,
+      title: "Raider.IO",
+      version: "1",
+      authors: "",
+    };
+  }
+
+  async function getLatestFile(gameVersions: ReturnType<typeof gameVersion>[]) {
+    const { provider } = createProvider({
+      addons: [
+        {
+          id: 1,
+          repository_name: "raiderio",
+          releases: [
+            { id: 10, download_url: "https://dl.test", published_at: new Date(), game_versions: gameVersions },
+          ],
+        },
+      ],
+    });
+
+    const result = await provider.getAllBatch([retail], ["1"]);
+    return result.installationResults["inst-1"][0].files?.[0];
+  }
+
+  it("lists every interface the hub sends for the game type", async () => {
+    const file = await getLatestFile([
+      gameVersion("120107", ["120107", "120105"]),
+      gameVersion("120107", ["120107", "120105"]),
+    ]);
+
+    expect(file?.gameVersions).to.deep.equal(["12.1.7", "12.1.5"]);
+  });
+
+  it("falls back to the single interface from older hubs", async () => {
+    const file = await getLatestFile([gameVersion("120107"), gameVersion("120105")]);
+
+    expect(file?.gameVersions).to.deep.equal(["12.1.7", "12.1.5"]);
   });
 });

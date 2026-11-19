@@ -30,7 +30,10 @@ export interface WowUpAddonReleaseRepresentation {
 }
 
 export interface AddonReleaseGameVersion {
+  /** The newest interface of this game type */
   interface: string;
+  /** Every interface of this game type the folder declares (## Interface: 120105, 120107), newest first; missing from older Hub responses */
+  interfaces?: string[];
   title: string;
   game_type: WowGameType;
   version: string;
