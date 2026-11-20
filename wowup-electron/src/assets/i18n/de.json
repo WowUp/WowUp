@@ -641,6 +641,7 @@
         "CODE_SECRET_HINT": "Keep this code private: anyone with the code and access to the folder can read your settings.",
         "COPY_CODE_BUTTON": "Copy",
         "CREATE_CODE_BUTTON": "Create New Code",
+        "CREATE_CODE_HINT": "Only on your first device. If another device already syncs, enter its code instead.",
         "ENTER_CODE_LABEL": "Code from another device",
         "ERROR": {
           "BUSY": "A sync is already running",
@@ -659,6 +660,7 @@
         "INSTALL_MISSING_BUTTON": "Install Missing",
         "MISSING_ADDONS": "{count} {count, plural, =1{addon} other{addons}} from {device} {count, plural, =1{is} other{are}} not installed here",
         "OR": "or",
+        "OTHER_CODE_WARNING": "This folder already holds sync data from another code, so nothing came from your other device. Remove this code and enter the one from your other device.",
         "OUTCOME": {
           "first-device": "Settings uploaded from this device",
           "no-changes": "Already up to date",

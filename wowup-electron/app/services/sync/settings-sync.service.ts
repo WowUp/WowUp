@@ -252,7 +252,8 @@ export class SettingsSyncService {
       : undefined;
     const firstDevice = !remoteManifest;
 
-    const state = await this.readLocalState(installationId, keys.vaultId, transport.location);
+    const location = await transport.locate(keys.vaultId);
+    const state = await this.readLocalState(installationId, keys.vaultId, location);
     const local = await scanWtf(wtfPath);
     const remoteFiles = remoteManifest?.files ?? {};
     // An empty vault (new code, or the shared folder was wiped) is seeded from this device; using the
@@ -324,7 +325,7 @@ export class SettingsSyncService {
     await transport.write(manifestName, seal(keys, Buffer.from(JSON.stringify(nextManifest)), manifestContext));
     await this.writeLocalState(installationId, {
       vaultId: keys.vaultId,
-      location: transport.location,
+      location,
       base: baseFromRemote(nextFiles),
     });
 
@@ -339,6 +340,7 @@ export class SettingsSyncService {
       deletedRemote: plan.deleteRemote.length,
       conflicts: plan.conflicts,
       backupPath,
+      otherCodesInFolder: firstDevice ? await transport.countOtherVaults(keys.vaultId) : 0,
       otherDevices: Object.values(devices)
         .filter((device) => device.deviceId !== this.deps.deviceId)
         .sort((a, b) => b.updatedAt - a.updatedAt),

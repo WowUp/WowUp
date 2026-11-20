@@ -41,7 +41,7 @@ import { MetricsController } from "./metrics/metrics.controller";
 import { TocController } from "./toc/toc.controller";
 import { SettingsSyncController } from "./sync/settings-sync.controller";
 import { SettingsSyncConfig, SettingsSyncService } from "../services/sync/settings-sync.service";
-import { FolderTransport } from "../services/sync/sync-transport";
+import { FolderTransport, getDefaultSyncFolder } from "../services/sync/sync-transport";
 import { isWowRunning } from "../services/sync/wow-process";
 import { WarcraftController } from "./warcraft/warcraft.controller";
 import { WarcraftInstallationController } from "./warcraft/warcraft-installation.controller";
@@ -221,7 +221,7 @@ export function registerControllers(deps: ControllerDeps): void {
   const settingsSyncService = new SettingsSyncService({
     getConfig: (): SettingsSyncConfig => ({
       code: deps.sensitiveStore.get(SETTINGS_SYNC_CODE_KEY) as string | undefined,
-      folderPath: deps.preferenceStore.get(SETTINGS_SYNC_FOLDER_KEY) as string | undefined,
+      folderPath: (deps.preferenceStore.get(SETTINGS_SYNC_FOLDER_KEY) as string | undefined) ?? getDefaultSyncFolder(),
       autoSync: String(deps.preferenceStore.get(SETTINGS_SYNC_AUTO_KEY)) === "true",
       installationIds: (deps.preferenceStore.get(SETTINGS_SYNC_INSTALLATIONS_KEY) as string[] | undefined) ?? [],
     }),

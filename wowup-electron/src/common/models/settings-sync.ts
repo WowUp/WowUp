@@ -44,6 +44,8 @@ export interface SettingsSyncResult {
   conflicts: string[];
   /** Zip written to the WTF backup folder before any local file was changed */
   backupPath?: string;
+  /** On a first sync: vaults of other sync codes in the same folder, a sign the other device's code is wanted */
+  otherCodesInFolder: number;
   /** Addon lists the other devices pushed for the same game, newest first */
   otherDevices: SettingsSyncDeviceAddons[];
 }

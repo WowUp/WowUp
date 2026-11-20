@@ -20,6 +20,7 @@
         {{ "PAGES.OPTIONS.SYNC.SAVE_CODE_BUTTON" | translate }}
       </button>
     </div>
+    <small *ngIf="!status.hasCode" class="text-3">{{ "PAGES.OPTIONS.SYNC.CREATE_CODE_HINT" | translate }}</small>
 
     <div *ngIf="status.hasCode" class="code-setup">
       <code class="code bg-secondary-3">{{ shownCode ?? status.codeHint + "-····" }}</code>
@@ -103,6 +104,9 @@
                     deleted: result.deletedLocal + result.deletedRemote
                   }
           }}
+        </div>
+        <div *ngIf="result.otherCodesInFolder > 0" class="text-warning">
+          {{ "PAGES.OPTIONS.SYNC.OTHER_CODE_WARNING" | translate }}
         </div>
         <div *ngIf="result.conflicts.length > 0" class="text-3">
           {{ "PAGES.OPTIONS.SYNC.RESULT_CONFLICTS" | translate: { count: result.conflicts.length } }}

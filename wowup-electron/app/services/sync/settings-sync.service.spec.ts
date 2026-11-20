@@ -241,30 +241,42 @@ describe("SettingsSyncService", () => {
     await expectError(a.service.sync("mac-a-install"), SETTINGS_SYNC_ERROR_WRONG_KEY);
   });
 
-  it("uses the vault when the WowUp Sync folder itself is picked, without deleting the device's files", async () => {
+  it("finds the other device's vault without the exact same folder being picked", async () => {
     const code = createSyncCode();
     const a = await createDevice("mac-a", code);
-    const b = await createDevice("mac-b", code);
-
     await write(a, SV, "configured auras", 1_000);
     await a.service.sync("mac-a-install");
 
-    // Older builds made a second vault inside the picked "WowUp Sync" folder: B seeded that one first
-    b.config.folderPath = path.join(shared, SYNC_FOLDER_NAME, SYNC_FOLDER_NAME);
-    await fsp.mkdir(b.config.folderPath, { recursive: true });
+    const nested = path.join(shared, SYNC_FOLDER_NAME, SYNC_FOLDER_NAME);
+    await fsp.mkdir(nested, { recursive: true });
+    const picks = {
+      "the WowUp Sync folder itself": path.join(shared, SYNC_FOLDER_NAME),
+      "a WowUp Sync folder made inside it by mistake": nested,
+      "a folder further up": root,
+    };
+    for (const [label, folder] of Object.entries(picks)) {
+      const device = await createDevice(`mac-${Object.keys(picks).indexOf(label)}-b`, code);
+      device.config.folderPath = folder;
+      await write(device, MACROS, "MACRO 1 Heal", 2_000);
+      const result = await device.service.sync(`mac-${Object.keys(picks).indexOf(label)}-b-install`);
+      expect(result.outcome, label).to.equal("synced");
+      expect(await read(device, SV), label).to.equal("configured auras");
+      expect(await read(device, MACROS), label).to.equal("MACRO 1 Heal");
+    }
+    // Nothing was started next to the real vault
+    expect(await fsp.readdir(nested)).to.deep.equal([]);
+  });
+
+  it("points out a vault of another code in the folder when a device starts its own", async () => {
+    const a = await createDevice("mac-a", createSyncCode());
+    const b = await createDevice("mac-b", createSyncCode());
+    await write(a, SV, "configured auras", 1_000);
+    expect((await a.service.sync("mac-a-install")).otherCodesInFolder).to.equal(0);
+
     await write(b, SV, "fresh defaults", 500);
-    await write(b, MACROS, "MACRO 1 Heal", 2_000);
-    expect((await b.service.sync("mac-b-install")).outcome).to.equal("first-device");
-
-    // Picking the vault folder now reaches A's vault: B joins it and keeps the macro only it has
-    b.config.folderPath = path.join(shared, SYNC_FOLDER_NAME);
-    const joined = await b.service.sync("mac-b-install");
-    expect(joined.outcome).to.equal("synced");
-    expect(await read(b, SV)).to.equal("configured auras");
-    expect(await read(b, MACROS)).to.equal("MACRO 1 Heal");
-
-    await a.service.sync("mac-a-install");
-    expect(await read(a, MACROS)).to.equal("MACRO 1 Heal");
+    const result = await b.service.sync("mac-b-install");
+    expect(result.outcome).to.equal("first-device");
+    expect(result.otherCodesInFolder).to.equal(1);
   });
 
   it("never deletes files the vault never had, even with state from before vault folders were recorded", async () => {
