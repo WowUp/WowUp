@@ -20,11 +20,15 @@ import { MatDialog, MatDialogRef } from "@angular/material/dialog";
 import { TranslateService } from "@ngx-translate/core";
 
 import {
+  ALLIANCE_FOREVER_THEME,
   ALLIANCE_LIGHT_THEME,
   ALLIANCE_THEME,
   CURRENT_THEME_KEY,
   DEFAULT_LIGHT_THEME,
   DEFAULT_THEME,
+  FOREVER_CLASSIC_THEME,
+  FOREVER_THEME,
+  HORDE_FOREVER_THEME,
   HORDE_LIGHT_THEME,
   HORDE_THEME,
   IPC_CREATE_APP_MENU_CHANNEL,
@@ -262,6 +266,10 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
           ALLIANCE_LIGHT_THEME,
           DEFAULT_THEME,
           DEFAULT_LIGHT_THEME,
+          FOREVER_THEME,
+          FOREVER_CLASSIC_THEME,
+          HORDE_FOREVER_THEME,
+          ALLIANCE_FOREVER_THEME,
         );
       this.overlayContainer.getContainerElement().classList.add(pref.value);
     });

@@ -218,6 +218,10 @@ export const HORDE_THEME = "horde-theme";
 export const HORDE_LIGHT_THEME = "horde-theme-light-theme";
 export const ALLIANCE_THEME = "alliance-theme";
 export const ALLIANCE_LIGHT_THEME = "alliance-theme-light-theme";
+export const FOREVER_THEME = "forever-theme";
+export const FOREVER_CLASSIC_THEME = "forever-classic-theme";
+export const HORDE_FOREVER_THEME = "horde-forever-theme";
+export const ALLIANCE_FOREVER_THEME = "alliance-forever-theme";
 export const DEFAULT_BG_COLOR = "#444444";
 export const DEFAULT_LIGHT_BG_COLOR = "#f3f3f3";
 

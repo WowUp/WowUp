@@ -107,10 +107,14 @@
     },
     "THEME": {
       "ALLIANCE": "Alliance",
+      "ALLIANCE_FOREVER": "Alliance Forever",
       "DEFAULT": "WowUp",
+      "FOREVER": "Forever",
+      "FOREVER_CLASSIC": "Forever Classic",
       "GROUP_DARK": "Dark",
       "GROUP_LIGHT": "Light",
-      "HORDE": "Horde"
+      "HORDE": "Horde",
+      "HORDE_FOREVER": "Horde Forever"
     },
     "UPDATES_ON_HOLD_NOTIFICATION_BODY": "Some addon updates need a newer version of World of Warcraft than the one you have installed. Open WowUp to review them.",
     "UPDATES_ON_HOLD_NOTIFICATION_TITLE": "Updates on hold",

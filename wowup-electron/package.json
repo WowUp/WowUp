@@ -75,6 +75,13 @@
     "chrome 98"
   ],
   "dependencies": {
+    "@fontsource/alegreya": "5.3.0",
+    "@fontsource/cinzel": "5.3.0",
+    "@fontsource/cinzel-decorative": "5.3.0",
+    "@fontsource/cormorant-sc": "5.3.0",
+    "@fontsource/grenze": "5.3.0",
+    "@fontsource/marcellus-sc": "5.3.0",
+    "@fontsource/new-rocker": "5.3.0",
     "@fontsource/roboto": "5.3.0",
     "adm-zip": "0.6.1",
     "auto-launch": "5.0.6",

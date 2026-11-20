@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="102" height="102" viewBox="0 0 102 102">
+  <defs>
+  <linearGradient id="iron" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#9a918a"/><stop offset=".5" stop-color="#4a4440"/><stop offset="1" stop-color="#1e1a18"/></linearGradient>
+  <linearGradient id="tusk" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#fff6e4"/><stop offset=".6" stop-color="#d8c6a2"/><stop offset="1" stop-color="#8a7656"/></linearGradient>
+  </defs>
+  <rect x="20" y="20" width="62" height="62" fill="none" stroke="#000" stroke-width="1"/>
+  <rect x="23" y="23" width="56" height="56" fill="none" stroke="url(#iron)" stroke-width="5"/>
+  <rect x="26.5" y="26.5" width="49" height="49" fill="none" stroke="#000" stroke-width="1"/>
+  <g id="c">
+  <path d="M30 4 C18 4 6 10 2 26 C8 18 16 14 26 14 Z" fill="url(#tusk)" stroke="#1a0f08" stroke-width="1"/>
+  <path d="M4 30 C4 18 10 6 26 2 C18 8 14 16 14 26 Z" fill="url(#tusk)" stroke="#1a0f08" stroke-width="1"/>
+  <path d="M14 14 H40 V22 H22 V40 H14 Z" fill="url(#iron)" stroke="#000" stroke-width="1.2"/>
+  <circle cx="18" cy="18" r="2.8" fill="#c9bfb4" stroke="#000" stroke-width=".8"/>
+  <circle cx="33" cy="18" r="2.2" fill="#c9bfb4" stroke="#000" stroke-width=".8"/>
+  <circle cx="18" cy="33" r="2.2" fill="#c9bfb4" stroke="#000" stroke-width=".8"/>
+  </g>
+  <use href="#c" transform="matrix(-1 0 0 1 102 0)"/>
+  <use href="#c" transform="matrix(1 0 0 -1 0 102)"/>
+  <use href="#c" transform="matrix(-1 0 0 -1 102 102)"/>
+</svg>

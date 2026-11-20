@@ -1,0 +1,362 @@
+// FOREVER CLASSIC: chiselled stone, brass rivets, a parchment addon list and red buttons.
+
+$fc-stone-hi: #a9a49a;
+$fc-stone: #6b675f;
+$fc-stone-lo: #2d2b28;
+$fc-bevel: #8c877c #24221f #1a1917 #6f6a61;
+$fc-inset: #1a1917 #6f6a61 #8c877c #24221f;
+$fc-title: #ffd100;
+$fc-title-lo: #b58f00;
+$fc-ink: #2a1a0b;
+$fc-ink-2: #5b3e1e;
+$fc-red-hi: #b0221a;
+$fc-red: #7d0f09;
+$fc-red-lo: #4a0704;
+$fc-gold-bevel: #f0d68a #6c5218 #4a3810 #d7b45a;
+$fc-display: "Marcellus SC", "Cinzel", Georgia, serif;
+$fc-book: "Alegreya", Georgia, serif;
+
+$fc-rivets:
+  radial-gradient(circle, #f3d980 0 1.6px, #6c5218 2.4px, transparent 3px) left 3px top 3px / 8px 8px no-repeat,
+  radial-gradient(circle, #f3d980 0 1.6px, #6c5218 2.4px, transparent 3px) right 3px top 3px / 8px 8px no-repeat,
+  radial-gradient(circle, #f3d980 0 1.6px, #6c5218 2.4px, transparent 3px) left 3px bottom 3px / 8px 8px no-repeat,
+  radial-gradient(circle, #f3d980 0 1.6px, #6c5218 2.4px, transparent 3px) right 3px bottom 3px / 8px 8px no-repeat;
+
+@mixin fc-stone-frame {
+  border: 4px solid;
+  border-color: $fc-stone-hi $fc-stone-lo #1c1b19 $fc-stone;
+  outline: 1px solid #000;
+  border-radius: 3px;
+  box-shadow:
+    inset 0 0 0 1px #000,
+    inset 0 0 0 2px rgba(255, 209, 0, 0.12),
+    0 6px 18px rgba(0, 0, 0, 0.7);
+}
+
+@include window-backdrop(
+  "forever-classic-theme",
+  radial-gradient(120% 90% at 50% 30%, #1c1b18, #050504),
+  0.4,
+  sepia(0.6) saturate(1.2) contrast(1.05)
+);
+
+@include in-app("forever-classic-theme") {
+  --mdc-filled-text-field-container-color: #000;
+  --mdc-filled-text-field-focus-label-text-color: #{$fc-title};
+  --mdc-filled-text-field-caret-color: #{$fc-title};
+
+  &::after {
+    content: "";
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: -1;
+    background: radial-gradient(130% 100% at 50% 40%, transparent 50%, rgba(0, 0, 0, 0.7));
+  }
+
+  // ---------- Title bar ----------
+  .titlebar {
+    background: linear-gradient(180deg, #3a3832, #1c1b18);
+    border-bottom: 2px solid #000;
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.12);
+  }
+
+  .titlebar .title-container {
+    font-family: $fc-display;
+    font-size: 14px;
+    letter-spacing: 0.12em;
+    color: $fc-title;
+    text-shadow:
+      1px 1px 0 #000,
+      -1px 0 0 #000;
+  }
+
+  // ---------- Tab strip: stone column with square action buttons ----------
+  .tab-strip {
+    background: url("../assets/images/themes/stone-noise.svg"), linear-gradient(180deg, #2f2d29, #1a1916);
+    border-right: 4px solid #0c0c0b;
+    box-shadow: inset -1px 0 0 #55524b;
+  }
+
+  .theme-logo {
+    box-sizing: border-box;
+    border-radius: 50%;
+    padding: 9px;
+    background: radial-gradient(circle, #141a24 0 52%, transparent 53%),
+      conic-gradient(#d8d4ca, #8a857a, #3a3833, #8a857a, #d8d4ca, #8a857a, #3a3833, #8a857a, #d8d4ca);
+    box-shadow:
+      0 0 0 2px #0a0a09,
+      0 0 0 4px #3a3833,
+      0 0 0 5px #0a0a09,
+      0 6px 16px rgba(0, 0, 0, 0.8);
+  }
+
+  .theme-logo-glow {
+    background: radial-gradient(circle, rgba(255, 209, 0, 0.25) 0%, rgba(0, 0, 0, 0) 70%);
+  }
+
+  .tab:not(.addon-info-btn) {
+    font-family: $fc-display;
+    font-size: 15px;
+    border-left-color: transparent;
+    border-radius: 0;
+    text-shadow: 1px 1px 0 #000;
+
+    .tab-title {
+      color: var(--tab-inactive);
+    }
+
+    &:hover {
+      background: linear-gradient(90deg, rgba(255, 255, 255, 0.07), transparent);
+
+      .tab-title {
+        color: #fff;
+      }
+    }
+
+    &.selected {
+      border-left-color: transparent;
+      background: linear-gradient(90deg, rgba(255, 209, 0, 0.16), transparent 80%);
+
+      .tab-title {
+        color: $fc-title;
+      }
+    }
+  }
+
+  .tab-icon {
+    width: 18px;
+    height: 18px;
+    padding: 5px;
+    margin-right: 0.75em !important;
+    border: 2px solid;
+    border-color: $fc-bevel;
+    background: radial-gradient(circle at 35% 30%, #4b5a6e, #141a24);
+    box-shadow: inset 0 0 0 1px #000;
+
+    svg {
+      fill: #d9d2bf !important;
+      filter: drop-shadow(1px 1px 0 #000);
+    }
+  }
+
+  .tab:hover .tab-icon {
+    box-shadow:
+      inset 0 0 0 1px #000,
+      0 0 0 1px rgba(255, 255, 255, 0.6);
+  }
+
+  .tab.selected .tab-icon {
+    border-color: #ffe680 #b58f00 #8a6c00 #f0cc40;
+    box-shadow:
+      inset 0 0 0 1px #000,
+      0 0 10px rgba(255, 209, 0, 0.75);
+
+    svg {
+      fill: $fc-title !important;
+    }
+  }
+
+  // ---------- Content ----------
+  .content,
+  .page-container {
+    background: transparent;
+  }
+
+  .control-container {
+    @include fc-stone-frame;
+    margin: 8px 8px 0;
+    background: $fc-rivets, linear-gradient(180deg, rgba(10, 16, 36, 0.9), rgba(2, 5, 16, 0.92));
+  }
+
+  // The addon list is a parchment logbook with dark ink.
+  .wu-ag-table {
+    @include fc-stone-frame;
+    margin: 10px 8px 8px;
+    background: $fc-rivets, url("../assets/images/themes/parchment-noise.svg"),
+      radial-gradient(120% 90% at 50% 45%, #f1e3bf 0%, #dfcb9e 62%, #c2a873 100%);
+    box-shadow:
+      inset 0 0 0 1px #000,
+      inset 0 0 40px rgba(110, 70, 20, 0.45),
+      0 6px 18px rgba(0, 0, 0, 0.7);
+
+    --ag-background-color: transparent;
+    --ag-header-background-color: transparent;
+    --ag-odd-row-background-color: transparent;
+    --ag-foreground-color: #{$fc-ink};
+    --ag-secondary-foreground-color: #{$fc-ink-2};
+    --ag-header-foreground-color: #{$fc-ink-2};
+    --ag-row-hover-color: rgba(91, 62, 30, 0.08);
+    --ag-selected-row-background-color: rgba(255, 209, 0, 0.3);
+    --ag-border-color: rgba(91, 62, 30, 0.35);
+    --ag-row-border-color: rgba(91, 62, 30, 0.3);
+    --text-1: #{$fc-ink};
+    --text-2: #{$fc-ink};
+    --text-3: #{$fc-ink-2};
+    --text-4: #{$fc-ink-2};
+
+    .ag-header {
+      border-bottom: 2px solid rgba(91, 62, 30, 0.55);
+    }
+
+    .ag-header-cell-text {
+      font-family: $fc-display;
+      font-size: 14px;
+      color: $fc-ink-2;
+    }
+
+    .ag-row {
+      font-family: $fc-book;
+      font-size: 14px;
+      border-bottom-style: dashed;
+    }
+
+    .ag-row-selected {
+      box-shadow: inset 3px 0 0 $fc-red;
+      background: linear-gradient(90deg, rgba(255, 209, 0, 0.35), rgba(255, 209, 0, 0.05));
+    }
+
+    .text-1,
+    .text-2,
+    .addon-title,
+    .ag-cell {
+      color: $fc-ink;
+    }
+
+    .addon-title {
+      font-weight: 700;
+    }
+
+    .text-3 {
+      color: $fc-ink-2;
+    }
+
+    .addon-logo-container {
+      border: 2px solid;
+      border-color: $fc-bevel;
+    }
+
+    .addon-logo-letter {
+      color: #d9d2bf;
+    }
+  }
+
+  // ---------- Buttons: the classic red plate with a gold rim ----------
+  .wu-btn.wu-btn-primary,
+  .wu-btn.wu-btn-flat {
+    font-family: $fc-display;
+    font-size: 14px;
+    color: $fc-title;
+    text-shadow: 1px 1px 0 #000;
+    border: 2px solid;
+    border-color: $fc-gold-bevel;
+    border-radius: 4px;
+  }
+
+  .wu-btn.wu-btn-primary {
+    background: linear-gradient(180deg, $fc-red-hi, $fc-red 55%, $fc-red-lo);
+    box-shadow:
+      inset 0 1px 0 rgba(255, 170, 140, 0.35),
+      0 2px 0 #000;
+
+    &:hover:not([disabled]) {
+      filter: brightness(1.15);
+    }
+
+    &[disabled] {
+      filter: grayscale(0.9) brightness(0.65);
+    }
+  }
+
+  .wu-btn.wu-btn-flat {
+    background: linear-gradient(180deg, #4a4740, #2a2824 55%, #1a1916);
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.15),
+      0 2px 0 #000;
+  }
+
+  .mdc-text-field--filled {
+    border: 2px solid;
+    border-color: $fc-inset;
+  }
+
+  // ---------- Options ----------
+  .nav-container {
+    background: url("../assets/images/themes/stone-noise.svg"), linear-gradient(180deg, #2a2824, #141311);
+    border-right: 4px solid #0c0c0b;
+
+    .mat-mdc-list-item {
+      margin: 4px 8px;
+      width: calc(100% - 16px);
+      border: 2px solid;
+      border-color: #6f6a61 #1a1917 #1a1917 #6f6a61;
+      border-radius: 3px;
+      background: linear-gradient(180deg, #3a3832, #1f1e1b);
+    }
+
+    .mdc-list-item__primary-text {
+      font-family: $fc-display;
+      color: var(--text-2);
+      text-shadow: 1px 1px 0 #000;
+    }
+  }
+
+  .nav-content-container {
+    @include fc-stone-frame;
+    margin: 8px;
+    background: $fc-rivets, linear-gradient(180deg, rgba(10, 16, 36, 0.9), rgba(2, 5, 16, 0.92));
+  }
+
+  .nav-content h2 {
+    font-family: $fc-display;
+    font-size: 22px;
+    color: $fc-title;
+    text-shadow: 2px 2px 0 #000;
+  }
+
+  .mat-mdc-card {
+    background: rgba(0, 0, 0, 0.35) !important;
+    border: 2px solid;
+    border-color: $fc-bevel;
+  }
+
+  @include toggle-as-checkbox(#000, $fc-stone-hi, #0a0a09, $fc-title);
+
+  // ---------- Footer ----------
+  footer {
+    background: linear-gradient(180deg, #2f2d29, #141311);
+    border-top: 2px solid #000;
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  }
+
+  ::-webkit-scrollbar-track {
+    background: #1a1916;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: linear-gradient(90deg, #8c877c, #4a4740);
+    border: 2px solid #0c0c0b;
+  }
+}
+
+@include in-overlay("forever-classic-theme") {
+  .mat-mdc-menu-panel,
+  .mat-mdc-select-panel,
+  .mdc-tooltip__surface {
+    background: rgba(4, 8, 22, 0.96);
+    color: #fff;
+    border: 2px solid #8c877c;
+    border-radius: 5px;
+    box-shadow: 0 8px 22px rgba(0, 0, 0, 0.7);
+  }
+
+  .mat-mdc-optgroup-label {
+    font-family: $fc-display;
+    color: $fc-title;
+  }
+
+  .mat-mdc-dialog-surface {
+    @include fc-stone-frame;
+    background: $fc-rivets, linear-gradient(180deg, #0a1024, #020510);
+  }
+}

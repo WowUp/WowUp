@@ -107,10 +107,14 @@
     },
     "THEME": {
       "ALLIANCE": "Альянс",
+      "ALLIANCE_FOREVER": "Альянс Forever",
       "DEFAULT": "По умолчанию",
+      "FOREVER": "Forever",
+      "FOREVER_CLASSIC": "Forever Classic",
       "GROUP_DARK": "Тёмные",
       "GROUP_LIGHT": "Светлые",
-      "HORDE": "Орда"
+      "HORDE": "Орда",
+      "HORDE_FOREVER": "Орда Forever"
     },
     "UPDATES_ON_HOLD_NOTIFICATION_BODY": "Для некоторых обновлений модификаций нужна более новая версия World of Warcraft, чем установленная. Откройте WowUp, чтобы посмотреть их.",
     "UPDATES_ON_HOLD_NOTIFICATION_TITLE": "Обновления отложены",
