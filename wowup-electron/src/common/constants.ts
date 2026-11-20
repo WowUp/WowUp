@@ -138,6 +138,23 @@ export const IPC_WARCRAFT_GET_ADDON_FOLDER = "warcraft-get-addon-folder";
 export const IPC_TOC_PARSE = "toc-parse";
 export const IPC_TOC_GET_ALL_TOCS = "toc-get-all-tocs";
 
+// SETTINGS SYNC CONTROLLER
+export const IPC_SETTINGS_SYNC_GET_STATUS = "settings-sync-get-status";
+export const IPC_SETTINGS_SYNC_CREATE_CODE = "settings-sync-create-code";
+export const IPC_SETTINGS_SYNC_SET_CODE = "settings-sync-set-code";
+export const IPC_SETTINGS_SYNC_GET_CODE = "settings-sync-get-code";
+export const IPC_SETTINGS_SYNC_CLEAR = "settings-sync-clear";
+export const IPC_SETTINGS_SYNC_SET_FOLDER = "settings-sync-set-folder";
+export const IPC_SETTINGS_SYNC_SET_INSTALLATIONS = "settings-sync-set-installations";
+export const IPC_SETTINGS_SYNC_SET_AUTO = "settings-sync-set-auto";
+export const IPC_SETTINGS_SYNC_RUN = "settings-sync-run";
+export const IPC_SETTINGS_SYNC_EVENT = "settings-sync-event";
+
+export const SETTINGS_SYNC_CODE_KEY = "settings_sync_code";
+export const SETTINGS_SYNC_FOLDER_KEY = "settings_sync_folder";
+export const SETTINGS_SYNC_AUTO_KEY = "settings_sync_auto";
+export const SETTINGS_SYNC_INSTALLATIONS_KEY = "settings_sync_installations";
+
 // ADDON SCAN CONTROLLER
 export const IPC_ADDON_SCAN_PREPARE = "addons-scan-prepare";
 export const IPC_ADDON_SCAN = "addons-scan";

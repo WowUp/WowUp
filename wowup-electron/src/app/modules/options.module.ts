@@ -10,6 +10,7 @@ import { OptionsDebugSectionComponent } from "../components/options/options-debu
 import { OptionsWowSectionComponent } from "../components/options/options-wow-section/options-wow-section.component";
 import { WowClientOptionsComponent } from "../components/options/wow-client-options/wow-client-options.component";
 import { WtfExplorerComponent } from "../components/options/wtf-explorer/wtf-explorer.component";
+import { OptionsSyncSectionComponent } from "../components/options/options-sync-section/options-sync-section.component";
 import { MatModule } from "./mat-module";
 import { PipesModule } from "./pipes.module";
 import { DirectiveModule } from "./directive.module";
@@ -25,16 +26,9 @@ import { OptionsCurseforgeSectionComponent } from "../components/options/options
     OptionsWowSectionComponent,
     OptionsCurseforgeSectionComponent,
     WowClientOptionsComponent,
+    OptionsSyncSectionComponent,
   ],
-  imports: [
-    CommonModule,
-    FormsModule,
-    ReactiveFormsModule,
-    TranslateModule,
-    MatModule,
-    PipesModule,
-    DirectiveModule,
-  ],
+  imports: [CommonModule, FormsModule, ReactiveFormsModule, TranslateModule, MatModule, PipesModule, DirectiveModule],
   exports: [
     WtfExplorerComponent,
     AboutComponent,
@@ -44,6 +38,7 @@ import { OptionsCurseforgeSectionComponent } from "../components/options/options
     OptionsCurseforgeSectionComponent,
     OptionsWowSectionComponent,
     WowClientOptionsComponent,
+    OptionsSyncSectionComponent,
   ],
 })
 export class OptionsModule {}

@@ -630,6 +630,51 @@
         "LOG_FILES_LABEL": "Pliki dziennika",
         "TITLE": "Debugowanie"
       },
+      "SYNC": {
+        "AUTO_DESCRIPTION": "Sync when WowUp starts and every time World of Warcraft closes",
+        "AUTO_LABEL": "Sync automatically",
+        "CHOOSE_FOLDER_BUTTON": "Choose Folder",
+        "CODE_COPIED": "Sync code copied",
+        "CODE_DESCRIPTION": "Create a code on your first device, then enter the same code on your other devices. Everything is encrypted with this code before it leaves your computer.",
+        "CODE_LABEL": "Sync code",
+        "CODE_SAVED": "Sync code saved",
+        "CODE_SECRET_HINT": "Keep this code private: anyone with the code and access to the folder can read your settings.",
+        "COPY_CODE_BUTTON": "Copy",
+        "CREATE_CODE_BUTTON": "Create New Code",
+        "ENTER_CODE_LABEL": "Code from another device",
+        "ERROR": {
+          "BUSY": "A sync is already running",
+          "FOLDER_MISSING": "The sync folder can't be found. Is the drive or cloud folder available?",
+          "GAME_RUNNING": "Close World of Warcraft before syncing settings",
+          "GENERIC": "Sync failed: {message}",
+          "INVALID_CODE": "That sync code isn't valid. Check it for typos.",
+          "NOT_CONFIGURED": "Add a sync code and choose a folder first",
+          "WRONG_KEY": "The data in the sync folder doesn't match this code"
+        },
+        "FOLDER_DESCRIPTION": "A folder all your devices can reach, such as iCloud Drive, Dropbox, OneDrive or a network drive. WowUp only stores encrypted files in it.",
+        "FOLDER_LABEL": "Sync folder",
+        "HIDE_CODE_BUTTON": "Hide",
+        "INSTALLATIONS_DESCRIPTION": "Addon settings, macros, key bindings and UI layout are synced. Graphics settings (Config.wtf) stay on each device. A backup is made before anything is changed.",
+        "INSTALLATIONS_LABEL": "Games to sync",
+        "INSTALL_MISSING_BUTTON": "Install Missing",
+        "MISSING_ADDONS": "{count} {count, plural, =1{addon} other{addons}} from {device} {count, plural, =1{is} other{are}} not installed here",
+        "OR": "or",
+        "OUTCOME": {
+          "first-device": "Settings uploaded from this device",
+          "no-changes": "Already up to date",
+          "synced": "Synced"
+        },
+        "PAGE_EXPLANATION": "Keep your addon settings, macros and key bindings the same on all your computers.",
+        "REMOVE_CODE_BUTTON": "Stop Syncing",
+        "RESULT_BACKUP": "Show backup",
+        "RESULT_CONFLICTS": "{count} {count, plural, =1{file was} other{files were}} changed on both devices; the newest copy was kept",
+        "RESULT_COUNTS": "{downloaded} received, {uploaded} sent, {deleted} removed",
+        "SAVE_CODE_BUTTON": "Use Code",
+        "SHOW_CODE_BUTTON": "Show Code",
+        "SYNC_DONE": "Settings synced",
+        "SYNC_NOW_BUTTON": "Sync Now",
+        "TITLE": "Settings Sync"
+      },
       "TABS": {
         "ABOUT": "Informacje",
         "ADDONS": "Addony",
@@ -637,6 +682,7 @@
         "CLIENTS": "Klienty",
         "CURSEFORGE": "CurseForge",
         "DEBUG": "Debugowanie",
+        "SYNC": "Settings Sync",
         "WTF_EXPLORER": "WTF Explorer"
       },
       "WAGO": {
