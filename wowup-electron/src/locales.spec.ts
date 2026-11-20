@@ -8,7 +8,9 @@ import { catchError, firstValueFrom, Observable, of } from "rxjs";
 import MessageFormat, { MessageFormatOptions } from "@messageformat/core";
 
 const LOCALES = ["cs", "de", "en", "es", "fr", "it", "ko", "nb", "pl", "pt", "ru", "zh-TW", "zh"];
-const LOCALE_DIR = path.join(__dirname, "..", "..", "..", "..", "..", "..", "src", "assets", "i18n");
+// __dirname in the Karma Electron renderer points inside the electron package, not at this file,
+// so resolve from the working directory instead (npm scripts run from the wowup-electron package root).
+const LOCALE_DIR = path.join(process.cwd(), "src", "assets", "i18n");
 
 const LOCALE_SET = {};
 
