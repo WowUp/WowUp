@@ -58,6 +58,7 @@ export class OptionsAppSectionComponent implements OnInit {
   public languages: LocaleListItem[] = [
     { localeId: "en", label: "English" },
     { localeId: "cs", label: "Čestina" },
+    { localeId: "da", label: "Dansk" },
     { localeId: "de", label: "Deutsch" },
     { localeId: "es", label: "Español" },
     { localeId: "fr", label: "Français" },

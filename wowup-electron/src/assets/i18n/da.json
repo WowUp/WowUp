@@ -1,0 +1,712 @@
+{
+  "ADDON_IMPORT": {
+    "ACTIVE_ADDON_COUNT": "Aktive add-ons: {count}",
+    "ADDED_BADGE_TOOLTIP": "Vi vil forsøge at installere denne add-on",
+    "CONFLICT_BADGE_TOOLTIP": "Add-ons i konflikt bliver ikke ændret",
+    "COPY_BUTTON": "Kopiér",
+    "DIALOG_TITLE": "Importér/eksportér add-ons: {clientType}",
+    "EXPORT_STRING_COPIED": "Eksportstrengen er kopieret til udklipsholderen",
+    "EXPORT_STRING_PASTED": "Indholdet af udklipsholderen er indsat",
+    "EXPORT_TAB_LABEL": "Eksportér",
+    "EXPORT_TEXT_LABEL": "Eksportdata for add-ons",
+    "GENERIC_IMPORT_ERROR": "Der opstod en fejl under importen",
+    "IGNORED_ADDON_COUNT": "Ignorerede add-ons: {count}",
+    "IMPORT_ADDED_COUNT": "{count} tilføjet",
+    "IMPORT_BADGE_ADDED": "Ny",
+    "IMPORT_BADGE_CONFLICT": "Konflikt",
+    "IMPORT_BADGE_NO_CHANGE": "Ingen ændring",
+    "IMPORT_BUTTON": "Importér",
+    "IMPORT_CONFLICT_COUNT": "{count} i konflikt",
+    "IMPORT_NO_CHANGE_COUNT": "{count} uændret",
+    "IMPORT_STRING_INVALID": "Importstrengen var ugyldig",
+    "IMPORT_TAB_LABEL": "Importér",
+    "IMPORT_TEXT_INSTRUCTIONS": "Indsæt eksportdata for add-ons fra WowUp i feltet nedenfor for at komme i gang",
+    "IMPORT_TEXT_LABEL": "Importdata",
+    "IMPORT_TOTAL_COUNT": "Importerer {count} {count, plural, =1{add-on} other{add-ons}}",
+    "INSTALL_BUTTON": "Installér",
+    "INVALID_CLIENT_TYPE": "Importstrengen passede ikke til den valgte klienttype",
+    "MISSING_ADDON_PROVIDERS": "En eller flere add-on-udbydere var ikke tilgængelige/aktiveret ({missingProviders})",
+    "MISSING_CURSEFORGE_PROVIDER": "Listen indeholder en add-on fra CurseForge, du skal installere<br>\"WowUp with CurseForge\" fra wowup.io",
+    "MISSING_PROVIDER_MODAL_DOWNLOAD_BTN": "Download",
+    "MISSING_PROVIDER_MODAL_TITLE": "Manglende add-on-udbyder",
+    "MISSING_WAGO_PROVIDER": "Listen indeholder en add-on fra Wago, du skal installere<br>\"WowUp with Wago\" fra wowup.io",
+    "NO_CHANGE_BADGE_TOOLTIP": "Du har allerede denne add-on installeret",
+    "PASTE_BUTTON": "Indsæt",
+    "PROVIDER_MISMATCH": "Denne add-on er allerede installeret, men udbyderen passer ikke",
+    "RESET_BUTTON": "Nulstil",
+    "VERSION_MISMATCH": "Denne add-on er allerede installeret, men versionerne passer ikke"
+  },
+  "ADS": {
+    "AD_EXPLAINER_BUTTON": "Denne reklame støtter add-on-udviklere ❤",
+    "AD_EXPLAINER_DIALOG": {
+      "MESSAGE": "For at kunne bruge <a appExternalLink href=\"https://addons.wago.io/\">wago.io</a> som add-on-udbyder og støtte udviklerne for deres hårde arbejde med dine yndlings-add-ons, er vi forpligtet til at vise denne reklame.\n\nHvis du ikke vil se reklamen, kan du altid deaktivere Wago som udbyder under fanen Indstillinger.",
+      "TITLE": "Hvorfor ser jeg denne reklame?"
+    },
+    "AD_EXPLAINER_DIALOG_CF": {
+      "MESSAGE": "For at kunne bruge <a appExternalLink href=\"https://curseforge.com/\">CurseForge</a> som add-on-udbyder og støtte udviklerne for deres hårde arbejde med dine yndlings-add-ons, er vi forpligtet til at vise denne reklame.\n\nHvis du ikke vil se reklamen, kan du altid deaktivere CurseForge som udbyder under fanen Indstillinger.",
+      "TITLE": "Hvorfor ser jeg denne reklame?"
+    }
+  },
+  "APP": {
+    "APP_MENU": {
+      "EDIT": {
+        "COPY": "Kopiér",
+        "CUT": "Klip",
+        "LABEL": "Rediger",
+        "PASTE": "Indsæt",
+        "REDO": "Annuller fortryd",
+        "SELECT_ALL": "Vælg alt",
+        "UNDO": "Fortryd"
+      },
+      "HIDE": "Skjul",
+      "HIDE_OTHERS": "Skjul andre",
+      "QUIT": "Afslut",
+      "SHOW_ALL": "Vis alle",
+      "VIEW": {
+        "FORCE_RELOAD": "Gennemtving genindlæsning",
+        "LABEL": "Vis",
+        "RELOAD": "Genindlæs",
+        "TOGGLE_DEV_TOOLS": "Slå udviklerværktøjer til/fra",
+        "TOGGLE_FULL_SCREEN": "Slå fuld skærm til/fra",
+        "ZOOM_IN": "Zoom ind",
+        "ZOOM_OUT": "Zoom ud",
+        "ZOOM_RESET": "Nulstil zoom"
+      },
+      "WINDOW": {
+        "BRING_ALL_TO_FRONT": "Anbring alle forrest",
+        "CLOSE": "Luk",
+        "LABEL": "Vindue",
+        "MINIMIZE": "Minimer",
+        "ZOOM": "Zoom"
+      }
+    },
+    "AUTO_UPDATE_FEW_NOTIFICATION_BODY": "Automatisk opdateret\r\n{addonNames}",
+    "AUTO_UPDATE_NOTIFICATION_BODY": "Opdaterede automatisk {count} {count, plural, =1{add-on} other{add-ons}}.",
+    "AUTO_UPDATE_NOTIFICATION_TITLE": "Automatiske opdateringer",
+    "CLOSE_FULLSCREEN_BUTTON_TOOLTIP": "Forlad fuld skærm",
+    "FULLSCREEN_SNACKBAR": {
+      "MAC": "Tryk på ^⌘F for at forlade fuld skærm",
+      "WINDOWS": "Tryk på F11 for at forlade fuld skærm"
+    },
+    "LINK_NAVIGATION": {
+      "MESSAGE": "{url}\n\nEr du sikker på, at du vil åbne denne tredjepartsside i din standardbrowser?",
+      "TITLE": "Du er ved at forlade WowUp"
+    },
+    "PROVIDERS": {
+      "UNKNOWN": "Ukendt"
+    },
+    "STATUS_TEXT": {
+      "ADDON_SCAN_COMPLETED": "Scanning af add-ons fuldført...",
+      "ADDON_SCAN_STARTED": "Scanning af add-ons startet...",
+      "ADDON_SCAN_UPDATE": "Scanner {count} mapper..."
+    },
+    "SYSTEM_TRAY": {
+      "CHECK_UPDATE": "Søg efter opdateringer...",
+      "QUIT_ACTION": "Afslut",
+      "SHOW_ACTION": "Vis"
+    },
+    "THEME": {
+      "ALLIANCE": "Alliance",
+      "DEFAULT": "WowUp",
+      "GROUP_DARK": "Mørk",
+      "GROUP_LIGHT": "Lys",
+      "HORDE": "Horde"
+    },
+    "UPDATES_ON_HOLD_NOTIFICATION_BODY": "Nogle add-on-opdateringer kræver en nyere version af World of Warcraft end den, du har installeret. Åbn WowUp for at gennemgå dem.",
+    "UPDATES_ON_HOLD_NOTIFICATION_TITLE": "Opdateringer sat på pause",
+    "WINDOW_TITLE": "WowUp.io",
+    "WINDOW_TITLE_CF": "WowUp.io CF",
+    "WINDOW_TITLE_FULLSCREEN": "WowUp.io - Fuld skærm",
+    "WOWUP_UPDATE": {
+      "BUNDLE_OVERDUE_TEXT": "En WowUp-opdatering har ventet et stykke tid. Genstart WowUp for at fuldføre opdateringen.",
+      "BUNDLE_READY_TEXT": "En WowUp-opdatering er downloadet. Genstart nu for at bruge den, ellers beder WowUp dig om at genstarte inden for 6 timer.",
+      "BUNDLE_REQUIRED_TEXT": "Denne version af WowUp har et problem og er blevet erstattet. Genstart WowUp for at fuldføre opdateringen.",
+      "CHECKING_FOR_UPDATE": "Søger efter opdatering",
+      "DOWNLOADED_TOOLTIP": "Installér WowUp-opdatering",
+      "DOWNLOADING_UPDATE": "Downloader opdatering",
+      "INSTALL_MESSAGE": "Vil du genstarte WowUp og installere opdateringen?",
+      "INSTALL_TITLE": "WowUp-opdatering klar",
+      "LATER": "Senere",
+      "NOT_AVAILABLE": "Den nyeste version af WowUp er allerede installeret",
+      "PORTABLE_DOWNLOAD_MESSAGE": "Vil du downloade den nyeste portable version manuelt?\n\nDu skal selv lukke programmet og kopiere den nye version over.",
+      "PORTABLE_DOWNLOAD_TITLE": "Manuel download påkrævet",
+      "RESTART_NOW": "Genstart nu",
+      "RESTART_TO_UPDATE": "Genstart for at opdatere",
+      "RESTART_TO_UPDATE_TOOLTIP": "Genstart WowUp for at bruge den downloadede opdatering",
+      "SNACKBAR_ACTION": "Opdatér og genstart",
+      "SNACKBAR_TEXT": "En ny version af WowUp er tilgængelig",
+      "TOOLTIP": "WowUp-opdatering tilgængelig",
+      "UPDATE_AVAILABLE": "Starter download",
+      "UPDATE_ERROR": "Kunne ikke hente WowUp-opdatering"
+    }
+  },
+  "COMMON": {
+    "ADDON_CATEGORIES": {
+      "ACHIEVEMENTS": "Achievements",
+      "ACTION_BARS": "Action bars",
+      "ALL_ADDONS": "Alle add-ons",
+      "AUCTION_ECONOMY": "Auktion og økonomi",
+      "BAGS_INVENTORY": "Tasker og inventar",
+      "BOSS_ENCOUNTERS": "Bosskampe",
+      "BUFFS_DEBUFFS": "Buffs og debuffs",
+      "BUNDLES": "Pakker",
+      "CHAT_COMMUNICATION": "Chat og kommunikation",
+      "CLASS": "Klasse",
+      "COMBAT": "Kamp",
+      "COMPANIONS": "Ledsagere",
+      "DATA_EXPORT": "Dataeksport",
+      "DEVELOPMENT_TOOLS": "Udviklerværktøjer",
+      "GUILD": "Guild",
+      "LIBRARIES": "Biblioteker",
+      "MAIL": "Post",
+      "MAP_MINIMAP": "Kort og minikort",
+      "MISCELLANEOUS": "Diverse",
+      "MISSIONS": "Missioner",
+      "PLUGINS": "Plugins",
+      "PROFESSIONS": "Professions",
+      "PVP": "PvP",
+      "QUESTS_LEVELING": "Quests og leveling",
+      "ROLEPLAY": "Rollespil",
+      "TOOLTIPS": "Tooltips",
+      "UNIT_FRAMES": "Unit frames"
+    },
+    "ADDON_STATE": {
+      "IGNORED": "Ignoreret",
+      "INSTALL": "Installér",
+      "PENDING": "Afventer",
+      "UNAVAILABLE": "Ikke tilgængelig",
+      "UNAVAILABLE_TOOLTIP": "Udvikleren eller udbyderen har gjort denne add-on utilgængelig",
+      "UNINSTALL": "Afinstallér",
+      "UNKNOWN": "",
+      "UPDATE": "Opdatér",
+      "UPTODATE": "Opdateret",
+      "WARNING": "Advarsel"
+    },
+    "ADDON_STATUS": {
+      "BACKINGUP": "Sikkerhedskopierer",
+      "CHECKING_DEPENDENCIES": "Kontrollerer afhængigheder",
+      "COMPLETE": "Installeret",
+      "DOWNLOADING": "Downloader",
+      "ERROR": "Fejl",
+      "INSTALLING": "Installerer",
+      "INSTALLING_DEPENDENCIES": "Afhængigheder {completed}/{total}",
+      "PENDING": "Afventer",
+      "RETRY": "Prøver igen...",
+      "UNINSTALLING": "Afinstallerer",
+      "UPDATING": "Opdaterer..."
+    },
+    "ADDON_WARNING": {
+      "GAME_VERSION_TOC_MISSING_DESCRIPTION": "Denne add-on eller dens undermapper mangler en eller flere TOC-filer til denne spilversion",
+      "GAME_VERSION_TOC_MISSING_TOOLTIP": "En eller flere TOC-filer mangler til denne spilversion",
+      "GENERIC_DESCRIPTION": "Vi har fundet et problem med denne add-on. Vi kan ikke længere opdatere den eller vise oplysninger om den.",
+      "GENERIC_TOOLTIP": "Vi har fundet et problem med denne add-on",
+      "MISSING_ON_PROVIDER_DESCRIPTION": "{providerName} returnerede ikke denne add-on, da vi bad om den.<br>Vi kan ikke længere opdatere den eller vise oplysninger om den, før {providerName} løser problemet.",
+      "MISSING_ON_PROVIDER_TOOLTIP": "{providerName} returnerer ikke denne add-on som forventet",
+      "NO_PROVIDER_FILES_DESCRIPTION": "{providerName} returnerede denne add-on korrekt, men der var ingen filer, der passer til denne spilversion.<br>Når der kommer en opdatering til denne spilversion, bør advarslen forsvinde.",
+      "NO_PROVIDER_FILES_TOOLTIP": "{providerName} havde ingen filer til denne spilversion",
+      "TOC_NAME_MISMATCH_DESCRIPTION": "Mappenavnet for denne add-on passede ikke med den forventede TOC-fil. Du kan opleve problemer med denne add-on i spillet.",
+      "TOC_NAME_MISMATCH_TOOLTIP": "Mappen for denne add-on passer ikke med TOC-filen"
+    },
+    "CLIENT_TYPES": {
+      "ANNIVERSARY": "Burning Crusade Anniversary",
+      "BETA": "The War Within Beta",
+      "CLASSIC": "Mists of Pandaria Classic",
+      "CLASSICBETA": "World of Warcraft: Forever Beta",
+      "CLASSICERA": "World of Warcraft Classic",
+      "CLASSICERAPTR": "PTR (Classic Era)",
+      "CLASSICPTR": "PTR (MoP Classic)",
+      "FOREVER": "World of Warcraft: Forever",
+      "RETAIL": "World of Warcraft",
+      "RETAILPTR": "PTR (Midnight)",
+      "RETAILXPTR": "PTR (TWW 11.2.7)"
+    },
+    "DATES": {
+      "DAYS_AGO": "For {count} {count, plural, =1{dag} other{dage}} siden",
+      "HOURS_AGO": "For {count} {count, plural, =1{time} other{timer}} siden",
+      "JUST_NOW": "Lige nu",
+      "MONTHS_AGO": "For {count} {count, plural, =1{måned} other{måneder}} siden",
+      "YEARS_AGO": "For {count} år siden",
+      "YESTERDAY": "I går"
+    },
+    "DEPENDENCY": {
+      "TOOLTIP": "{dependencyCount} {dependencyCount, plural, =1{påkrævet afhængighed} other{påkrævede afhængigheder}}"
+    },
+    "DOWNLOAD_COUNT": {
+      "e+0": "få",
+      "e+1": "{count}",
+      "e+2": "{count}",
+      "e+3": "{count} tusind",
+      "e+4": "{count} tusind",
+      "e+5": "{count} tusind",
+      "e+6": "{count} {count, plural, =1{million} other{millioner}}",
+      "e+7": "{count} millioner",
+      "e+8": "{count} millioner",
+      "e+9": "{count} {count, plural, =1{milliard} other{milliarder}}"
+    },
+    "ENUM": {
+      "ADDON_CHANNEL_TYPE": {
+        "ALPHA": "Alfa",
+        "BETA": "Beta",
+        "STABLE": "Stabil"
+      }
+    },
+    "ERRORS": {
+      "ACCOUNT_PUSH_TOGGLE_FAILED_ERROR": "Kunne ikke slå øjeblikkelige opdateringer til/fra for din konto. Prøv igen senere, eller kontakt os på Discord.",
+      "ADDON_INSTALL_ERROR": "Kunne ikke installere add-on, {addonName}. Prøv igen senere.",
+      "ADDON_INSTALL_NETWORK_ERROR": "Kunne ikke downloade {addonName} på grund af en netværksfejl. Det kan skyldes en ustabil forbindelse eller IPv6-problemer på dit netværk — prøv at deaktivere IPv6 på din netværksadapter, hvis det bliver ved med at ske.",
+      "ADDON_SCAN_ERROR": "Der opstod en fejl under matchning af dine add-on-mapper med {providerName}. Prøv igen senere.",
+      "ADDON_SYNC_ERROR": "Der opstod en fejl under søgning efter opdateringer fra {providerName}. Prøv igen senere.",
+      "ADDON_SYNC_FULL_ERROR": "[{installationName}]: Der opstod en fejl under søgning efter opdateringer til {addonName} fra {providerName}. Prøv igen senere.",
+      "CHANGE_PROVIDER_ERROR": "Kunne ikke skifte udbyder for {addonName} til {providerName}",
+      "GITHUB_LIMIT_ERROR": "Du har nået din GitHub API-grænse på {max} forespørgsler.\nVent til {reset}, og prøv igen.",
+      "GITHUB_REPOSITORY_FETCH_ERROR": "Kunne ikke søge efter opdateringer til {addonName}.\nKontrollér, at repositoriet er korrekt, eller indstil denne add-on til at blive ignoreret."
+    },
+    "PROGRESS_SPINNER": {
+      "LOADING": "Indlæser..."
+    },
+    "PROVIDER_ERROR": "Fejl ved kontakt til {providerName}",
+    "SEARCH": {
+      "NO_ADDONS": "Ingen add-ons fundet"
+    },
+    "WOW_EXE_SELECTION_NAME": "WoW-programfil"
+  },
+  "DIALOGS": {
+    "ADDON_DETAILS": {
+      "ADDON_ID_PREFIX": "Add-on-ID:",
+      "BY_AUTHOR": "Af {authorName}",
+      "CHANGELOG_TAB": "Ændringslog",
+      "COPY_ADDON_ID_SNACKBAR": "Add-on-ID kopieret til udklipsholderen",
+      "COPY_ADDON_ID_TOOLTIP": "Kopiér add-on-ID til udklipsholderen",
+      "DEPENDENCY_TEXT": "Denne add-on har {dependencyCount} {dependencyCount, plural, =1{påkrævet afhængighed} other{påkrævede afhængigheder}}",
+      "DESCRIPTION_NOT_FOUND": "Ingen beskrivelse fundet",
+      "DESCRIPTION_TAB": "Beskrivelse",
+      "FUNDING_LINK_TITLE": "Støt denne udvikler",
+      "IMAGES_TAB": "Billeder",
+      "MISSING_DEPENDENCIES": "Manglende afhængigheder",
+      "NO_CHANGELOG_TEXT": "Ingen ændringslog tilgængelig",
+      "VIEW_IN_BROWSER_BUTTON": "Vis i browser",
+      "VIEW_ON_PROVIDER_PREFIX": "Vis på"
+    },
+    "ALERT": {
+      "ERROR_TITLE": "Fejl",
+      "POSITIVE_BUTTON": "OK"
+    },
+    "CONFIRM": {
+      "NEGATIVE_BUTTON": "Nej",
+      "POSITIVE_BUTTON": "Ja"
+    },
+    "CURSE_MIGRATION": {
+      "MESSAGE": "CurseForge-API'et er lukket ned, så WowUp kan ikke længere hente oplysninger om add-ons derfra.<br/>Det betyder desværre, at CurseForge-udbyderen er fjernet, og at dine add-ons fra CurseForge ikke længere bliver opdateret.<br/>Det anbefales, at du laver en ny scanning for at se, hvilke add-ons der kan findes hos andre udbydere.<br/>Den nye scanning kan tage et stykke tid.<br/><a appExternalLink href=\"https://wowup.io/guide/wowup/curseforge-migration\">Læs mere her.</a>",
+      "NEGATIVE_BUTTON": "Scan igen manuelt",
+      "POSITIVE_BUTTON": "Scan igen automatisk",
+      "RE_SCAN_ERROR": "Den automatiske scanning mislykkedes. Prøv igen manuelt.",
+      "RE_SCAN_SUCCESS": "Den automatiske scanning er færdig, og du er klar til at gå i gang.",
+      "TITLE": "CurseForge-migrering"
+    },
+    "GAME_VERSION_MISMATCH": {
+      "ADDON_NEEDS": "{name} kræver WoW {version}",
+      "CANCEL": "Annuller",
+      "IGNORE": "Ignorer for denne WoW-version",
+      "INSTALLATION": "{name} (WoW {version})",
+      "MESSAGE": "Disse opdateringer er lavet til en nyere version af World of Warcraft end den, du har installeret. De kan give fejl, indtil spillet bliver opdateret.",
+      "SKIP": "Spring disse over",
+      "TITLE": "Opdateringer kræver en nyere WoW-version",
+      "UPDATE_ANYWAY": "Opdatér alligevel"
+    },
+    "INSTALL_FROM_PROTOCOL": {
+      "ADDON_INSTALLED": "Add-onen er installeret!",
+      "ADDON_INSTALLING": "Installerer add-on",
+      "CANCEL_BUTTON": "Luk",
+      "ERRORS": {
+        "ADDON_NOT_FOUND": "Der blev ikke fundet nogen add-on for protokollen: {protocol}",
+        "GENERIC": "Fejl ved hentning af data for protokollen: {protocol}",
+        "NO_VALID_WOW_INSTALLATIONS": "Ingen WoW-klient installeret for protokollen: {protocol}"
+      },
+      "INSTALL_BUTTON": "Installér",
+      "TITLE": "Installér add-on fra {providerName}"
+    },
+    "INSTALL_FROM_URL": {
+      "ADDON_URL_INPUT_LABEL": "Add-on-URL",
+      "ADDON_URL_INPUT_PLACEHOLDER": "F.eks. en URL fra GitHub eller WowInterface",
+      "CLOSE_BUTTON": "Luk",
+      "DESCRIPTION": "Hvis du vil installere en add-on direkte fra en URL, så indsæt den nedenfor for at komme i gang.",
+      "DOWNLOAD_COUNT": "{textCount} {count, plural, =1{download} other{downloads}} på {provider}",
+      "ERROR": {
+        "ASSET_NOT_FOUND": "Der blev ikke fundet nogen fil at downloade {message}.\n\nUdgivelsen skal indeholde en gyldig zip-fil, for at WowUp kan downloade den.",
+        "BURNING_CRUSADE_ASSET_NOT_FOUND": "Der blev ikke fundet nogen fil at downloade fra {message}.\n\nDer kræves en gyldig zip-fil, der ender på '-bc', for at WowUp kan downloade den.",
+        "CATACLYSM_ASSET_NOT_FOUND": "Der blev ikke fundet nogen fil at downloade fra {message}.\n\nDer kræves en gyldig zip-fil, der ender på '-cata', for at WowUp kan downloade den.",
+        "CLASSIC_ASSET_NOT_FOUND": "Der blev ikke fundet nogen fil at downloade fra {message}.\n\nDer kræves en gyldig zip-fil, der ender på '-classic', for at WowUp kan downloade den.",
+        "FAILED_TO_CONNECT": "Kan ikke oprette forbindelse til API'et. Vent lidt, og prøv igen.",
+        "FOREVER_ASSET_NOT_FOUND": "Der blev ikke fundet nogen fil at downloade fra {message}.\n\nDer kræves en gyldig zip-fil, der ender på '-forever', for at WowUp kan downloade den.",
+        "INSTALL_FAILED": "Noget gik galt under installationen af add-onen. Prøv igen.\n\nHvis denne besked bliver ved med at dukke op, kan du få hjælp på Discord i kanalen #help-me.",
+        "INVALID_URL": "Den angivne værdi er ikke en gyldig URL. Eksempler på gyldige add-on-URL'er:\n\t- https://github.com/WowUp/WowUp.Addon\n\t- https://www.wowinterface.com/downloads/info25610-8.3-014.html\n\t- https://www.curseforge.com/wow/addons/altoholic",
+        "MISTS_ASSET_NOT_FOUND": "Der blev ikke fundet nogen fil at downloade fra {message}.\n\nDer kræves en gyldig zip-fil, der ender på '-mists', for at WowUp kan downloade den.",
+        "NO_ADDON_FOUND": "Der blev ikke fundet nogen add-on. Kontrollér, at din URL peger på den rigtige side.\n\nVed installation fra GitHub skal repositoriet have et release-tag med et zip-arkiv, der indeholder add-onen.",
+        "NO_RELEASE_FOUND": "Der blev ikke fundet nogen udgivelser for {message}.\n\nDer kræves en gyldig udgivelse med zip-filer, for at WowUp kan downloade den.",
+        "NO_SEARCH_RESULTS": "Der blev ikke fundet nogen søgeresultater.",
+        "TITLE": "Installation af add-on mislykkedes",
+        "WRATH_ASSET_NOT_FOUND": "Der blev ikke fundet nogen fil at downloade fra {message}.\n\nDer kræves en gyldig zip-fil, der ender på '-wrath', for at WowUp kan downloade den."
+      },
+      "IMPORT_ASSET_WARNING": "Vi kunne ikke bekræfte, om den nyeste udgivelse af denne add-on er kompatibel med din valgte klient.\n\nMen vi fandt en zip-fil \"{zipName}\".\n\nInstallation sker på eget ansvar.",
+      "IMPORT_BUTTON": "Importér",
+      "IMPORT_WARNING_TITLE": "Advarsel om import af add-on",
+      "INSTALL_BUTTON": "Installér",
+      "INSTALL_SUCCESS_LABEL": "Installeret!",
+      "SUPPORTED_SOURCES": "Understøtter WowInterface og GitHub",
+      "TITLE": "Installér add-on fra URL"
+    },
+    "PERMISSIONS": {
+      "CURSEFORGE": {
+        "DESCRIPTION_AD_LINK": "annoncører",
+        "DESCRIPTION_BOTTOM": ". Klik på knappen Administrer for at styre dine samtykker eller gøre indsigelse mod behandlingen af dine data. Du kan altid ændre dine præferencer i indstillingerne.",
+        "DESCRIPTION_TOP": " For at bruge programmets integration med CurseForge kræver de, at du tillader, at de viser dig en reklame fra en af deres ",
+        "MANAGE_BUTTON": "Administrer",
+        "TITLE": "CurseForge"
+      },
+      "MESSAGE": "Før vi går i gang, skal vi have sat et par tilladelser op for programmet.",
+      "POSITIVE_BUTTON": "Acceptér og fortsæt",
+      "TELEMETRY": {
+        "DESCRIPTION": "Vil du hjælpe med at forbedre WowUp ved at sende anonyme installationsdata og/eller fejl?",
+        "TOGGLE_LABEL": "Tillad telemetri"
+      },
+      "TITLE": "Opsætning af tilladelser i WowUp",
+      "WAGO": {
+        "DESCRIPTION": "Aktivér Wago.io som add-on-udbyder for at støtte udviklerne af dine yndlings-add-ons! Det viser et reklamepanel, som er påkrævet for at bruge deres tjeneste.\nVed at tilvælge accepterer du deres <a appExternalLink href=\"{termsUrl}\" >servicevilkår</a>.",
+        "TOGGLE_LABEL": "Aktivér Wago.io som udbyder"
+      }
+    },
+    "SELECT_INSTALLATION": {
+      "INVALID_INSTALLATION_PATH": "Dette ser ikke ud til at være et gyldigt World of Warcraft-program:\n{selectedPath}"
+    },
+    "TELEMETRY": {
+      "DESCRIPTION": "Vil du hjælpe med at forbedre WowUp ved at sende anonyme installationsdata og/eller fejl?",
+      "NEGATIVE_BUTTON": "Nej tak",
+      "POSITIVE_BUTTON": "Gerne!",
+      "TITLE": "Telemetri i WowUp"
+    },
+    "TRUST_DOMAIN_CHECKBOX": "Stol på dette domæne, og spørg mig ikke igen"
+  },
+  "PAGES": {
+    "ABOUT": {
+      "ATTRIBUTIONS_TITLE": "Tilskrivninger",
+      "CHANGE_LOG_SECTION_LABEL": "Ændringslog",
+      "SHELL_VERSION": "Shell v{version}",
+      "TITLE": "WowUp.io",
+      "WEBSITE_LINK_LABEL": "Besøg hjemmesiden!"
+    },
+    "ACCOUNT": {
+      "BETA": "Beta",
+      "LOGIN_BUTTON": "Log ind nu!",
+      "LOGOUT_BUTTON": "Log ud",
+      "LOGOUT_CONFIRMATION_MESSAGE": "Er du sikker på, at du vil logge ud? Alle dine lokale kontodata bliver fjernet, indtil du logger ind igen.",
+      "LOGOUT_CONFIRMATION_TITLE": "Log ud?",
+      "MANAGE_ACCOUNT_BUTTON": "Administrer konto",
+      "TITLE": "Konto"
+    },
+    "GET_ADDONS": {
+      "ADDON_CATEGORIES_BUTTON": "Kategorier",
+      "ADDON_CATEGORIES_MENU_TITLE": "Add-on-kategorier",
+      "ADDON_CATEGORIES_SELECTED_TITLE": "Kategori: {category}",
+      "ADDON_CATEGORIES_TOOLTIP": "Gennemse forskellige kategorier",
+      "CLIENT_TYPE_SELECT_LABEL": "World of Warcraft",
+      "INSTALL_FROM_URL_BUTTON": "Installér fra URL",
+      "INSTALL_FROM_URL_TOOLTIP": "Installér en add-on fra en URL",
+      "REFRESH_BUTTON": "Opdatér",
+      "REFRESH_TOOLTIP": "Opdatér add-on-resultater",
+      "RESET_CATEGORY_TOOLTIP": "Nulstil kategori",
+      "SEARCH_LABEL": "Søg",
+      "TABLE": {
+        "ADDON_COLUMN_HEADER": "Add-on",
+        "AUTHOR_COLUMN_HEADER": "Udvikler(e)",
+        "DOWNLOAD_COUNT_COLUMN_HEADER": "Downloads",
+        "PROVIDER_COLUMN_HEADER": "Udbyder",
+        "RELEASED_AT_COLUMN_HEADER": "Udgivet",
+        "STATUS_COLUMN_HEADER": "Status"
+      }
+    },
+    "HOME": {
+      "ABOUT_TAB_TITLE": "Om",
+      "ACCOUNT_TAB_TITLE": "Konto",
+      "COLLAPSE_BUTTON_TITLE": "Skjul",
+      "DISCORD_TAB_TITLE": "Discord",
+      "EXPAND_BUTTON_TITLE": "Udvid",
+      "GET_ADDONS_TAB_TITLE": "Hent add-ons",
+      "GUIDE_TAB_TITLE": "Guide",
+      "MIGRATING_ADDONS": "Migrerer add-ons...",
+      "MY_ADDONS_TAB_TITLE": "Mine add-ons",
+      "NEWS_TAB_TITLE": "Nyheder",
+      "OPTIONS_TAB_TITLE": "Indstillinger"
+    },
+    "MY_ADDONS": {
+      "ADDON_CONTEXT_MENU": {
+        "ADDONS_SELECTED": "{count} {count, plural, =1{add-on} other{add-ons}} valgt",
+        "ALPHA_ADDON_CHANNEL": "Alfa",
+        "AUTO_UPDATE_ADDON_BUTTON": "Automatisk opdatering",
+        "AUTO_UPDATE_ADDON_NOTIFICATIONS_ENABLED_BUTTON": "Notifikationer aktiveret",
+        "BETA_ADDON_CHANNEL": "Beta",
+        "CHANNEL_SUBMENU_TITLE": "Kanal",
+        "IGNORE_ADDON_BUTTON": "Ignorer",
+        "PROVIDER_SUBMENU_TITLE": "Udbydere",
+        "REINSTALL_ADDON_BUTTON": "Geninstallér",
+        "REMOVE_ADDON_BUTTON": "Fjern",
+        "SHOW_FOLDER": "Vis mappe",
+        "STABLE_ADDON_CHANNEL": "Stabil"
+      },
+      "ADDON_IS_CODE_REPOSITORY": "Add-onen ser ud til at være et kode-repository",
+      "ADDON_REMOVED_SNACKBAR": "Fjernet: {addonName} ",
+      "CHANGE_ADDON_PROVIDER_CONFIRMATION": {
+        "MESSAGE": "Vil du skifte add-on-udbyder for {addonName} til {providerName}? Det afinstallerer din nuværende add-on og erstatter den med en kopi fra den nye udbyder.",
+        "TITLE": "Skift add-on-udbyder?"
+      },
+      "CHECK_UPDATES_BUTTON": "Søg efter opdateringer",
+      "CHECK_UPDATES_BUTTON_TOOLTIP": "Søg efter de nyeste add-on-opdateringer",
+      "CLIENT_TYPE_SELECT_BADGE": "{count} {count, plural, =1{opdatering} other{opdateringer}} ",
+      "CLIENT_TYPE_SELECT_LABEL": "World of Warcraft",
+      "COLUMNS_CONTEXT_MENU": {
+        "TITLE": "Vis kolonner"
+      },
+      "ERROR_SNACKBAR": "Der opstod en fejl",
+      "FILTER_LABEL": "Filtrér",
+      "FUNDING_TOOLTIP": {
+        "CUSTOM": "Støt denne udvikler",
+        "GENERIC": "Støt denne udvikler på {platform}",
+        "GITHUB": "Støt denne udvikler på GitHub",
+        "PATREON": "Støt denne udvikler på Patreon",
+        "PAYPAL": "Støt denne udvikler på PayPal"
+      },
+      "IMPORT_EXPORT_ADDONS_BUTTON": "Importér/eksportér add-ons",
+      "MULTIPLE_PROVIDERS_TOOLTIP": "Denne add-on findes hos flere udbydere",
+      "PAGE_CONTEXT_FOOTER": {
+        "ADDONS_INSTALLED": "{count} {count, plural, =1{add-on} other{add-ons}}",
+        "JOIN_DISCORD": "Chat med os på Discord",
+        "PATREON_SUPPORT": "Støt WowUp på Patreon",
+        "SEARCH_RESULTS": "{count} {count, plural, =1{resultat} other{resultater}}",
+        "VIEW_GITHUB": "Se koden på GitHub",
+        "VIEW_GUIDE": "Se vores guide for at få at vide, hvad WowUp kan"
+      },
+      "REQUIRED_DEPENDENCY_MISSING_TOOLTIP": "Påkrævet afhængighed mangler",
+      "RESCAN_FOLDERS_BUTTON": "Scan mapper igen",
+      "RESCAN_FOLDERS_BUTTON_TOOLTIP": "Scan din klientmappe for installerede add-ons",
+      "RESCAN_FOLDERS_CONFIRMATION_DESCRIPTION": "En ny scanning forsøger at gætte, hvilke add-ons du har installeret, og kan derfor nulstille kendte oplysninger om dine add-ons. Brug funktionen, når bestemte add-ons ikke bliver genkendt, eller når add-on-versioner ikke vises korrekt. Scanningen sletter aldrig dine installerede add-ons, kun det, WowUp ved om dem.\n\nScanningen kan tage et øjeblik.",
+      "RESCAN_FOLDERS_CONFIRMATION_TITLE": "Start ny scanning?",
+      "SPINNER": {
+        "GATHERING_ADDONS": "Indsamler add-ons...",
+        "UPDATING": "Opdaterer {updateCount}/{addonCount}",
+        "UPDATING_WITH_ADDON_NAME": "Opdaterer {updateCount}/{addonCount}\n{clientType}: {addonName}"
+      },
+      "TABLE": {
+        "ADDON_COLUMN_HEADER": "Add-on",
+        "ADDON_INSTALL_BUTTON": "Installér",
+        "ADDON_UPDATE_BUTTON": "Opdatér",
+        "AUTHOR_COLUMN_HEADER": "Udvikler(e)",
+        "AUTO_UPDATE_ICON_TOOLTIP": "Automatisk opdatering aktiveret",
+        "GAME_VERSION_COLUMN_HEADER": "Spilversion",
+        "LATEST_VERSION_COLUMN_HEADER": "Nyeste version",
+        "PROVIDER_COLUMN_HEADER": "Udbyder",
+        "PROVIDER_RELEASE_CHANNEL": "Udbyderkanal",
+        "RELEASED_AT_COLUMN_HEADER": "Udgivet",
+        "STATUS_COLUMN_HEADER": "Status",
+        "UPDATED_AT_COLUMN_HEADER": "Opdateret"
+      },
+      "UNINSTALL_POPUP": {
+        "CONFIRMATION_ACTION_EXPLANATION": "Når du fjerner en add-on via WowUp, bliver den valgte add-on fjernet fra din Interface/AddOns-mappe. Add-onens karakterindstillinger bliver ikke fjernet.",
+        "CONFIRMATION_LESS_THAN_THREE": "Er du sikker på, at du vil fjerne følgende {count} add-ons?",
+        "CONFIRMATION_MORE_THAN_THREE": "Er du sikker på, at du vil fjerne de {count} valgte add-ons?",
+        "CONFIRMATION_ONE": "Er du sikker på, at du vil fjerne {addonName}?",
+        "DEPENDENCY_MESSAGE": "{addonName} har {dependencyCount} {dependencyCount, plural, =1{afhængighed} other{afhængigheder}}. Vil du også fjerne dem?",
+        "DEPENDENCY_TITLE": "Fjern add-on-afhængigheder?",
+        "TITLE": "Afinstallér {count, plural, =1{add-on} other{add-ons}}?"
+      },
+      "UNKNOWN_ADDON_INFO_TOOLTIP": "Den installerede add-on passede ikke med nogen af de konfigurerede udbydere",
+      "UPDATE_ALL_BUTTON": "Opdatér alle",
+      "UPDATE_ALL_BUTTON_TOOLTIP": "Opdatér alle add-ons for denne klient",
+      "UPDATE_ALL_CONTEXT_MENU": {
+        "UPDATE_ALL_CLIENTS_BUTTON": "Opdatér alle klienter",
+        "UPDATE_RETAIL_CLASSIC_BUTTON": "Opdatér Retail/Classic"
+      },
+      "VERSION_MISMATCH_TOOLTIP": "Denne opdatering kræver WoW {required}. Du har WoW {current}.",
+      "WTF_BACKUP_BUTTON": "Sikkerhedskopi af interfaceindstillinger"
+    },
+    "NEWS": {
+      "NEWS_LINK_COPY_TOAST": "Nyhedslink kopieret til udklipsholderen",
+      "NEWS_LINK_COPY_TOOLTIP": "Kopiér nyhedslink",
+      "PAGE_CONTEXT_FOOTER": "{count} nyheder",
+      "REFRESH_TOOLTIP": "Opdatér nyhedsfeed"
+    },
+    "OPTIONS": {
+      "ADDON": {
+        "AD_REQUIRED_HINT": "Reklame påkrævet",
+        "CURSE_FORGE_V2": {
+          "API_KEY_DESCRIPTION": "Hvis du har anmodet om en CurseForge API-nøgle, kan du indtaste den her for at forbinde til deres API.",
+          "API_KEY_TITLE": "CurseForge API-nøgle",
+          "PROVIDER_NOTE": "API-nøgle påkrævet"
+        },
+        "ENABLED_PROVIDERS": {
+          "DESCRIPTION": "Vælg, hvilke udbydere der må bruges til at søge efter og installere nye add-ons",
+          "FIELD_LABEL": "Aktiverede add-on-udbydere",
+          "INPUT_LABEL": "Udbydere"
+        },
+        "GITHUB_PERSONAL_ACCESS_TOKEN": {
+          "MESSAGE": "Et personligt adgangstoken øger antallet af GitHub API-kald, du kan foretage, og det er gratis. <a href=\"https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/creating-a-personal-access-token\">Læs mere</a>",
+          "PLACEHOLDER": "Personligt adgangstoken",
+          "TITLE": "Personligt adgangstoken til GitHub"
+        },
+        "TITLE": "Add-ons",
+        "WAGO_ACCESS_KEY": {
+          "MESSAGE": "Brug Wago-udbyderen uden at se reklamer. <a href=\"https://addons.wago.io/patreon\">Læs mere</a>",
+          "PLACEHOLDER": "Adgangsnøgle",
+          "TITLE": "Wago-adgangsnøgle"
+        }
+      },
+      "APPLICATION": {
+        "APP_RELEASE_CHANNEL_CONFIRMATION_DESCRIPTION_BETA": "Når du skifter til Beta-kanalen, modtager du eksperimentelle versioner med fejlrettelser samt nye og kommende funktioner. Du kan kun vende tilbage til den nuværende stabile version ved at afinstallere programmet og geninstallere det fra wowup.io.\n\nBeta-kanalen fungerer, men brug den på eget ansvar.",
+        "APP_RELEASE_CHANNEL_CONFIRMATION_DESCRIPTION_STABLE": "Når du skifter programmet til den stabile kanal, modtager du ikke flere betaversioner, og den næste opdatering bliver den næste stabile udgivelse.",
+        "APP_RELEASE_CHANNEL_CONFIRMATION_LABEL": "Indstil programmets udgivelseskanal",
+        "APP_RELEASE_CHANNEL_CONFIRMATION_POSITIVE_BUTTON": "Ja, jeg forstår",
+        "APP_RELEASE_CHANNEL_DESCRIPTION": "Skift mellem programmets beta- og stabile udgivelser",
+        "APP_RELEASE_CHANNEL_DROPDOWN_LABEL": "Kanal",
+        "APP_RELEASE_CHANNEL_LABEL": "Programmets udgivelseskanal",
+        "CURRENT_LANGUAGE_LABEL": "Nuværende sprog",
+        "CURSE_PROTOCOL_DESCRIPTION": "Når du downloader add-ons fra CurseForges hjemmeside, står WowUp for installationen",
+        "CURSE_PROTOCOL_LABEL": "Håndtér CurseForge-downloadlinks",
+        "DISABLE_IPV6_CONFIRMATION_LABEL": "Vil du genstarte?",
+        "DISABLE_IPV6_DESCRIPTION": "Hvis downloads af add-ons bliver ved med at fejle med en netværksfejl, kan dit netværks IPv6-forbindelse være defekt. Når dette er slået til, bruger WowUp kun IPv4.<br>Ændring af denne indstilling kræver en genstart.",
+        "DISABLE_IPV6_DISABLE_CONFIRMATION_DESCRIPTION": "Genaktivering af IPv6 kræver, at programmet genstartes.",
+        "DISABLE_IPV6_ENABLE_CONFIRMATION_DESCRIPTION": "Brug af kun IPv4 kræver, at programmet genstartes.",
+        "DISABLE_IPV6_LABEL": "Gennemtving IPv4 (deaktivér IPv6)",
+        "ENABLE_APP_BADGE_DESCRIPTION": "Vis et mærke på programikonet med antallet af add-ons, der har tilgængelige opdateringer.",
+        "ENABLE_APP_BADGE_LABEL": "Aktivér mærke på programikonet",
+        "ENABLE_SYSTEM_NOTIFICATIONS_DESCRIPTION": "Aktivér forskellige systemnotifikationer, f.eks. om automatisk opdaterede add-ons.",
+        "ENABLE_SYSTEM_NOTIFICATIONS_LABEL": "Aktivér systemnotifikationer",
+        "KEEP_LAST_OPENED_TAB_DESCRIPTION": "Vælg automatisk den senest åbnede fane, når du åbner en add-ons detaljeside",
+        "KEEP_LAST_OPENED_TAB_LABEL": "Husk senest åbnede fane",
+        "MINIMIZE_ON_CLOSE_DESCRIPTION_MAC": "Minimer til menulinjen, når WowUp-vinduet lukkes.",
+        "MINIMIZE_ON_CLOSE_DESCRIPTION_WINDOWS": "Minimer til meddelelsesområdet på proceslinjen, når WowUp-vinduet lukkes.",
+        "MINIMIZE_ON_CLOSE_LABEL": "Minimer ved lukning",
+        "PROTOCOL_DESCRIPTION": "WowUp registrerer en brugerdefineret URI-protokol i dit system og håndterer indgående forespørgsler",
+        "PROTOCOL_LABEL": "Aktivér URI-protokollen wowup://",
+        "SCALE_DESCRIPTION": "Skift zoomniveau for hele programmet.",
+        "SCALE_LABEL": "Skalering",
+        "SET_LANGUAGE_CONFIRMATION_DESCRIPTION": "Ændring af standardsproget kræver, at programmet genstartes.",
+        "SET_LANGUAGE_CONFIRMATION_LABEL": "Indstil nyt standardsprog",
+        "SET_LANGUAGE_DESCRIPTION": "Vælg det sprog, du vil skifte til",
+        "SET_LANGUAGE_LABEL": "Vælg sprog",
+        "START_MINIMIZED_DESCRIPTION": "WowUp starter minimeret og vises ikke.",
+        "START_MINIMIZED_LABEL": "Start WowUp minimeret",
+        "START_WITH_SYSTEM_DESCRIPTION": "WowUp starter automatisk, når du starter din computer.",
+        "START_WITH_SYSTEM_LABEL": "Start WowUp sammen med systemet",
+        "TELEMETRY_DESCRIPTION": "Hjælp med at forbedre WowUp ved at sende anonyme installationsdata og/eller fejl.",
+        "TELEMETRY_LABEL": "Telemetri",
+        "THEME_DESCRIPTION": "Skift farvetemaet til det, du bedst kan lide",
+        "THEME_LABEL": "Farvetema",
+        "TITLE": "Program",
+        "USE_CURSE_PROTOCOL_CONFIRMATION_DESCRIPTION": "WowUp kan gøre sig selv til standardhåndtering af CurseForge-downloadlinks. Det kan give problemer, hvis du prøver at bruge CurseForge-appen. Er du sikker på, at du vil fortsætte?",
+        "USE_CURSE_PROTOCOL_CONFIRMATION_LABEL": "Håndtér CurseForge-downloads?",
+        "USE_HARDWARE_ACCELERATION_CONFIRMATION_LABEL": "Vil du genstarte?",
+        "USE_HARDWARE_ACCELERATION_DESCRIPTION": "Deaktivering af hardwareacceleration kan løse FPS-problemer og andre visningsproblemer i programmet.<br>Ændring af denne indstilling kræver en genstart.",
+        "USE_HARDWARE_ACCELERATION_DISABLE_CONFIRMATION_DESCRIPTION": "Deaktivering af hardwareacceleration kræver, at programmet genstartes.",
+        "USE_HARDWARE_ACCELERATION_ENABLE_CONFIRMATION_DESCRIPTION": "Aktivering af hardwareacceleration kræver, at programmet genstartes.",
+        "USE_HARDWARE_ACCELERATION_LABEL": "Aktivér hardwareacceleration",
+        "USE_SYMLINK_SUPPORT": "Aktivér understøttelse af symlinks",
+        "USE_SYMLINK_SUPPORT_CONFIRMATION_DESCRIPTION": "Med understøttelse af symlinks kan WowUp genkende symlinks under en ny scanning. Advarsel: Hvis du ikke ved, hvad et symlink er, har du ikke brug for det. Ved opdatering bliver symlinks i øjeblikket erstattet af en rigtig mappe, og linket går tabt.",
+        "USE_SYMLINK_SUPPORT_CONFIRMATION_LABEL": "Aktivér understøttelse af symlinks?",
+        "USE_SYMLINK_SUPPORT_DESCRIPTION": "Lad WowUp scanne symlink-mapper i din add-on-mappe. Advarsel: De bliver erstattet ved opdatering/installation."
+      },
+      "CURSEFORGE": {
+        "ADS_OPTION_DESCRIPTION": "Se og administrer, hvordan CurseForges annoncører må bruge dine data til personaliserede reklamer",
+        "ADS_OPTION_LABEL": "Personaliserede reklamer og data",
+        "ADS_OPTION_MANAGE": "Administrer",
+        "TITLE": "CurseForge"
+      },
+      "DEBUG": {
+        "CONFIG_FILES_BUTTON": "Vis konfigurationsfiler",
+        "CONFIG_FILES_DESCRIPTION": "Åbn mappen, hvor f.eks. dine addons.json og preferences.json er gemt.",
+        "CONFIG_FILES_LABEL": "Konfigurationsfiler",
+        "DEBUG_DATA_BUTTON": "Udskriv fejlfindingsdata",
+        "DEBUG_DATA_DESCRIPTION": "Log fejlfindingsdata for at hjælpe med at diagnosticere mulige problemer. De kan findes i din seneste logfil, hvis du er nysgerrig.",
+        "DEBUG_DATA_LABEL": "Fejlfindingsdata",
+        "LOG_FILES_BUTTON": "Vis logfiler",
+        "LOG_FILES_DESCRIPTION": "Åbn mappen, der indeholder dine seneste logfiler.",
+        "LOG_FILES_LABEL": "Logfiler",
+        "TITLE": "Fejlfinding"
+      },
+      "TABS": {
+        "ABOUT": "Om",
+        "ADDONS": "Add-ons",
+        "APPLICATION": "Program",
+        "CLIENTS": "Klienter",
+        "CURSEFORGE": "CurseForge",
+        "DEBUG": "Fejlfinding",
+        "WTF_EXPLORER": "WTF-stifinder"
+      },
+      "WAGO": {
+        "AD_CONSENT_DESCRIPTION": "Se og administrer, hvordan Wagos reklamepartnere må bruge dine data til personaliserede reklamer",
+        "AD_CONSENT_LABEL": "Personaliserede reklamer og data hos Wago",
+        "AD_CONSENT_MANAGE": "Administrer"
+      },
+      "WOW": {
+        "ADD_CLIENT_BUTTON": "Tilføj ny",
+        "AUTO_UPDATE_DESCRIPTION": "Alle eksisterende og nyinstallerede add-ons bliver som standard indstillet til automatisk opdatering",
+        "AUTO_UPDATE_LABEL": "Automatisk opdatering",
+        "CANCEL_WOW_DIRECTORY_SELECT_BUTTON": "Annuller",
+        "CLEAR_INSTALL_LOCATION_DIALOG": {
+          "MESSAGE": "Er du sikker på, at du vil fjerne installationen i \"{location}\"? Det fjerner alle gemte add-on-oplysninger for denne klient.\n\nDine add-on-mapper bliver ikke fjernet.",
+          "TITLE": "Fjern World of Warcraft-installation?"
+        },
+        "CLIENT_TYPE_INPUT_HINT": "Vælg {clientTypeName}-programmet \"{clientFolderName}\"",
+        "CLIENT_TYPE_PATH_LABEL": "Sti til {clientTypeName}",
+        "DEFAULT_ADDON_CHANNEL_LABEL": "Standardkanal for add-ons",
+        "DEFAULT_ADDON_CHANNEL_SELECT_LABEL": "Add-on-kanal",
+        "EDIT_WOW_DIRECTORY_SELECT_BUTTON": "Rediger",
+        "MOVE_DOWN_BUTTON": "Flyt ned",
+        "MOVE_UP_BUTTON": "Flyt op",
+        "NO_CLIENTS_FOUND_TEXT": "Der blev ikke fundet nogen World of Warcraft-installationer. Sørg for, at din Battle.net-klient er opdateret, eller tilføj en klient manuelt",
+        "OPEN_FOLDER_BUTTON": "Åbn mappe",
+        "OPEN_WOW_DIRECTORY_SELECT_BUTTON": "Vælg",
+        "REMOVE_WOW_DIRECTORY_SELECT_BUTTON": "Fjern",
+        "RESCAN_CLIENTS_BUTTON": "Scan igen",
+        "RESCAN_CLIENTS_LABEL": "Scan installerede World of Warcraft-produkter igen",
+        "SAVE_WOW_DIRECTORY_SELECT_BUTTON": "Gem",
+        "TITLE": "World of Warcraft"
+      },
+      "WTF_EXPLORER": {
+        "FOLDER_PATH_LABEL": "Mappe: ",
+        "PAGE_EXPLANATION": "Med WTF-stifinderen kan du se alle de data, dine add-ons har gemt.\nGrå filer kan typisk ignoreres, f.eks. sikkerhedskopier.\nRøde filer tilhører sandsynligvis add-ons, du ikke længere har installeret.",
+        "TITLE": "WTF-stifinder"
+      }
+    }
+  },
+  "WTF_BACKUP": {
+    "APPLY_CONFIRMATION": {
+      "MESSAGE": "Er du sikker på, at du vil anvende denne sikkerhedskopi på dine interfaceindstillinger?\n\nSørg for, at World of Warcraft ikke kører, før du anvender en sikkerhedskopi.\n\nHandlingen kan ikke fortrydes.",
+      "TITLE": "Anvend WTF-sikkerhedskopi?"
+    },
+    "BACKUP_APPLY_SUCCESS": "Sikkerhedskopien er anvendt: {name}",
+    "BACKUP_COUNT_TEXT": "Fandt {count} {count, plural, =1{sikkerhedskopi} other{sikkerhedskopier}}",
+    "BUSY_TEXT": {
+      "APPLYING_BACKUP": "Anvender sikkerhedskopi...",
+      "CREATING_BACKUP": "Opretter sikkerhedskopi af {count} filer...",
+      "LOADING_BACKUPS": "Indlæser sikkerhedskopier...",
+      "REMOVING_BACKUP": "Fjerner sikkerhedskopi..."
+    },
+    "CREATE_BACKUP_BUTTON": "Opret sikkerhedskopi",
+    "DELETE_CONFIRMATION": {
+      "MESSAGE": "Er du sikker på, at du vil slette sikkerhedskopien {name}?\nDet kan ikke fortrydes.",
+      "TITLE": "Slet WTF-sikkerhedskopi?"
+    },
+    "DIALOG_TITLE": "Sikkerhedskopi af WTF-indstillinger: {clientType}",
+    "ERROR": {
+      "BACKUP_APPLY_FAILED": "Kunne ikke anvende sikkerhedskopien: {name}",
+      "FAILED_TO_DELETE": "Kunne ikke slette sikkerhedskopien: {name}",
+      "GENERIC_ERROR": "Der opstod et problem under behandlingen af denne sikkerhedskopi",
+      "INVALID_CONTENTS": "Der opstod et problem under behandlingen af denne sikkerhedskopi",
+      "INVALID_CREATED_AT": "Der opstod et problem under behandlingen af denne sikkerhedskopi",
+      "INVALID_CREATED_BY": "Der opstod et problem under behandlingen af denne sikkerhedskopi"
+    },
+    "SHOW_FOLDER_BUTTON": "Vis mappe",
+    "TOOL_TIP": {
+      "APPLY_BUTTON": "Anvend denne sikkerhedskopi",
+      "DELETE_BUTTON": "Slet denne sikkerhedskopi"
+    }
+  }
+}
