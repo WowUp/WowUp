@@ -1,0 +1,382 @@
+// FOREVER: night sky, gilded frames with teal gems, action-bar tabs.
+
+$fv-gold-hi: #fbe6a6;
+$fv-gold: #c99a45;
+$fv-gold-lo: #6e4e1c;
+$fv-gold-dark: #1c1408;
+$fv-gem-hi: #c8fff6;
+$fv-gem: #36b6a4;
+$fv-gem-lo: #0b4a44;
+$fv-accent: #f2d48a;
+$fv-title: #f6dc92;
+$fv-panel-a: rgba(22, 34, 50, 0.9);
+$fv-panel-b: rgba(9, 14, 22, 0.94);
+$fv-strip-a: #0f1824;
+$fv-strip-b: #05080c;
+$fv-btn-a: #c4602f;
+$fv-btn-b: #8f3418;
+$fv-btn-c: #4f1709;
+$fv-btn-text: #fff1d6;
+$fv-display: "Cinzel", Georgia, "Times New Roman", serif;
+
+@include window-backdrop(
+  "forever-theme",
+  (
+    radial-gradient(120% 80% at 50% -10%, rgba(92, 200, 184, 0.16), transparent 60%),
+    radial-gradient(90% 60% at 50% 115%, rgba(196, 96, 47, 0.25), transparent 60%),
+    linear-gradient(180deg, #0b111a, #05070a)
+  ),
+  0.5,
+  sepia(0.35) hue-rotate(170deg) saturate(1.4)
+);
+
+@include in-app("forever-theme") {
+  --mdc-filled-text-field-container-color: rgba(0, 0, 0, 0.55);
+  --mdc-filled-text-field-focus-label-text-color: #{$fv-accent};
+  --mdc-filled-text-field-caret-color: #{$fv-accent};
+
+  @include ambient-layers(
+    (
+      radial-gradient(2px 2px at 20% 80%, rgba(200, 255, 246, 0.7), transparent),
+      radial-gradient(1.5px 1.5px at 70% 60%, rgba(200, 255, 246, 0.5), transparent),
+      radial-gradient(2px 2px at 45% 30%, rgba(242, 212, 138, 0.6), transparent),
+      radial-gradient(1.5px 1.5px at 85% 15%, rgba(200, 255, 246, 0.5), transparent)
+    ),
+    320px 320px,
+    forever-drift 14s linear infinite,
+    radial-gradient(130% 100% at 50% 42%, transparent 45%, rgba(0, 0, 0, 0.8))
+  );
+
+  // ---------- Title bar ----------
+  .titlebar {
+    background: linear-gradient(180deg, $fv-strip-a, $fv-strip-b);
+    border-bottom: 3px solid $fv-gold-lo;
+    box-shadow:
+      inset 0 -1px 0 $fv-gold,
+      0 2px 6px rgba(0, 0, 0, 0.7);
+  }
+
+  .titlebar .title-container {
+    font-family: $fv-display;
+    font-weight: 700;
+    font-size: 12px;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: $fv-title;
+    text-shadow: 0 1px 0 #000;
+  }
+
+  // ---------- Tab strip: gilded logo ring and action-bar slots ----------
+  .tab-strip {
+    background: radial-gradient(120% 40% at 50% 0%, rgba(255, 255, 255, 0.05), transparent),
+      linear-gradient(180deg, $fv-strip-a, $fv-strip-b);
+    border-right: 4px solid $fv-gold-lo;
+    box-shadow:
+      inset -1px 0 0 $fv-gold,
+      4px 0 12px rgba(0, 0, 0, 0.6);
+    counter-reset: forever-tab;
+  }
+
+  .theme-logo {
+    box-sizing: border-box;
+    border-radius: 50%;
+    padding: 9px;
+    background: radial-gradient(circle, #1a2333 0 52%, transparent 53%),
+      conic-gradient(
+        $fv-gold-hi,
+        $fv-gold,
+        $fv-gold-lo,
+        $fv-gold,
+        $fv-gold-hi,
+        $fv-gold,
+        $fv-gold-lo,
+        $fv-gold,
+        $fv-gold-hi
+      );
+    box-shadow:
+      0 0 0 2px $fv-gold-dark,
+      0 0 0 4px $fv-gold-lo,
+      0 0 0 5px $fv-gold-dark,
+      0 6px 16px rgba(0, 0, 0, 0.8),
+      0 0 18px rgba(54, 182, 164, 0.35);
+  }
+
+  .theme-logo-glow {
+    background: radial-gradient(circle, rgba(54, 182, 164, 0.35) 0%, rgba(0, 0, 0, 0) 70%);
+  }
+
+  .tab:not(.addon-info-btn) {
+    font-family: $fv-display;
+    font-weight: 700;
+    font-size: 13px;
+    letter-spacing: 0.03em;
+    border-left-color: transparent;
+    border-radius: 0;
+    text-shadow: 0 1px 0 #000;
+
+    .tab-title {
+      color: var(--tab-inactive);
+    }
+
+    &:hover {
+      background: rgba(242, 212, 138, 0.06);
+
+      .tab-title {
+        color: var(--text-1);
+      }
+    }
+
+    &.selected {
+      border-left-color: transparent;
+      background: linear-gradient(90deg, rgba(143, 52, 24, 0.45), transparent 85%);
+
+      .tab-title {
+        color: $fv-title;
+      }
+    }
+  }
+
+  // Square icon slot with a metal rim, like a game action button.
+  .tab-icon {
+    position: relative;
+    width: 18px;
+    height: 18px;
+    padding: 5px;
+    margin-right: 0.75em !important;
+    border-radius: 3px;
+    background: radial-gradient(circle at 35% 30%, rgba(255, 255, 255, 0.25), transparent 45%),
+      linear-gradient(145deg, #3c4a5e, #121822);
+    box-shadow:
+      0 0 0 1px $fv-gold-dark,
+      0 0 0 3px $fv-gold,
+      0 0 0 4px $fv-gold-dark,
+      inset 0 -6px 10px rgba(0, 0, 0, 0.5);
+    overflow: visible;
+
+    svg {
+      fill: #d3c7ab !important;
+      filter: drop-shadow(0 1px 1px #000);
+    }
+  }
+
+  div.tab:not(.addon-info-btn) .tab-icon::after {
+    counter-increment: forever-tab;
+    content: counter(forever-tab);
+    position: absolute;
+    top: -3px;
+    right: 1px;
+    font:
+      700 9px Roboto,
+      sans-serif;
+    color: #fff;
+    text-shadow:
+      1px 1px 0 #000,
+      -1px 0 0 #000;
+  }
+
+  .tab.selected .tab-icon {
+    box-shadow:
+      0 0 0 1px $fv-gold-dark,
+      0 0 0 3px $fv-gold-hi,
+      0 0 0 4px $fv-gold-dark,
+      0 0 14px $fv-accent,
+      inset 0 0 10px rgba(255, 220, 140, 0.35);
+
+    svg {
+      fill: $fv-title !important;
+    }
+
+    // Rotating glint around the selected slot.
+    &::before {
+      content: "";
+      position: absolute;
+      inset: -7px;
+      border-radius: 6px;
+      padding: 2px;
+      background: conic-gradient(transparent 0 55%, $fv-accent 70%, #fff 75%, $fv-accent 80%, transparent 95%);
+      -webkit-mask:
+        linear-gradient(#000 0 0) content-box,
+        linear-gradient(#000 0 0);
+      -webkit-mask-composite: xor;
+      mask-composite: exclude;
+      animation: forever-spin 2.4s linear infinite;
+    }
+  }
+
+  // ---------- Content ----------
+  .content,
+  .page-container {
+    background: transparent;
+  }
+
+  .control-container {
+    margin: 8px 8px 0;
+    border: 14px solid transparent;
+    border-image: url("../assets/images/themes/forever-frame.svg") 32 / 14px / 5px stretch;
+    background: linear-gradient(180deg, $fv-panel-a, $fv-panel-b) padding-box;
+    box-shadow: 0 10px 26px rgba(0, 0, 0, 0.5);
+  }
+
+  .wu-ag-table,
+  .options-panel {
+    margin: 12px 8px 8px;
+    border: 26px solid transparent;
+    border-image: url("../assets/images/themes/forever-frame.svg") 32 / 26px / 9px stretch;
+    background: linear-gradient(180deg, $fv-panel-a, $fv-panel-b) padding-box;
+    box-shadow: 0 14px 34px rgba(0, 0, 0, 0.55);
+  }
+
+  .ag-theme-material {
+    --ag-background-color: transparent;
+    --ag-header-background-color: transparent;
+    --ag-odd-row-background-color: transparent;
+    --ag-row-hover-color: rgba(255, 255, 255, 0.04);
+    --ag-selected-row-background-color: rgba(255, 210, 120, 0.12);
+    --ag-border-color: rgba(255, 255, 255, 0.06);
+    --ag-row-border-color: rgba(255, 255, 255, 0.06);
+  }
+
+  .ag-header {
+    border-bottom: 2px solid $fv-gold-lo;
+  }
+
+  .ag-header-cell-text {
+    font-family: $fv-display;
+    font-weight: 700;
+    font-size: 12px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: $fv-title;
+    text-shadow: 0 1px 0 #000;
+  }
+
+  .ag-row-selected {
+    box-shadow: inset 3px 0 0 $fv-accent;
+    background: linear-gradient(90deg, rgba(255, 210, 120, 0.14), transparent 70%);
+  }
+
+  .addon-logo-container {
+    box-shadow:
+      0 0 0 1px #000,
+      0 0 0 2px $fv-gold;
+  }
+
+  // ---------- Buttons ----------
+  .wu-btn.wu-btn-primary {
+    font-family: $fv-display;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    color: $fv-btn-text;
+    text-shadow: 0 1px 1px #000;
+    background: radial-gradient(120% 70% at 50% 0%, rgba(255, 255, 255, 0.3), transparent 55%),
+      linear-gradient(180deg, $fv-btn-a, $fv-btn-b 55%, $fv-btn-c);
+    box-shadow:
+      0 0 0 1px $fv-gold-dark,
+      0 0 0 2px $fv-gold,
+      0 0 0 3px $fv-gold-dark,
+      inset 0 -3px 6px rgba(0, 0, 0, 0.45);
+
+    &:hover:not([disabled]) {
+      filter: brightness(1.15);
+    }
+
+    &[disabled] {
+      filter: grayscale(0.85) brightness(0.7);
+    }
+  }
+
+  .wu-btn.wu-btn-flat {
+    border: 0;
+    box-shadow:
+      0 0 0 1px $fv-gold-dark,
+      0 0 0 2px $fv-gold-lo;
+    background: linear-gradient(180deg, #2a3446, #121822);
+  }
+
+  // ---------- Options ----------
+  .nav-container {
+    background: linear-gradient(180deg, rgba(15, 24, 36, 0.92), rgba(5, 8, 12, 0.94));
+    border-right: 2px solid $fv-gold-lo;
+
+    .mdc-list-item__primary-text {
+      font-family: $fv-display;
+      font-weight: 700;
+      letter-spacing: 0.03em;
+      color: var(--text-2);
+    }
+  }
+
+  .nav-content-container {
+    margin: 8px;
+    border: 26px solid transparent;
+    border-image: url("../assets/images/themes/forever-frame.svg") 32 / 26px / 9px stretch;
+    background: linear-gradient(180deg, $fv-panel-a, $fv-panel-b) padding-box;
+  }
+
+  .nav-content h2 {
+    font-family: $fv-display;
+    font-weight: 900;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: $fv-title;
+    text-shadow: 0 2px 0 #000;
+  }
+
+  .mat-mdc-card {
+    background: rgba(0, 0, 0, 0.3) !important;
+    box-shadow:
+      0 0 0 1px #000,
+      0 0 0 2px $fv-gold-lo;
+  }
+
+  @include toggle-as-checkbox(#000, $fv-gold, $fv-gold-dark, $fv-accent);
+
+  // ---------- Footer ----------
+  footer {
+    background: linear-gradient(180deg, $fv-strip-a, $fv-strip-b);
+    border-top: 3px solid $fv-gold-lo;
+    box-shadow: inset 0 1px 0 $fv-gold;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: #0d141e;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: linear-gradient(180deg, $fv-gold-lo, $fv-gold, $fv-gold-lo);
+    border: 3px solid #0d141e;
+    border-radius: 6px;
+  }
+}
+
+// Menus, selects and tooltips render in the overlay container, outside .app.
+@include in-overlay("forever-theme") {
+  .mat-mdc-menu-panel,
+  .mat-mdc-select-panel {
+    background: linear-gradient(180deg, rgba(10, 16, 36, 0.98), rgba(4, 8, 20, 0.98));
+    border: 1px solid $fv-gold;
+    box-shadow:
+      0 0 0 1px #000,
+      0 12px 28px rgba(0, 0, 0, 0.8);
+  }
+
+  .mat-mdc-optgroup-label {
+    font-family: $fv-display;
+    color: $fv-title;
+  }
+
+  .mdc-tooltip__surface {
+    background: linear-gradient(180deg, rgba(10, 16, 36, 0.97), rgba(4, 8, 20, 0.98));
+    color: #fff;
+    border: 1px solid #9b9b9b;
+    box-shadow:
+      0 0 0 1px #000,
+      0 8px 20px rgba(0, 0, 0, 0.8);
+  }
+
+  .mat-mdc-dialog-surface {
+    border: 18px solid transparent;
+    border-image: url("../assets/images/themes/forever-frame.svg") 32 / 18px / 6px stretch;
+    background: linear-gradient(180deg, #162232, #090e16) padding-box;
+  }
+}

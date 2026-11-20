@@ -8,12 +8,16 @@ import { MatSlideToggleChange } from "@angular/material/slide-toggle";
 import { TranslateService } from "@ngx-translate/core";
 
 import {
+  ALLIANCE_FOREVER_THEME,
   ALLIANCE_LIGHT_THEME,
   ALLIANCE_THEME,
   APP_PROTOCOL_NAME,
   CURSE_PROTOCOL_NAME,
   DEFAULT_LIGHT_THEME,
   DEFAULT_THEME,
+  FOREVER_CLASSIC_THEME,
+  FOREVER_THEME,
+  HORDE_FOREVER_THEME,
   HORDE_LIGHT_THEME,
   HORDE_THEME,
 } from "../../../../common/constants";
@@ -78,6 +82,10 @@ export class OptionsAppSectionComponent implements OnInit {
         { display: "APP.THEME.DEFAULT", class: DEFAULT_THEME },
         { display: "APP.THEME.ALLIANCE", class: ALLIANCE_THEME },
         { display: "APP.THEME.HORDE", class: HORDE_THEME },
+        { display: "APP.THEME.FOREVER", class: FOREVER_THEME },
+        { display: "APP.THEME.FOREVER_CLASSIC", class: FOREVER_CLASSIC_THEME },
+        { display: "APP.THEME.HORDE_FOREVER", class: HORDE_FOREVER_THEME },
+        { display: "APP.THEME.ALLIANCE_FOREVER", class: ALLIANCE_FOREVER_THEME },
       ],
     },
     {

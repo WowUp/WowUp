@@ -1,0 +1,454 @@
+// HORDE FOREVER: the war camp. A torn red banner, stitched hide, forged iron, tusks and embers.
+
+$hf-iron-hi: #9a918a;
+$hf-iron: #4a4440;
+$hf-iron-lo: #1e1a18;
+$hf-rivet: #c9bfb4;
+$hf-blood: #a3140c;
+$hf-blood-hi: #d82a19;
+$hf-blood-lo: #4c0603;
+$hf-ember: #ff8a2a;
+$hf-ember-hi: #ffc46b;
+$hf-bone: #eadcc2;
+$hf-bone-2: #d0bd9c;
+$hf-bone-3: #ad9a7e;
+$hf-banner-text: #f0e2c8;
+$hf-display: "New Rocker", "Grenze", Georgia, serif;
+$hf-ui: "Grenze", Roboto, sans-serif;
+
+$hf-rivet-row: radial-gradient(circle, #b8aea4 0 1.6px, #1e1a18 2.2px, transparent 3px);
+
+@mixin hf-hide-panel($border: 24px, $outset: 10px) {
+  border: $border solid transparent;
+  border-image: url("../assets/images/themes/horde-forever-frame.svg") 34 / #{$border} / #{$outset} stretch;
+  background:
+    url("../assets/images/themes/leather-noise.svg") padding-box,
+    radial-gradient(120% 90% at 30% 20%, rgba(120, 72, 40, 0.55), transparent 60%) padding-box,
+    linear-gradient(180deg, rgba(63, 38, 24, 0.96), rgba(31, 18, 11, 0.97)) padding-box;
+  outline: 2px dashed rgba(234, 220, 194, 0.28);
+  outline-offset: -9px;
+  box-shadow: 0 16px 34px rgba(0, 0, 0, 0.7);
+}
+
+@keyframes horde-forever-rise {
+  from {
+    background-position: 0 0;
+  }
+  to {
+    background-position: 40px -300px;
+  }
+}
+
+@keyframes horde-forever-heat {
+  to {
+    box-shadow:
+      inset 0 0 0 2px #1a0402,
+      inset 0 0 20px rgba(255, 160, 60, 0.95),
+      0 0 22px rgba(255, 90, 20, 0.7);
+  }
+}
+
+@include window-backdrop(
+  "horde-forever-theme",
+  (
+    radial-gradient(120% 55% at 50% 120%, rgba(216, 42, 25, 0.55), transparent 60%),
+    radial-gradient(60% 40% at 15% 0%, rgba(255, 138, 42, 0.12), transparent),
+    linear-gradient(180deg, #1a0f0b, #070302)
+  ),
+  0.5,
+  sepia(1) hue-rotate(-32deg) saturate(2.2) contrast(1.25) brightness(0.8)
+);
+
+@include in-app("horde-forever-theme") {
+  --mdc-filled-text-field-container-color: #120a06;
+  --mdc-filled-text-field-focus-label-text-color: #{$hf-ember};
+  --mdc-filled-text-field-caret-color: #{$hf-ember};
+
+  @include ambient-layers(
+    (
+      radial-gradient(2.5px 2.5px at 12% 92%, #ff9a3c, transparent),
+      radial-gradient(2px 2px at 48% 80%, #ffcf6b, transparent),
+      radial-gradient(3px 3px at 82% 96%, #ff6a1a, transparent),
+      radial-gradient(1.5px 1.5px at 30% 60%, #ffb05a, transparent),
+      radial-gradient(2px 2px at 66% 70%, #ff8a2a, transparent)
+    ),
+    300px 300px,
+    horde-forever-rise 9s linear infinite,
+    (
+      linear-gradient(0deg, rgba(255, 90, 20, 0.22), transparent 22%),
+      radial-gradient(130% 100% at 45% 40%, transparent 42%, rgba(0, 0, 0, 0.85))
+    )
+  );
+
+  // ---------- Title bar: forged iron bar with rivets ----------
+  .titlebar {
+    background:
+      $hf-rivet-row 10px 50% / 48px 100% repeat-x,
+      linear-gradient(180deg, #3a3532, #151210);
+    border-bottom: 3px solid $hf-blood;
+    box-shadow:
+      0 2px 0 #000,
+      0 4px 14px rgba(216, 42, 25, 0.35);
+  }
+
+  .titlebar .title-container > div {
+    padding: 0 16px;
+    font-family: $hf-display;
+    font-size: 17px;
+    letter-spacing: 0.14em;
+    color: $hf-bone;
+    background: #151210;
+    text-shadow:
+      0 2px 0 #000,
+      0 0 12px rgba(255, 90, 20, 0.6);
+  }
+
+  // ---------- Tab strip: torn red war banner ----------
+  .tab-strip {
+    position: relative;
+    background: url("../assets/images/themes/cloth-noise.svg"),
+      repeating-linear-gradient(
+        90deg,
+        rgba(0, 0, 0, 0.28) 0 3px,
+        transparent 3px 26px,
+        rgba(255, 255, 255, 0.04) 26px 29px,
+        transparent 29px 52px
+      ),
+      radial-gradient(70% 30% at 50% 52%, rgba(0, 0, 0, 0.35), transparent),
+      linear-gradient(180deg, #8e130b, #5a0a05 60%, #2c0402);
+    clip-path: polygon(
+      0 0,
+      100% 0,
+      100% 8%,
+      94% 11%,
+      100% 15%,
+      96% 22%,
+      100% 27%,
+      93% 33%,
+      100% 38%,
+      97% 46%,
+      100% 52%,
+      92% 58%,
+      100% 64%,
+      96% 71%,
+      100% 77%,
+      94% 84%,
+      100% 90%,
+      97% 96%,
+      100% 100%,
+      0 100%
+    );
+    padding-right: 14px;
+
+    // Painted claw marks on the banner.
+    &::before {
+      content: "";
+      position: absolute;
+      left: 18px;
+      right: 26px;
+      top: 42%;
+      height: 140px;
+      opacity: 0.22;
+      pointer-events: none;
+      background: url("../assets/images/themes/horde-claws.svg") center / contain no-repeat;
+    }
+  }
+
+  // Round iron buckler with rivets and spikes.
+  .theme-logo {
+    box-sizing: border-box;
+    overflow: visible;
+    border-radius: 50%;
+    padding: 12px;
+    background: radial-gradient(
+        circle,
+        transparent 0 27px,
+        #000 27.5px,
+        $hf-iron-hi 28.5px 30px,
+        #000 31px,
+        transparent 32px
+      ),
+      radial-gradient(circle at 40% 32%, #7a716a, #2e2927 58%, #110e0d);
+    box-shadow:
+      0 0 0 3px #000,
+      0 0 0 5px $hf-iron,
+      0 0 0 6px #000,
+      0 8px 22px #000,
+      inset 0 0 18px rgba(0, 0, 0, 0.8);
+  }
+
+  .theme-logo-glow {
+    background: radial-gradient(circle, rgba(255, 90, 20, 0.45) 0%, rgba(0, 0, 0, 0) 70%);
+  }
+
+  .tab:not(.addon-info-btn) {
+    position: relative;
+    font-family: $hf-ui;
+    font-weight: 700;
+    font-size: 15px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    border-left-color: transparent;
+    border-radius: 0;
+    text-shadow: 0 2px 0 rgba(0, 0, 0, 0.8);
+
+    .tab-title {
+      color: $hf-banner-text;
+    }
+
+    .tab-icon svg {
+      fill: $hf-banner-text !important;
+      filter: drop-shadow(0 2px 0 rgba(0, 0, 0, 0.8));
+    }
+
+    &:hover {
+      background: rgba(0, 0, 0, 0.18);
+
+      .tab-title {
+        color: #fff;
+      }
+    }
+
+    // A black brush stroke behind the selected tab.
+    &.selected {
+      border-left-color: transparent;
+      background: transparent;
+
+      &::before {
+        content: "";
+        position: absolute;
+        inset: 1px -6px 1px 2px;
+        z-index: -1;
+        transform: rotate(-2deg);
+        background: url("../assets/images/themes/horde-brush-dark.svg") center / 100% 100% no-repeat;
+        filter: drop-shadow(0 0 6px rgba(255, 90, 20, 0.5));
+      }
+
+      .tab-title {
+        color: $hf-ember-hi;
+      }
+
+      .tab-icon svg {
+        fill: $hf-ember-hi !important;
+      }
+    }
+  }
+
+  .ad-space {
+    position: relative;
+    z-index: 1;
+  }
+
+  // ---------- Content ----------
+  .content,
+  .page-container {
+    background: transparent;
+  }
+
+  .control-container {
+    @include hf-hide-panel(18px, 6px);
+    margin: 8px 8px 0;
+  }
+
+  .wu-ag-table {
+    @include hf-hide-panel;
+    margin: 12px 8px 8px;
+
+    --ag-background-color: transparent;
+    --ag-header-background-color: transparent;
+    --ag-odd-row-background-color: transparent;
+    --ag-row-hover-color: rgba(255, 138, 42, 0.06);
+    --ag-selected-row-background-color: rgba(216, 42, 25, 0.3);
+    --ag-border-color: rgba(234, 220, 194, 0.12);
+    --ag-row-border-color: rgba(234, 220, 194, 0.12);
+
+    .ag-header {
+      border-bottom: 3px solid $hf-blood;
+    }
+
+    .ag-header-cell-text {
+      font-family: $hf-ui;
+      font-weight: 700;
+      font-size: 14px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: $hf-ember;
+      text-shadow: 0 2px 0 #000;
+    }
+
+    .ag-row {
+      border-bottom-style: dashed;
+    }
+
+    .ag-row-selected {
+      box-shadow: inset 6px 0 0 $hf-blood-hi;
+      background: linear-gradient(90deg, rgba(216, 42, 25, 0.38), transparent 75%);
+    }
+
+    .addon-title {
+      font-family: $hf-ui;
+      font-weight: 700;
+      font-size: 16px;
+      letter-spacing: 0.02em;
+    }
+
+    .addon-logo-container {
+      clip-path: polygon(50% 0, 100% 25%, 100% 75%, 50% 100%, 0 75%, 0 25%);
+    }
+  }
+
+  // ---------- Buttons: forged iron, the primary one glowing from the forge ----------
+  .wu-btn.wu-btn-primary,
+  .wu-btn.wu-btn-flat {
+    font-family: $hf-ui;
+    font-weight: 700;
+    font-size: 14px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: $hf-bone;
+    text-shadow: 0 2px 0 #000;
+    border: 0;
+    border-radius: 0;
+    clip-path: polygon(
+      0 5px,
+      5px 0,
+      calc(100% - 5px) 0,
+      100% 5px,
+      100% calc(100% - 5px),
+      calc(100% - 5px) 100%,
+      5px 100%,
+      0 calc(100% - 5px)
+    );
+    background: repeating-linear-gradient(100deg, rgba(255, 255, 255, 0.03) 0 2px, transparent 2px 8px),
+      linear-gradient(180deg, #5a524c, #2a2523 55%, #151210);
+    box-shadow:
+      inset 0 0 0 2px #0c0a09,
+      inset 0 1px 0 3px rgba(255, 255, 255, 0.08);
+  }
+
+  .wu-btn.wu-btn-primary {
+    color: #fff3dc;
+    background: radial-gradient(120% 120% at 50% 120%, rgba(255, 160, 60, 0.9), transparent 55%),
+      linear-gradient(180deg, #8a1a0c, $hf-blood-lo);
+    box-shadow:
+      inset 0 0 0 2px #1a0402,
+      inset 0 0 14px rgba(255, 120, 30, 0.7),
+      0 0 18px rgba(255, 90, 20, 0.45);
+    animation: horde-forever-heat 1.8s ease-in-out infinite alternate;
+
+    &:hover:not([disabled]) {
+      filter: brightness(1.15);
+    }
+
+    &[disabled] {
+      animation: none;
+      filter: grayscale(0.85) brightness(0.65);
+    }
+  }
+
+  .mdc-text-field--filled {
+    border-radius: 0;
+    box-shadow:
+      inset 0 0 0 1px #5a3a24,
+      inset 0 3px 8px #000;
+  }
+
+  // ---------- Options ----------
+  .nav-container {
+    background: url("../assets/images/themes/leather-noise.svg"), linear-gradient(180deg, #2a1a11, #120a06);
+    border-right: 3px solid $hf-blood;
+
+    .mat-mdc-list-item {
+      margin: 4px 0 4px 6px;
+      width: calc(100% - 6px);
+      clip-path: polygon(0 0, 100% 0, calc(100% - 10px) 50%, 100% 100%, 0 100%);
+      background: linear-gradient(180deg, $hf-iron, $hf-iron-lo);
+    }
+
+    .mdc-list-item__primary-text {
+      font-family: $hf-ui;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: $hf-bone-2;
+      text-shadow: 0 2px 0 #000;
+    }
+  }
+
+  .nav-content-container {
+    @include hf-hide-panel;
+    margin: 8px;
+  }
+
+  // Section titles painted in blood red with a brush.
+  .nav-content h2 {
+    display: inline-block;
+    padding: 4px 34px 8px 20px;
+    font-family: $hf-display;
+    font-size: 30px;
+    font-weight: 400;
+    line-height: 1;
+    color: $hf-bone;
+    transform: rotate(-1.5deg);
+    text-shadow: 0 3px 0 #000;
+    background: url("../assets/images/themes/horde-brush-red.svg") center / 100% 100% no-repeat;
+  }
+
+  .mat-mdc-card {
+    background: rgba(0, 0, 0, 0.3) !important;
+    outline: 2px dashed rgba(234, 220, 194, 0.2);
+    outline-offset: -6px;
+  }
+
+  @include toggle-as-checkbox(#0c0605, $hf-iron, #000, $hf-ember);
+
+  // ---------- Footer ----------
+  footer {
+    background:
+      $hf-rivet-row 10px 50% / 48px 100% repeat-x,
+      linear-gradient(180deg, #2a2523, #0f0c0b);
+    border-top: 3px solid $hf-blood;
+    font-family: $hf-ui;
+    letter-spacing: 0.04em;
+
+    p {
+      background: #1a1615;
+      padding: 0 8px;
+    }
+  }
+
+  ::-webkit-scrollbar-track {
+    background: #120a06;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: linear-gradient(90deg, $hf-iron-hi, $hf-iron);
+    border: 2px solid #000;
+  }
+}
+
+@include in-overlay("horde-forever-theme") {
+  .mat-mdc-menu-panel,
+  .mat-mdc-select-panel,
+  .mdc-tooltip__surface {
+    background: linear-gradient(180deg, rgba(40, 22, 14, 0.98), rgba(16, 9, 6, 0.98));
+    color: $hf-bone;
+    border: 2px solid #6a625b;
+    border-radius: 0;
+    box-shadow:
+      0 0 0 1px #000,
+      0 12px 28px rgba(0, 0, 0, 0.8);
+  }
+
+  .mat-mdc-optgroup-label {
+    font-family: $hf-ui;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: $hf-ember;
+  }
+
+  .mat-mdc-dialog-surface {
+    @include hf-hide-panel(18px, 6px);
+  }
+}

@@ -1,0 +1,4 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 60" preserveAspectRatio="none">
+  <path d="M6 22 C60 8 150 12 230 6 C260 4 280 8 296 14 L290 26 L298 36 L284 50 C220 56 140 52 70 56 C40 58 18 54 4 48 L12 36 Z" fill="#a3140c"/>
+  <path d="M20 18 L120 14 M40 52 L160 50 M180 10 L270 12 M200 50 L280 46" stroke="#d82a19" stroke-width="2" opacity=".8"/>
+</svg>

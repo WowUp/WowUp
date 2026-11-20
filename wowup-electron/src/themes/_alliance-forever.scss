@@ -1,0 +1,488 @@
+// ALLIANCE FOREVER: the white hall. A fluted marble column, polished gold, royal blue enamel and light.
+
+$af-royal: #1c45a0;
+$af-royal-hi: #3568d8;
+$af-royal-lo: #0d2765;
+$af-gold-hi: #fff4cc;
+$af-gold: #d8b052;
+$af-gold-lo: #8a6a22;
+$af-marble-hi: #faf8f2;
+$af-marble: #e4dfd3;
+$af-marble-lo: #b9b2a3;
+$af-ink: #142446;
+$af-ink-2: #3a4a6c;
+$af-display: "Cinzel Decorative", "Cinzel", Georgia, serif;
+$af-ui: "Cormorant SC", Georgia, serif;
+
+$af-enamel: radial-gradient(120% 80% at 50% 0%, rgba(255, 255, 255, 0.3), transparent 55%),
+  linear-gradient(180deg, $af-royal-hi, $af-royal 55%, $af-royal-lo);
+$af-polished-gold: linear-gradient(180deg, $af-gold-hi, #f0d27e 35%, $af-gold 55%, #b48a32);
+
+@mixin af-enamel-panel($border: 24px, $outset: 8px) {
+  border: $border solid transparent;
+  border-image: url("../assets/images/themes/alliance-forever-frame.svg") 34 / #{$border} / #{$outset} stretch;
+  background:
+    radial-gradient(90% 60% at 50% 0%, rgba(120, 160, 255, 0.22), transparent 60%) padding-box,
+    linear-gradient(180deg, rgba(22, 46, 98, 0.93), rgba(8, 18, 40, 0.95)) padding-box;
+  box-shadow: 0 16px 36px rgba(0, 0, 0, 0.6);
+}
+
+@keyframes alliance-forever-sway {
+  from {
+    transform: rotate(-2.5deg);
+  }
+  to {
+    transform: rotate(2.5deg);
+  }
+}
+
+@keyframes alliance-forever-glint {
+  0%,
+  70% {
+    left: -60%;
+  }
+  100% {
+    left: 130%;
+  }
+}
+
+@include window-backdrop(
+  "alliance-forever-theme",
+  (
+    radial-gradient(80% 60% at 55% -10%, rgba(255, 240, 200, 0.35), transparent 60%),
+    linear-gradient(180deg, #13306a, #050c1e)
+  ),
+  0.55,
+  sepia(0.4) hue-rotate(185deg) saturate(1.5) brightness(1.2) contrast(1.05)
+);
+
+@include in-app("alliance-forever-theme") {
+  --mdc-filled-text-field-container-color: #{$af-marble};
+  --mdc-filled-text-field-input-text-color: #{$af-ink};
+  --mdc-filled-text-field-label-text-color: #{$af-ink-2};
+  --mdc-filled-text-field-focus-label-text-color: #{$af-ink};
+  --mdc-filled-text-field-caret-color: #{$af-ink};
+  --mat-select-enabled-trigger-text-color: #{$af-ink};
+  --mat-select-enabled-arrow-color: #{$af-ink-2};
+
+  // Slow swaying light rays from above, and golden dust.
+  &::before,
+  &::after {
+    content: "";
+    position: fixed;
+    pointer-events: none;
+    z-index: -1;
+  }
+
+  &::before {
+    inset: -10%;
+    transform-origin: 62% -20%;
+    background: repeating-conic-gradient(
+      from 160deg at 62% -20%,
+      rgba(255, 244, 210, 0.09) 0 3deg,
+      transparent 3deg 11deg
+    );
+    -webkit-mask: linear-gradient(180deg, #000, transparent 85%);
+    animation: alliance-forever-sway 12s ease-in-out infinite alternate;
+  }
+
+  &::after {
+    inset: 0;
+    background: radial-gradient(1.6px 1.6px at 20% 30%, #fff4cc, transparent),
+      radial-gradient(1.2px 1.2px at 70% 20%, #fff, transparent),
+      radial-gradient(1.8px 1.8px at 45% 60%, #ffe9a8, transparent),
+      radial-gradient(1.2px 1.2px at 85% 50%, #fff, transparent),
+      radial-gradient(130% 100% at 55% 30%, transparent 50%, rgba(2, 6, 18, 0.75));
+    background-size:
+      360px 360px,
+      360px 360px,
+      360px 360px,
+      360px 360px,
+      100% 100%;
+    animation: forever-drift 26s linear infinite;
+  }
+
+  // ---------- Title bar: gold moulding on night blue ----------
+  .titlebar {
+    background: linear-gradient(180deg, #0c1b3a, #040a18);
+    box-shadow:
+      inset 0 -1px 0 $af-gold-lo,
+      inset 0 -3px 0 #040a18,
+      inset 0 -4px 0 $af-gold,
+      0 4px 12px rgba(0, 0, 0, 0.5);
+  }
+
+  .titlebar .title-container {
+    font-family: $af-display;
+    font-weight: 700;
+    font-size: 13px;
+    letter-spacing: 0.22em;
+    color: $af-gold-hi;
+    text-shadow: 0 0 10px rgba(255, 220, 140, 0.6);
+  }
+
+  // ---------- Tab strip: fluted marble column with a gold capital ----------
+  .tab-strip {
+    position: relative;
+    background:
+      url("../assets/images/themes/marble.svg") 0 0 / 300px 600px,
+      repeating-linear-gradient(
+        90deg,
+        rgba(120, 110, 95, 0.22) 0 2px,
+        rgba(255, 255, 255, 0.55) 2px 5px,
+        rgba(120, 110, 95, 0.1) 5px 22px,
+        rgba(80, 72, 60, 0.28) 22px 26px
+      ),
+      linear-gradient(90deg, $af-marble-lo, $af-marble-hi 30%, $af-marble 65%, $af-marble-lo);
+    border-right: 4px solid $af-gold;
+    box-shadow:
+      inset 0 0 0 1px rgba(80, 72, 60, 0.4),
+      6px 0 18px rgba(0, 0, 0, 0.6);
+    color: $af-ink;
+
+    &::before {
+      content: "";
+      position: absolute;
+      left: 0;
+      right: -4px;
+      top: 0;
+      height: 12px;
+      background: linear-gradient(180deg, $af-gold-hi, $af-gold 50%, $af-gold-lo);
+      box-shadow:
+        0 2px 0 rgba(80, 60, 20, 0.5),
+        0 4px 0 $af-marble-lo;
+    }
+  }
+
+  // Golden sun disc with blue enamel.
+  .theme-logo {
+    box-sizing: border-box;
+    overflow: visible;
+    border-radius: 50%;
+    padding: 15px;
+    background: radial-gradient(circle at 50% 42%, $af-royal-hi 0, $af-royal 14px, $af-royal-lo 21px, transparent 22px),
+      radial-gradient(circle, transparent 0 22px, $af-gold-hi 23px 24px, $af-gold-lo 25px 26px, transparent 27px),
+      repeating-conic-gradient(from 0deg, $af-gold 0 6deg, $af-gold-hi 6deg 9deg, transparent 9deg 15deg);
+    filter: drop-shadow(0 4px 8px rgba(40, 30, 10, 0.55));
+  }
+
+  .theme-logo-glow {
+    background: radial-gradient(circle, rgba(255, 240, 200, 0.6) 0%, rgba(0, 0, 0, 0) 70%);
+  }
+
+  .tab:not(.addon-info-btn) {
+    font-family: $af-ui;
+    font-weight: 700;
+    font-size: 18px;
+    letter-spacing: 0.03em;
+    border-left-color: transparent;
+    border-radius: 0;
+    text-shadow: 0 1px 0 rgba(255, 255, 255, 0.8);
+
+    .tab-title {
+      color: $af-ink;
+    }
+
+    .tab-icon svg {
+      fill: $af-ink-2 !important;
+      filter: drop-shadow(0 1px 0 rgba(255, 255, 255, 0.8));
+    }
+
+    &:hover {
+      background: rgba(255, 255, 255, 0.35);
+
+      .tab-title {
+        color: $af-royal;
+      }
+    }
+
+    // The selected tab is a blue enamel plaque that sticks out of the column.
+    &.selected {
+      border-left-color: transparent;
+      margin-right: -14px;
+      background: $af-enamel;
+      clip-path: polygon(0 0, calc(100% - 12px) 0, 100% 50%, calc(100% - 12px) 100%, 0 100%);
+      box-shadow:
+        inset 0 0 0 2px $af-gold,
+        inset 0 0 0 3px $af-royal-lo;
+      text-shadow: 0 1px 1px $af-royal-lo;
+
+      .tab-title {
+        color: #fff;
+      }
+
+      .tab-icon svg {
+        fill: $af-gold-hi !important;
+        filter: drop-shadow(0 0 4px rgba(255, 230, 160, 0.8));
+      }
+    }
+  }
+
+  .addon-info-btn {
+    color: $af-ink;
+  }
+
+  // ---------- Content ----------
+  .content,
+  .page-container {
+    background: transparent;
+  }
+
+  .control-container {
+    @include af-enamel-panel(18px, 6px);
+    margin: 8px 8px 0;
+  }
+
+  // The addon list sits under a pointed arch, like a cathedral window, with a sapphire keystone.
+  .wu-ag-table {
+    position: relative;
+    margin: 18px 8px 8px;
+    padding-top: 46px;
+    border-radius: 50% 50% 8px 8px / 90px 90px 8px 8px;
+    background: radial-gradient(90% 60% at 50% 0%, rgba(120, 160, 255, 0.22), transparent 60%),
+      linear-gradient(180deg, rgba(22, 46, 98, 0.93), rgba(8, 18, 40, 0.95));
+    box-shadow:
+      inset 0 0 0 2px $af-gold-lo,
+      inset 0 0 0 4px $af-gold,
+      inset 0 0 0 5px $af-gold-lo,
+      inset 0 0 0 9px rgba(4, 10, 24, 0.7),
+      inset 0 0 0 10px rgba(216, 176, 82, 0.45),
+      0 16px 36px rgba(0, 0, 0, 0.6);
+
+    &::before {
+      content: "";
+      position: absolute;
+      top: -12px;
+      left: 50%;
+      width: 30px;
+      height: 30px;
+      transform: translateX(-50%) rotate(45deg);
+      background: radial-gradient(circle at 35% 35%, #d6ecff, $af-royal-hi 45%, $af-royal-lo);
+      border: 3px solid $af-gold;
+      outline: 1px solid $af-gold-lo;
+      box-shadow: 0 0 16px rgba(120, 170, 255, 0.8);
+      z-index: 3;
+    }
+
+    .ag-root-wrapper {
+      margin: 0 14px 14px;
+    }
+
+    --ag-background-color: transparent;
+    --ag-header-background-color: transparent;
+    --ag-odd-row-background-color: transparent;
+    --ag-row-hover-color: rgba(120, 160, 255, 0.08);
+    --ag-selected-row-background-color: rgba(255, 220, 140, 0.2);
+    --ag-border-color: rgba(216, 176, 82, 0.18);
+    --ag-row-border-color: rgba(216, 176, 82, 0.18);
+
+    // Gold header band with engraved blue lettering.
+    .ag-header {
+      border-radius: 3px;
+      background: $af-polished-gold;
+      box-shadow:
+        inset 0 0 0 1px $af-gold-lo,
+        0 2px 6px rgba(0, 0, 0, 0.5);
+    }
+
+    .ag-header-cell-text {
+      font-family: $af-ui;
+      font-weight: 700;
+      font-size: 16px;
+      letter-spacing: 0.08em;
+      color: $af-ink;
+      text-shadow: 0 1px 0 rgba(255, 255, 255, 0.7);
+    }
+
+    .ag-header-icon {
+      color: $af-ink;
+    }
+
+    .ag-row-selected {
+      box-shadow: inset 3px 0 0 $af-gold;
+      background: linear-gradient(90deg, rgba(255, 220, 140, 0.22), transparent 70%);
+    }
+
+    .addon-title {
+      font-family: $af-ui;
+      font-weight: 700;
+      font-size: 18px;
+      letter-spacing: 0.02em;
+    }
+
+    .addon-logo-container {
+      border-radius: 50% !important;
+      box-shadow:
+        0 0 0 2px $af-gold,
+        0 0 0 3px $af-gold-lo,
+        0 2px 6px rgba(0, 0, 0, 0.6);
+    }
+  }
+
+  // ---------- Buttons: blue enamel with a gold rim; the primary one is polished gold ----------
+  .wu-btn.wu-btn-primary,
+  .wu-btn.wu-btn-flat {
+    position: relative;
+    overflow: hidden;
+    font-family: $af-ui;
+    font-weight: 700;
+    font-size: 16px;
+    letter-spacing: 0.05em;
+    border: 0;
+    border-radius: 3px;
+    color: #fff;
+    text-shadow: 0 1px 1px $af-royal-lo;
+    background: $af-enamel;
+    box-shadow:
+      inset 0 0 0 2px $af-gold,
+      inset 0 0 0 3px $af-royal-lo,
+      0 4px 10px rgba(0, 0, 0, 0.5);
+  }
+
+  .wu-btn.wu-btn-primary {
+    color: $af-ink;
+    text-shadow: 0 1px 0 rgba(255, 255, 255, 0.7);
+    background: $af-polished-gold;
+    box-shadow:
+      inset 0 0 0 1px $af-gold-lo,
+      inset 0 1px 0 2px rgba(255, 255, 255, 0.6),
+      0 0 0 1px #3a2c0c,
+      0 4px 14px rgba(255, 210, 120, 0.35);
+
+    &::after {
+      content: "";
+      position: absolute;
+      top: -50%;
+      bottom: -50%;
+      width: 40%;
+      left: -60%;
+      background: linear-gradient(100deg, transparent, rgba(255, 255, 255, 0.65), transparent);
+      transform: skewX(-20deg);
+      animation: alliance-forever-glint 4.5s ease-in-out infinite;
+      pointer-events: none;
+    }
+
+    &:hover:not([disabled]) {
+      filter: brightness(1.08);
+    }
+
+    &[disabled] {
+      filter: grayscale(0.8) brightness(0.75);
+
+      &::after {
+        animation: none;
+      }
+    }
+  }
+
+  .mdc-text-field--filled {
+    border-radius: 3px;
+    background: linear-gradient(180deg, #fff, $af-marble);
+    box-shadow:
+      inset 0 0 0 1px $af-gold-lo,
+      inset 0 2px 4px rgba(0, 0, 0, 0.25);
+  }
+
+  // ---------- Options ----------
+  .nav-container {
+    background:
+      url("../assets/images/themes/marble.svg") 0 0 / 300px 600px,
+      linear-gradient(90deg, $af-marble-lo, $af-marble-hi 30%, $af-marble 65%, $af-marble-lo);
+    border-right: 3px solid $af-gold;
+
+    .mat-mdc-list-item {
+      margin: 5px 10px;
+      width: calc(100% - 20px);
+      border-radius: 3px;
+      background: linear-gradient(180deg, $af-marble-hi, $af-marble 60%, $af-marble-lo);
+      box-shadow:
+        inset 0 0 0 1px $af-gold-lo,
+        0 2px 6px rgba(0, 0, 0, 0.35);
+    }
+
+    .mdc-list-item__primary-text {
+      font-family: $af-ui;
+      font-weight: 700;
+      font-size: 17px;
+      color: $af-ink;
+      text-shadow: 0 1px 0 #fff;
+    }
+  }
+
+  .nav-content-container {
+    @include af-enamel-panel;
+    margin: 8px;
+  }
+
+  // Centred, symmetrical section titles with a sun halo.
+  .nav-content h2 {
+    text-align: center;
+    padding: 4px 0;
+    font-family: $af-display;
+    font-weight: 900;
+    font-size: 24px;
+    color: $af-gold-hi;
+    text-shadow:
+      0 2px 0 $af-gold-lo,
+      0 0 18px rgba(255, 220, 140, 0.55);
+    background:
+      radial-gradient(40% 120% at 50% 60%, rgba(255, 240, 200, 0.18), transparent 70%),
+      linear-gradient(90deg, transparent, $af-gold 15%, transparent 32%, transparent 68%, $af-gold 85%, transparent)
+        center 60% / 100% 1px no-repeat;
+  }
+
+  .mat-mdc-card {
+    background: rgba(4, 10, 24, 0.45) !important;
+    box-shadow:
+      inset 0 0 0 1px $af-gold-lo,
+      inset 0 0 0 2px rgba(216, 176, 82, 0.4);
+  }
+
+  @include toggle-as-checkbox(linear-gradient(180deg, #fff, $af-marble), $af-gold, $af-gold-lo, $af-royal, transparent);
+
+  // ---------- Footer ----------
+  footer {
+    background: linear-gradient(180deg, #0c1b3a, #040a18);
+    box-shadow:
+      inset 0 1px 0 $af-gold-lo,
+      inset 0 3px 0 #040a18,
+      inset 0 4px 0 $af-gold;
+    font-family: $af-ui;
+    font-weight: 600;
+    font-size: 14px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: #050c1e;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: $af-polished-gold;
+    border: 3px solid #050c1e;
+    border-radius: 6px;
+  }
+}
+
+@include in-overlay("alliance-forever-theme") {
+  .mat-mdc-menu-panel,
+  .mat-mdc-select-panel,
+  .mdc-tooltip__surface {
+    background: linear-gradient(180deg, rgba(14, 30, 66, 0.98), rgba(5, 12, 30, 0.98));
+    color: #f4f7fc;
+    border: 2px solid $af-gold;
+    border-radius: 6px;
+    box-shadow:
+      0 0 0 1px #000,
+      0 12px 28px rgba(0, 0, 0, 0.8);
+  }
+
+  .mat-mdc-optgroup-label {
+    font-family: $af-ui;
+    font-weight: 700;
+    color: $af-gold-hi;
+  }
+
+  .mat-mdc-dialog-surface {
+    @include af-enamel-panel(18px, 6px);
+  }
+}

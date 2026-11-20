@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="102" height="102" viewBox="0 0 102 102">
+  <defs>
+  <linearGradient id="gold" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#fff4cc"/><stop offset=".45" stop-color="#d8b052"/><stop offset="1" stop-color="#8a6a22"/></linearGradient>
+  <radialGradient id="gem" cx=".35" cy=".35" r=".8"><stop offset="0" stop-color="#e2f2ff"/><stop offset=".45" stop-color="#3568d8"/><stop offset="1" stop-color="#0d2765"/></radialGradient>
+  </defs>
+  <rect x="22.5" y="22.5" width="57" height="57" fill="none" stroke="#5a440f" stroke-width="1"/>
+  <rect x="25.5" y="25.5" width="51" height="51" fill="none" stroke="url(#gold)" stroke-width="4"/>
+  <rect x="29" y="29" width="44" height="44" fill="none" stroke="#fff4cc" stroke-opacity=".5" stroke-width=".8"/>
+  <rect x="31" y="31" width="40" height="40" fill="none" stroke="#d8b052" stroke-opacity=".55" stroke-width="1"/>
+  <g id="c">
+  <path d="M24 24 C10 24 6 14 12 8 C16 4 22 8 20 13 C18 17 13 15 14 12" fill="none" stroke="url(#gold)" stroke-width="2.4" stroke-linecap="round"/>
+  <path d="M24 24 C24 10 34 6 40 12 C44 16 40 22 35 20 C31 18 33 13 36 14" fill="none" stroke="url(#gold)" stroke-width="2.4" stroke-linecap="round" transform="matrix(0 1 1 0 0 0)"/>
+  <path d="M8 26 Q16 22 22 16 Q26 10 26 4" fill="none" stroke="url(#gold)" stroke-width="1.6"/>
+  <polygon points="24,15 33,24 24,33 15,24" fill="url(#gem)" stroke="#5a440f" stroke-width="1"/>
+  <polygon points="24,11 37,24 24,37 11,24" fill="none" stroke="url(#gold)" stroke-width="2"/>
+  </g>
+  <use href="#c" transform="matrix(-1 0 0 1 102 0)"/>
+  <use href="#c" transform="matrix(1 0 0 -1 0 102)"/>
+  <use href="#c" transform="matrix(-1 0 0 -1 102 102)"/>
+</svg>

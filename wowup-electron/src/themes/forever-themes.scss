@@ -1,0 +1,127 @@
+// Forever themes: shapes, ornaments and effects for the optional Forever, Forever Classic,
+// Horde Forever and Alliance Forever themes. Colours, CSS variables and Material palettes
+// live in custom-theme.scss; this file only adds the look on top of them.
+//
+// Every rule is scoped to its theme class, so the other themes are unaffected. The scope
+// selector repeats the theme class to win over Angular's encapsulated component styles.
+// Ornaments and textures are original SVGs in assets/images/themes/.
+
+@mixin in-app($theme) {
+  :root .app.#{$theme}.#{$theme} {
+    @content;
+  }
+}
+
+@mixin in-overlay($theme) {
+  :root .cdk-overlay-container.#{$theme}.#{$theme} {
+    @content;
+  }
+}
+
+// Background art and window colour behind the app (index.html sets them inline).
+@mixin window-backdrop($theme, $background, $art-opacity, $art-filter) {
+  body:has(.app.#{$theme}) {
+    background: $background !important;
+
+    #wow-background {
+      opacity: $art-opacity !important;
+      filter: $art-filter;
+    }
+  }
+}
+
+// Fixed, non-interactive layers above the background art and below the UI.
+@mixin ambient-layers($fx, $fx-size, $fx-animation, $vignette) {
+  &::before,
+  &::after {
+    content: "";
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: -1;
+  }
+
+  &::before {
+    background: $fx;
+    background-size: $fx-size;
+    animation: $fx-animation;
+  }
+
+  &::after {
+    background: $vignette;
+  }
+}
+
+// Slide toggles drawn as old-school game checkboxes. The MDC switch keeps its role and focus
+// handling; only the track and handle are hidden.
+@mixin toggle-as-checkbox($box, $rim, $rim-dark, $check, $check-glow: $check) {
+  .mat-mdc-slide-toggle .mdc-switch {
+    width: 22px;
+    height: 22px;
+    margin: 0 6px;
+    border-radius: 2px;
+    background: $box;
+    box-shadow:
+      0 0 0 1px $rim-dark,
+      0 0 0 3px $rim,
+      0 0 0 4px $rim-dark,
+      inset 0 2px 6px rgba(0, 0, 0, 0.6);
+
+    .mdc-switch__track,
+    .mdc-switch__handle-track {
+      display: none;
+    }
+
+    &.mdc-switch--checked::after {
+      content: "";
+      position: absolute;
+      left: 6px;
+      top: -3px;
+      width: 7px;
+      height: 15px;
+      border: solid $check;
+      border-width: 0 4px 4px 0;
+      transform: rotate(40deg);
+      filter: drop-shadow(1px 1px 0 rgba(0, 0, 0, 0.8)) drop-shadow(0 0 4px $check-glow);
+    }
+
+    &:disabled {
+      opacity: 0.5;
+    }
+  }
+}
+
+@keyframes forever-drift {
+  from {
+    background-position: 0 0;
+  }
+  to {
+    background-position: 60px -320px;
+  }
+}
+
+@keyframes forever-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .app.forever-theme,
+  .app.forever-classic-theme,
+  .app.horde-forever-theme,
+  .app.alliance-forever-theme {
+    &::before,
+    &::after,
+    *,
+    *::before,
+    *::after {
+      animation: none !important;
+    }
+  }
+}
+
+@import "./forever";
+@import "./forever-classic";
+@import "./horde-forever";
+@import "./alliance-forever";

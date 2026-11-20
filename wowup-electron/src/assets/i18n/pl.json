@@ -107,10 +107,14 @@
     },
     "THEME": {
       "ALLIANCE": "Przymierze",
+      "ALLIANCE_FOREVER": "Przymierze Forever",
       "DEFAULT": "WowUp",
+      "FOREVER": "Forever",
+      "FOREVER_CLASSIC": "Forever Classic",
       "GROUP_DARK": "Ciemny",
       "GROUP_LIGHT": "Jasny",
-      "HORDE": "Horda"
+      "HORDE": "Horda",
+      "HORDE_FOREVER": "Horda Forever"
     },
     "UPDATES_ON_HOLD_NOTIFICATION_BODY": "Niektóre aktualizacje addonów wymagają nowszej wersji World of Warcraft niż zainstalowana. Otwórz WowUp, aby je przejrzeć.",
     "UPDATES_ON_HOLD_NOTIFICATION_TITLE": "Aktualizacje wstrzymane",

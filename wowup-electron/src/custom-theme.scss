@@ -450,6 +450,219 @@ body {
   --theme-logo: url("assets/images/alliance-dark-1.png");
 }
 
+// Forever themes: optional dark themes. Their shapes and effects live in themes/forever-themes.scss.
+@function forever-palette(
+  $primary,
+  $primary-light,
+  $primary-dark,
+  $accent,
+  $accent-light,
+  $accent-dark,
+  $accent-contrast
+) {
+  @return (
+    50: $primary-light,
+    100: $primary,
+    200: $primary,
+    300: $primary-dark,
+    400: $primary,
+    500: $primary,
+    600: $primary,
+    700: $primary-dark,
+    800: $primary-dark,
+    900: $primary-dark,
+    A100: $accent-light,
+    A200: $accent,
+    A400: $accent-dark,
+    A700: $accent,
+    contrast: (
+      50: #000000,
+      100: #ffffff,
+      200: #ffffff,
+      300: #ffffff,
+      400: #ffffff,
+      500: #ffffff,
+      600: #ffffff,
+      700: #ffffff,
+      800: #ffffff,
+      900: #ffffff,
+      A100: $accent-contrast,
+      A200: $accent-contrast,
+      A400: #ffffff,
+      A700: $accent-contrast,
+    )
+  );
+}
+
+@mixin forever-material-theme($class, $palette) {
+  $primary: mat.define-palette($palette, 100, 50, 300);
+  $accent: mat.define-palette($palette, A200, A100, A400);
+  $warn: mat.define-palette(mat.$deep-orange-palette);
+
+  .#{$class} {
+    @include mat.all-component-colors(
+      mat.define-dark-theme(
+        (
+          color: (
+            primary: $primary,
+            accent: $accent,
+            warn: $warn,
+          ),
+        )
+      )
+    );
+  }
+}
+
+@include forever-material-theme(
+  "forever-theme",
+  forever-palette(#8f3418, #efe6d2, #4f1709, #d9b061, #f2d48a, #8a6a2e, #1c1408)
+);
+@include forever-material-theme(
+  "forever-classic-theme",
+  forever-palette(#7d0f09, #e9e2cc, #4a0704, #ffd100, #fff2a0, #b58f00, #000000)
+);
+@include forever-material-theme(
+  "horde-forever-theme",
+  forever-palette(#a3140c, #eadcc2, #4c0603, #ff8a2a, #ffc46b, #b5200c, #120806)
+);
+@include forever-material-theme(
+  "alliance-forever-theme",
+  forever-palette(#1c45a0, #f4f7fc, #0d2765, #d8b052, #fff4cc, #8a6a22, #142446)
+);
+
+.forever-theme {
+  --background-primary: #8f3418;
+  --background-primary-2: #a8441f;
+  --background-primary-3: #4f1709;
+  --background-secondary-1: rgba(25, 38, 54, 0.82);
+  --background-secondary-2: rgba(18, 28, 41, 0.88);
+  --background-secondary-2-fill: rgba(18, 28, 41, 1);
+  --background-secondary-3: rgba(13, 20, 30, 0.78);
+  --background-secondary-4: rgba(10, 15, 23, 0.9);
+  --background-secondary-5: rgba(7, 9, 13, 0.92);
+  --control-color: #d9b061;
+  --epic-color: #a335ee;
+  --rare-color: #0070dd;
+  --scrollbar-track-color: #0d141e;
+  --text-1: #efe6d2;
+  --text-2: #d3c7ab;
+  --text-3: #ab9f86;
+  --text-4: #a0957f;
+  --warn-color: #ff8a6b;
+  --tab-text: #f2d48a;
+  --tab-disabled: #efe6d2;
+  --tab-inactive: #ab9f86;
+  --divider-color: #2a3a50;
+  --grid-border: rgba(217, 176, 97, 0.12);
+  --footer-hover: #192636;
+
+  --title-logo: url("assets/images/wowup-white-1.png");
+  --theme-logo: url("assets/images/wowup-white-1.png");
+  --ad-placeholder: url("assets/images/wowup-placeholder.png");
+  --mat-sidenav-content-background-color: rgba(0, 0, 0, 0);
+  --mat-sidenav-container-background-color: rgba(0, 0, 0, 0);
+}
+
+.forever-classic-theme {
+  --background-primary: #7d0f09;
+  --background-primary-2: #9a170e;
+  --background-primary-3: #4a0704;
+  --background-secondary-1: rgba(14, 18, 34, 0.86);
+  --background-secondary-2: rgba(8, 12, 26, 0.9);
+  --background-secondary-2-fill: rgba(8, 12, 26, 1);
+  --background-secondary-3: rgba(4, 8, 22, 0.82);
+  --background-secondary-4: rgba(2, 4, 12, 0.9);
+  --background-secondary-5: rgba(0, 0, 0, 0.9);
+  --control-color: #ffd100;
+  --epic-color: #a335ee;
+  --rare-color: #0070dd;
+  --scrollbar-track-color: #1a1916;
+  --text-1: #ffffff;
+  --text-2: #e9e2cc;
+  --text-3: #bdb5a2;
+  --text-4: #a8a08d;
+  --warn-color: #ff7a5c;
+  --tab-text: #ffd100;
+  --tab-disabled: #d9d2bf;
+  --tab-inactive: #d9d2bf;
+  --divider-color: #4a4740;
+  --grid-border: rgba(91, 62, 30, 0.28);
+  --footer-hover: #2d2b28;
+
+  --title-logo: url("assets/images/wowup-white-1.png");
+  --theme-logo: url("assets/images/wowup-white-1.png");
+  --ad-placeholder: url("assets/images/wowup-placeholder.png");
+  --mat-sidenav-content-background-color: rgba(0, 0, 0, 0);
+  --mat-sidenav-container-background-color: rgba(0, 0, 0, 0);
+}
+
+.horde-forever-theme {
+  --background-primary: #a3140c;
+  --background-primary-2: #b81a10;
+  --background-primary-3: #4c0603;
+  --background-secondary-1: rgba(63, 38, 24, 0.92);
+  --background-secondary-2: rgba(42, 26, 17, 0.94);
+  --background-secondary-2-fill: rgba(42, 26, 17, 1);
+  --background-secondary-3: rgba(31, 18, 11, 0.9);
+  --background-secondary-4: rgba(20, 12, 8, 0.92);
+  --background-secondary-5: rgba(12, 8, 7, 0.94);
+  --control-color: #ff8a2a;
+  --epic-color: #a335ee;
+  --rare-color: #0070dd;
+  --scrollbar-track-color: #120a06;
+  --text-1: #eadcc2;
+  --text-2: #d0bd9c;
+  --text-3: #ad9a7e;
+  --text-4: #a39378;
+  --warn-color: #ffb35c;
+  --tab-text: #ffc46b;
+  --tab-disabled: #f0e2c8;
+  --tab-inactive: #f0e2c8;
+  --divider-color: #5a3a24;
+  --grid-border: rgba(234, 220, 194, 0.12);
+  --footer-hover: #2a2523;
+
+  --title-logo: url("assets/images/wowup-white-1.png");
+  --theme-logo: url("assets/images/wowup-white-1.png");
+  --ad-placeholder: url("assets/images/wowup-placeholder.png");
+  --mat-sidenav-content-background-color: rgba(0, 0, 0, 0);
+  --mat-sidenav-container-background-color: rgba(0, 0, 0, 0);
+}
+
+.alliance-forever-theme {
+  --background-primary: #1c45a0;
+  --background-primary-2: #3568d8;
+  --background-primary-3: #0d2765;
+  --background-secondary-1: rgba(22, 46, 98, 0.9);
+  --background-secondary-2: rgba(12, 27, 58, 0.92);
+  --background-secondary-2-fill: rgba(12, 27, 58, 1);
+  --background-secondary-3: rgba(8, 18, 40, 0.9);
+  --background-secondary-4: rgba(5, 12, 30, 0.92);
+  --background-secondary-5: rgba(4, 10, 24, 0.94);
+  --control-color: #d8b052;
+  --epic-color: #a335ee;
+  --rare-color: #0070dd;
+  --scrollbar-track-color: #050c1e;
+  --text-1: #f4f7fc;
+  --text-2: #d3dcec;
+  --text-3: #aab8d0;
+  --text-4: #9aa9c2;
+  --warn-color: #ffa286;
+  --tab-text: #ffffff;
+  --tab-disabled: #142446;
+  --tab-inactive: #142446;
+  --divider-color: #2c4167;
+  --grid-border: rgba(216, 176, 82, 0.18);
+  --footer-hover: #12223f;
+
+  --title-logo: url("assets/images/wowup-white-1.png");
+  --theme-logo: url("assets/images/wowup-white-1.png");
+  --ad-placeholder: url("assets/images/wowup-placeholder.png");
+  --mat-sidenav-content-background-color: rgba(0, 0, 0, 0);
+  --mat-sidenav-container-background-color: rgba(0, 0, 0, 0);
+}
+
 .bg-primary {
   background-color: var(--background-primary);
 }

@@ -107,10 +107,14 @@
     },
     "THEME": {
       "ALLIANCE": "聯盟",
+      "ALLIANCE_FOREVER": "聯盟 Forever",
       "DEFAULT": "WowUp",
+      "FOREVER": "Forever",
+      "FOREVER_CLASSIC": "Forever Classic",
       "GROUP_DARK": "暗色",
       "GROUP_LIGHT": "亮色",
-      "HORDE": "部落"
+      "HORDE": "部落",
+      "HORDE_FOREVER": "部落 Forever"
     },
     "UPDATES_ON_HOLD_NOTIFICATION_BODY": "部分插件更新需要比目前已安裝版本更新的《魔獸世界》。開啟 WowUp 查看。",
     "UPDATES_ON_HOLD_NOTIFICATION_TITLE": "更新已暫緩",

@@ -107,10 +107,14 @@
     },
     "THEME": {
       "ALLIANCE": "얼라이언스",
+      "ALLIANCE_FOREVER": "얼라이언스 Forever",
       "DEFAULT": "기본",
+      "FOREVER": "Forever",
+      "FOREVER_CLASSIC": "Forever Classic",
       "GROUP_DARK": "다크모드",
       "GROUP_LIGHT": "라이트모드",
-      "HORDE": "호드"
+      "HORDE": "호드",
+      "HORDE_FOREVER": "호드 Forever"
     },
     "UPDATES_ON_HOLD_NOTIFICATION_BODY": "일부 애드온 업데이트에는 설치된 버전보다 최신 World of Warcraft가 필요합니다. WowUp을 열어 확인하세요.",
     "UPDATES_ON_HOLD_NOTIFICATION_TITLE": "업데이트 보류됨",

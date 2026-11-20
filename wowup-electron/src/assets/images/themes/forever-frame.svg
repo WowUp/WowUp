@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="96" height="96" viewBox="0 0 96 96">
+  <defs>
+  <linearGradient id="mt" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#fbe6a6"/><stop offset=".45" stop-color="#c99a45"/><stop offset="1" stop-color="#6e4e1c"/></linearGradient>
+  <radialGradient id="gm" cx=".35" cy=".35" r=".8"><stop offset="0" stop-color="#c8fff6"/><stop offset=".45" stop-color="#36b6a4"/><stop offset="1" stop-color="#0b4a44"/></radialGradient>
+  </defs>
+  <rect x="22.5" y="22.5" width="51" height="51" fill="none" stroke="#1c1408" stroke-width="1"/>
+  <rect x="26.5" y="26.5" width="43" height="43" fill="none" stroke="url(#mt)" stroke-width="7"/>
+  <rect x="30.5" y="30.5" width="35" height="35" fill="none" stroke="#1c1408" stroke-width="1"/>
+  <rect x="24" y="24" width="48" height="48" fill="none" stroke="#fbe6a6" stroke-opacity=".45" stroke-width=".8"/>
+  <g id="c"><path d="M27 9 C17 3 5 9 9 19 C11 24 17 22 15 17" fill="none" stroke="url(#mt)" stroke-width="2.4" stroke-linecap="round"/>
+  <path d="M9 27 C3 17 9 5 19 9 C24 11 22 17 17 15" fill="none" stroke="url(#mt)" stroke-width="2.4" stroke-linecap="round"/>
+  <polygon points="24,18 30,24 24,30 18,24" fill="url(#gm)" stroke="#1c1408" stroke-width="1"/>
+  <polygon points="24,15.5 32.5,24 24,32.5 15.5,24" fill="none" stroke="url(#mt)" stroke-width="2"/></g>
+  <use href="#c" transform="matrix(-1 0 0 1 96 0)"/>
+  <use href="#c" transform="matrix(1 0 0 -1 0 96)"/>
+  <use href="#c" transform="matrix(-1 0 0 -1 96 96)"/>
+</svg>

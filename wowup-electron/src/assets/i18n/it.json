@@ -107,10 +107,14 @@
     },
     "THEME": {
       "ALLIANCE": "Alleanza",
+      "ALLIANCE_FOREVER": "Alleanza Forever",
       "DEFAULT": "WowUp",
+      "FOREVER": "Forever",
+      "FOREVER_CLASSIC": "Forever Classic",
       "GROUP_DARK": "Scuro",
       "GROUP_LIGHT": "Chiaro",
-      "HORDE": "Orda"
+      "HORDE": "Orda",
+      "HORDE_FOREVER": "Orda Forever"
     },
     "UPDATES_ON_HOLD_NOTIFICATION_BODY": "Alcuni aggiornamenti degli addon richiedono una versione di World of Warcraft più recente di quella installata. Apri WowUp per controllarli.",
     "UPDATES_ON_HOLD_NOTIFICATION_TITLE": "Aggiornamenti in sospeso",
