@@ -30,9 +30,12 @@
               {{ "PAGES.OPTIONS.TABS.WTF_EXPLORER" | translate }}
             </button>
             <button mat-list-item (click)="optionTabIndex = 5">
+              {{ "PAGES.OPTIONS.TABS.SYNC" | translate }}
+            </button>
+            <button mat-list-item (click)="optionTabIndex = 6">
               {{ "PAGES.OPTIONS.TABS.ABOUT" | translate }}
             </button>
-            <button *ngIf="isCurseForge && isCMPRequired" mat-list-item (click)="optionTabIndex = 6">
+            <button *ngIf="isCurseForge && isCMPRequired" mat-list-item (click)="optionTabIndex = 7">
               {{ "PAGES.OPTIONS.TABS.CURSEFORGE" | translate }}
             </button>
           </mat-action-list>
@@ -57,6 +60,9 @@
             </mat-tab>
             <mat-tab label="WtfExplorer">
               <app-wtf-explorer [active]="optionTabIndex === 4"></app-wtf-explorer>
+            </mat-tab>
+            <mat-tab label="SettingsSync">
+              <app-options-sync-section [active]="optionTabIndex === 5"></app-options-sync-section>
             </mat-tab>
             <mat-tab label="About">
               <app-about></app-about>

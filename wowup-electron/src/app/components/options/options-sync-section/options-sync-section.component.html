@@ -1,0 +1,129 @@
+<div class="container" *ngIf="status$ | async as status">
+  <h2>{{ "PAGES.OPTIONS.SYNC.TITLE" | translate }}</h2>
+  <p class="text-2 explanation">{{ "PAGES.OPTIONS.SYNC.PAGE_EXPLANATION" | translate }}</p>
+
+  <!-- Step 1: the code that links devices -->
+  <div class="setting">
+    <div>{{ "PAGES.OPTIONS.SYNC.CODE_LABEL" | translate }}</div>
+    <small class="text-2">{{ "PAGES.OPTIONS.SYNC.CODE_DESCRIPTION" | translate }}</small>
+
+    <div *ngIf="!status.hasCode" class="code-setup">
+      <button mat-flat-button color="primary" (click)="onCreateCode()">
+        {{ "PAGES.OPTIONS.SYNC.CREATE_CODE_BUTTON" | translate }}
+      </button>
+      <span class="text-3 or">{{ "PAGES.OPTIONS.SYNC.OR" | translate }}</span>
+      <mat-form-field appearance="fill" class="code-input">
+        <mat-label>{{ "PAGES.OPTIONS.SYNC.ENTER_CODE_LABEL" | translate }}</mat-label>
+        <input matInput [(ngModel)]="codeInput" autocomplete="off" spellcheck="false" />
+      </mat-form-field>
+      <button mat-stroked-button [disabled]="!codeInput.trim()" (click)="onSaveCode()">
+        {{ "PAGES.OPTIONS.SYNC.SAVE_CODE_BUTTON" | translate }}
+      </button>
+    </div>
+    <small *ngIf="!status.hasCode" class="text-3">{{ "PAGES.OPTIONS.SYNC.CREATE_CODE_HINT" | translate }}</small>
+
+    <div *ngIf="status.hasCode" class="code-setup">
+      <code class="code bg-secondary-3">{{ shownCode ?? status.codeHint + "-····" }}</code>
+      <button mat-stroked-button (click)="onToggleShowCode()">
+        {{ (shownCode ? "PAGES.OPTIONS.SYNC.HIDE_CODE_BUTTON" : "PAGES.OPTIONS.SYNC.SHOW_CODE_BUTTON") | translate }}
+      </button>
+      <button
+        *ngIf="shownCode"
+        mat-stroked-button
+        [cdkCopyToClipboard]="shownCode"
+        (cdkCopyToClipboardCopied)="onCodeCopied()"
+      >
+        {{ "PAGES.OPTIONS.SYNC.COPY_CODE_BUTTON" | translate }}
+      </button>
+      <button mat-button color="warn" (click)="onClear()">
+        {{ "PAGES.OPTIONS.SYNC.REMOVE_CODE_BUTTON" | translate }}
+      </button>
+    </div>
+    <small *ngIf="shownCode" class="text-3">{{ "PAGES.OPTIONS.SYNC.CODE_SECRET_HINT" | translate }}</small>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- Step 2: where the encrypted data goes -->
+  <div class="setting row align-items-center">
+    <div class="flex-grow-1">
+      <div>{{ "PAGES.OPTIONS.SYNC.FOLDER_LABEL" | translate }}</div>
+      <small class="text-2">{{ "PAGES.OPTIONS.SYNC.FOLDER_DESCRIPTION" | translate }}</small>
+      <div *ngIf="status.folderPath" class="folder text-1">{{ status.folderPath }}</div>
+    </div>
+    <button mat-stroked-button (click)="onChooseFolder()">
+      {{ "PAGES.OPTIONS.SYNC.CHOOSE_FOLDER_BUTTON" | translate }}
+    </button>
+  </div>
+
+  <div class="divider"></div>
+
+  <div class="setting row align-items-center">
+    <div class="flex-grow-1">
+      <div>{{ "PAGES.OPTIONS.SYNC.AUTO_LABEL" | translate }}</div>
+      <small class="text-2">{{ "PAGES.OPTIONS.SYNC.AUTO_DESCRIPTION" | translate }}</small>
+    </div>
+    <mat-slide-toggle [checked]="status.autoSync" (change)="onAutoSyncChange($event)"></mat-slide-toggle>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- Step 3: which games, and sync now -->
+  <div class="setting">
+    <div>{{ "PAGES.OPTIONS.SYNC.INSTALLATIONS_LABEL" | translate }}</div>
+    <small class="text-2">{{ "PAGES.OPTIONS.SYNC.INSTALLATIONS_DESCRIPTION" | translate }}</small>
+
+    <div *ngFor="let row of rows$ | async" class="installation bg-secondary-3">
+      <div class="row align-items-center">
+        <mat-checkbox class="flex-grow-1" [checked]="row.enabled" (change)="onInstallationToggle(row, $event)">
+          {{ row.installation.label }}
+        </mat-checkbox>
+        <mat-spinner *ngIf="row.busy" diameter="20"></mat-spinner>
+        <button
+          mat-flat-button
+          color="primary"
+          [disabled]="!row.enabled || row.busy || !status.hasCode || !status.folderPath"
+          (click)="onSyncNow(row)"
+        >
+          {{ "PAGES.OPTIONS.SYNC.SYNC_NOW_BUTTON" | translate }}
+        </button>
+      </div>
+
+      <div *ngIf="row.result as result" class="result text-2">
+        <div>
+          {{ "PAGES.OPTIONS.SYNC.OUTCOME." + result.outcome | translate }} ·
+          {{ result.finishedAt | localeDate }}
+        </div>
+        <div *ngIf="result.outcome !== 'no-changes'">
+          {{
+            "PAGES.OPTIONS.SYNC.RESULT_COUNTS"
+              | translate
+                : {
+                    downloaded: result.downloaded,
+                    uploaded: result.uploaded,
+                    deleted: result.deletedLocal + result.deletedRemote
+                  }
+          }}
+        </div>
+        <div *ngIf="result.otherCodesInFolder > 0" class="text-warning">
+          {{ "PAGES.OPTIONS.SYNC.OTHER_CODE_WARNING" | translate }}
+        </div>
+        <div *ngIf="result.conflicts.length > 0" class="text-3">
+          {{ "PAGES.OPTIONS.SYNC.RESULT_CONFLICTS" | translate: { count: result.conflicts.length } }}
+        </div>
+        <a *ngIf="result.backupPath" class="text-3 link" (click)="showInFolder(result.backupPath)">
+          {{ "PAGES.OPTIONS.SYNC.RESULT_BACKUP" | translate }}
+        </a>
+      </div>
+
+      <div *ngIf="row.missing" class="missing row align-items-center">
+        <div class="flex-grow-1">
+          {{ "PAGES.OPTIONS.SYNC.MISSING_ADDONS" | translate: { count: row.missing.addedCt, device: row.missingFrom } }}
+        </div>
+        <button mat-stroked-button [disabled]="row.busy" (click)="onInstallMissing(row)">
+          {{ "PAGES.OPTIONS.SYNC.INSTALL_MISSING_BUTTON" | translate }}
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

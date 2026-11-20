@@ -3,6 +3,7 @@ import { app, BrowserWindow, net, powerMonitor } from "electron";
 import * as Store from "electron-store";
 import * as log from "electron-log/main";
 import * as fsp from "fs/promises";
+import * as os from "os";
 import * as path from "path";
 
 import { AddonController } from "./addon.controller";
@@ -16,9 +17,17 @@ import { UserProviderState } from "../services/addon-providers/addon-provider-re
 import { downloadFile } from "../services/download/file-download";
 import { AddonRepository } from "../services/addons/addon-repository";
 import { AddonSyncService } from "../services/addons/addon-sync.service";
-import { copyPath, getLastModifiedFileDate, remove, unzipFile } from "../file.utils";
+import { copyPath, getLastModifiedFileDate, remove, unzipFile, zipFile } from "../file.utils";
 import { AddonFolderService } from "../services/warcraft/addon-folder.service";
-import { ADDON_PROVIDERS_KEY, IPC_ADDON_SCAN_EVENT, USE_SYMLINK_MODE_PREFERENCE_KEY } from "../../src/common/constants";
+import {
+  ADDON_PROVIDERS_KEY,
+  IPC_ADDON_SCAN_EVENT,
+  SETTINGS_SYNC_AUTO_KEY,
+  SETTINGS_SYNC_CODE_KEY,
+  SETTINGS_SYNC_FOLDER_KEY,
+  SETTINGS_SYNC_INSTALLATIONS_KEY,
+  USE_SYMLINK_MODE_PREFERENCE_KEY,
+} from "../../src/common/constants";
 import { WagoAdsController } from "./wago-ads.controller";
 import { IpcController } from "./ipc-controller";
 import { AppController } from "./app.controller";
@@ -30,6 +39,10 @@ import { FileSystemService } from "../services/files/file-system.service";
 import { takePendingOpenUrls } from "../pending-open-urls";
 import { MetricsController } from "./metrics/metrics.controller";
 import { TocController } from "./toc/toc.controller";
+import { SettingsSyncController } from "./sync/settings-sync.controller";
+import { SettingsSyncConfig, SettingsSyncService } from "../services/sync/settings-sync.service";
+import { FolderTransport, getDefaultSyncFolder } from "../services/sync/sync-transport";
+import { isWowRunning } from "../services/sync/wow-process";
 import { WarcraftController } from "./warcraft/warcraft.controller";
 import { WarcraftInstallationController } from "./warcraft/warcraft-installation.controller";
 import { TocService } from "../services/toc/toc.service";
@@ -205,6 +218,51 @@ export function registerControllers(deps: ControllerDeps): void {
       }),
   );
 
+  const settingsSyncService = new SettingsSyncService({
+    getConfig: (): SettingsSyncConfig => ({
+      code: deps.sensitiveStore.get(SETTINGS_SYNC_CODE_KEY) as string | undefined,
+      folderPath: (deps.preferenceStore.get(SETTINGS_SYNC_FOLDER_KEY) as string | undefined) ?? getDefaultSyncFolder(),
+      autoSync: String(deps.preferenceStore.get(SETTINGS_SYNC_AUTO_KEY)) === "true",
+      installationIds: (deps.preferenceStore.get(SETTINGS_SYNC_INSTALLATIONS_KEY) as string[] | undefined) ?? [],
+    }),
+    saveConfig: (config) => {
+      const save = (store: Store, key: string, value: unknown) =>
+        value === undefined ? store.delete(key) : store.set(key, value);
+      if ("code" in config) save(deps.sensitiveStore, SETTINGS_SYNC_CODE_KEY, config.code);
+      if ("folderPath" in config) save(deps.preferenceStore, SETTINGS_SYNC_FOLDER_KEY, config.folderPath);
+      // Saved as a string, like every scalar preference
+      if ("autoSync" in config) save(deps.preferenceStore, SETTINGS_SYNC_AUTO_KEY, String(config.autoSync));
+      if ("installationIds" in config)
+        save(deps.preferenceStore, SETTINGS_SYNC_INSTALLATIONS_KEY, config.installationIds);
+    },
+    getInstallations: () => installationService.getAll(),
+    getTransport: (folderPath) => new FolderTransport(folderPath),
+    getAddons: (installationId) =>
+      addonRepository
+        .getAllForInstallation(installationId)
+        .filter((addon) => addon.isIgnored !== true && !!addon.externalId)
+        .map((addon) => ({
+          id: addon.externalId,
+          name: addon.name,
+          provider_name: addon.providerName,
+          version_id: addon.installedExternalReleaseId ?? undefined,
+        })),
+    // Same folder and naming as the WTF backup dialog, so these backups can be restored from there
+    createBackup: async (installation, wtfPath) => {
+      const backupFolder = path.join(app.getPath("userData"), "wtf_backups", installation.id);
+      await fsp.mkdir(backupFolder, { recursive: true });
+      const zipPath = path.join(backupFolder, `wtf_${Date.now()}.zip`);
+      await zipFile(wtfPath, zipPath);
+      return zipPath;
+    },
+    isGameRunning: () => isWowRunning(),
+    stateFolderPath: path.join(app.getPath("userData"), "settings-sync"),
+    deviceId: getInstallId(),
+    deviceName: os.hostname().replace(/\.local$/, ""),
+    now: () => Date.now(),
+    log,
+  });
+
   const controllers: IpcController[] = [
     new AddonController(addonRepository),
     providerController,
@@ -212,6 +270,7 @@ export function registerControllers(deps: ControllerDeps): void {
     new WarcraftController(getPlatformImpl(), deps.preferenceStore, addonFolderService),
     new WarcraftInstallationController(installationService),
     new TocController(tocService),
+    new SettingsSyncController(deps.window, settingsSyncService),
     new AddonSyncController(syncService, () => metricsService.logRendererMemory("renderers after scan")),
     // Registered on every flavor on purpose: a resource report is only actionable if the ow numbers
     // can be held against the wago ones.

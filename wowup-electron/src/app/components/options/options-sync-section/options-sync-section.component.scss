@@ -1,0 +1,75 @@
+.container {
+  padding: 1em;
+
+  .explanation {
+    white-space: pre-line;
+  }
+}
+
+.setting {
+  margin-top: 1em;
+  margin-bottom: 20px;
+}
+
+.divider {
+  margin-top: 20px;
+  height: 1px;
+  border-top: thin solid var(--divider-color);
+}
+
+.code-setup {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.75em;
+  margin-top: 0.75em;
+
+  .code-input {
+    flex: 1 1 280px;
+  }
+
+  .or {
+    text-transform: lowercase;
+  }
+}
+
+.code {
+  padding: 0.5em 0.75em;
+  border-radius: 4px;
+  font-family: ui-monospace, Menlo, Consolas, monospace;
+  user-select: all;
+  word-break: break-all;
+}
+
+.folder {
+  margin-top: 0.25em;
+  font-family: ui-monospace, Menlo, Consolas, monospace;
+  font-size: 0.9em;
+  word-break: break-all;
+}
+
+.installation {
+  margin-top: 0.75em;
+  padding: 0.75em 1em;
+  border-radius: 4px;
+
+  .row {
+    gap: 0.75em;
+  }
+
+  .result {
+    margin-top: 0.5em;
+    font-size: 0.9em;
+  }
+
+  .link {
+    cursor: pointer;
+    text-decoration: underline;
+  }
+
+  .missing {
+    margin-top: 0.75em;
+    padding-top: 0.75em;
+    border-top: thin solid var(--divider-color);
+  }
+}
