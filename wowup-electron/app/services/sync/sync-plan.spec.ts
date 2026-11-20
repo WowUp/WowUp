@@ -98,6 +98,12 @@ describe("sync-plan", () => {
       expect(plan.conflicts).to.deep.equal([SV]);
     });
 
+    it("uploads a file the vault never had instead of deleting it here", () => {
+      const plan = planSync({ [SV]: file("a") }, { [MACROS]: file("m") }, { [SV]: "a", [MACROS]: "m" }, opts);
+      expect(plan.upload).to.deep.equal([SV]);
+      expect(plan.deleteLocal).to.deep.equal([]);
+    });
+
     it("never touches paths sync doesn't carry", () => {
       const plan = planSync({ "Config.wtf": file("a") }, { "Config.wtf": file("b", 9000) }, {}, opts);
       expect(plan).to.deep.equal({ download: [], upload: [], deleteLocal: [], deleteRemote: [], conflicts: [] });

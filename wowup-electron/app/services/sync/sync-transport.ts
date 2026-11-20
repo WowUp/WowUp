@@ -13,10 +13,19 @@ export interface SyncTransport {
   read(name: string): Promise<Buffer | undefined>;
   write(name: string, data: Buffer): Promise<void>;
   exists(name: string): Promise<boolean>;
+  /** Where the vault lives; a device that moves to another location joins it afresh */
+  readonly location: string;
 }
 
 /** The folder created inside the one the user picks, so the vault never mixes with their own files */
 export const SYNC_FOLDER_NAME = "WowUp Sync";
+
+/** Picking the "WowUp Sync" folder itself (an easy mistake) means the vault in it, not a new one inside */
+export function resolveSyncRoot(chosenFolder: string): string {
+  return path.basename(path.resolve(chosenFolder)) === SYNC_FOLDER_NAME
+    ? path.resolve(chosenFolder)
+    : path.join(path.resolve(chosenFolder), SYNC_FOLDER_NAME);
+}
 
 /**
  * A folder the user's devices already share: iCloud Drive, Dropbox, OneDrive, a NAS. Writes go to
@@ -26,7 +35,11 @@ export class FolderTransport implements SyncTransport {
   private readonly root: string;
 
   public constructor(private readonly chosenFolder: string) {
-    this.root = path.join(chosenFolder, SYNC_FOLDER_NAME);
+    this.root = resolveSyncRoot(chosenFolder);
+  }
+
+  public get location(): string {
+    return this.root;
   }
 
   public async read(name: string): Promise<Buffer | undefined> {

@@ -77,6 +77,8 @@ const LOCAL_TEMP_SUFFIX = ".wowup-sync-tmp";
 
 interface LocalState {
   vaultId: string;
+  /** The vault's folder; missing in state written before it was recorded */
+  location?: string;
   base: BaseFiles;
 }
 
@@ -250,7 +252,7 @@ export class SettingsSyncService {
       : undefined;
     const firstDevice = !remoteManifest;
 
-    const state = await this.readLocalState(installationId, keys.vaultId);
+    const state = await this.readLocalState(installationId, keys.vaultId, transport.location);
     const local = await scanWtf(wtfPath);
     const remoteFiles = remoteManifest?.files ?? {};
     // An empty vault (new code, or the shared folder was wiped) is seeded from this device; using the
@@ -320,7 +322,11 @@ export class SettingsSyncService {
       throw new ManifestChangedError();
     }
     await transport.write(manifestName, seal(keys, Buffer.from(JSON.stringify(nextManifest)), manifestContext));
-    await this.writeLocalState(installationId, { vaultId: keys.vaultId, base: baseFromRemote(nextFiles) });
+    await this.writeLocalState(installationId, {
+      vaultId: keys.vaultId,
+      location: transport.location,
+      base: baseFromRemote(nextFiles),
+    });
 
     const changedLocal = plan.download.length > 0 || plan.deleteLocal.length > 0;
     const result: SettingsSyncResult = {
@@ -375,11 +381,18 @@ export class SettingsSyncService {
     return path.join(this.deps.stateFolderPath, `${installationId}.json`);
   }
 
-  /** undefined when this installation never synced with this vault, which makes it join */
-  private async readLocalState(installationId: string, vaultId: string): Promise<LocalState | undefined> {
+  /** undefined when this installation never synced with this vault in this folder, which makes it join */
+  private async readLocalState(
+    installationId: string,
+    vaultId: string,
+    location: string,
+  ): Promise<LocalState | undefined> {
     try {
       const state = JSON.parse(await fsp.readFile(this.statePath(installationId), "utf8")) as LocalState;
-      return state.vaultId === vaultId ? state : undefined;
+      if (state.vaultId !== vaultId || (state.location !== undefined && state.location !== location)) {
+        return undefined;
+      }
+      return state;
     } catch {
       return undefined;
     }

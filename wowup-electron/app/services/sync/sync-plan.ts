@@ -115,6 +115,13 @@ export function planSync(local: LocalFiles, remote: RemoteFiles, base: BaseFiles
     const takeRemote = () => (rHash === undefined ? plan.deleteLocal.push(path) : plan.download.push(path));
     const takeLocal = () => (localHash === undefined ? plan.deleteRemote.push(path) : plan.upload.push(path));
 
+    if (remoteEntry === undefined) {
+      // The vault never had this file (not even as a deletion): it's new to the vault, never a reason
+      // to delete it here. Happens when a device moves to another vault folder.
+      plan.upload.push(path);
+      continue;
+    }
+
     if (localHash === baseHash) {
       // Only the remote changed. Also covers a path neither side had at the base.
       if (localHash === undefined && rHash === undefined) {

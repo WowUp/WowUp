@@ -240,6 +240,59 @@ describe("SettingsSyncService", () => {
     await fsp.writeFile(manifest, corrupt);
     await expectError(a.service.sync("mac-a-install"), SETTINGS_SYNC_ERROR_WRONG_KEY);
   });
+
+  it("uses the vault when the WowUp Sync folder itself is picked, without deleting the device's files", async () => {
+    const code = createSyncCode();
+    const a = await createDevice("mac-a", code);
+    const b = await createDevice("mac-b", code);
+
+    await write(a, SV, "configured auras", 1_000);
+    await a.service.sync("mac-a-install");
+
+    // Older builds made a second vault inside the picked "WowUp Sync" folder: B seeded that one first
+    b.config.folderPath = path.join(shared, SYNC_FOLDER_NAME, SYNC_FOLDER_NAME);
+    await fsp.mkdir(b.config.folderPath, { recursive: true });
+    await write(b, SV, "fresh defaults", 500);
+    await write(b, MACROS, "MACRO 1 Heal", 2_000);
+    expect((await b.service.sync("mac-b-install")).outcome).to.equal("first-device");
+
+    // Picking the vault folder now reaches A's vault: B joins it and keeps the macro only it has
+    b.config.folderPath = path.join(shared, SYNC_FOLDER_NAME);
+    const joined = await b.service.sync("mac-b-install");
+    expect(joined.outcome).to.equal("synced");
+    expect(await read(b, SV)).to.equal("configured auras");
+    expect(await read(b, MACROS)).to.equal("MACRO 1 Heal");
+
+    await a.service.sync("mac-a-install");
+    expect(await read(a, MACROS)).to.equal("MACRO 1 Heal");
+  });
+
+  it("never deletes files the vault never had, even with state from before vault folders were recorded", async () => {
+    const code = createSyncCode();
+    const a = await createDevice("mac-a", code);
+    const b = await createDevice("mac-b", code);
+
+    await write(a, SV, "configured auras", 1_000);
+    await a.service.sync("mac-a-install");
+
+    const elsewhere = path.join(root, "Dropbox");
+    await fsp.mkdir(elsewhere);
+    b.config.folderPath = elsewhere;
+    await write(b, SV, "fresh defaults", 500);
+    await write(b, MACROS, "MACRO 1 Heal", 2_000);
+    await b.service.sync("mac-b-install");
+
+    // Drop the recorded folder, as in state files written by earlier builds
+    const stateFile = path.join(root, "mac-b", "state", "mac-b-install.json");
+    const state = JSON.parse(await fsp.readFile(stateFile, "utf8")) as { location?: string };
+    delete state.location;
+    await fsp.writeFile(stateFile, JSON.stringify(state));
+
+    b.config.folderPath = shared;
+    await b.service.sync("mac-b-install");
+    expect(await read(b, SV)).to.equal("configured auras");
+    expect(await read(b, MACROS)).to.equal("MACRO 1 Heal");
+  });
 });
 
 async function expectError(promise: Promise<unknown>, message: string): Promise<void> {
