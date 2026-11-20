@@ -124,7 +124,7 @@ describe("LocaleTest", () => {
               catchError((e) => {
                 console.error(e);
                 return of("");
-              })
+              }),
             )
             .subscribe((tx) => {
               console.log(`TX ${tx}`);
